@@ -1,0 +1,9 @@
+# deploy_admin_terminal.yml
+---
+- hosts: admin_terminal
+  sudo: yes
+  roles:
+    - iptables
+    - common
+    - {role: python, when: "custom_repo != None"}
+    - {role: python-build, when: "custom_repo == None"}

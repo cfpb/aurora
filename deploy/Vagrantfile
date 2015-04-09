@@ -1,0 +1,91 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure(2) do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+  ### COMMON VARIABLES
+  
+  VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
+
+  ### SHARED COMPONENT
+  
+  # GlusterFS File Server 1
+  disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
+  config.vm.define :file_server_1 do |fs_config|
+    fs_config.vm.box = "chef/centos-6.5"
+    fs_config.vm.host_name = "file-server-1.test.dev"
+
+    fs_config.vm.provider 'virtualbox' do |v|
+      unless File.exist?(disk_file_1)
+        v.customize ['createhd', '--filename', disk_file_1, '--size', 500, '--variant', 'fixed']
+        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
+      end
+    end
+
+    fs_config.vm.provision 'ansible' do |ansible|
+      ansible.playbook = "deploy_file_server.yml"
+
+      ansible.groups = {
+        "file_server" => ["file_server_1"],
+        "all_groups:children" => ["file_server"]
+      }
+    end
+
+    fs_config.vm.network :private_network, ip: "10.0.1.4"
+  end
+
+  # GlusterFS File Server 2
+  disk_file_2 = File.join(VAGRANT_ROOT, 'gfs_brick_2.vdi')
+  config.vm.define :file_server_2 do |fs_config|
+    fs_config.vm.box = "chef/centos-6.5"
+    fs_config.vm.host_name = "file-server-2.test.dev"
+  
+    fs_config.vm.provider 'virtualbox' do |v|
+      unless File.exist?(disk_file_2)
+        v.customize ['createhd', '--filename', disk_file_2, '--size', 500, '--variant', 'fixed']
+        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
+      end
+    end
+
+    fs_config.vm.provision 'ansible' do |ansible|
+      ansible.playbook = "deploy_file_server.yml"
+
+      ansible.groups = {
+        "file_server" => ["file_server_2"],
+        "all_groups:children" => ["file_server"]
+      }
+    end
+
+    fs_config.vm.provision 'ansible' do |ansible|
+      ansible.playbook = "configure_file_shares.yml"
+    end
+
+    fs_config.vm.network :private_network, ip: "10.0.1.5"
+  end
+
+  # Admin Terminal VM
+  config.vm.define :admin_terminal do |adterm_config|
+    adterm_config.vm.box = "chef/centos-6.5"
+    adterm_config.vm.host_name = "admin.test.dev"
+
+    adterm_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_admin_terminal.yml"
+      ansible.groups = {
+        "admin_terminal" => ["admin_terminal"],
+        "terminals:children" => ["admin_terminal"],
+        "all_groups:children" => ["admin_terminal"]
+      }
+    end
+
+    adterm_config.vm.network :private_network, ip: "10.0.1.2"
+  end
+end

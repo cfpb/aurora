@@ -1,0 +1,6 @@
+# main.yml - Install Python 2.7, either from a repo or a built RPM
+---
+- name: Install Python27 from repo
+  yum:
+    name: python27
+    state: present

@@ -1,0 +1,32 @@
+# main.yml - Establishes baseline IP Tables rules
+
+# Basically, allows outgoing trafic and established connections,
+# but blocks all incoming traffic except SSH.  This is meant to be replaced
+# by more complex rules.
+---
+- name: Temporarily allow all
+  command: "iptables -P {{ iptables_chain }} ACCEPT"
+
+- name: Flush existing rules
+  command: "iptables -F"
+
+- name: Allow localhost
+  command: "iptables -A {{ iptables_chain }} -i lo -j ACCEPT"
+
+- name: Allow established and related
+  command: "iptables -A {{ iptables_chain }} -m state --state ESTABLISHED,RELATED -j ACCEPT"
+
+- name: Allow port 22 for SSH
+  command: "iptables -A {{ iptables_chain }} -p tcp --dport 22 -j ACCEPT"
+
+- name: Drop all input
+  command: "iptables -P INPUT DROP"
+
+- name: Drop all forwarded
+  command: "iptables -P FORWARD DROP"
+
+- name: Allow outgoing
+  command: "iptables -P OUTPUT ACCEPT"
+
+- name: Save new rules
+  command: "/sbin/service iptables save"

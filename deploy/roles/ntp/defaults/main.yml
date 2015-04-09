@@ -1,0 +1,3 @@
+# main.yml - Defaults for NTP
+---
+ntp_timezone: America/New_York
