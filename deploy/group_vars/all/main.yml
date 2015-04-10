@@ -38,3 +38,6 @@ template_masthead: >
 # Custom RPM repository, if used
 custom_repo: 
 
+# Toggle whether or not to install GlusterFS clients
+install_glusterfs: True
+

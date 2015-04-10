@@ -79,6 +79,7 @@ Vagrant.configure(2) do |config|
 
     adterm_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_admin_terminal.yml"
+      ansible.verbose = 'vvvv'
       ansible.groups = {
         "admin_terminal" => ["admin_terminal"],
         "terminals:children" => ["admin_terminal"],

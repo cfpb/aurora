@@ -4,6 +4,15 @@
   sudo: yes
   roles:
     - iptables
-    - common
-    - {role: python, when: "custom_repo != None"}
-    - {role: python-build, when: "custom_repo == None"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+
+  tasks:
+    - name: Install Ansible in Python 2.7
+      pip:
+        virtualenv_command: /usr/local/bin/virtualenv
+        virtualenv: ~/.virtualenvs/data-platform
+        name: ansible
+        state: present
+      sudo: no
