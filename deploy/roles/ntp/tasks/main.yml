@@ -1,0 +1,20 @@
+# main.yml - Install and configure NTP
+# Based on: https://github.com/geerlingguy/ansible-role-ntp
+---
+- name: Set correct timezone
+  file:
+    src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
+    dest: /etc/localtime
+    state: link
+    force: yes
+
+- name: Install NTP
+  yum:
+    name: ntp
+    state: present
+
+- name: Ensure NTP is running and enabled at system start
+  service:
+    name: ntpd
+    state: started
+    enabled: yes

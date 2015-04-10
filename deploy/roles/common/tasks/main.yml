@@ -1,0 +1,44 @@
+# main.yml - Common configuration for all servers within the data platform
+
+### FUNCTIONS
+# Sets up access to RH GlusterFS shared volumes, and mounts them
+---
+- name: Ensure that FUSE is enabled
+  command: "modprobe fuse"
+
+- name: Install common packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - glusterfs
+    - glusterfs-fuse
+    - libselinux-python
+
+- name: Open required ports
+  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - "24007:24008"
+    - "49152:49156"
+
+- name: Save iptables rules
+  command: "/sbin/service iptables save"
+  notify:
+    - restart iptables
+
+- name: Make needed folders
+  file:
+    state: directory
+    dest: "/home/{{ item }}"
+  with_items: shared_folders
+
+- name: Mount shared drives
+  command: "mount -t glusterfs {{ default_file_server }}:{{ item }}_vol /home/{{ item }}"
+  with_items: shared_folders
+
+- name: Ensure proper home directory is setup
+  lineinfile:
+    dest: /etc/default/useradd
+    regexp: ^HOME=
+    line: HOME={{ home_directory }}
+    state: present

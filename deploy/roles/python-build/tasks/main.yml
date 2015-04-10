@@ -1,0 +1,36 @@
+# main.yml - Installs Python 2.7 from custom RPM
+---
+- name: Make sure git is installed
+  sudo: yes
+  yum:
+    name: git
+    state: latest
+
+- name: Clone git repo
+  sudo: no
+  git:
+    dest: "~/python27"
+    repo: https://github.com/cfpb/python27-for-el6.git
+
+- name: Run bootstrap script
+  sudo: no
+  command: "sh ./bootstrap.sh"
+  args:
+    chdir: "~/python27"
+
+- name: Build python RPM
+  sudo: no
+  command: "rpmbuild -ba SPECS/python27-alt.spec"
+  args:
+    chdir: "~/rpmbuild"
+    creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-1.el6.x86_64.rpm"
+
+- name: Copy RPM to /tmp so it is accessible by root
+  sudo: no
+  command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-1.el6.x86_64.rpm /tmp/python27-2.7.6-1.el6.x86_64.rpm"
+
+- name: Install python
+  sudo: yes
+  yum:
+    name: "/tmp/python27-2.7.6-1.el6.x86_64.rpm"
+    state: present
