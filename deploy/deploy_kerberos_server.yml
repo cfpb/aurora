@@ -1,0 +1,10 @@
+# kerberos_server.yml - Mock server to test Kerberos authentication
+---
+- hosts: all
+  sudo: yes
+  roles:
+    - iptables
+    - epel
+    - ntp
+    - openldap
+    - kerberos_server

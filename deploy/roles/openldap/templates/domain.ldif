@@ -1,0 +1,3 @@
+dn: dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+objectClass: domain
+dc: {{ kdc_domain_name.split('.')[-2] }}

@@ -1,0 +1,54 @@
+# deploy_proxy_server.yml - Provisioning Playbook for setting up the proxy server
+# that allows external access to the data enclave.
+---
+- hosts: proxy_server
+  sudo: yes
+  roles:
+    - iptables
+    - common
+    - ntp
+    - kerberos
+    - apache
+    - kerberos_apache
+
+  tasks:
+    - name: Create apache directories
+      file:
+        dest: "{{ item }}"
+        state: directory
+        owner: apache
+        group: apache
+      with_items:
+        - /srv/www/enclave_proxy
+        - /srv/www/enclave_proxy/html
+        - /srv/www/enclave_proxy/html/restricted
+        - /srv/www/enclave_proxy/vhost_conf
+
+    - name: Configure Apache as a proxy
+      template:
+        dest: "/etc/httpd/conf.d/enclave_proxy.conf"
+        src: templates/enclave_proxy.conf
+        owner: apache
+        group: apache
+      notify: restart apache
+
+    - name: Create simple HTML file for proxy
+      template:
+        dest: "/srv/www/enclave_proxy/html/index.php"
+        src: templates/enclave_proxy.php
+      notify: restart apache
+
+    - name: Create simple file for restricted area
+      template:
+        dest: "/srv/www/enclave_proxy/html/restricted/index.php"
+        src: templates/enclave_proxy_restricted.php
+
+    - name: Open proxy server port in iptables
+      command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ proxy_port }} -j ACCEPT"
+      when: proxy_port != 80
+
+    - name: Save rules
+      command: "/sbin/service iptables save"
+      when: proxy_port != 80
+      notify:
+        - restart iptables

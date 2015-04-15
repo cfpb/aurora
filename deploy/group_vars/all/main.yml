@@ -4,6 +4,7 @@
 # Real variables should be placed in respective environment directories within
 # the group_vars folder, for example /group_vars/development
 
+#======================#
 ### GENERAL SETTINGS ###
 #======================#
 
@@ -35,9 +36,73 @@ template_masthead: >
   # be overwritten.\N
   #\N
 
-# Custom RPM repository, if used
-custom_repo: 
+# Determines if custom RPMS can be installed, or need to be built
+custom_repo: False
 
 # Toggle whether or not to install GlusterFS clients
 install_glusterfs: True
 
+#===================#
+### HTTP SETTINGS ###
+#===================#
+
+# Global domain name and TLD
+domain_name: test.dev
+
+# Settings for the proxy server
+proxy_subdomain: proxy
+proxy_port: 80
+
+# Whether or not to enable SSL
+enable_ssl: False
+
+#=======================#
+### KERBEROS SETTINGS ###
+#=======================#
+
+# Whether or not the HTTP keytab must be created
+# Should only be "True" when using Vagrant
+create_keytabs: True
+
+# Primary Realm name
+default_realm_name: TEST.DEV
+
+# The KDC Server
+kdc_domain_name: kdc.test.dev
+
+# KRB Service user, if available
+krb_service_user: testuser
+krb_service_user_password: password
+
+# Enable or disable mapping of Kerberos user principles to regular usernames
+krb_user_mapping: "Off"
+
+# Name of the HTTP keytab file
+keytab_filename: http.keytab
+
+# List of dictionaries for each Kerberos Realm
+realms:
+  - name: TEST.DEV
+    domain_name: test.dev
+    kdc_domain_name: kdc.test.dev:88
+    admin_domain_name: kdc.test.dev:749
+
+# Whether or not to ask for password when using HTTP auth
+krb_ask_pass: "On"
+
+#===================#
+### LDAP SETTINGS ###
+#===================#
+
+# LDAP Server
+ldap_subdomain: ldap
+ldap_server: kdc.test.dev
+
+# LDAP Service Account
+ldap_service_account: testuser
+ldap_service_account_password: password
+
+# App specific settings
+
+# For the proxy server test page
+restricted_group_name: admin

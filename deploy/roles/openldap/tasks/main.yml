@@ -1,0 +1,82 @@
+# main.yml
+---
+- name: Install OpenLDAP packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openldap-servers
+    - openldap-clients
+    - krb5-server-ldap
+    - libselinux-python
+    - openssl
+
+- name: Delete the configuration directory
+  file:
+    dest: /etc/openldap/slapd.d
+    state: absent
+
+- name: Generate root password
+  command: slappasswd -s {{ krb_service_user_password }}
+  register: root_password
+
+- name: Deploy slapd configuration
+  template:
+    src: slapd.conf.j2
+    dest: /etc/openldap/slapd.conf
+  notify:
+    - restart slapd
+
+- name: Deploy ldap.conf file
+  template:
+    src: ldap.conf.j2
+    dest: /etc/openldap/ldap.conf
+
+- name: Create directory for LDAP database
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: ldap
+    group: ldap
+  with_items:
+    - "/var/lib/ldap"
+    - "/var/lib/ldap/{{ kdc_domain_name }}"
+    - "/etc/openldap/certs"
+
+- name: Generate private key
+  command: "openssl genrsa -des3 -passout pass:password -out ldap_with_pass.key"
+  args:
+    chdir: /etc/openldap/certs
+    creates: /etc/openldap/certs/ldap_with_pass.key
+
+- name: Remove passphrase from key
+  command: openssl rsa -in ldap_with_pass.key -passin pass:password -out ldap.key
+  args:
+    chdir: /etc/openldap/certs
+    creates: /etc/openldap/certs/ldap.key
+
+- name: Create and sign the new certificate
+  command: "openssl req -new -x509 -subj '/C=US/ST=DC/L=Washington/O=CFPB/CN={{ ansible_hostname }}/' -days 3650 -key ldap.key -out cert.crt -extensions v3_ca"
+  args:
+    chdir: /etc/openldap/certs
+    creates: /etc/openldap/certs/cert.crt
+
+- name: Start slapd service
+  service:
+    name: slapd
+    state: started
+    enabled: yes
+
+- name: Deploy template for creating base domain
+  template:
+    src:  domain.ldif
+    dest: /tmp
+  register: result
+
+- name: Add the base domain
+  command: "{{ item }}"
+  with_items:
+    - ldapadd -x -D cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }} -w {{ krb_service_user_password }} -f /tmp/domain.ldif
+    - touch /etc/openldap/rootdn_created
+  args:
+    creates: /etc/openldap/rootdn_created
