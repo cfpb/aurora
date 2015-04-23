@@ -20,6 +20,16 @@
   command: slappasswd -s {{ krb_service_user_password }}
   register: root_password
 
+- name: Copy kerberos schema to proper location
+  command: cp /usr/share/doc/krb5-server-ldap-1.10.3/kerberos.schema /etc/openldap/schema/
+
+- name: Deploy ACL file
+  template:
+    src: slapd.access.j2
+    dest: /etc/openldap/slapd.access
+  notify:
+    - restart slapd
+
 - name: Deploy slapd configuration
   template:
     src: slapd.conf.j2
@@ -60,6 +70,32 @@
   args:
     chdir: /etc/openldap/certs
     creates: /etc/openldap/certs/cert.crt
+
+- name: Open port
+  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 389
+    - 636
+
+- name: Open ports
+  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 389
+    - 636
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  notify:
+    - restart iptables
+
+- name: Enable slapd logging
+  lineinfile:
+    dest: /etc/rsyslog.conf
+    line: "local4.* /var/log/slapd.log"
+    regexp: "^local4.*"
+    state: present
+  notify:
+    - restart rsyslog
 
 - name: Start slapd service
   service:

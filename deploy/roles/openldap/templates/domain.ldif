@@ -1,3 +1,25 @@
 dn: dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
 objectClass: domain
+o: {{ organization_name }}
 dc: {{ kdc_domain_name.split('.')[-2] }}
+description: root entry
+
+dn: ou=Users,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+objectclass: organizationalUnit
+ou: Users
+description: Users
+
+dn: uid={{ krb_service_user }}/admin@{{ default_realm_name }},dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+objectClass: account
+uid: {{ krb_service_user }}/admin@{{ default_realm_name }}
+
+dn: ou=Groups,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+objectClass: organizationalUnit
+ou: Groups
+description: Groups OU
+
+dn: cn={{ restricted_group_name }},ou=Groups,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+objectClass: groupOfNames
+cn: {{ restricted_group_name }}
+description: Restricted Group
+member: uid={{ krb_service_user }}/admin@{{ default_realm_name }},dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}

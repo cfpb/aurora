@@ -88,3 +88,6 @@
 
 - name: Add keytab for KDC Server
   command: /usr/sbin/kadmin.local -q "ktadd host/{{ kdc_domain_name }}"
+
+# - name: Create LDAP admin user
+#  command: /usr/sbin/kadmin.local -q "addprinc ldapadm@{{ default_realm_name }} -pw {{ ldap_service_account_password }}"

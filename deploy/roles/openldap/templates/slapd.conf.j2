@@ -1,38 +1,48 @@
 # slapd.conf
 
+loglevel        acl config stats
+
 include         /etc/openldap/schema/core.schema
 include         /etc/openldap/schema/cosine.schema
 include         /etc/openldap/schema/inetorgperson.schema
 include         /etc/openldap/schema/nis.schema
+include         /etc/openldap/schema/kerberos.schema
 pidfile         /var/run/openldap/slapd.pid
 argsfile        /var/run/openldap/slapd.args
 modulepath      /usr/lib64/openldap
 
-access to *
-                by self write
-                by dn.base="cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}" write
-                by * read
-access to attrs=userPassword
-                by self write
-                by anonymous auth
-                by dn.base="cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}" write
-                by * none
-access to attrs=shadowLastChange
-                by self write
-                by * read
+moduleload memberof.la
 
 database        bdb
 suffix          "dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}"
-rootdn          "cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}"
-rootpw          {{ root_password.stdout }}
+
 #This directory has to be created and would contain the ldap database.
 directory       /var/lib/ldap/{{ kdc_domain_name }}/
+
 index objectClass                       eq,pres
 index ou,cn,mail,surname,givenname      eq,pres,sub
 index uidNumber,gidNumber,loginShell    eq,pres
 index uid,memberUid                     eq,pres,sub
 index nisMapName,nisMapEntry            eq,pres,sub
+
+overlay memberof
+
 TLSCipherSuite HIGH:MEDIUM:+SSLv2
-#TLSCACertificateFile /etc/openldap/certs/cacert.pem
+# TLSCACertificateFile /etc/openldap/certs/cacert.pem
 TLSCertificateFile /etc/openldap/certs/cert.crt
 TLSCertificateKeyFile /etc/openldap/certs/ldap.key
+
+# This section rewrites principles as needed for Kerberos auth
+# authz-policy from
+# authz-regexp
+#     uid=(.*),cn={{ '.'.join(kdc_domain_name.split('.')[-2:]) }},cn=GSSAPI,cn=auth
+#    uid=$1,ou=Users,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}
+#sasl-realm    {{ default_realm_name }}
+#sasl-host     {{ kdc_domain_name }}
+
+include       /etc/openldap/slapd.access
+
+database config
+access to *
+        by dn.base="cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}" manage
+        by * none

@@ -52,3 +52,9 @@
       when: proxy_port != 80
       notify:
         - restart iptables
+
+    - name: Update ldap settings
+      template:
+        dest: /etc/openldap/ldap.conf
+        src: roles/openldap/templates/ldap.conf.j2
+

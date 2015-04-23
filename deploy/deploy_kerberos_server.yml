@@ -8,3 +8,33 @@
     - ntp
     - openldap
     - kerberos_server
+
+  tasks:
+    - name: Add LDAP to Kerberos
+      command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "addprinc -randkey ldap/{{ ansible_fqdn }}"
+      args:
+        creates: /etc/openldap/ldap.keytab
+
+    - name: Generate keytab for LDAP
+      command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "ktadd -k /etc/openldap/ldap.keytab ldap/{{ ansible_fqdn }}"
+      args:
+        creates: /etc/openldap/ldap.keytab
+
+    - name: Update keytab file settings
+      file:
+        dest: /etc/openldap/ldap.keytab
+        owner: ldap
+        group: ldap
+
+    - name: Add keytab file to slapd's settings
+      lineinfile:
+        dest: /etc/default/slapd
+        line: "export KRB5_KTNAME=/etc/ldap/ldap.keytab"
+        regexp: "^export KRB5_KTNAME="
+        state: present
+        create: yes
+
+    - name: Restart slapd
+      service:
+        name: slapd
+        state: restarted

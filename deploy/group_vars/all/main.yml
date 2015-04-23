@@ -36,6 +36,9 @@ template_masthead: >
   # be overwritten.\N
   #\N
 
+# Human readable org name
+organization_name: "Test Organization"
+
 # Determines if custom RPMS can be installed, or need to be built
 custom_repo: False
 
