@@ -1,0 +1,93 @@
+# main.yml - Kerberos Server installation
+---
+- name: Install Kerberos Server packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - krb5-server
+    - krb5-workstation
+    - krb5-libs
+    - krb5-auth-dialog
+    - libselinux-python
+
+- name: Update krb5.conf configuration file
+  template:
+    src: krb5.conf
+    dest: /etc/krb5.conf
+
+- name: Update kdc.conf config file
+  template:
+    src: kdc.conf
+    dest: /var/kerberos/krb5kdc/kdc.conf
+
+### THIS SECTION REQUIRED FOR GENERATING RANDOM
+### NUMBERS ON A VIRTUAL MACHINE.  IT MAY BE NEEDED
+### IN THE LIVE ENVIRONMENT AS WELL
+- name: Install haveged
+  yum:
+    name: haveged
+    state: present
+
+- name: Make sure haveged is started
+  service:
+    name: haveged
+    state: started
+    enabled: yes
+### END SECTION
+
+- name: Create kerberos database
+  command: /usr/sbin/kdb5_util -r {{ default_realm_name }} -P {{ krb_service_user_password }} create -s
+  ignore_errors: yes
+
+- name: Edit ACL file
+  lineinfile:
+    dest: /var/kerberos/krb5kdc/kadm5.acl
+    line: "*/admin@{{ default_realm_name }}  *"
+    state: present
+
+- name: Create first user
+  command: /usr/sbin/kadmin.local -q "addprinc -pw {{ krb_service_user_password }} {{ krb_service_user }}/admin"
+
+- name: Add admin privielges to keytab
+  command: /usr/sbin/kadmin.local -q "ktadd -k /var/kerberos/krb5kdc/kadm5.keytab kadmin/admin"
+
+- name: Start Kerberos kdc service
+  service:
+    name: krb5kdc
+    state: started
+    enabled: yes
+
+- name: Start Kerberos kadmin service
+  service:
+    name: kadmin
+    state: started
+    enabled: yes
+
+- name: Open ports
+  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 88
+    - 464
+    - 749
+
+- name: Open ports
+  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 88
+    - 464
+    - 749
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  notify:
+    - restart iptables
+
+- name: Create principal for KDC Server
+  command: /usr/sbin/kadmin.local -q "addprinc -randkey host/{{ kdc_domain_name }}"
+
+- name: Add keytab for KDC Server
+  command: /usr/sbin/kadmin.local -q "ktadd host/{{ kdc_domain_name }}"
+
+# - name: Create LDAP admin user
+#  command: /usr/sbin/kadmin.local -q "addprinc ldapadm@{{ default_realm_name }} -pw {{ ldap_service_account_password }}"

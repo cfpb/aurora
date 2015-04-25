@@ -1,0 +1,35 @@
+# main.yml - Role for configuring kerberos to work with apache
+---
+- name: Create http principal
+  command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "addprinc -randkey HTTP/{{ proxy_subdomain }}.{{ domain_name }}"
+  when: create_keytabs
+
+- name: Add keytab for http
+  command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "ktadd -k /etc/httpd/http.keytab HTTP/{{ proxy_subdomain }}.{{ domain_name }}"
+  args:
+    creates: /etc/httpd/http.keytab
+  when: create_keytabs
+  register: created_http_keytab
+
+- name: Update permissions
+  file:
+    path: /etc/httpd/http.keytab
+    state: touch
+    owner: apache
+    group: apache
+  when: create_keytabs and created_http_keytab
+
+- name: Install mod_auth_kerb and mod_authz_ldap
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - mod_auth_kerb
+    - mod_authz_ldap
+
+- name: Update neccessary LDAP setting
+  lineinfile:
+    dest: /etc/openldap/ldap.conf
+    line: "REFERRALS off"
+    state: present
+    insertafter: EOF
