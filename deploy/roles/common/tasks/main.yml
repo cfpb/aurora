@@ -33,7 +33,7 @@
   with_items: shared_folders
 
 - name: Mount shared drives
-  command: "mount -t glusterfs {{ default_file_server }}:{{ item }}_vol /home/{{ item }}"
+  command: "mount -t glusterfs {{ default_file_server }}:/{{ item }} /home/{{ item }}"
   with_items: shared_folders
 
 - name: Ensure proper home directory is setup
