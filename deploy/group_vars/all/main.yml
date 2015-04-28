@@ -9,7 +9,7 @@
 #======================#
 
 # Allow custom iptables chain to be used, if needed
-iptables_chain: INPUT
+iptables_chain: TEST-INPUT
 
 # Specifies which file server to connect to, doesn't really matter which one
 # you use.
@@ -44,6 +44,19 @@ custom_repo: False
 
 # Toggle whether or not to install GlusterFS clients
 install_glusterfs: True
+
+#==============#
+### IPTABLES ###
+#==============#
+
+# This list of dictonaries defines global IP tables rules
+iptables_standard:
+  - 
+    port: 22
+    protocol: tcp
+    source: 0.0.0.0/0
+
+subnet: 0.0.0.0/0
 
 #===================#
 ### HTTP SETTINGS ###
