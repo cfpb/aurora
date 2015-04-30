@@ -43,7 +43,7 @@
   command: "iptables -A {{ iptables_chain }} -m state --state ESTABLISHED,RELATED -j ACCEPT"
 
 - name: Allow each port listed in iptables_common group variable
-  command: "iptables -A {{ iptables_chain }} -p {{ item.protocol }} -m {{ item.protocol }}{% if item.port %} --dport {{ item.port }}{% endif %}{% if item.source %} -s {{ item.source }}{% endif %} -j ACCEPT"
+  command: "iptables -A {{ iptables_chain }} -p {{ item.protocol }} -m {{ item.protocol }}{% if 'port' in item %} --dport {{ item.port }}{% endif %}{% if 'source' in item %} -s {{ item.source }}{% endif %} -j ACCEPT"
   with_items: iptables_standard
 
 - name: Allow ssh access from "Terminals"

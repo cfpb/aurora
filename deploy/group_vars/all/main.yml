@@ -54,7 +54,6 @@ iptables_standard:
   - 
     port: 22
     protocol: tcp
-    source: 0.0.0.0/0
 
 subnet: 0.0.0.0/0
 
