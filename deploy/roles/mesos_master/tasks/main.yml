@@ -1,6 +1,5 @@
 # mesos-master
 ---
-
 ### SETUP REPOSITORIES
 
 - name: Add mesosphere repository
@@ -41,6 +40,20 @@
   with_items: mesos_server_packages
 
 ### CONFIGURE ZOOKEEPER
+- name: Configure zookeeper with the IP's of all masters
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+
+- name: Create zookeeper config folders
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: zookeeper
+    group: zookeeper
+  with_items:
+    - "/etc/zookeeper"
+    - "/etc/zookeeper/conf"
 
 - name: Create zookeeper config file
   template:
