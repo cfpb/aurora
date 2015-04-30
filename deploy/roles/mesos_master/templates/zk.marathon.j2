@@ -1,0 +1,1 @@
+zk://{% for host in groups['mesos_master'] %}{{ hostvars[host]['ansible_ssh_host'] }}:2181{% if not loop.last %},{% endif %}{% endfor %}/marathon

@@ -91,7 +91,13 @@ db_terminal ansible_ssh_host=10.0.1.30
 db_server
 db_terminal
 
+[mesos_master]
+mesos-master-1 ansible_ssh_host=10.0.1.31
+mesos-master-2 ansible_ssh_host=10.0.1.32
+mesos-master-3 ansible_ssh_host=10.0.1.33
+
 ; Global Groups
+
 [all_groups:children]
 admin_terminal
 proxy_server

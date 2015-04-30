@@ -1,0 +1,133 @@
+# mesos-master
+---
+- name: Add mesosphere repository
+  yum:
+    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
+    state: present
+
+- name: Install the CDH key
+  rpm_key:
+    key: http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
+    state: present
+
+- name: Add the CDH repository
+  yum:
+    name: http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm
+    state: present
+
+# Note: Even though the installed packages are the same version
+# for some reason they must be removed and reinstalled as
+# dependencies
+- name: Remove incompatible packages
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - redhat-lsb-graphics
+    - redhat-lsb-core
+
+- name: Install mesosphere packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+    - java-1.7.0-openjdk
+    - mesos
+    - marathon
+    - chronos
+    - zookeeper-server
+
+- name: Configure zookeeper with the IP's of all masters
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+
+- name: Create zookeeper config folders
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: zookeeper
+    group: zookeeper
+  with_items:
+    - "/etc/zookeeper"
+#    - "/etc/zookeeper/conf"
+
+- name: Create ID file for masters
+  template:
+    dest: /etc/zookeeper/conf/myid
+    src: myid
+    owner: zookeeper
+    group: zookeeper
+
+- name: Create zookeeper config file
+  template:
+    dest: /etc/zookeeper/conf/zoo.cfg
+    src: zoo.cfg
+    owner: zookeeper
+    group: zookeeper
+
+- name: Initialize zookeeper
+  command: zookeeper-server-initialize --force
+
+- name: Ensure ownership is correct
+  file:
+    dest: /var/lib/zookeeper
+    state: directory
+    recurse: yes
+    owner: zookeeper
+    group: zookeeper
+
+- name: Update the quorum config file
+  template:
+    dest: /etc/mesos-master/quorum
+    src: quorum.j2
+
+- name: Add the ip address to the mesos-master folder
+  shell: "echo {{ ansible_eth0['ipv4']['address'] }} | sudo tee /etc/mesos-master/ip"
+
+- name: Add the ip to the hostname file too
+  shell: "sudo cp /etc/mesos-master/ip /etc/mesos-master/hostname"
+
+- name: Create Marathon config folders
+  shell: "sudo mkdir -p /etc/marathon/conf"
+
+- name: Copy hostname file to Marathon config
+  shell: "sudo cp /etc/mesos-master/hostname /etc/marathon/conf"
+
+- name: Copy the zk file to Marathon
+  shell: "sudo cp /etc/mesos/zk /etc/marathon/conf/master"
+
+- name: Setup Zookeeper config for Marathon
+  template:
+    dest: /etc/marathon/conf/zk
+    src: zk.marathon.j2
+
+- name: Stop the Meso client process
+  service:
+    name: mesos-slave
+    state: stopped
+#    enabled: no
+
+- name: Start Mesos master and Marathon
+  service:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - mesos-master
+    - marathon
+
+- name: Open required ports
+  command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 2181
+    - 5050
+    - 8080
+
+- name: Save iptables
+  command: "/sbin/service iptables save"
+  notify:
+    - restart iptables
+
+
