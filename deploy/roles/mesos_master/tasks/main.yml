@@ -103,17 +103,35 @@
     dest: /etc/marathon/conf/zk
     src: zk.marathon.j2
 
-- name: Stop the Meso client process
-  service:
-    name: mesos-slave
-    state: stopped
+# Ansible's service commands don't seem to work
+# with upstart services on Centos, so we'll do it manually
+#- name: Stop the Meso client process
+#  service:
+#    name: mesos-slave
+#    state: stopped
 #    enabled: no
 
-- name: Start Mesos master and Marathon
-  service:
-    name: "{{ item }}"
-    state: started
-    enabled: yes
+- name: Stop the Mesos client process
+  command: "stop mesos-slave"
+  register: mesos_client_stop
+  failed_when: mesos_client_stop.rc != 0 and 'Unknown instance' not in mesos_client_stop.stderr
+
+- name: Override the mesos-slave service
+  file:
+    dest: /etc/init/mesos-slave.conf.override
+    state: touch
+
+#- name: Start Mesos master and Marathon
+#  service:
+#    name: "{{ item }}"
+#    state: started
+#    enabled: yes
+#  with_items:
+#    - mesos-master
+#    - marathon
+
+- name: Start the Mesos master and Marathon processes (they are already enabled)
+  command: "start {{ item }}"
   with_items:
     - mesos-master
     - marathon
