@@ -98,10 +98,16 @@ mesos-master-3 ansible_ssh_host=10.0.1.33
 
 ; Global Groups
 
+[mesos_client]
+mesos-client-1 ansible_ssh_host=10.0.1.9
+mesos-client-2 ansible_ssh_host=10.0.1.10
+mesos-client-3 ansible_ssh_host=10.0.1.11
+
 [all_groups:children]
 admin_terminal
 proxy_server
 file_server
+kerberos_server
 analytics_terminal
 elasticsearch
 elk
@@ -109,6 +115,8 @@ app_server
 research_environment
 pipeline
 datawarehouse
+mesos_master
+mesos_client
 
 [terminals:vars]
 is_terminal=True

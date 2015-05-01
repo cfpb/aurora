@@ -490,7 +490,29 @@ Vagrant.configure(2) do |config|
         ansible.inventory_path = "vagrant_hosts"
         ansible.extra_vars = {:zookeeper_id => "#{id}"}
       end
+    end
+  end
 
+  # Mesos Clients
+  mesos_clients = [
+    "10.0.1.9",
+    "10.0.1.10",
+    "10.0.1.11",
+  ]
+
+  mesos_clients.each_with_index do |ip, idx|
+    id = idx+1
+    config.vm.define "mesos-client-#{id}" do |mm_config|
+      mm_config.vm.box = "chef/centos-6.5"
+      mm_config.vm.host_name = "mesos-client-#{id}.test.dev"
+      mm_config.vm.network :private_network, ip: ip
+      
+      mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_mesos_client.yml"
+        ansible.inventory_path = "vagrant_hosts"
+      end
     end
   end
 end

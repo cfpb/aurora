@@ -1,26 +1,41 @@
 # mesos-client-role.yml
 ---
 - name: Add mesosphere repository
-  command: rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6.2.noarch.rpm
+  yum:
+    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
+    state: present
 
 - name: Install mesos package
   yum:
-    name: mesos
+    name: "{{ item }}"
     state: present
+  with_items:
+    - mesos
+    - libselinux-python
 
 - name: Configure zookeeper with the IP's of all masters
   template:
     src: zk.j2
     dest: /etc/mesos/zk
 
-- name: Disable mesos-master
-  service:
-    name: mesos-master
-    state: stopped
-    enabled: no
+#- name: Disable mesos-master
+#  service:
+#    name: mesos-master
+#    state: stopped
+#    enabled: no
 
-- name: Add the ip address to the mesos-master folder
-  shell: "echo {{ ansible_eth0['ipv4']['address'] }} | sudo tee /etc/mesos-slave/ip"
+- name: Stop the Mesos master process
+  command: "stop mesos-master"
+  register: mesos_master_stop
+  failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
+
+- name: Override the mesos-master service
+  file:
+    dest: /etc/init/mesos-master.conf.override
+    state: touch
+
+- name: Add the ip address to the mesos client folder
+  shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
@@ -31,6 +46,7 @@
     line: ISOLATION=cgroups/cpu,cgroups/mem
     regexp: ^ISOLATION=
     state: present
+    create: yes
 
 - name: Configure correct cgroups route
   shell: "echo '/cgroups' | sudo tee /etc/mesos-slave/cgroups_hierarchy"
@@ -46,7 +62,3 @@
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
-###
-# zk.j2 contents
-#
-# zk://{% for host in groups['mesos_masters'] %}{{ hostvars[host]['ansible_eth0']['ipv4']['address'] }}:2181{% if not forloop.last %},{% endif %}{% endfor %}/mesos

@@ -38,27 +38,10 @@
     - chronos
     - zookeeper-server
 
-- name: Configure zookeeper with the IP's of all masters
+- name: Configure mesos with the IP's of all zookeepers
   template:
     src: zk.j2
     dest: /etc/mesos/zk
-
-- name: Create zookeeper config folders
-  file:
-    dest: "{{ item }}"
-    state: directory
-    owner: zookeeper
-    group: zookeeper
-  with_items:
-    - "/etc/zookeeper"
-#    - "/etc/zookeeper/conf"
-
-- name: Create ID file for masters
-  template:
-    dest: /etc/zookeeper/conf/myid
-    src: myid
-    owner: zookeeper
-    group: zookeeper
 
 - name: Create zookeeper config file
   template:
@@ -68,7 +51,9 @@
     group: zookeeper
 
 - name: Initialize zookeeper
-  command: zookeeper-server-initialize --force
+  command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
+  args:
+    creates: /var/lib/zookeeper/myid
 
 - name: Ensure ownership is correct
   file:
@@ -78,13 +63,23 @@
     owner: zookeeper
     group: zookeeper
 
+#- name: Create zookeeper config folders
+#  file:
+#    dest: "{{ item }}"
+#    state: directory
+#    owner: zookeeper
+#    group: zookeeper
+#  with_items:
+#    - "/etc/zookeeper"
+#    - "/etc/zookeeper/conf"
+
 - name: Update the quorum config file
   template:
     dest: /etc/mesos-master/quorum
     src: quorum.j2
 
 - name: Add the ip address to the mesos-master folder
-  shell: "echo {{ ansible_eth0['ipv4']['address'] }} | sudo tee /etc/mesos-master/ip"
+  shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-master/ip"
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-master/ip /etc/mesos-master/hostname"
@@ -102,6 +97,12 @@
   template:
     dest: /etc/marathon/conf/zk
     src: zk.marathon.j2
+
+- name: Start zookeeper
+  service:
+    name: zookeeper-server
+    state: started
+    enabled: yes
 
 # Ansible's service commands don't seem to work
 # with upstart services on Centos, so we'll do it manually
@@ -142,6 +143,8 @@
     - 2181
     - 5050
     - 8080
+    - 2888
+    - 3888
 
 - name: Save iptables
   command: "/sbin/service iptables save"
