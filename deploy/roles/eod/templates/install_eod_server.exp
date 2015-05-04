@@ -1,0 +1,17 @@
+#! /usr/bin/expect -df
+
+# run the actual installer bin
+# TODO: figure out where to put this
+spawn {{eod_bin_directory}}/./ecs-13.8.5-linux-x64.bin
+
+# set up your expects
+expect {
+    "Enter directory to install Exceed Connection Server to" {
+        send "{{eod_install_directory}}\r"
+        exp_continue
+    }
+    "Please press <Enter> to view License Agreement" {
+        exit 0
+    }
+}
+interact return

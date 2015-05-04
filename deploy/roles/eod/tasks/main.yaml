@@ -1,0 +1,97 @@
+---
+# TODO: put rpm somewhere accessible 
+- name: chmod eod bin
+  file:
+    path: "{{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin"
+    mode: a+x
+
+- name: install expect
+  yum: name=expect state=present
+
+- name: check if eod directory exists
+  stat: 
+    path: "{{eod_install_directory}}/"
+  register: eod_dir_exists
+
+- name: create eod directory
+  shell: sudo mkdir -p {{eod_install_directory}}
+  when: eod_dir_exists.stat.exists == false
+
+- name: copy the eod expect script
+  template: 
+    src: install_eod_server.exp
+    dest: /tmp/install_eod_server.exp
+
+- name: chmod eod expect script
+  file:
+      path: /tmp/install_eod_server.exp
+      mode: a+x
+
+- name: run eod expect script
+  command: /tmp/./install_eod_server.exp
+
+- name: run eod silent install
+  shell: "{{eod_install_directory}}/bin/./install -s"
+
+- name: check if cluster.cfg exists
+  stat: path=/opt/Exceed_onDemand_Client_8/conf/admin/
+  register: cluster_cfg_exists
+
+- name: create cluster.cfg directory
+  shell: sudo mkdir -p /opt/Exceed_onDemand_Client_8/conf/admin
+  when: cluster_cfg_exists.stat.exists == false
+
+- name: configure cluster.cfg
+  template:
+    src: cluster.cfg
+    dest: /opt/Exceed_onDemand_Client_8/conf/admin/cluster.cfg
+
+- name: install General Purpose Desktop
+  yum: name="@General Purpose Desktop" state=present
+
+- name: install Desktop
+  yum: name="@Desktop" state=present
+
+- name: install X Window System
+  yum: name="@X Window System" state=present
+
+- name: configure custom.conf
+  template:
+    src: custom.conf
+    dest: /etc/gdm/custom.conf
+
+- name: configure inittab
+  template:
+    src: inittab
+    dest: /etc/inittab
+
+# TODO: ensure video driver?
+- name: configure xorg.conf
+  template:
+    src: xorg.conf
+    dest: /etc/X11/xorg.conf
+  # notify:
+  #   - ensure video driver
+
+- name: configure exceed connection server
+  template:
+    src: exceed-connection-server
+    dest: /etc/pam.d/exceed-connection-server
+
+- name: configure system-auth-ac
+  template:
+    src: system-auth-ac
+    dest: /etc/pam.d/system-auth-ac
+  notify:
+    - validate password-auth-ac
+
+- name: open up ports in ipconfig
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item[1] }} -s {{ item[0] }}"
+  with_nested:
+    - eod_client_hosts
+    - eod_client_ports
+
+- name: save the new ipconfig
+  command: "/sbin/service iptables save"
+  notify:
+    - ensure ports open
