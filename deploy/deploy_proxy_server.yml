@@ -36,6 +36,8 @@
       template:
         dest: "/srv/www/enclave_proxy/html/index.php"
         src: templates/enclave_proxy.php
+        owner: apache
+        group: apache
       notify: restart apache
 
     - name: Create simple file for restricted area
