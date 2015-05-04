@@ -47,7 +47,7 @@
   with_items: iptables_standard
 
 - name: Allow ssh access from "Terminals"
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }}"
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   with_items:
     - "{{ groups['terminals'] }}"
 
