@@ -34,20 +34,26 @@
   command: "iptables -A LOGDROP -p icmp -m limit --limit 2/min --limit-burst 10 -j LOG --log-prefix 'ICMP LOGDROP: ' --log-level 4"
 
 - name: Setup Fragment logging
-  command: "iptables -A LOGDROP -p all -m limit --limit 2/min --limit-burst 10 -j LOG --log-prefix 'FRAGMENT LOGDROP: ' --log-level 4"
+  command: "iptables -A LOGDROP -f -p all -m limit --limit 2/min --limit-burst 10 -j LOG --log-prefix 'FRAGMENT LOGDROP: ' --log-level 4"
+
+- name: Drop after logging
+  command: "iptables -A LOGDROP -p all -j DROP"
 
 - name: Allow localhost
   command: "iptables -A {{ iptables_chain }} -i lo -j ACCEPT"
+
+- name: Allow ICMP type 255
+  command: "iptables -A {{ iptables_chain }} -p icmp -m icmp --icmp-type 255 -j ACCEPT"
 
 - name: Allow established and related
   command: "iptables -A {{ iptables_chain }} -m state --state ESTABLISHED,RELATED -j ACCEPT"
 
 - name: Allow each port listed in iptables_common group variable
-  command: "iptables -A {{ iptables_chain }} -p {{ item.protocol }} -m {{ item.protocol }}{% if 'port' in item %} --dport {{ item.port }}{% endif %}{% if 'source' in item %} -s {{ item.source }}{% endif %} -j ACCEPT"
+  command: "iptables -A {{ iptables_chain }}{% if 'state' in item %} -m state --state {{ item.state }}{% endif %} -p {{ item.protocol }} -m {{ item.protocol }}{% if 'port' in item %} --dport {{ item.port }}{% endif %}{% if 'source' in item %} -s {{ item.source }}{% endif %} -j ACCEPT"
   with_items: iptables_standard
 
 - name: Allow ssh access from "Terminals"
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   with_items:
     - "{{ groups['terminals'] }}"
 
