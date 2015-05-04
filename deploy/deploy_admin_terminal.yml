@@ -18,3 +18,4 @@
       sudo: no
     - name: Allow SSH access from internal subnet
       command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp -m tcp --dport 22 -s {{ subnet }} -j ACCEPT"
+      sudo: yes
