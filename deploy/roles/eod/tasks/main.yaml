@@ -86,9 +86,8 @@
     - validate password-auth-ac
 
 - name: open up ports in ipconfig
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item[1] }} -s {{ item[0] }}"
-  with_nested:
-    - eod_client_hosts
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item[1] }}"
+  with_items:
     - eod_client_ports
 
 - name: save the new ipconfig
