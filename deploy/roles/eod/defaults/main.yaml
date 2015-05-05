@@ -1,0 +1,13 @@
+---
+#==================#
+### EoD SETTINGS ###
+#==================#
+eod_install_directory: '/usr/local/eod'
+eod_bin_directory: '/tmp/'
+eod_client_ports:
+  - 5500
+  - 8406
+  - 8407
+eod_cm_password: PASSWORD
+eod_cm_preferred_pcm: pcm.test.dev
+cluster_name: cluster.test.dev
