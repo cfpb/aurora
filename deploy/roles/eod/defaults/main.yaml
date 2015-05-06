@@ -3,7 +3,7 @@
 ### EoD SETTINGS ###
 #==================#
 eod_install_directory: '/usr/local/eod'
-eod_bin_directory: '/tmp/'
+eod_bin_directory: '/tmp'
 eod_client_ports:
   - 5500
   - 8406
