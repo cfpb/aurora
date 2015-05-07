@@ -4,6 +4,9 @@
 # TODO: figure out where to put this
 spawn {{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin
 
+# set a 2 minute timeout
+set timeout 120
+
 # set up your expects
 expect_background {
     "Enter directory to install Exceed Connection Server to" {
