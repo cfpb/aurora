@@ -25,7 +25,7 @@
 - name: chmod eod expect script
   file:
       path: /tmp/install_eod_server.exp
-      mode: a+x
+      mode: a+rx
 
 - name: run eod expect script
   command: /tmp/./install_eod_server.exp
