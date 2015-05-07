@@ -44,7 +44,7 @@
 - name: configure cluster.cfg
   template:
     src: cluster.cfg
-    dest: /opt/Exceed_onDemand_Client_8/conf/admin/cluster.cfg
+    dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
 
 - name: install General Purpose Desktop
   yum: name="@General Purpose Desktop" state=present
