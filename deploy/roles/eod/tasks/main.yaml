@@ -28,7 +28,7 @@
       mode: a+x
 
 - name: run eod expect script
-  command: /tmp/./install_eod_server.exp
+  script: /tmp/install_eod_server.exp
 
 - name: run eod silent install
   shell: "{{eod_install_directory}}/bin/./install -s"
@@ -87,8 +87,7 @@
 
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }}"
-  with_items:
-    - eod_client_ports
+  with_items: eod_client_ports
 
 - name: save the new ipconfig
   command: "/sbin/service iptables save"

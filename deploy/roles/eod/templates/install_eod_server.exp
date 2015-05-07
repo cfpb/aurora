@@ -1,8 +1,8 @@
-#! /usr/bin/expect -f
+#! /usr/bin/expect
 
 # run the actual installer bin
 # TODO: figure out where to put this
-spawn {{eod_bin_directory}}/./ecs-13.8.5-linux-x64.bin
+spawn {{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin
 
 # set up your expects
 expect_background {
@@ -14,4 +14,5 @@ expect_background {
         exit 0
     }
 }
-interact return
+# interact return
+expect eod
