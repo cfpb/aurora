@@ -59,6 +59,7 @@
   template:
     src: custom.conf
     dest: /etc/gdm/custom.conf
+    mode: 644
 
 - name: configure inittab
   template:
@@ -77,6 +78,7 @@
   template:
     src: exceed-connection-server
     dest: /etc/pam.d/exceed-connection-server
+    mode: 644
 
 - name: configure system-auth-ac
   template:
@@ -84,6 +86,22 @@
     dest: /etc/pam.d/system-auth-ac
   notify:
     - validate password-auth-ac
+
+- name: configure package update proxy
+  template:
+  	src: 20-no-show-proxy-dialog.pkla
+  	dest: /etc/polkit-1/localauthority/30-site.d/20-no-show-proxy-dialog.pkla
+  	mode: 644
+
+- name: configure xdmcp
+  template:
+  	src: XDMCP_Query.cfg
+  	dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
+
+- name: configure eod license file
+  template:
+  	src: akeys
+  	dest: "{{ eod_install_directory }}/conf/admin/akeys"
 
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }}"
