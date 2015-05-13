@@ -26,7 +26,7 @@
     - redhat-lsb-graphics
     - redhat-lsb-core
 
-- name: Install mesosphere packages
+- name: Install mesos and supporting packages
   yum:
     name: "{{ item }}"
     state: present
@@ -35,7 +35,6 @@
     - java-1.7.0-openjdk
     - mesos
     - marathon
-    - chronos
     - zookeeper-server
 
 - name: Configure mesos with the IP's of all zookeepers
@@ -62,16 +61,6 @@
     recurse: yes
     owner: zookeeper
     group: zookeeper
-
-#- name: Create zookeeper config folders
-#  file:
-#    dest: "{{ item }}"
-#    state: directory
-#    owner: zookeeper
-#    group: zookeeper
-#  with_items:
-#    - "/etc/zookeeper"
-#    - "/etc/zookeeper/conf"
 
 - name: Update the quorum config file
   template:
@@ -104,14 +93,8 @@
     state: started
     enabled: yes
 
-# Ansible's service commands don't seem to work
-# with upstart services on Centos, so we'll do it manually
-#- name: Stop the Meso client process
-#  service:
-#    name: mesos-slave
-#    state: stopped
-#    enabled: no
-
+# Ansible "service" command doesn't work with upstart jobs on Centos, so
+# do it manually
 - name: Stop the Mesos client process
   command: "stop mesos-slave"
   register: mesos_client_stop
@@ -122,21 +105,16 @@
     dest: /etc/init/mesos-slave.conf.override
     state: touch
 
-#- name: Start Mesos master and Marathon
-#  service:
-#    name: "{{ item }}"
-#    state: started
-#    enabled: yes
-#  with_items:
-#    - mesos-master
-#    - marathon
-
 - name: Start the Mesos master and Marathon processes (they are already enabled)
   command: "start {{ item }}"
   with_items:
     - mesos-master
     - marathon
 
+# TODO: More restrictive iptables rules are needed, specifically ports
+# 5050 and 8080 should only be open to the proxy server, with 5050 also
+# open to the Mesos client nodes.  Ports 2181, 2888, and 3888 should be open
+# to the Mesos cluster only.
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
@@ -150,5 +128,3 @@
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
-
-

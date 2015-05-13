@@ -18,11 +18,11 @@
     src: zk.j2
     dest: /etc/mesos/zk
 
-#- name: Disable mesos-master
-#  service:
-#    name: mesos-master
-#    state: stopped
-#    enabled: no
+- name: Add the ip address to the Mesos client config folder
+  shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
+
+- name: Add the ip to the hostname file too
+  shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
 
 - name: Stop the Mesos master process
   command: "stop mesos-master"
@@ -54,11 +54,15 @@
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
-    - 2181
-    - 5050
     - 5051
 
 - name: Save iptables
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
+
+- name: Start the Mesos client
+  command: "start mesos-slave"
+  register: mesos_client_start
+  failed_when: mesos_client_start.rc != 0 and 'Job is already running' not in mesos_master_stop.stderr
+
