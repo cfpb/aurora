@@ -15,31 +15,23 @@
     - glusterfs-fuse
     - libselinux-python
 
-- name: Open required ports
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
-  with_items:
-    - "24007:24008"
-    - "49152:49156"
-
-- name: Save iptables rules
-  command: "/sbin/service iptables save"
-  notify:
-    - restart iptables
-
 - name: Make needed folders
   file:
     state: directory
     dest: "/home/{{ item }}"
   with_items: shared_folders
 
-- name: Mount shared drives
-  command: "mount -t glusterfs {{ default_file_server }}:/{{ item }} /home/{{ item }}"
+- name: Mount shared drives and add to fstab
+  mount:
+    fstype: glusterfs
+    name: "/home/{{ item }}"
+    src: "{{ default_file_server }}:/{{ item }}"
+    state: mounted
   with_items: shared_folders
-  ignore_errors: yes
 
-- name: Ensure proper home directory is setup
-  lineinfile:
-    dest: /etc/default/useradd
-    regexp: ^HOME=
-    line: HOME={{ home_directory }}
-    state: present
+#- name: Ensure proper home directory is setup
+#  lineinfile:
+#    dest: /etc/default/useradd
+#    regexp: ^HOME=
+#    line: HOME={{ home_directory }}
+#    state: present

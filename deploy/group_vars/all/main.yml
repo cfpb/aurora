@@ -36,6 +36,11 @@ template_masthead: |
 # Human readable org name
 organization_name: "Test Organization"
 
+# Geography
+country: US
+state: DC
+city: Washington
+
 # Determines if custom RPMS can be installed, or need to be built
 custom_repo: False
 
@@ -69,7 +74,11 @@ proxy_subdomain: proxy
 proxy_port: 80
 
 # Whether or not to enable SSL
-enable_ssl: False
+enable_ssl: True
+generate_certs: True
+ssl_cert_file: /etc/httpd/ssl/apache.crt
+ssl_key_file: /etc/httpd/ssl/apache.key
+ssl_chain_file: /etc/httpd/ssl/apache.crt
 
 #=======================#
 ### KERBEROS SETTINGS ###
