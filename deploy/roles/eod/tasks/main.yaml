@@ -1,0 +1,113 @@
+---
+# TODO: put rpm somewhere accessible 
+- name: Copy over the EOD bin file
+  copy:
+    src: "{{ eod_local_bin_directory }}/ecs-13.8.5-linux-x64.bin"
+    dest: "{{ eod_bin_directory }}/ecs-13.8.5-linux-x64.bin"
+
+- name: chmod eod bin
+  file:
+    path: "{{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin"
+    mode: a+x
+
+- name: install expect
+  yum: name=expect state=present
+
+- name: check if eod directory exists
+  stat: 
+    path: "{{eod_install_directory}}/"
+  register: eod_dir_exists
+
+- name: create eod directory
+  shell: sudo mkdir -p {{eod_install_directory}}
+  when: eod_dir_exists.stat.exists == false
+
+- name: copy the eod expect script
+  template: 
+    src: install_eod_server.exp
+    dest: /tmp/install_eod_server.exp
+
+- name: chmod eod expect script
+  file:
+      path: /tmp/install_eod_server.exp
+      mode: a+rx
+
+#- name: run eod expect script
+#  script: /tmp/install_eod_server.exp
+
+- name: run EOD expect script
+  shell: /tmp/install_eod_server.exp
+
+- name: run eod silent install
+  shell: "{{eod_install_directory}}/bin/./install -s"
+
+- name: configure cluster.cfg
+  template:
+    src: cluster.cfg
+    dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
+
+- name: install General Purpose Desktop
+  yum: name="@General Purpose Desktop" state=present
+
+- name: install Desktop
+  yum: name="@Desktop" state=present
+
+- name: install X Window System
+  yum: name="@X Window System" state=present
+
+- name: configure custom.conf
+  template:
+    src: custom.conf
+    dest: /etc/gdm/custom.conf
+    mode: 0644
+
+- name: configure inittab
+  template:
+    src: inittab
+    dest: /etc/inittab
+
+# TODO: ensure video driver?
+- name: configure xorg.conf
+  template:
+    src: xorg.conf
+    dest: /etc/X11/xorg.conf
+  # notify:
+  #   - ensure video driver
+
+- name: configure exceed connection server
+  template:
+    src: exceed-connection-server
+    dest: /etc/pam.d/exceed-connection-server
+    mode: 0644
+
+- name: configure system-auth-ac
+  template:
+    src: system-auth-ac
+    dest: /etc/pam.d/system-auth-ac
+  notify:
+    - validate password-auth-ac
+
+- name: configure package update proxy
+  template:
+    src: 20-no-show-proxy-dialog.pkla
+    dest: /etc/polkit-1/localauthority/30-site.d/20-no-show-proxy-dialog.pkla
+    mode: 0644
+
+- name: configure xdmcp
+  template:
+    src: XDMCP_Query.cfg
+    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
+
+- name: configure eod license file
+  template:
+    src: akeys
+    dest: "{{ eod_install_directory }}/conf/admin/akeys"
+
+- name: open up ports in ipconfig
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }}"
+  with_items: eod_client_ports
+
+- name: save the new ipconfig
+  command: "/sbin/service iptables save"
+  notify:
+    - ensure ports open

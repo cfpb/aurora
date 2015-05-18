@@ -1,0 +1,25 @@
+---
+- name: validate password-auth-ac
+  shell: cat /etc/pam.d/password-auth-ac
+  register: password_result
+
+- assert:
+    that:
+      - "'kerberos' in password_result.stdout"
+      - "'winbind' in password_result.stdout"
+
+# TODO: fill this in
+- name: ensure video driver
+  shell: echo foo
+
+# check netstat to see what ports are open
+- name: ensure ports open
+  shell: /bin/netstat -plnt
+  register: ports_result
+
+- assert:
+    that:
+      - "'5500' in ports_result.stdout"
+      - "'8406' in ports_result.stdout"
+      - "'8407' in ports_result.stdout"
+

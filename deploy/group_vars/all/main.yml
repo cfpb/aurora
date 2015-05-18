@@ -47,6 +47,12 @@ custom_repo: False
 # Toggle whether or not to install GlusterFS clients
 install_glusterfs: True
 
+# Toggle whether or not to install EOD
+# NOTE: If set to yes, you must provide the EOD binary file
+# and a license key or license server.  The default is off
+# for this reason
+install_eod: False
+
 #==============#
 ### IPTABLES ###
 #==============#
