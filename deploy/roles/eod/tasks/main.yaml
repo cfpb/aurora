@@ -1,5 +1,10 @@
 ---
 # TODO: put rpm somewhere accessible 
+- name: Copy over the EOD bin file
+  copy:
+    src: "{{ eod_local_bin_directory }}/ecs-13.8.5-linux-x64.bin"
+    dest: "{{ eod_bin_directory }}/ecs-13.8.5-linux-x64.bin"
+
 - name: chmod eod bin
   file:
     path: "{{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin"
@@ -27,8 +32,11 @@
       path: /tmp/install_eod_server.exp
       mode: a+rx
 
-- name: run eod expect script
-  script: /tmp/install_eod_server.exp
+#- name: run eod expect script
+#  script: /tmp/install_eod_server.exp
+
+- name: run EOD expect script
+  shell: /tmp/install_eod_server.exp
 
 - name: run eod silent install
   shell: "{{eod_install_directory}}/bin/./install -s"
