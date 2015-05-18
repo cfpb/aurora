@@ -31,7 +31,7 @@
       when: generate_certs
 
     - name: Generate SSL Certs if requested
-      command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}' -days 3650 -keyout {{ ssl_key_file }} -out {{ ssl_cert_file }} -extensions v3_ca"
+      command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ ssl_key_file }} -out {{ ssl_cert_file }} -extensions v3_ca"
       when: generate_certs
       args:
         creates: "{{ ssl_cert_file }}"

@@ -123,7 +123,7 @@ ldap_subdomain: ldap
 ldap_server: kdc.test.dev
 
 # LDAP Service Account
-ldap_service_account: testuser
+ldap_service_account: admin
 ldap_service_account_password: password
 
 # App specific settings

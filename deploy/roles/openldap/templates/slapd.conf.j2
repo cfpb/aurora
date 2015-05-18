@@ -27,10 +27,11 @@ index nisMapName,nisMapEntry            eq,pres,sub
 
 overlay memberof
 
-TLSCipherSuite HIGH:MEDIUM:+SSLv2
-# TLSCACertificateFile /etc/openldap/certs/cacert.pem
+TLSCipherSuite HIGH:MEDIUM:+TLSv1:!SSLv2:+SSLv3
+TLSCACertificateFile /etc/openldap/certs/cert.crt
 TLSCertificateFile /etc/openldap/certs/cert.crt
 TLSCertificateKeyFile /etc/openldap/certs/ldap.key
+TLSVerifyClient never
 
 # This section rewrites principles as needed for Kerberos auth
 # authz-policy from
