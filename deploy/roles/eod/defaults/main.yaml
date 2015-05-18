@@ -1,0 +1,20 @@
+---
+#==================#
+### EoD SETTINGS ###
+#==================#
+eod_install_directory: '/usr/local/eod'
+eod_bin_directory: '/tmp'
+eod_client_ports:
+  - 5500
+  - 8406
+  - 8407
+eod_cm_password: PASSWORD
+eod_cm_preferred_pcm: pcm.test.dev
+cluster_name: cluster.test.dev
+
+xdmc_query_host: xdmc.test.dev
+eod_use_license_server: 0
+eod_license_server_host:
+eod_license_server_cache: cache.text.dev
+# TODO: you can put all the keys you want to here
+eod_license_keys: 
