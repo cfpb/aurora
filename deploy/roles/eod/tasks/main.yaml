@@ -80,12 +80,12 @@
     dest: /etc/pam.d/exceed-connection-server
     mode: 0644
 
-#- name: configure system-auth-ac
-#  template:
-#    src: system-auth-ac
-#    dest: /etc/pam.d/system-auth-ac
+- name: configure system-auth-ac
+  template:
+    src: system-auth-ac
+    dest: /etc/pam.d/system-auth-ac
 
-- name: Configure system-auth-ac
+- name: Update authconfig
   command: authconfig --enablewinbind --update
 
 - name: validate password-auth-ac
@@ -94,7 +94,7 @@
 
 - assert:
     that:
-      - "'kerberos' in password_result.stdout"
+      - "'krb5' in password_result.stdout"
       - "'winbind' in password_result.stdout"
 
 - name: configure package update proxy
