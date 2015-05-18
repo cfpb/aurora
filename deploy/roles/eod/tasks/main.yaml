@@ -111,7 +111,7 @@
     dest: "{{ eod_install_directory }}/conf/admin/akeys"
 
 - name: open up ports in ipconfig
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }}" -j ACCEPT
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: eod_client_ports
 
 - name: save the new ipconfig
