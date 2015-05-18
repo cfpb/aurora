@@ -11,9 +11,9 @@
       command: "gluster peer probe 10.0.1.4"
 
     - name: Create volume
-      command: "gluster volume create {{ item }}_vol replica 2 transport tcp 10.0.1.4:/data/{{ item }} 10.0.1.5:/data/{{ item }}"
+      command: "gluster volume create {{ item }} replica 2 transport tcp 10.0.1.4:/data/{{ item }} 10.0.1.5:/data/{{ item }}"
       with_items: shared_folders
 
     - name: Start the volume
-      command: "gluster volume start {{ item }}_vol"
+      command: "gluster volume start {{ item }}"
       with_items: shared_folders

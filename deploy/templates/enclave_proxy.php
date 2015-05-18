@@ -39,27 +39,6 @@
         foreach($_SERVER as $key_name => $key_value) {
           print $key_name . " = " . $key_value . "<br />";
         }
-
-        echo "<hr />";
-
-        // AD server
-        $ldaphost = "{{ kdc_domain_name }}";
-        $ldapport = 389;
-
-        $tab = explode('@', $_SERVER['REMOTE_USER']);
-        $person = $tab[0];
-        $domain = $tab[1];
-
-        $ldapconn = ldap_connect($ldaphost, $ldapport);
-
-        echo "<p>";
-        echo "LDAP Connection: ";
-        echo $ldapconn;
-        echo "<br />";
-        echo "LDAP Group(s): ";
-        echo $_SERVER['AUTHENTICATE_MEMBEROF'];
-        echo "</p>";
-        //or die("Unable to connect to the LDAP server {$ldaphost}" );
       ?>
     </div>
   </body>
