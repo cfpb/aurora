@@ -24,6 +24,29 @@
         - /srv/www/enclave_proxy/html/restricted
         - /srv/www/enclave_proxy/vhost_conf
 
+    - name: Create SSL folder
+      file:
+        dest: /etc/httpd/ssl
+        state: directory
+      when: generate_certs
+
+    - name: Generate SSL Certs if requested
+      command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ ssl_key_file }} -out {{ ssl_cert_file }} -extensions v3_ca"
+      when: generate_certs
+      args:
+        creates: "{{ ssl_cert_file }}"
+
+    - name: Ensure permissions are correct
+      file:
+        dest: "{{ item }}"
+        mode: 700
+        owner: apache
+        group: apache
+      when: generate_certs
+      with_items:
+        - "{{ ssl_cert_file }}"
+        - "{{ ssl_key_file }}"
+
     - name: Configure Apache as a proxy
       template:
         dest: "/etc/httpd/conf.d/enclave_proxy.conf"
@@ -36,6 +59,8 @@
       template:
         dest: "/srv/www/enclave_proxy/html/index.php"
         src: templates/enclave_proxy.php
+        owner: apache
+        group: apache
       notify: restart apache
 
     - name: Create simple file for restricted area

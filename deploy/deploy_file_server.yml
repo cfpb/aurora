@@ -3,6 +3,7 @@
 - hosts: file_server
   sudo: yes
   roles:
+    - iptables
     - epel
     - ntp
     - glusterfs

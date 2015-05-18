@@ -66,19 +66,19 @@
     creates: /etc/openldap/certs/ldap.key
 
 - name: Create and sign the new certificate
-  command: "openssl req -new -x509 -subj '/C=US/ST=DC/L=Washington/O=CFPB/CN={{ ansible_hostname }}/' -days 3650 -key ldap.key -out cert.crt -extensions v3_ca"
+  command: "openssl req -new -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}/' -days 3650 -key ldap.key -out cert.crt -extensions v3_ca"
   args:
     chdir: /etc/openldap/certs
     creates: /etc/openldap/certs/cert.crt
 
 - name: Open port
-  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
     - 389
     - 636
 
 - name: Open ports
-  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
   with_items:
     - 389
     - 636

@@ -19,13 +19,11 @@
     state: started
 
 - name: Open ports
-  command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
     - 111
-    - 24007
-    - 24008
-    - 24009
-    - 24010
+    - "24007:24008"
+    - "49152:49154"
 
 - name: Save iptables config
   command: "/sbin/service iptables save"
