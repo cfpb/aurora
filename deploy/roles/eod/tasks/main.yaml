@@ -45,6 +45,8 @@
   template:
     src: cluster.cfg
     dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
+  notify:
+    - restart eod
 
 - name: install General Purpose Desktop
   yum: name="@General Purpose Desktop" state=present
@@ -79,11 +81,15 @@
     src: exceed-connection-server
     dest: /etc/pam.d/exceed-connection-server
     mode: 0644
+  notify:
+    - restart eod
 
 - name: configure system-auth-ac
   template:
     src: system-auth-ac
     dest: /etc/pam.d/system-auth-ac
+  notify:
+    - restart eod
 
 - name: Update authconfig
   command: authconfig --enablewinbind --update
@@ -91,6 +97,8 @@
 - name: validate password-auth-ac
   shell: cat /etc/pam.d/password-auth-ac
   register: password_result
+  notify:
+    - restart eod
 
 - assert:
     that:
@@ -102,16 +110,22 @@
     src: 20-no-show-proxy-dialog.pkla
     dest: /etc/polkit-1/localauthority/30-site.d/20-no-show-proxy-dialog.pkla
     mode: 0644
+  notify:
+    - restart eod
 
 - name: configure xdmcp
   template:
     src: XDMCP_Query.cfg
     dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
+  notify:
+    - restart eod
 
 - name: configure eod license file
   template:
     src: akeys
     dest: "{{ eod_install_directory }}/conf/admin/akeys"
+  notify:
+    - restart eod
 
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"

@@ -3,3 +3,6 @@
 - name: ensure video driver
   shell: echo foo
 
+- name: restart eod
+  command: "{{ eod_install_directory }}/bin/otecs restart"
+
