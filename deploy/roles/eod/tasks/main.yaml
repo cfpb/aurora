@@ -128,5 +128,3 @@
 - assert:
     that:
       - "'5500' in ports_result.stdout"
-      - "'8406' in ports_result.stdout"
-      - "'8407' in ports_result.stdout"
