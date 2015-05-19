@@ -76,17 +76,20 @@
   with_items:
     - 389
     - 636
+  when: iptables_config
 
 - name: Open ports
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
   with_items:
     - 389
     - 636
+  when: iptables_config
 
 - name: Save rules
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
+  when: iptables_config
 
 - name: Enable slapd logging
   lineinfile:

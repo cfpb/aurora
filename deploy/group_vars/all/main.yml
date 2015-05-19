@@ -57,6 +57,9 @@ install_eod: False
 ### IPTABLES ###
 #==============#
 
+# Enable or disable the configuration of iptables rules
+iptables_config: True
+
 # Allow custom iptables chain to be used, if needed
 iptables_chain: TEST-INPUT
 
@@ -77,7 +80,6 @@ domain_name: test.dev
 
 # Settings for the proxy server
 proxy_subdomain: proxy
-proxy_port: 80
 
 # Whether or not to enable SSL
 enable_ssl: True

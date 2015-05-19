@@ -3,7 +3,7 @@
 - hosts: admin_terminal
   sudo: yes
   roles:
-    - iptables
+    - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
@@ -20,6 +20,8 @@
     - name: Allow SSH access from internal subnet
       command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp -m tcp --dport 22 -s {{ subnet }} -j ACCEPT"
       sudo: yes
+      when: iptables_config
     - name: Save IP tables
       command: "/sbin/service iptables save"
       sudo: yes
+      when: iptables_config

@@ -70,6 +70,7 @@
     - 88
     - 464
     - 749
+  when: iptables_config
 
 - name: Open ports
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p udp --dport {{ item }} -j ACCEPT"
@@ -77,17 +78,16 @@
     - 88
     - 464
     - 749
+  when: iptables_config
 
 - name: Save rules
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
+  when: iptables_config
 
 - name: Create principal for KDC Server
   command: /usr/sbin/kadmin.local -q "addprinc -randkey host/{{ kdc_domain_name }}"
 
 - name: Add keytab for KDC Server
   command: /usr/sbin/kadmin.local -q "ktadd host/{{ kdc_domain_name }}"
-
-# - name: Create LDAP admin user
-#  command: /usr/sbin/kadmin.local -q "addprinc ldapadm@{{ default_realm_name }} -pw {{ ldap_service_account_password }}"

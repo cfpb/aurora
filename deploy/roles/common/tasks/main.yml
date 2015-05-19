@@ -28,10 +28,3 @@
     src: "{{ default_file_server }}:/{{ item }}"
     state: mounted
   with_items: shared_folders
-
-#- name: Ensure proper home directory is setup
-#  lineinfile:
-#    dest: /etc/default/useradd
-#    regexp: ^HOME=
-#    line: HOME={{ home_directory }}
-#    state: present

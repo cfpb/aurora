@@ -130,15 +130,19 @@
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: eod_client_ports
+  when: iptables_config
 
 - name: save the new ipconfig
   command: "/sbin/service iptables save"
+  when: iptables_config
 
 # check netstat to see what ports are open
 - name: ensure ports open
   shell: /bin/netstat -plnt
   register: ports_result
+  when: iptables_config
 
 - assert:
     that:
       - "'5500' in ports_result.stdout"
+  when: iptables_config

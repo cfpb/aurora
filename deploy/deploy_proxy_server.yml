@@ -4,7 +4,7 @@
 - hosts: proxy_server
   sudo: yes
   roles:
-    - iptables
+    - {role: iptables, when: "iptables_config"}
     - common
     - ntp
     - kerberos
@@ -67,16 +67,6 @@
       template:
         dest: "/srv/www/enclave_proxy/html/restricted/index.php"
         src: templates/enclave_proxy_restricted.php
-
-    - name: Open proxy server port in iptables
-      command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp --dport {{ proxy_port }} -j ACCEPT"
-      when: proxy_port != 80
-
-    - name: Save rules
-      command: "/sbin/service iptables save"
-      when: proxy_port != 80
-      notify:
-        - restart iptables
 
     - name: Update ldap settings
       template:

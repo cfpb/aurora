@@ -24,8 +24,10 @@
     - 111
     - "24007:24008"
     - "49152:49154"
+  when: iptables_config
 
 - name: Save iptables config
   command: "/sbin/service iptables save"
   notify:
     - restart iptables
+  when: iptables_config
