@@ -19,5 +19,8 @@ admin_terminal
 proxy_server
 file_server
 
+[terminals:vars]
+is_terminal=True
+
 [terminals:children]
 admin_terminal
