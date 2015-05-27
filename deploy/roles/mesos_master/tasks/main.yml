@@ -1,9 +1,12 @@
 # mesos-master
 ---
+#- name: Add mesosphere repository
+#  yum:
+#    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
+#    state: present
+
 - name: Add mesosphere repository
-  yum:
-    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
-    state: present
+  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
 
 - name: Install the CDH key
   rpm_key:
