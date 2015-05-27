@@ -1,9 +1,9 @@
 # mesos-client-role.yml
 ---
 - name: Add mesosphere repository
-  yum:
-    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
-    state: present
+  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  args:
+    creates: /etc/yum.repos.d/mesosphere.repo
 
 - name: Install mesos package
   yum:
@@ -64,5 +64,5 @@
 - name: Start the Mesos client
   command: "start mesos-slave"
   register: mesos_client_start
-  failed_when: mesos_client_start.rc != 0 and 'Job is already running' not in mesos_master_stop.stderr
+  failed_when: mesos_client_start.rc != 0 and 'Job is already running' not in mesos_client_start.stderr
 
