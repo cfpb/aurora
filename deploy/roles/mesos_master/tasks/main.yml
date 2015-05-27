@@ -7,6 +7,8 @@
 
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  args:
+    creates: /etc/yum.repos.d/mesosphere.repo
 
 - name: Install the CDH key
   rpm_key:
@@ -113,6 +115,8 @@
   with_items:
     - mesos-master
     - marathon
+  register: mesos_master_start
+  failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
 
 # TODO: More restrictive iptables rules are needed, specifically ports
 # 5050 and 8080 should only be open to the proxy server, with 5050 also
