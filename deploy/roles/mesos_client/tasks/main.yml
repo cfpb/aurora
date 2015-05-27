@@ -55,9 +55,11 @@
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
     - 5051
+  when: iptables_config
 
 - name: Save iptables
   command: "/sbin/service iptables save"
+  when: iptables_config
   notify:
     - restart iptables
 

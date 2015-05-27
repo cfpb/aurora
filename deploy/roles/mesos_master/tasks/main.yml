@@ -1,10 +1,5 @@
 # mesos-master
 ---
-#- name: Add mesosphere repository
-#  yum:
-#    name: http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm
-#    state: present
-
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:
@@ -16,9 +11,9 @@
     state: present
 
 - name: Add the CDH repository
-  yum:
-    name: http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm
-    state: present
+  command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm"
+  args:
+    creates: /etc/yum.repos.d/cloudera-cdh4.repo
 
 # Note: Even though the installed packages are the same version
 # for some reason they must be removed and reinstalled as
@@ -130,8 +125,10 @@
     - 8080
     - 2888
     - 3888
+  when: iptables_config
 
 - name: Save iptables
   command: "/sbin/service iptables save"
+  when: iptables_config
   notify:
     - restart iptables
