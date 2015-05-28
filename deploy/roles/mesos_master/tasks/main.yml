@@ -45,6 +45,8 @@
   template:
     src: zk.j2
     dest: /etc/mesos/zk
+  notify:
+    - restart mesos-master
 
 - name: Create zookeeper config folders
   file:
