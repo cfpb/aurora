@@ -17,12 +17,19 @@
   template:
     src: zk.j2
     dest: /etc/mesos/zk
+  notify:
+    - restart mesos-client
 
 - name: Add the ip address to the Mesos client config folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
+  notify:
+    - restart mesos-client
+
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
+  notify:
+    - restart mesos-client
 
 - name: Stop the Mesos master process
   command: "stop mesos-master"
@@ -36,9 +43,13 @@
 
 - name: Add the ip address to the mesos client folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
+  notify:
+    - restart mesos-client
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
+    notify:
+    - restart mesos-client
 
 - name: Add isolation to mesos client config
   lineinfile:
@@ -47,9 +58,13 @@
     regexp: ^ISOLATION=
     state: present
     create: yes
+  notify:
+    - restart mesos-client
 
 - name: Configure correct cgroups route
   shell: "echo '/cgroups' | sudo tee /etc/mesos-slave/cgroups_hierarchy"
+  notify:
+    - restart mesos-client
 
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"

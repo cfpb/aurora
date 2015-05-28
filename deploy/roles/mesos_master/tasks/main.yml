@@ -41,6 +41,8 @@
   template:
     src: zk.j2
     dest: /etc/mesos/zk
+  notify:
+    - restart mesos-master
 
 - name: Create zookeeper config file
   template:
@@ -66,26 +68,38 @@
   template:
     dest: /etc/mesos-master/quorum
     src: quorum.j2
+  notify:
+    - restart mesos-master
 
 - name: Add the ip address to the mesos-master folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-master/ip"
+  notify:
+    - restart mesos-master
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-master/ip /etc/mesos-master/hostname"
+  notify:
+    - restart mesos-master
 
 - name: Create Marathon config folders
   shell: "sudo mkdir -p /etc/marathon/conf"
 
 - name: Copy hostname file to Marathon config
   shell: "sudo cp /etc/mesos-master/hostname /etc/marathon/conf"
+  notify:
+    - restart marathon
 
 - name: Copy the zk file to Marathon
   shell: "sudo cp /etc/mesos/zk /etc/marathon/conf/master"
+  notify:
+    - restart marathon
 
 - name: Setup Zookeeper config for Marathon
   template:
     dest: /etc/marathon/conf/zk
     src: zk.marathon.j2
+  notify:
+    - restart marathon
 
 - name: Start zookeeper
   service:
