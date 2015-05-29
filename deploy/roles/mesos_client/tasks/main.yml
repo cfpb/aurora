@@ -25,7 +25,6 @@
   notify:
     - restart mesos-client
 
-
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
   notify:
@@ -48,23 +47,32 @@
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
-    notify:
+  notify:
     - restart mesos-client
 
-- name: Add isolation to mesos client config
-  lineinfile:
-    dest: /etc/defaults/mesos-slave
-    line: ISOLATION=cgroups/cpu,cgroups/mem
-    regexp: ^ISOLATION=
-    state: present
-    create: yes
+- name: Add isolation to mesos client 
+  copy:
+    dest: /etc/mesos-slave/isolation
+    content: "cgroups/cpu,cgroups/mem" 
   notify:
     - restart mesos-client
 
 - name: Configure correct cgroups route
-  shell: "echo '/cgroups' | sudo tee /etc/mesos-slave/cgroups_hierarchy"
+  copy:
+    dest: /etc/mesos-slave/cgroups_hierarchy
+    content: "/cgroups"
   notify:
     - restart mesos-client
+
+- name: Make mesos working directory
+  file:
+    dest: "{{ mesos_work_dir }}"
+    state: directory
+
+- name: Configure working directory
+  copy:
+    dest: /etc/mesos-slave/work_dir
+    content: "{{ mesos_work_dir }}"
 
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
