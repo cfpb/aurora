@@ -1,0 +1,24 @@
+---
+- hosts: analytics_terminal
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: eod, when: "install_eod"}
+    - {role: epel, when: "use_epel"}
+    - r
+    - revolution-r
+    - ruby
+    - r-shiny
+
+  tasks:
+    - name: Open port range for app prototyping
+      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+      when: iptables_config
+      with_items: groups['proxy_server']
+
+    - name: Save rules
+      command: "/sbin/service iptables save"
+      when: iptables_config

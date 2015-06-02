@@ -1,0 +1,20 @@
+---
+- name: Install R packages for Shiny
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) install.packages(pkgs='{{item}}', repos=c('http://cran.rstudio.com/'))"
+  with_items:
+    - shiny
+    - rmarkdown
+
+- name: Install R Shiny Server
+  yum:
+    name: "{{ r_shiny_server_package }}"
+    disable_gpg_check: yes
+    state: present
+
+- name: Open port 3838 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 3838 -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
