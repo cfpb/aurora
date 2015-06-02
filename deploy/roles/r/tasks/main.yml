@@ -2,7 +2,7 @@
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - R-core
     - R-devel
