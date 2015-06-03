@@ -3,15 +3,15 @@
 - hosts: research_environment
   sudo: yes
   roles:
-    - {role: iptables, when: "iptables_config"}
+    #- {role: iptables, when: "iptables_config"}
     # - {role: common, when: "install_glusterfs"}
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    #- {role: python, when: "custom_repo"}
+    #- {role: python-build, when: "not custom_repo"}
     # - {role: eod, when: "install_eod"}
     #
     # research env specific stuff
-    - {role: rstudio_server_pro, when: "install_rstudio_server_pro"}
     - {role: evince, when: "install_evince"}
+    - {role: pycharm, when: "install_pycharm"}
 
   tasks:
     - name: Install Ansible in Python 2.7

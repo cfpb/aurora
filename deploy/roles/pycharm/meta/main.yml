@@ -1,0 +1,5 @@
+---
+dependencies:
+- role: python-build
+- role: python
+- role: jdk
