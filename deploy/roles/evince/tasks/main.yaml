@@ -1,62 +1,62 @@
 ---
 - name: Install libgcc
   yum:
-    name: libgcc.i686
+    name: libgcc
     state: present
 
 - name: Install glibc
   yum:
-    name: glibc.i686
+    name: glibc
     state: present
 
 - name: Install atk
   yum:
-    name: atk.i686
+    name: atk
     state: present
 
 - name: Install gdk-pixbuf2
   yum:
-    name: gdk-pixbuf2.i686
+    name: gdk-pixbuf2
     state: present
 
 - name: Install fontconfig
   yum:
-    name: fontconfig.i686
+    name: fontconfig
     state: present
 
 - name: Install mesa-libGL
   yum:
-    name:  mesa-libGL.i686
+    name:  mesa-libGL
     state: present
 
 - name: Install mesa-libGLU
   yum:
-    name: mesa-libGLU.i686
+    name: mesa-libGLU
     state: present
 
 - name: Install pango
   yum:
-    name: pango.i686
+    name: pango
     state: present
 
 - name: Install libxml2
   yum:
-    name: libxml2.i686
+    name: libxml2
     state: present
 
 - name: Install libidx
   yum:
-    name: libidn.i686
+    name: libidn
     state: present
 
 - name: Install libXt
   yum:
-    name: libXt.i686
+    name: libXt
     state: present
 
 - name: Install gtk2
   yum:
-    name: gtk2.i686
+    name: gtk2
     state: present
 
 - name: Install AdobeReader
@@ -73,21 +73,21 @@
 
 - name: Install libcanberra-gtk2
   yum:
-    name: libcanberra-gtk2.i686
+    name: libcanberra-gtk2
     state: present
 
 - name: Install PackageKit-gtk-module
   yum:
-    name: PackageKit-gtk-module.i686
+    name: PackageKit-gtk-module
     state: present
 
 - name: Install gtk2-engines
   yum:
-    name: gtk2-engines.i686
+    name: gtk2-engines
     state: present
 
 # NOTE: Sean did not include this, but I assume we need to actually do it, since we at no point actually install evince
 - name: Install evince
   yum:
-    num: evince
+    name: evince
     state: present
