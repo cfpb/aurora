@@ -59,20 +59,17 @@
     name: gtk2.i686
     state: present
 
-- name: Check if AdobeReader is installed
-  command: "rpm -q AdobeReader_enu"
-  ignore_errors: yes
-  register: adobe_reader_check
-
-- name: Get AdobeReader
-  command: wget http://linuxdownload.adobe.com/linux/i386/AdbeRdr9.5.4-1_i486linux_enu.rpm
-  when: adobe_reader_check.rc != 0
+- name: Install AdobeReader
+  yum: 
+    name: http://linuxdownload.adobe.com/linux/i386/AdbeRdr9.5.4-1_i486linux_enu.rpm
+    state: present
+  when: not custom_repo
 
 - name: Install AdobeReader
   yum:
-    name: AdbeRdr9.5.4-1_i486linux_enu.rpm
+    name: AdobeReader_enu
     state: present
-  when: adobe_reader_check.rc != 0
+  when: custom_repo
 
 - name: Install libcanberra-gtk2
   yum:
