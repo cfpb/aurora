@@ -1,0 +1,46 @@
+---
+- name: Verify install directory
+  file: 
+    path: "{{gauss_bin_directory}}/"
+    state: directory
+
+- name: Install expect
+  yum: 
+    name: expect
+    state: present
+
+- name: Copy over the tarball
+  copy:
+    src: "{{guass_local_bin_directory}}/GAUSS_15_Linux_RHEL_64.tar.gz"
+    dest: "/tmp/GAUSS_15_Linux_RHEL_64.tar.gz"
+
+- name: Untar the tarball
+  command: tar -zxvf /tmp/GAUSS_15_Linux_RHEL_64.tar.gz -C {{gauss_bin_directory}}
+  # unarchive:
+  #   src: "{{gauss_bin_directory}}/GAUSS_15_Linux_RHEL_64.tar.gz"
+  #   dest: "{{gauss_bin_directory}}/"
+
+- name: copy the expect script
+  template: 
+    src: install_gauss.exp
+    dest: "{{gauss_bin_directory}}/install_gauss.exp"
+    mode: a+rx
+
+- name: Run gauss expect script
+  shell: "./install_gauss.exp"
+  args:
+    chdir: "{{gauss_bin_directory}}"
+
+- name: Remove the tarball
+  file: 
+    path: /tmp/GAUSS_15_Linux_RHEL_64.tar.gz
+    state: absent
+
+# maybe don't include this (license@aptech.com)
+# - name: Send email to license team
+#   mail:
+#     host='localhost'
+#     to='salim.zayat@cfpb.gov'
+#     subject='Gauss License Request'
+#     body='See attached file'
+#     attach="{{gauss_bin_directory}}/myhostid.txt"

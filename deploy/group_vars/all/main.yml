@@ -142,3 +142,4 @@ restricted_group_name: admin
 # Research Environment
 install_evince: True
 install_pycharm: True
+install_gauss: True
