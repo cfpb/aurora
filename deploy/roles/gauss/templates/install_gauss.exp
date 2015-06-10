@@ -1,7 +1,7 @@
 #! /usr/bin/expect
 
 # run the actual installer bin
-spawn /usr/local/gauss15/ginstall
+spawn {{gauss_bin_directory}}/ginstall
 
 # set a 2 minute timeout
 set timeout 120
