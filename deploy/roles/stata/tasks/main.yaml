@@ -39,8 +39,11 @@
   args:
     chdir: "{{stata_install_directory}}"
 
-- name: Add path to PATH
-  shell: export PATH={{stata_install_directory}}:$PATH
+# Do we need to source this?
+- name: Copy configure_stata to /etc/profile.d
+  template: 
+    src: configure_stata.sh
+    dest: /etc/profile.d/configure_stata.sh
 
 - name: Remove the tarball
   file: 
