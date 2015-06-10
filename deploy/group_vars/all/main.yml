@@ -144,3 +144,4 @@ install_evince: True
 install_pycharm: True
 install_gauss: True
 install_stata: True
+install_stattransfer: True

@@ -1,0 +1,33 @@
+---
+- name: Install compat-libstdc
+  yum:
+    name: compat-libstdc++-33-3.2.3-69.el6
+    state: present
+
+- name: Verify install directory
+  file: 
+    path: "{{stattransfer_install_directory}}/"
+    state: directory
+    mode: og+rx
+    recurse: yes
+
+- name: Copy over the install bin
+  copy:
+    src: "{{stattransfer_local_bin_directory}}/stlinux64_install"
+    dest: "{{stattransfer_install_directory}}/stlinux64_install"
+    mode: a+x
+
+- name: Run install bin
+  shell: ./stlinux64_install --mode silent
+  args:
+    chdir: "{{stattransfer_install_directory}}"
+
+- name: Copy license file over
+  template:
+    src: license1282.txt
+    dest: "{{stattransfer_install_directory}}/st12.lic"
+
+- name: Copy configure_stattransfer to /etc/profile.d
+  template:
+    src: configure_stattransfer.sh
+    dest: /etc/profile.d/configure_stattransfer.sh

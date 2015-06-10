@@ -13,7 +13,8 @@
     - {role: evince, when: "install_evince"}
     - {role: pycharm, when: "install_pycharm"}
     - {role: gauss, when: "install_gauss"}
-    -  {role: stata, when: "install_stata"}
+    - {role: stata, when: "install_stata"}
+    - {role: stattransfer, when: "install_stattransfer"}
 
   tasks:
     - name: Install Ansible in Python 2.7
