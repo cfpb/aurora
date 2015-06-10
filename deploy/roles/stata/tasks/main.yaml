@@ -1,0 +1,48 @@
+---
+- name: Verify install directory
+  file: 
+    path: "{{stata_install_directory}}/"
+    state: directory
+
+- name: Install expect
+  yum: 
+    name: expect
+    state: present
+
+- name: Copy over the tarball
+  copy:
+    src: "{{stata_local_bin_directory}}/Stata14Linux64.tar.gz"
+    dest: "/tmp/Stata14Linux64.tar.gz"
+
+- name: Untar the tarball
+  command: tar -zxvf /tmp/Stata14Linux64.tar.gz -C {{stata_install_directory}}
+
+- name: Copy the expect script
+  template: 
+    src: install_stata.exp
+    dest: "{{stata_install_directory}}/install_stata.exp"
+    mode: a+rx
+
+- name: Run stata install expect script
+  shell: "./install_stata.exp"
+  args:
+    chdir: "{{stata_install_directory}}"
+
+- name: Copy the stinit expect script
+  template:
+    src: stinit_stata.exp
+    dest: "{{stata_install_directory}}/stinit_stata.exp"
+    mode: a+rx
+
+- name: Run the stata stinit expect script
+  shell: "./stinit_stata.exp"
+  args:
+    chdir: "{{stata_install_directory}}"
+
+- name: Add path to PATH
+  shell: export PATH={{stata_install_directory}}:$PATH
+
+- name: Remove the tarball
+  file: 
+    path: /tmp/Stata14Linux64.tar.gz
+    state: absent

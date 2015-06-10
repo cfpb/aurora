@@ -143,3 +143,4 @@ restricted_group_name: admin
 install_evince: True
 install_pycharm: True
 install_gauss: True
+install_stata: True

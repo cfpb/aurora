@@ -1,0 +1,8 @@
+---
+stata_install_directory: /usr/local/stata13
+stata_local_bin_directory: /vagrant
+stata_serial_number: STATA_SERIAL_NUMBER
+stata_code: STATE_CODE
+stata_authorization: STATA_AUTHORIZATION
+stata_line_one: Line 1
+stata_line_two: Line 2
