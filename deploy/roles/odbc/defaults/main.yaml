@@ -1,13 +1,4 @@
 ---
-odbc_host_1: odbc_host_1
-odbc_host_1_fqdn: odbc_host_1.example.com
-odbc_host_2: odbc_host_2
-odbc_host_2_fqdn: odbc_host_2.example.com
-odbc_host_3: odbc_host_3
-odbc_host_3_fqdn: odbc_host_3.example.com
-odbc_host_4: odbc_host_4
-odbc_host_4_fqdn: odbc_host_4.example.com
-
 odbc_ms_sql_hostname: host_ms_sql
 odbc_entries:
   - {
@@ -35,11 +26,13 @@ freetds_entries:
   - {
     hostname: odbc_host_1,
     fqdn: odbc_host_1.example.com,
-    use_ntlmv2: True
+    use_ntlmv2: True,
+    port: 1433
   }
 
   - {
     hostname: odbc_host_2,
     fqdn: odbc_host_2.example.com,
-    use_ntlmv2: False
+    use_ntlmv2: False,
+    port: 1533
   }
