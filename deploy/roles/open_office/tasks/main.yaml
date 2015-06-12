@@ -1,0 +1,7 @@
+---
+- name: Install all rpms
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - "{{open_office_rpms}}"
