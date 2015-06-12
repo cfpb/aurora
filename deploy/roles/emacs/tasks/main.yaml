@@ -1,0 +1,15 @@
+---
+- name: Install emacs
+  yum:
+    name: emacs
+    state: present
+
+- name: Install common ess
+  yum:
+    name: emacs-common-ess.noarch
+    state: present
+
+- name: Install ess
+  yum:
+    name: emacs-ess.noarch
+    state: present
