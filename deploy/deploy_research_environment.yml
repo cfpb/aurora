@@ -15,6 +15,9 @@
     - {role: gauss, when: "install_gauss"}
     - {role: stata, when: "install_stata"}
     - {role: stattransfer, when: "install_stattransfer"}
+    - {role: emacs, when: "install_emacs"}
+    - {role: odbc, when: "install_odbc"}
+    - {role: open_office, when: "install_open_office"}
 
   tasks:
     - name: Install Ansible in Python 2.7
@@ -24,3 +27,8 @@
         name: ansible
         state: present
       sudo: no
+    - name: Install Ultra Edit
+      yum:
+        name: UltraEdit.x86_64
+        state: present
+      when: "install_ultra_edit"

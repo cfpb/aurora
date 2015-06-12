@@ -145,3 +145,7 @@ install_pycharm: True
 install_gauss: True
 install_stata: True
 install_stattransfer: True
+install_emacs: True
+install_odbc: True
+install_open_office: True
+install_ultra_edit: True
