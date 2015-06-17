@@ -1,4 +1,3 @@
-# deploy_research_environment.yml
 ---
 - hosts: research_environment
   sudo: yes
@@ -7,18 +6,7 @@
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - {role: eod, when: "install_eod"}
-    #
-    # research env specific stuff
-    - {role: evince, when: "install_evince"}
-    - {role: pycharm, when: "install_pycharm"}
-    - {role: gauss, when: "install_gauss"}
-    - {role: stata, when: "install_stata"}
-    - {role: stattransfer, when: "install_stattransfer"}
-    - {role: emacs, when: "install_emacs"}
     - {role: odbc, when: "install_odbc"}
-    - {role: open_office, when: "install_open_office"}
-
   tasks:
     - name: Install Ansible in Python 2.7
       pip:
@@ -27,8 +15,39 @@
         name: ansible
         state: present
       sudo: no
+
+- hosts: research_ancillary_services:
+  sudo: yes
+  roles:
+    - emacs
+    - open_office
+    - evince
+    - stattransfer
+  tasks:
     - name: Install Ultra Edit
       yum:
         name: UltraEdit.x86_64
         state: present
-      when: "install_ultra_edit"
+
+- hosts: research_eod
+  sudo: yes
+  roles:
+    - eod
+
+- hosts: research_gauss
+  sudo: yes
+  roles:
+    - gauss
+
+- hosts: research_stata
+  sudo: yes
+  roles:
+    - stata
+    - eod
+
+- hosts: research_python
+  sudo: yes
+  roles:
+    - r_studio
+    - r_studio_server
+    - pycharm

@@ -140,12 +140,4 @@ ldap_service_account_password: password
 restricted_group_name: admin
 
 # Research Environment
-install_evince: True
-install_pycharm: True
-install_gauss: True
-install_stata: True
-install_stattransfer: True
-install_emacs: True
 install_odbc: True
-install_open_office: True
-install_ultra_edit: True
