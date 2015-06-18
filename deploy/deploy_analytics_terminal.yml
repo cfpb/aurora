@@ -46,6 +46,7 @@
     - r-shiny
     - r-studio-desktop
     - r-studio-server
+    - {role: logstash-forwarder, when: "install_logstash"}
 
 - hosts: analytics_terminal
   sudo: yes

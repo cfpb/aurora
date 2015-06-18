@@ -10,6 +10,7 @@
     - kerberos
     - apache
     - kerberos_apache
+    - {role: logstash-forwarder, when: "install_logstash"}
 
   tasks:
     - name: Create apache directories

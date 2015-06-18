@@ -4,7 +4,9 @@
 # Sets up access to RH GlusterFS shared volumes, and mounts them
 ---
 - name: Ensure that FUSE is enabled
-  command: "modprobe fuse"
+  modprobe:
+    name: fuse
+    state: present
 
 - name: Install common packages
   yum:

@@ -18,6 +18,14 @@ kerberos_server ansible_ssh_host=10.0.1.127
 [analytics_terminal]
 analytics_terminal ansible_ssh_host=10.0.1.12
 
+[elasticsearch]
+es1 ansible_ssh_host=10.0.1.13
+es2 ansible_ssh_host=10.0.1.14
+es3 ansible_ssh_host=10.0.1.15
+
+[elk]
+elk ansible_ssh_host=10.0.1.16 es_http_enabled=True
+
 [all_groups:children]
 admin_terminal
 proxy_server

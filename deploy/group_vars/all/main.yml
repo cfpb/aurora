@@ -147,3 +147,9 @@ restricted_group_name: admin
 #======================#
 r_shiny_server_package: http://download3.rstudio.org/centos-5.9/x86_64/shiny-server-1.3.0.403-rh5-x86_64.rpm
 
+#============================#
+### ELASTICSEARCH SETTINGS ###
+#============================#
+es_cluster: test_cluster
+install_logstash: true
+lumberjack_cert_path: .
