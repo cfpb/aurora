@@ -24,6 +24,10 @@ expect_background {
         exit 0
         exp_continue
     }
+    "(no action taken)" {
+        exit 0
+        exp_continue
+    }
 }
 # interact return
 expect eof

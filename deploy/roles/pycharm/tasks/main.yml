@@ -1,9 +1,10 @@
 ---
-- name: Download PyCharm tarball
-  command: wget http://download.jetbrains.com/python/pycharm-community-4.5.1.tar.gz
+- name: Verify install directory
+  file: 
+    path: "{{pycharm_install_directory}}/"
+    state: directory
 
-- name: Unpack tarball
-  command: tar xfz pycharm-community-4.5.1.tar.gz
-
-- name: Remove tarball
-  command: rm pycharm-community-4.5.1.tar.gz
+- name: Untar tarball
+  unarchive: 
+    src: "{{ pycharm_local_bin_directory }}/pycharm-community-4.5.1.tar.gz"
+    dest: "{{ pycharm_install_directory }}"

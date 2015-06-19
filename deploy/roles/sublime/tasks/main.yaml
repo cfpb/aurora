@@ -1,0 +1,10 @@
+---
+- name: Verify install directory
+  file: 
+    path: "{{sublime_install_directory}}/"
+    state: directory
+
+- name: Unarchive sublime
+  unarchive:
+    src: "{{ sublime_local_artifact_directory }}/Sublime\ Text\ 2.0.2\ x64.tar.bz2"
+    dest: "{{ sublime_install_directory }}/"

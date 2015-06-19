@@ -16,7 +16,7 @@
         state: present
       sudo: no
 
-- hosts: research_ancillary_services:
+- hosts: research_ancillary_services
   sudo: yes
   roles:
     - emacs
@@ -48,6 +48,6 @@
 - hosts: research_python
   sudo: yes
   roles:
-    - r_studio
-    - r_studio_server
+    - r-studio-desktop
+    - r-studio-server
     - pycharm

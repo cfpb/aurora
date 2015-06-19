@@ -9,16 +9,10 @@
     name: expect
     state: present
 
-- name: Copy over the tarball
-  copy:
-    src: "{{guass_local_bin_directory}}/GAUSS_15_Linux_RHEL_64.tar.gz"
-    dest: "/tmp/GAUSS_15_Linux_RHEL_64.tar.gz"
-
 - name: Untar the tarball
-  command: tar -zxvf /tmp/GAUSS_15_Linux_RHEL_64.tar.gz -C {{gauss_bin_directory}}
-  # unarchive:
-  #   src: "{{gauss_bin_directory}}/GAUSS_15_Linux_RHEL_64.tar.gz"
-  #   dest: "{{gauss_bin_directory}}/"
+  unarchive:
+    src: "{{guass_local_bin_directory}}/GAUSS_15_Linux_RHEL_64.tar.gz"
+    dest: "{{gauss_bin_directory}}/"
 
 - name: copy the expect script
   template: 
@@ -30,11 +24,6 @@
   shell: "./install_gauss.exp"
   args:
     chdir: "{{gauss_bin_directory}}"
-
-- name: Remove the tarball
-  file: 
-    path: /tmp/GAUSS_15_Linux_RHEL_64.tar.gz
-    state: absent
 
 # maybe don't include this (license@aptech.com)
 # - name: Send email to license team
