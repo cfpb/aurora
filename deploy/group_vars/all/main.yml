@@ -95,6 +95,8 @@ ssl_chain_file: /etc/httpd/ssl/apache.crt
 ### KERBEROS SETTINGS ###
 #=======================#
 
+use_active_directory: False
+
 # Whether or not the HTTP keytab must be created
 # Should only be "True" when using Vagrant
 create_keytabs: True

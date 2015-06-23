@@ -1,0 +1,9 @@
+---
+- hosts: elasticsearch
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: epel, when: "not custom_repo"}
+    - jdk
+    - elasticsearch
+    - {role: log-courier, when: "install_logstash"}

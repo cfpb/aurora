@@ -1,0 +1,58 @@
+---
+- name: Get the Kibana tar
+  get_url:
+    url: https://download.elasticsearch.org/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz
+    dest: /tmp
+
+- name: Extract the Kibana tar
+  unarchive:
+    copy: no
+    src: /tmp/kibana-4.0.2-linux-x64.tar.gz
+    dest: /opt/
+    creates: /opt/kibana/bin/kibana
+
+- name: Rename the kibana directory for convenience
+  command: mv /opt/kibana-4.0.2-linux-x64 /opt/kibana
+  args:
+    creates: /opt/kibana
+    removes: /opt/kibana-4.0.2-linux-x64
+
+- name: Install Kibana upstart script
+  template:
+    src: kibana.conf
+    dest: /etc/init/kibana.conf
+  notify:
+    - restart kibana
+
+- name: Setup configuration
+  template:
+    src: kibana.yml
+    dest: /opt/kibana/config/kibana.yml
+  notify:
+    - restart kibana
+
+#- name: Load in user file to test for admin user
+#  command: "cat /usr/share/elasticsearch/config/shield/users"
+#  register: users_file
+
+#- name: Create kibana user
+#  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ kibana_user }} -p {{ kibana_password }} -r kibana4_server"
+#  when: "not use_active_directory and not '{{ kibana_user }}' in users_file.stdout"
+
+- name: Open ports 5601 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5601 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
+
+- name: Enable Kibana
+  service:
+    name: kibana
+    enabled: yes
+
+- name: Start Kibana
+  command: start kibana
+  register: kibana_start
+  failed_when: kibana_start.rc != 0 and "Job is already running" not in kibana_start.stderr

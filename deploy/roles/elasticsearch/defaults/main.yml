@@ -1,0 +1,62 @@
+---
+es_heap_size: "128M"
+es_http_enabled: False
+es_admin_group_name: "admin"
+es_user_group_name: "user"
+
+es_admin_role: &es_admin_role "admin"
+es_admin_password: &es_admin_password "password"
+
+# Used when esusers is the authentication scheme
+es_users:
+  -
+    username: admin
+    password: *es_admin_password
+    roles: "admin"
+  -
+    username: kibana4-user
+    password: password
+    roles: "kibana4_server"
+  -
+    username: logstash
+    password: password
+    roles: "logstash,transport_client"
+
+es_roles:
+  - 
+    description: "Admin role, with all privileges"
+    name: *es_admin_role
+    cluster_priv: "all"
+    indices:
+      -
+        name: '*'
+        role: "all"
+
+  -
+    description: "User role, with read only privileges"
+    name: "user"
+    indices:
+      -
+        name: '*'
+        role: "read"
+
+es_role_mappings:
+  -
+    name: admin
+    mappings:
+      - 'cn={{ es_admin_group_name }},dc={{ ldap_server.split(".")[-2] }},dc={{ ldap_server.split(".")[-1] }}'
+
+  -
+    name: user
+    mappings:
+      - 'cn={{ es_user_group_name }},dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
+
+  -
+    name: logstash
+    mappings:
+      - 'cn={{ logstash_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
+
+  -
+    name: transport_client
+    mappings:
+      - 'cn={{ logstash_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'

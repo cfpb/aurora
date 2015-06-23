@@ -1,0 +1,32 @@
+---
+- hosts: elk
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: epel, when: "not custom_repo"}
+    - jdk
+    - elasticsearch
+    - logstash
+    - kibana
+    - {role: log-courier, when: "install_logstash"}
+
+- hosts: elk
+  sudo: yes
+  tasks:
+    - name: Setup elasticsearch as a client node
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: '^(#)?\s+node.master:'
+        line: 'node.master: false'
+        state: present
+
+    - name: Setup elasticsearch as a client node
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: '^(#)?\s+node.data:'
+        line: 'node.data: false'
+        state: present
+    - name: Restart elasticsearch
+      service:
+        name: elasticsearch
+        state: restarted

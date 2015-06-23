@@ -1,0 +1,69 @@
+---
+- name: Add elasticsearch key
+  rpm_key:
+    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    state: present
+
+- name: Enable Logstash repo
+  template:
+    src: logstash.repo
+    dest: /etc/yum.repos.d/logstash.repo
+  when: not custom_repo
+
+- name: Install logstash and other needed packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - logstash
+
+#- name: Load in user file to test for admin user
+#  command: "cat /usr/share/elasticsearch/config/shield/users"
+#  register: users_file
+
+#- name: Create logstash user
+#  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ logstash_user }} -p {{ logstash_password }} -r logstash,transport_client"
+#  when: "not use_active_directory and not '{{ logstash_user }}' in users_file.stdout"
+
+- name: Install log-courier plugin
+  command: /opt/logstash/bin/plugin install logstash-input-courier
+  sudo_user: logstash
+
+- name: Install logstash-output-elasticsearch-shield plugin
+  command: /opt/logstash/bin/plugin install logstash-output-elasticsearch-shield
+  sudo_user: logstash
+
+- name: Setup logstash-courier input
+  template:
+    src: 01-logstash-courier-input.conf
+    dest: /etc/logstash/conf.d/01-logstash-courier-input.conf
+  notify:
+    - restart logstash
+
+- name: Setup syslog filter
+  template:
+    src: 10-syslog.conf
+    dest: /etc/logstash/conf.d/10-syslog.conf
+  notify:
+    - restart logstash
+
+- name: Setup elasticsearch output
+  template:
+    src: 30-lumberjack-output.conf
+    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+  notify:
+    - restart logstash
+
+- name: Open port 5043 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5043 -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
+
+- name: Ensure logstash is started
+  service:
+    name: logstash
+    state: started
+    enabled: yes

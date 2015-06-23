@@ -1,0 +1,130 @@
+---
+- name: Install elasticsearch GPG key
+  rpm_key:
+    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    state: present
+
+- name: Setup elasticsearch repo
+  template:
+    src: elasticsearch.repo
+    dest: /etc/yum.repos.d/elasticsearch.repo
+  when: not custom_repo
+
+- name: Install elasticsearch
+  yum:
+    name: elasticsearch-1.4.4
+    state: present
+
+- name: Create elasticsearch data directory
+  file:
+    dest: /opt/elasticsearch/data
+    state: directory
+    owner: elasticsearch
+    group: elasticsearch
+
+- name: Setup elasticsearch heap size
+  copy:
+    dest: /etc/default/elasticsearch
+    content: "ES_HEAP_SIZE={{ es_heap_size }}"
+  notify:
+    - restart elasticsearch
+
+- name: Configure ES config path
+  copy:
+    dest: /etc/profile.d/elasticsearch.sh
+    content: 'export ES_JAVA_OPTS="-Des.path.conf=/etc/elasticsearch"'
+
+- name: Configure elasticsearch
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify:
+    - restart elasticsearch
+
+- name: Install the license plugin
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/license/latest
+  args:
+    creates: /usr/share/elasticsearch/plugins/license/elasticsearch-license-plugin-1.0.0.jar
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
+- name: Install the license key
+  shell: "curl -XPUT -u admin 'http://localhost:9200/_licenses' -d {{ license_json }} && touch /usr/share/elasticsearch/license_loaded"
+  args:
+    creates: /usr/local/elasticsearch/license_loaded
+  when: license_json is defined
+  notify:
+    - restart elasticsearch
+
+- name: Install the Shield plugin
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/latest
+  args:
+    creates: /usr/share/elasticsearch/plugins/shield/elasticsearch-shield-1.1.1.jar
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
+#- name: Create symbolic link to shield config - needed because ES is installed as a gem
+#  file:
+#    src: /usr/share/elasticsearch/config/shield
+#    dest: /etc/elasticsearch/shield
+#    state: link
+#  notify:
+#    - restart elasticsearch
+
+- name: Generate the roles file
+  template:
+    src: roles.yml.j2
+    dest: /etc/elasticsearch/shield/roles.yml
+  notify:
+    - restart elasticsearch
+
+- name: Generate the role mappings file
+  template:
+    src: role_mappings.yml.j2
+    dest: /etc/elasticsearch/shield/role_mappings.yml
+  when: use_active_directory
+  notify:
+    - restart elasticsearch
+
+- name: Load in user file to test for admin user
+  command: "cat /etc/elasticsearch/shield/users"
+  register: users_file
+  when: not use_active_directory
+
+- name: Create users from config file
+  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ item.username }} -p {{ item.password }} -r {{ item.roles }}"
+  when: "not use_active_directory and '{{ item.username }}' not in users_file.stdout"
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: es_users
+
+- name: Open ports 9300:9400 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 9300:9400 -j ACCEPT"
+  when: iptables_config
+
+- name: Open ports 9200:9299 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 9200:9299 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
+  when: iptables_config
+
+- name: Allow multicast
+  command: "iptables -I {{ iptables_chain }} 3 -m pkttype --pkt-type multicast -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
+
+- name: Install kopf
+  command: /usr/share/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf
+  args:
+    creates: /usr/share/elasticsearch/plugins/kopf/_site/index.html
+
+- name: Start elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
