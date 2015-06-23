@@ -154,4 +154,3 @@ r_shiny_server_package: http://download3.rstudio.org/centos-5.9/x86_64/shiny-ser
 #============================#
 es_cluster: test_cluster
 install_logstash: true
-lumberjack_cert_path: .

@@ -7,7 +7,8 @@
     - gcc
     - gcc-gfortran
 
-### Without custom repo
+### Revolution R
+
 - name: Get Revolution R Package
   get_url:
     url: http://mran.revolutionanalytics.com/install/RRO-3.2.0-el6.x86_64.tar.gz
@@ -24,9 +25,10 @@
 
 - name: Install Revolution R
   yum:
-    name: /tmp/RRO-3.2.0/RRO-3.2.0-el6.x86_64.rpm
+    name: {{ revolution_r_package }}
     state: present
-  when: not custom_repo
+
+### MKL Package
 
 - name: Get MKL Package
   get_url:
@@ -45,13 +47,6 @@
 - name: Install MKL
   command: /tmp/RevoMath/RevoMath.sh
   when: install_mkl and not custom_repo
-
-### With custom repo
-- name: Install Revolution R
-  yum:
-    name: RRO-3.2.0-el6
-    state: present
-  when: custom_repo
 
 - name: Install MKL
   yum:

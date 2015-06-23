@@ -60,3 +60,8 @@ es_role_mappings:
     name: transport_client
     mappings:
       - 'cn={{ logstash_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
+
+  -
+    name: kibana4_server
+    mappings:
+      - 'cn={{ kibana_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'    
