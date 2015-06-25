@@ -112,6 +112,14 @@ Vagrant.configure(2) do |config|
   end
 
   # Enclave Proxy VM
+  if ENV.has_key?('PROXY_VARS')
+    proxy_extra_vars = {}
+    for var in ENV['PROXY_VARS'].split(' ')
+      key, value = var.split('=')
+      proxy_extra_vars[key] = value
+    end
+  end
+
   config.vm.define :proxy_server do |proxy_config|
     proxy_config.vm.box = "chef/centos-6.5"
     proxy_config.vm.host_name = "proxy.test.dev"
@@ -130,6 +138,7 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_proxy_server.yml"
       ansible.inventory_path = "vagrant_hosts"
+      ansible.extra_vars = proxy_extra_vars
     end
 
     proxy_config.vm.network :private_network, ip: "10.0.1.3"

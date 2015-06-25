@@ -1,4 +1,9 @@
 ---
+- name: Install dependencies
+  yum:
+    name: rrdtool
+    state: present
+
 - name: Install R Studio Server
   yum:
     name: http://download2.rstudio.org/rstudio-server-rhel-0.99.441-x86_64.rpm
@@ -10,6 +15,12 @@
     name: rstudio-server
     state: present
   when: custom_repo
+
+- name: Install license
+  command: rstudio-server license-manager activate {{ rstudio_server_key }}
+  when: rstudio_server_key is defined
+  notify:
+    - restart rstudio-server
 
 - name: Open port 8787 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8787 -j ACCEPT"

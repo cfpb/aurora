@@ -10,7 +10,8 @@
     - kerberos
     - apache
     - kerberos_apache
-    - {role: logstash-forwarder, when: "install_logstash"}
+    - {role: epel, when: "use_epel and install_logstash"}
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Create apache directories
@@ -23,7 +24,6 @@
         - /srv/www/enclave_proxy
         - /srv/www/enclave_proxy/html
         - /srv/www/enclave_proxy/html/restricted
-        - /srv/www/enclave_proxy/vhost_conf
 
     - name: Create SSL folder
       file:
@@ -74,3 +74,26 @@
         dest: /etc/openldap/ldap.conf
         src: roles/openldap/templates/ldap.conf.j2
 
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
+    - name: Pull down custom proxy configs
+      git:
+        repo: "{{ enclave_proxy_repo }}"
+        dest: "/srv/www/enclave_proxy/repo/"
+        force: yes
+      when: enclave_proxy_repo is defined
+
+    - name: Ensure symbolic link to vhost confs location
+      file:
+        src: /srv/www/enclave_proxy/repo/vhost_conf
+        dest: /srv/www/enclave_proxy/vhost_conf
+        state: link
+
+    - name: Ensure that DOMAIN env var is set
+      lineinfile:
+        dest: /etc/sysconfig/httpd
+        line: "export DOMAIN={{ domain_name }}"
+        regexp: "^export DOMAIN="
