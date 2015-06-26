@@ -8,7 +8,7 @@
     - ntp
     - openldap
     - kerberos_server
-    - {role: logstash-forwarder, when: "install_logstash"}
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Add LDAP to Kerberos

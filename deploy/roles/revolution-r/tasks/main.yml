@@ -25,7 +25,7 @@
 
 - name: Install Revolution R
   yum:
-    name: {{ revolution_r_package }}
+    name: "{{ revolution_r_package }}"
     state: present
 
 ### MKL Package

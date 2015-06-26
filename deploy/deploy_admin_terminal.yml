@@ -8,7 +8,7 @@
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: eod, when: "install_eod"}
-    - {role: logstash-forwarder, when: "install_logstash"}
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Install Ansible in Python 2.7
