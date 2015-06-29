@@ -3,7 +3,7 @@
   template:
     src: log-courier.repo
     dest: /etc/yum.repos.d/log-courier.repo
-  when: not custom_repo
+#  when: not custom_repo
 
 - name: Install log-courier
   yum:

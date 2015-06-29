@@ -8,7 +8,7 @@
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
-  when: not custom_repo
+#  when: not custom_repo
 
 - name: Install elasticsearch
   yum:
