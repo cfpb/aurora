@@ -11,10 +11,7 @@
   yum:
     name: "{{ item }}"
     state: present
-  with_items:
-    - "{{ jdk_package }}"
-    - "{{ jdk_package }}-devel"
-    - libselinux-python
+  with_items: jdk_packages
 
 - name: Ensure Java environment variables are set
   template:
