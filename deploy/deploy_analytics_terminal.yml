@@ -4,6 +4,8 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel"}
 
   # Install development packages
@@ -66,8 +68,6 @@
 - hosts: analytics_terminal
   sudo: yes
   roles:
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
     - {role: eod, when: "install_eod"}
     - jdk
     - r
