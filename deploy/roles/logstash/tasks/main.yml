@@ -27,13 +27,9 @@
 
 - name: Install log-courier plugin
   command: /opt/logstash/bin/plugin install logstash-input-courier
-  become: yes
-  become_user: logstash
 
 - name: Install logstash-output-elasticsearch-shield plugin
   command: /opt/logstash/bin/plugin install logstash-output-elasticsearch-shield
-  become: yes
-  become_user: logstash
 
 - name: Setup logstash-courier input
   template:
