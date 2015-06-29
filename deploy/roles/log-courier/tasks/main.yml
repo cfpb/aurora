@@ -7,8 +7,12 @@
 
 - name: Install log-courier
   yum:
-    name: log-courier
+    name: "{{ item }}"
     state: present
+  with_items:
+    - zeromq3
+    - zeromq3-devel
+    - log-courier
 
 - name: Install configuration template
   template:
