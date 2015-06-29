@@ -59,7 +59,7 @@
     - restart elasticsearch
 
 - name: Install the Shield plugin
-  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/latest
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/latest{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
   args:
     creates: /usr/share/elasticsearch/plugins/shield/elasticsearch-shield-1.1.1.jar
   environment:
@@ -119,7 +119,7 @@
   when: iptables_config
 
 - name: Install kopf
-  command: /usr/share/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf
+  command: /usr/share/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
   args:
     creates: /usr/share/elasticsearch/plugins/kopf/_site/index.html
 
