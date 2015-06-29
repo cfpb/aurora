@@ -56,6 +56,10 @@ install_glusterfs: True
 # for this reason
 install_eod: False
 
+# Proxy settings
+proxy_host:
+proxy_port:
+
 #==============#
 ### IPTABLES ###
 #==============#
