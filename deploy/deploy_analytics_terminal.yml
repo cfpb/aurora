@@ -7,7 +7,7 @@
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel"}
-    - ruby
+    #- ruby
 
   # Install development packages
 - hosts: analytics_terminal
