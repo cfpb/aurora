@@ -29,7 +29,6 @@
   command: /opt/logstash/bin/plugin install logstash-input-courier
   become: yes
   become_user: logstash
-  become_ask_pass: False
   notify:
     - restart logstash
 
@@ -37,7 +36,6 @@
   command: /opt/logstash/bin/plugin install logstash-output-elasticsearch-shield
   become: yes
   become_user: logstash
-  become_ask_pass: False
   notify:
     - restart logstash
 
