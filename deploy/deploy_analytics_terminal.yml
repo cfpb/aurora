@@ -34,7 +34,7 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - xsv
+        #- xsv
         # - gnucobol # Missing for some reason
         - htop
         - p7zip
