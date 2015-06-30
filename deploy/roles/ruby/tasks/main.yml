@@ -10,7 +10,7 @@
 
 - name: Get script file
   get_url:
-    src: https://get.rvm.io/
+    url: https://get.rvm.io/
     dest: /tmp/rvm.sh
 
 - name: Install RVM and stable Ruby
