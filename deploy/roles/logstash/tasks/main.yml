@@ -27,6 +27,7 @@
 
 - name: Install log-courier plugin
   command: /opt/logstash/bin/plugin install logstash-input-courier
+  sudo: no
   become: yes
   become_user: logstash
   notify:
@@ -34,6 +35,7 @@
 
 - name: Install logstash-output-elasticsearch-shield plugin
   command: /opt/logstash/bin/plugin install logstash-output-elasticsearch-shield
+  sudo: no
   become: yes
   become_user: logstash
   notify:
