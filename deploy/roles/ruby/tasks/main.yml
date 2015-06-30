@@ -14,6 +14,6 @@
     dest: /tmp/rvm.sh
 
 - name: Install RVM and stable Ruby
-  shell: bash /tmp/rvm.sh -s stable --ruby"
+  shell: "bash /tmp/rvm.sh -s stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
