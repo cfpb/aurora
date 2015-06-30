@@ -95,8 +95,15 @@
   register: users_file
   when: not use_active_directory
 
+- name: Make sure shield directory has proper permissions
+  shell: "chmod 755 /etc/elasticsearch/shield"
+  notify:
+    - restart elasticsearch
+
 - name: Make sure shield files have the proper permissions
   shell: "chmod 644 /etc/elasticsearch/shield/*"
+  notify:
+    - restart elasticsearch
 
 - name: Create users from config file
   command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ item.username }} -p {{ item.password }} -r {{ item.roles }}"

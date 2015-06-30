@@ -27,9 +27,17 @@
 
 - name: Install log-courier plugin
   command: /opt/logstash/bin/plugin install logstash-input-courier
+  become: yes
+  become_user: logstash
+  notify:
+    - restart logstash
 
 - name: Install logstash-output-elasticsearch-shield plugin
   command: /opt/logstash/bin/plugin install logstash-output-elasticsearch-shield
+  become: yes
+  become_user: logstash
+  notify:
+    - restart logstash
 
 - name: Setup logstash-courier input
   template:
@@ -49,6 +57,11 @@
   template:
     src: 30-lumberjack-output.conf
     dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+  notify:
+    - restart logstash
+
+- name: Ensure permissions are correct
+  shell: "chmod 644 /etc/logstash/conf.d/*"
   notify:
     - restart logstash
 
