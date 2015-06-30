@@ -96,7 +96,7 @@
   when: not use_active_directory
 
 - name: Make sure shield files have the proper permissions
-  command: "chmod 644 /etc/elasticsearch/shield/*"
+  shell: "chmod 644 /etc/elasticsearch/shield/*"
 
 - name: Create users from config file
   command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ item.username }} -p {{ item.password }} -r {{ item.roles }}"
