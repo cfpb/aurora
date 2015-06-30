@@ -67,5 +67,5 @@ bundled_plugin_ids:
  - plugins/vis_types/index
  - plugins/visualize/index
 
-kibana_elasticsearch_username: {{ kibana_user }}
-kibana_elasticsearch_password: {{ kibana_password }}
+kibana_elasticsearch_username: "{{ kibana_user }}"
+kibana_elasticsearch_password: "{{ kibana_password }}"
