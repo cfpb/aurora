@@ -7,6 +7,7 @@
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel"}
+    - ruby
 
   # Install development packages
 - hosts: analytics_terminal
@@ -72,7 +73,6 @@
     - {role: eod, when: "install_eod"}
     - jdk
     - revolution-r
-    - ruby
     - r-shiny
     - r-studio-desktop
     - r-studio-server
