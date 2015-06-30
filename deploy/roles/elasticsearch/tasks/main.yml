@@ -95,6 +95,9 @@
   register: users_file
   when: not use_active_directory
 
+- name: Make sure shield files have the proper permissions
+  command: "chmod 644 /etc/elasticsearch/shield/*"
+
 - name: Create users from config file
   command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ item.username }} -p {{ item.password }} -r {{ item.roles }}"
   when: "not use_active_directory and '{{ item.username }}' not in users_file.stdout"
