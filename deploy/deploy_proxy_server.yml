@@ -84,6 +84,7 @@
         repo: "{{ enclave_proxy_repo }}"
         dest: "/srv/www/enclave_proxy/repo/"
         force: yes
+        version: "{{ git_environment }}"
       when: enclave_proxy_repo is defined
 
     - name: Ensure symbolic link to vhost confs location

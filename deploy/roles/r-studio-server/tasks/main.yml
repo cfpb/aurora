@@ -22,6 +22,11 @@
   notify:
     - restart rstudio-server
 
+- name: Add ip whitelist
+  template:
+    src: ip-rules.j2
+    dest: /etc/rstudio/ip-rules
+
 - name: Open port 8787 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8787 -j ACCEPT"
   when: iptables_config

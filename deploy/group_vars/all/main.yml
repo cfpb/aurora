@@ -60,6 +60,9 @@ install_eod: False
 proxy_host:
 proxy_port:
 
+# Git branch settings
+git_environment: master
+
 #==============#
 ### IPTABLES ###
 #==============#
