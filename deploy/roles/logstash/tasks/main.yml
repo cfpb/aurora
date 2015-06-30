@@ -27,15 +27,17 @@
 
 - name: Install log-courier plugin
   shell: "/opt/logstash/bin/plugin install logstash-input-courier"
-  su: yes
-  su_user: logstash
+  become: yes
+  become_user: logstash
+  become_method: su
   notify:
     - restart logstash
 
 - name: Install logstash-output-elasticsearch-shield plugin
   shell: "/opt/logstash/bin/plugin install logstash-output-elasticsearch-shield"
-  su: yes
-  su_user: logstash
+  become: yes
+  become_user: logstash
+  become_method: su
   notify:
     - restart logstash
 
