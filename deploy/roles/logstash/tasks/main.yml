@@ -26,18 +26,12 @@
 #  when: "not use_active_directory and not '{{ logstash_user }}' in users_file.stdout"
 
 - name: Install log-courier plugin
-  shell: "/opt/logstash/bin/plugin install logstash-input-courier"
-  become: yes
-  become_user: logstash
-  become_method: su
+  shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-input-courier"'
   notify:
     - restart logstash
 
 - name: Install logstash-output-elasticsearch-shield plugin
-  shell: "/opt/logstash/bin/plugin install logstash-output-elasticsearch-shield"
-  become: yes
-  become_user: logstash
-  become_method: su
+  shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-output-elasticsearch-shield"'
   notify:
     - restart logstash
 
