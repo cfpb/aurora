@@ -8,7 +8,12 @@
     state: present
     key: https://rvm.io/mpapis.asc
 
+- name: Get script file
+  get_url:
+    src: https://get.rvm.io/
+    dest: /tmp/rvm.sh
+
 - name: Install RVM and stable Ruby
-  shell: "curl -sSL https://get.rvm.io | sudo bash -s stable --ruby"
+  shell: bash /tmp/rvm.sh -s stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
