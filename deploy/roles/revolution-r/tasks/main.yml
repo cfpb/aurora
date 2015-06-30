@@ -27,6 +27,7 @@
   yum:
     name: "{{ revolution_r_package }}"
     state: present
+    disable_gpg_check: yes
 
 ### MKL Package
 

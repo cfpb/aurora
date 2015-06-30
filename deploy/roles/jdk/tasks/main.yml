@@ -11,6 +11,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
   with_items: jdk_packages
 
 - name: Ensure Java environment variables are set
