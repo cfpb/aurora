@@ -1,0 +1,12 @@
+# main.yml - Handlers that are used by other roles should be placed here
+---
+- name: restart iptables
+  service:
+    name: iptables
+    state: restarted
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+

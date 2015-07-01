@@ -1,0 +1,75 @@
+# deploy_proxy_server.yml - Provisioning Playbook for setting up the proxy server
+# that allows external access to the data enclave.
+---
+- hosts: proxy_server
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - ntp
+    - kerberos
+    - apache
+    - kerberos_apache
+
+  tasks:
+    - name: Create apache directories
+      file:
+        dest: "{{ item }}"
+        state: directory
+        owner: apache
+        group: apache
+      with_items:
+        - /srv/www/enclave_proxy
+        - /srv/www/enclave_proxy/html
+        - /srv/www/enclave_proxy/html/restricted
+        - /srv/www/enclave_proxy/vhost_conf
+
+    - name: Create SSL folder
+      file:
+        dest: /etc/httpd/ssl
+        state: directory
+      when: generate_certs
+
+    - name: Generate SSL Certs if requested
+      command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ ssl_key_file }} -out {{ ssl_cert_file }} -extensions v3_ca"
+      when: generate_certs
+      args:
+        creates: "{{ ssl_cert_file }}"
+
+    - name: Ensure permissions are correct
+      file:
+        dest: "{{ item }}"
+        mode: 700
+        owner: apache
+        group: apache
+      when: generate_certs
+      with_items:
+        - "{{ ssl_cert_file }}"
+        - "{{ ssl_key_file }}"
+
+    - name: Configure Apache as a proxy
+      template:
+        dest: "/etc/httpd/conf.d/enclave_proxy.conf"
+        src: templates/enclave_proxy.conf
+        owner: apache
+        group: apache
+      notify: restart apache
+
+    - name: Create simple HTML file for proxy
+      template:
+        dest: "/srv/www/enclave_proxy/html/index.php"
+        src: templates/enclave_proxy.php
+        owner: apache
+        group: apache
+      notify: restart apache
+
+    - name: Create simple file for restricted area
+      template:
+        dest: "/srv/www/enclave_proxy/html/restricted/index.php"
+        src: templates/enclave_proxy_restricted.php
+
+    - name: Update ldap settings
+      template:
+        dest: /etc/openldap/ldap.conf
+        src: roles/openldap/templates/ldap.conf.j2
+

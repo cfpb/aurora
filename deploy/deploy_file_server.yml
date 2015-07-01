@@ -1,0 +1,28 @@
+# deploy_file_server.yml
+---
+- hosts: file_server
+  sudo: yes
+  roles:
+    - iptables
+    - epel
+    - ntp
+    - glusterfs
+
+  tasks:
+    - name: Create the Filesystem
+      filesystem:
+        fstype: ext4
+        dev: /dev/sdb
+
+    - name: Mount volume
+      mount:
+        name: /data
+        src: /dev/sdb
+        fstype: ext4
+        state: mounted
+
+    - name: Ensure directories exist
+      file:
+        state: directory
+        dest: /data/{{ item }}
+      with_items: shared_folders

@@ -1,0 +1,30 @@
+# main.yml - Common configuration for all servers within the data platform
+
+### FUNCTIONS
+# Sets up access to RH GlusterFS shared volumes, and mounts them
+---
+- name: Ensure that FUSE is enabled
+  command: "modprobe fuse"
+
+- name: Install common packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - glusterfs
+    - glusterfs-fuse
+    - libselinux-python
+
+- name: Make needed folders
+  file:
+    state: directory
+    dest: "/home/{{ item }}"
+  with_items: shared_folders
+
+- name: Mount shared drives and add to fstab
+  mount:
+    fstype: glusterfs
+    name: "/home/{{ item }}"
+    src: "{{ default_file_server }}:/{{ item }}"
+    state: mounted
+  with_items: shared_folders

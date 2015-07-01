@@ -1,0 +1,33 @@
+# main.yml - Sets up a glusterfs file server node
+---
+- name: Install glusterfs repos
+  get_url:
+    dest: /etc/yum.repos.d/
+    url: https://download.gluster.org/pub/gluster/glusterfs/3.4/3.4.0/EPEL.repo/glusterfs-epel.repo
+
+- name: Install required packages
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - glusterfs-server
+
+- name: Enable gluster server
+  service:
+    name: glusterd
+    enabled: yes
+    state: started
+
+- name: Open ports
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 111
+    - "24007:24008"
+    - "49152:49154"
+  when: iptables_config
+
+- name: Save iptables config
+  command: "/sbin/service iptables save"
+  notify:
+    - restart iptables
+  when: iptables_config

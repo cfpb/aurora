@@ -1,0 +1,23 @@
+# slapd.access
+
+# Everyone can read everything
+access to dn.base="" by * read
+
+# The admin dn has full write access
+access to *
+                by self write
+                by dn.base="cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}" write
+                by * read
+
+access to attrs=userPassword
+                by self write
+                by anonymous auth
+                by dn.base="cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}" write
+                by * none
+
+access to attrs=shadowLastChange
+                by self write
+                by * read
+
+rootdn          "cn=admin,dc={{ kdc_domain_name.split('.')[-2] }},dc={{ kdc_domain_name.split('.')[-1] }}"
+rootpw          {{ root_password.stdout }}
