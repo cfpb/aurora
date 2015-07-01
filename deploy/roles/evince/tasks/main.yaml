@@ -1,7 +1,7 @@
 ---
 - name: Install rpms
   yum:
-    name: 
+    name: "{{ item }}"
     state: present
     disable_gpg_check: yes
   with_items:
