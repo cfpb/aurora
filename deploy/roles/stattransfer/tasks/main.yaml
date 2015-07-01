@@ -11,6 +11,10 @@
     mode: og+rx
     recurse: yes
 
+- name: debug print
+  debug:
+    msg: "The bin directory is {{stattransfer_local_bin_directory}}/stlinux64_install"
+
 - name: Copy over the install bin
   copy:
     src: "{{stattransfer_local_bin_directory}}/stlinux64_install"
