@@ -1,15 +1,10 @@
 ---
-- name: Install emacs
+- name: Install rpms
   yum:
-    name: emacs
-    state: present
-
-- name: Install common ess
-  yum:
-    name: emacs-common-ess.noarch
-    state: present
-
-- name: Install ess
-  yum:
-    name: emacs-ess.noarch
-    state: present
+  	name: "{{ item }}"
+  	state: present
+  	disable_gpg_check: yes
+  with_items:
+    - emacs
+    - emacs-common-ess.noarch
+    - emacs-ess.noarch
