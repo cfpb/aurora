@@ -11,9 +11,21 @@
 - name: Get script file
   get_url:
     url: https://get.rvm.io/
-    dest: /tmp/rvm.sh
+    dest: /tmp/rvm-installer.sh
+
+- name: Configure rvm-installer
+  file:
+    dest: /tmp/rvm-installer.sh
+    mode: 0755
+
+- name: Import GPG Keys
+  command: 'gpg --keyserver hkp://keys.gnupg.net:80 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3'
+  changed_when: false
+  ignore_errors: yes
 
 - name: Install RVM and stable Ruby
-  shell: "bash /tmp/rvm.sh -s stable --ruby"
+  command: "/tmp/rvm-installer.sh stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
+
+
