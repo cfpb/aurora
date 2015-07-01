@@ -1,8 +1,11 @@
 ---
-- name: Install unix odbc
+- name: Install rpms
   yum:
-    name: unixODBC.x86_64
+    name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
+  with_items:
+    - "{{ odbc_rpms }}"
 
 - name: Install unix odbc kde
   yum:
