@@ -1,4 +1,9 @@
 ---
+- name: Install libselinux-python
+  yum:
+    name: libselinux-python
+    state: present
+
 - name: Enable log-courier repo
   template:
     src: log-courier.repo

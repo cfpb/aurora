@@ -5,7 +5,7 @@
   "network": {
     "servers": [
     {% for host in groups['elk'] %}
-      "{{ host }}.{{ domain_name }}:5043"{% if not loop.last %},{% endif %}
+      "{{ hostvars[host]['ansible_ssh_host'] }}:5043"{% if not loop.last %},{% endif %}
     {% endfor %}
     ],
     "transport": "tcp"
