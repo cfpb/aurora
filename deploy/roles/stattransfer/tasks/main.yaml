@@ -19,6 +19,10 @@
   copy:
     src: "{{stattransfer_local_bin_directory}}/stlinux64_install"
     dest: "{{stattransfer_install_directory}}/stlinux64_install"
+
+- name: Set the install bin to be executable
+  file:
+    path: "{{stattransfer_install_directory}}/stlinux64_install"
     mode: a+x
 
 - name: Run install bin
