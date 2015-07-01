@@ -1,9 +1,9 @@
 ---
 - name: Install rpms
   yum:
-  	name: "{{ item }}"
-  	state: present
-  	disable_gpg_check: yes
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
   with_items:
     - emacs
     - emacs-common-ess.noarch
