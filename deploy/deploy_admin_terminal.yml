@@ -11,6 +11,12 @@
     - {role: log-courier, when: "install_logstash"}
 
   tasks:
+    - name: Install development tools
+      yum:
+        name: "@development"
+        state: present
+        disable_gpg_check: yes
+
     - name: Install Ansible in Python 2.7
       pip:
         virtualenv_command: /usr/local/bin/virtualenv
