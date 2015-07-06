@@ -1,0 +1,13 @@
+---
+gocd_rpms:
+  - screen
+  - git
+  - vim
+  - emacs
+  - "@Development tools"
+  - libpqxx.x86_64
+  - pgdg-redhat93.noarch
+  - postgresql93
+  - postgresql93-devel
+  - postgresql-devel
+  - libpqxx-devel
