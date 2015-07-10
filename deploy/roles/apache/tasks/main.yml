@@ -22,7 +22,7 @@
     name: httpd
     state: started
     enabled: yes
-  ignore_errors: yes
+  failed_when: False
 
 - name: Open port 80 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
