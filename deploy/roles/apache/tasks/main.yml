@@ -13,11 +13,16 @@
     - php-common
     - php-ldap
 
+# We ignore errors here, since the actual host configuration
+# will happen elsewhere in the playbook, so error states should
+# be corrected later, at which point Apache will trigger an
+# error if things still aren't correct.
 - name: Ensure Apache is started and enabled on boot.
   service:
     name: httpd
     state: started
     enabled: yes
+  ignore_errors: yes
 
 - name: Open port 80 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
