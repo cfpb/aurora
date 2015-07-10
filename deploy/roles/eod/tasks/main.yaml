@@ -144,6 +144,11 @@
     path: /etc/rc5.d/S99firstboot
     state: absent
 
+- name: run gdm
+  command: start prefdm
+  register: gdm_status
+  failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
+
 # check netstat to see what ports are open
 - name: ensure ports open
   shell: /bin/netstat -plnt
