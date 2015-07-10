@@ -9,4 +9,3 @@
 # TODO: we need to figure out a clean way to killall the gdm processes, *then* run this step
 - name: restart gdm
   command: restart prefdm
-  ignore_errors: yes
