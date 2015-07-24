@@ -12,7 +12,7 @@
 
 - name: Install elasticsearch
   yum:
-    name: elasticsearch-1.4.4
+    name: elasticsearch-1.5.2
     state: present
 
 - name: Create elasticsearch data directory
