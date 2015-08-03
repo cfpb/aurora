@@ -63,6 +63,9 @@ proxy_port:
 # Git branch settings
 git_environment: master
 
+# Puppet disabling on?
+disable_puppet: False
+
 #==============#
 ### IPTABLES ###
 #==============#
@@ -75,7 +78,7 @@ iptables_chain: TEST-INPUT
 
 # This list of dictonaries defines global IP tables rules
 iptables_standard:
-  - 
+  -
     port: 22
     protocol: tcp
 

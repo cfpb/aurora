@@ -2,6 +2,7 @@
 - hosts: elasticsearch
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - epel
     - jdk

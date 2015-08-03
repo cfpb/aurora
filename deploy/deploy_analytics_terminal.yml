@@ -2,6 +2,7 @@
 - hosts: analytics_terminal
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
