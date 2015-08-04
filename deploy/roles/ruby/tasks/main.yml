@@ -10,6 +10,7 @@
 
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
+  run_once: True
 
 - name: Get script file
   get_url:
@@ -30,5 +31,3 @@
   command: "/tmp/rvm-installer.sh stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
-
-

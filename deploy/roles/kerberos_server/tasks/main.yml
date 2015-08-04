@@ -38,7 +38,8 @@
 
 - name: Create kerberos database
   command: /usr/sbin/kdb5_util -r {{ default_realm_name }} -P {{ krb_service_user_password }} create -s
-  ignore_errors: yes
+  args:
+    creates: /var/kerberos/krb5kdc/principal
 
 - name: Edit ACL file
   lineinfile:
@@ -48,9 +49,11 @@
 
 - name: Create first user
   command: /usr/sbin/kadmin.local -q "addprinc -pw {{ krb_service_user_password }} {{ krb_service_user }}/admin"
+  run_once: True
 
 - name: Add admin privielges to keytab
   command: /usr/sbin/kadmin.local -q "ktadd -k /var/kerberos/krb5kdc/kadm5.keytab kadmin/admin"
+  run_once: True
 
 - name: Start Kerberos kdc service
   service:
@@ -88,6 +91,8 @@
 
 - name: Create principal for KDC Server
   command: /usr/sbin/kadmin.local -q "addprinc -randkey host/{{ kdc_domain_name }}"
+  run_once: True
 
 - name: Add keytab for KDC Server
   command: /usr/sbin/kadmin.local -q "ktadd host/{{ kdc_domain_name }}"
+  run_once: True

@@ -21,7 +21,7 @@
   file:
     state: directory
     dest: "/home/{{ item }}"
-    mode: 0755
+    mode: 0777
   with_items: shared_folders
 
 # Temporary work around, since GlusterFS FUSE does

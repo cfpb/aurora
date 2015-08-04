@@ -17,13 +17,10 @@
   with_items:
     - logstash
 
-#- name: Load in user file to test for admin user
-#  command: "cat /usr/share/elasticsearch/config/shield/users"
-#  register: users_file
-
-#- name: Create logstash user
-#  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ logstash_user }} -p {{ logstash_password }} -r logstash,transport_client"
-#  when: "not use_active_directory and not '{{ logstash_user }}' in users_file.stdout"
+- name: Ensure that logstash user is able to login to a shell
+  user:
+    name: "{{ logstash_user }}"
+    shell: /bin/bash
 
 - name: Install log-courier plugin
   shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-input-courier"'

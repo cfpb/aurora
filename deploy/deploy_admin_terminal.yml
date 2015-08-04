@@ -6,6 +6,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: eod, when: "install_eod"}
