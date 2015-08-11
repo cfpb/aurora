@@ -1,6 +1,7 @@
 ---
 es_heap_size: "128M"
 es_http_enabled: False
+es_admin_user: "admin"
 es_admin_group_name: "admin"
 es_user_group_name: "user"
 
@@ -23,7 +24,7 @@ es_users:
     roles: "logstash,transport_client"
 
 es_roles:
-  - 
+  -
     description: "Admin role, with all privileges"
     name: *es_admin_role
     cluster_priv: "all"
@@ -64,4 +65,4 @@ es_role_mappings:
   -
     name: kibana4_server
     mappings:
-      - 'cn={{ kibana_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'    
+      - 'cn={{ kibana_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'

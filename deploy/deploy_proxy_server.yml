@@ -76,6 +76,13 @@
         state: present
         disable_gpg_check: yes
 
+    - name: Generate LDAP password file
+      copy:
+        dest: "/srv/www/enclave_proxy/ldap_password"
+        owner: apache
+        group: apache
+        content: "{{ ldap_service_account_password }}"
+
     - name: Pull down custom proxy configs
       git:
         repo: "{{ enclave_proxy_repo }}"
