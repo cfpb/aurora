@@ -52,7 +52,7 @@
     - restart elasticsearch
 
 - name: Install the license key
-  shell: "curl -XPUT -u {{ es_admin_user }} 'http://localhost:9200/_licenses' -d {{ license_json }} && touch /usr/share/elasticsearch/license_loaded"
+  shell: curl -XPUT -u {{ es_admin_user }} 'http://localhost:9200/_licenses' -d '{{ license_json }}' && touch /usr/share/elasticsearch/license_loaded
   args:
     creates: /usr/local/elasticsearch/license_loaded
   when: license_json is defined
