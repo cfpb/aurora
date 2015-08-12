@@ -3,12 +3,13 @@
   rpm_key:
     key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
+  when: not "production" in group_names
 
 - name: Enable Logstash repo
   template:
     src: logstash.repo
     dest: /etc/yum.repos.d/logstash.repo
-#  when: not custom_repo
+  when: not "production" in group_names
 
 - name: Install logstash and other needed packages
   yum:

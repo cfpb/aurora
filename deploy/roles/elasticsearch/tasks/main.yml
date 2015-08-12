@@ -3,12 +3,13 @@
   rpm_key:
     key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
+  when: not "production" in group_names
 
 - name: Setup elasticsearch repo
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
-#  when: not custom_repo
+  when: not "production" in group_names
 
 - name: Install elasticsearch
   yum:
@@ -58,6 +59,7 @@
   notify:
     - restart elasticsearch
 
+# Necessary because there is no way to upgrade a plugin directly
 - name: Remove old Shield plugin
   command: /usr/share/elasticsearch/bin/plugin -r shield
   environment:
