@@ -11,7 +11,7 @@
     - kerberos
     - apache
     - kerberos_apache
-    - {role: epel, when: "use_epel and install_logstash"}
+    - {role: epel, when: "use_epel and install_logstash and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
 
   tasks:

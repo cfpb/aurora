@@ -3,7 +3,7 @@
 - name: Install Kerberos
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - krb5-libs
     - krb5-workstation

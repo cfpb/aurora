@@ -34,4 +34,3 @@
     name: log-courier
     state: started
     enabled: yes
-
