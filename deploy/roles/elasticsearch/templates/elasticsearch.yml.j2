@@ -92,7 +92,7 @@ network.host: {{ ansible_ssh_host }}
 # Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
 #
 
-discovery.zen.minimum_master_nodes: 2
+discovery.zen.minimum_master_nodes: {{ es_majority_num }}
 
 #
 # For more information, see the documentation at:

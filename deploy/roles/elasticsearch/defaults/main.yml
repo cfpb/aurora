@@ -4,7 +4,7 @@ es_http_enabled: False
 es_admin_user: "admin"
 es_admin_group_name: "admin"
 es_user_group_name: "user"
-
+es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
 
