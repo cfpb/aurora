@@ -6,7 +6,7 @@
 
 - name: Install R Studio Server
   yum:
-    name: http://download2.rstudio.org/rstudio-server-rhel-0.99.441-x86_64.rpm
+    name: http://download2.rstudio.org/rstudio-server-rhel-0.99.473-x86_64.rpm
     state: present
   when: not custom_repo
 

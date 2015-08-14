@@ -1,0 +1,12 @@
+---
+- name: Download pycharm
+  get_url:
+    src: https://download.jetbrains.com/python/pycharm-community-4.5.3.tar.gz
+    dest: /tmp/pycharm-community-4.5.3.tar.gz
+
+- name: Extract pycharm to destination
+  unarchive:
+    copy: no
+    src: /tmp/pycharm-community-4.5.3.tar.gz
+    dest: /opt/
+    mode: 0644

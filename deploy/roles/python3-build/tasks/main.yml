@@ -15,30 +15,30 @@
 - name: Clone git repo
   sudo: no
   git:
-    dest: "~/python27"
-    repo: https://github.com/cfpb/python27-for-el6.git
+    dest: "~/python34"
+    repo: https://github.com/cfpb/python34-for-el6.git
 
 - name: Run bootstrap script
   sudo: no
   command: "sh ./bootstrap.sh"
   args:
-    chdir: "~/python27"
+    chdir: "~/python34"
 
 - name: Build python RPM
   sudo: no
-  command: "rpmbuild -ba SPECS/python27-alt.spec"
+  command: "rpmbuild -ba SPECS/python34-alt.spec"
   args:
     chdir: "~/rpmbuild"
-    creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-1.el6.x86_64.rpm"
+    creates: "~/rpmbuild/RPMS/x86_64/python34-3.4.3-1.el6.x86_64.rpm"
 
 - name: Copy RPM to /tmp so it is accessible by root
   sudo: no
-  command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-1.el6.x86_64.rpm /tmp/python27-2.7.6-1.el6.x86_64.rpm"
+  command: "cp ~/rpmbuild/RPMS/x86_64/python34-3.4.3-1.el6.x86_64.rpm /tmp/python34-3.4.3-1.el6.x86_64.rpm"
   args:
-    creates: "/tmp/python27-2.7.6-1.el6.x86_64.rpm"
+    creates: "/tmp/python34-3.4.3-1.el6.x86_64.rpm"
 
 - name: Install python
   sudo: yes
   yum:
-    name: "/tmp/python27-2.7.6-1.el6.x86_64.rpm"
+    name: "/tmp/python34-3.4.3-1.el6.x86_64.rpm"
     state: present

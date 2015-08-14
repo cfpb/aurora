@@ -2,9 +2,9 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  
+
   ### COMMON VARIABLES
-  
+
   # Constant var holding the root directory where this vagrantfile is being run
   VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 
@@ -12,7 +12,7 @@ Vagrant.configure(2) do |config|
   # SSL cert for logstash_forwarder, if used
 
   ### SHARED COMPONENT
-  
+
   # GlusterFS File Server 1
   disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
@@ -45,7 +45,7 @@ Vagrant.configure(2) do |config|
   config.vm.define :file_server_2 do |fs_config|
     fs_config.vm.box = "chef/centos-6.5"
     fs_config.vm.host_name = "file-server-2.test.dev"
-  
+
     fs_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
@@ -203,5 +203,25 @@ Vagrant.configure(2) do |config|
 
       es_config.vm.network :private_network, ip: "10.0.1.#{i+12}"
     end
+  end
+
+  # App server
+  config.vm.define :app_server do |app_config|
+    app_config.vm.box = "chef/centos-6.5"
+    app_config.vm.host_name = "app.test.dev"
+
+    app_config.ssh.forward_agent = true
+
+    app_config.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    app_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_app_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    app_config.vm.network :private_network, ip: "10.0.1.17"
   end
 end

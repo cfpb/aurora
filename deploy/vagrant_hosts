@@ -26,10 +26,17 @@ es3 ansible_ssh_host=10.0.1.15
 [elk]
 elk ansible_ssh_host=10.0.1.16 es_http_enabled=True
 
+[app_server]
+app ansible_ssh_host=10.0.1.17
+
 [all_groups:children]
 admin_terminal
 proxy_server
 file_server
+analytics_terminal
+elasticsearch
+elk
+app_server
 
 [terminals:vars]
 is_terminal=True

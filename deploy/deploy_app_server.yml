@@ -1,5 +1,5 @@
 ---
-- hosts: analytics_terminal
+- hosts: app_server
   sudo: yes
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
@@ -7,14 +7,13 @@
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom repo"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - {role: python3, when: "custom_repo"}
+    #- {role: python3-build, when: "not custom_repo"}
     - ruby
-    - pycharm
 
 # Install development packages
-- hosts: analytics_terminal
+- hosts: app_server
   sudo: yes
   tasks:
     - name: Install packages development packages
@@ -64,39 +63,34 @@
         disable_gpg_check: yes
       with_items: python_dep_packages
 
-    - name: Install Python packages for 27
+    - name: Install Python packages for 2.7
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
       with_items: python_packages
 
-    - name: Install Python packages for 34
+    - name: Install Python packages for 3.4
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: python_packages
 
-
-
-- hosts: analytics_terminal
+- hosts: app_server
   sudo: yes
   roles:
-    - {role: eod, when: "install_eod"}
     - jdk
     - revolution-r
     - r-shiny
-    - r-studio-server
     - {role: log-courier, when: "install_logstash"}
-    - r-studio-desktop
     - r
 
-- hosts: analytics_terminal
+- hosts: app_server
   sudo: yes
   tasks:
-    - name: Open port range for app prototyping
-      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+    - name: Open port range for app services
+      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 30000:31000 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
       when: iptables_config
       with_items: groups['proxy_server']
 
