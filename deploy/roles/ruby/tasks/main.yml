@@ -10,7 +10,7 @@
 
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
-  run_once: True
+  ignore_errors: yes
 
 - name: Get script file
   get_url:
