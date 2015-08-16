@@ -13,7 +13,7 @@
     - texinfo
     #- texinfo-tex
     - libicu
-    - libicu-devel
+    #- libicu-devel
 
 - name: Install packages required by R packages
   yum:
