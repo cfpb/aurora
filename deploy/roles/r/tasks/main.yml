@@ -11,7 +11,7 @@
     - lapack
     - lapack-devel
     - texinfo
-    - texinfo-tex
+    #- texinfo-tex
     - libicu
     - libicu-devel
 
