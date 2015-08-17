@@ -51,27 +51,21 @@
     - restart elasticsearch
 
 # Necessary because there is no way to upgrade a plugin directly
-- name: Remove old Shield plugin
-  command: /usr/share/elasticsearch/bin/plugin -r shield
-  environment:
-    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  notify:
-    - restart elasticsearch
+#- name: Remove old Shield plugin
+#  command: /usr/share/elasticsearch/bin/plugin -r shield
+#  environment:
+#    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+#  notify:
+#    - restart elasticsearch
 
 - name: Install the Shield plugin
   command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/latest{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: /usr/share/elasticsearch/plugins/shield
   environment:
     ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
   notify:
     - restart elasticsearch
-
-#- name: Create symbolic link to shield config - needed because ES is installed as a gem
-#  file:
-#    src: /usr/share/elasticsearch/config/shield
-#    dest: /etc/elasticsearch/shield
-#    state: link
-#  notify:
-#    - restart elasticsearch
 
 - name: Generate the roles file
   template:
@@ -82,8 +76,8 @@
 
 - name: Generate the role mappings file
   template:
-    src: role_mappings.yml.j2
-    dest: /etc/elasticsearch/shield/role_mappings.yml
+    src: role_mapping.yml.j2
+    dest: /etc/elasticsearch/shield/role_mapping.yml
   when: use_active_directory
   notify:
     - restart elasticsearch
