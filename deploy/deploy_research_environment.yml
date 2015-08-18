@@ -6,6 +6,7 @@
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
+    - epel
     - r
 
 - hosts: research_ancillary_services
