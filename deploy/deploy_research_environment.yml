@@ -6,7 +6,7 @@
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - {role: odbc, when: "install_odbc"}
+    - r
 
 - hosts: research_ancillary_services
   sudo: yes
@@ -15,6 +15,7 @@
     - open_office
     - evince
     - stattransfer
+    - odbc
   tasks:
     - name: Install Ultra Edit
       yum:
@@ -31,12 +32,13 @@
   sudo: yes
   roles:
     - gauss
+    - odbc
 
 - hosts: research_stata
   sudo: yes
   roles:
     - stata
-    - eod
+    - odbc
 
 - hosts: research_python
   sudo: yes
@@ -44,3 +46,4 @@
     - r-studio-desktop
     - r-studio-server
     - pycharm
+    - odbc
