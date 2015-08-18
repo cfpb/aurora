@@ -85,12 +85,12 @@
   roles:
     - {role: eod, when: "install_eod"}
     - jdk
+    - r
     - revolution-r
     - r-shiny
     - r-studio-server
     - {role: log-courier, when: "install_logstash"}
     - r-studio-desktop
-    - r
 
 - hosts: analytics_terminal
   sudo: yes
