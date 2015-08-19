@@ -4,10 +4,6 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - epel
-    - r
 
 - hosts: research_ancillary_services
   sudo: yes
@@ -17,6 +13,7 @@
     - evince
     - stattransfer
     - odbc
+    - sublime
   tasks:
     - name: Install Ultra Edit
       yum:
@@ -34,17 +31,46 @@
   roles:
     - gauss
     - odbc
+    - gocd
 
 - hosts: research_stata
   sudo: yes
   roles:
     - stata
+    #- eod
     - odbc
 
 - hosts: research_python
   sudo: yes
   roles:
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - epel
+    - r
     - r-studio-desktop
     - r-studio-server
     - pycharm
     - odbc
+    - gocd
+
+- hosts: research_sas
+  sudo: yes
+  roles:
+    - sas
+    - odbc
+    - gocd
+
+- hosts: research_spss
+  sudo: yes
+  roles:
+    - gocd
+    - spss
+    - odbc
+
+- hosts: research_matlab
+  sudo: yes
+  roles:
+    - matlab
+    - gocd
+    - odbc
+
