@@ -6,5 +6,5 @@
 
 - name: Unarchive sublime
   unarchive:
-    src: "{{ sublime_local_artifact_directory }}/Sublime\ Text\ 2.0.2\ x64.tar.bz2"
+    src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
