@@ -3,3 +3,4 @@ dependencies:
 - role: python-build
 - role: python
 - role: jdk
+- role: epel
