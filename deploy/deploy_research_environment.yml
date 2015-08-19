@@ -37,7 +37,6 @@
   sudo: yes
   roles:
     - stata
-    #- eod
     - odbc
 
 - hosts: research_python
@@ -56,7 +55,7 @@
 - hosts: research_sas
   sudo: yes
   roles:
-    - sas
+    # - sas
     - odbc
     - gocd
 
@@ -64,7 +63,7 @@
   sudo: yes
   roles:
     - gocd
-    - spss
+    # - spss
     - odbc
 
 - hosts: research_matlab
