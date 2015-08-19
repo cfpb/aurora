@@ -4,7 +4,17 @@
     path: "{{sublime_install_directory}}/"
     state: directory
 
+- name: Copy over the sublime artifact
+  copy:
+    src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
+    dest: "{{ sublime_remote_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
+
 - name: Unarchive sublime
   unarchive:
-    src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
+    src: "{{ sublime_remote_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
+
+- name: Cleanup artifact
+  file:
+    path: "{{ sublime_remote_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
+    state: absent
