@@ -1,12 +1,13 @@
 ---
 gocd_local_bin_directory: '/artifacts'
+gocd_remote_bin_directory: '/tmp'
 gocd_rpms:
   - screen
   - git
   - vim
   - emacs
   - "@Development tools"
-  - libpqxx
+  - libpqxx.x86_64
   - pgdg-redhat93.noarch
   - postgresql93
   - postgresql93-devel

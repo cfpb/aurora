@@ -28,9 +28,14 @@
     dest: /usr/java/jre/lib/deployment.properties
     mode: a+r
 
+- name: Copy over the go agent artifact
+  copy:
+    src: "{{ gocd_local_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
+    dest: "{{ gocd_remote_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
+
 - name: Install go agent
   yum:
-    name: "{{ gocd_local_bin_directory }}/go-agent-14.2.0-377.noarch"
+    name: "{{ gocd_remote_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
     state: present
 
 - name: Replace go-agent file
