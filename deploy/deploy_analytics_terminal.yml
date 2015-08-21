@@ -11,6 +11,7 @@
     - {role: python3-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - ruby
+    - jdk
     - pycharm
 
 # Install development packages
@@ -78,13 +79,10 @@
         executable: /usr/local/bin/pip3.4
       with_items: python_packages
 
-
-
 - hosts: analytics_terminal
   sudo: yes
   roles:
     - {role: eod, when: "install_eod"}
-    - jdk
     - r
     - revolution-r
     - r-shiny

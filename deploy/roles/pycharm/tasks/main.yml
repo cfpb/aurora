@@ -1,8 +1,9 @@
 ---
 - name: Download pycharm
   get_url:
-    src: https://download.jetbrains.com/python/pycharm-community-4.5.3.tar.gz
+    url: https://download.jetbrains.com/python/pycharm-community-4.5.3.tar.gz
     dest: /tmp/pycharm-community-4.5.3.tar.gz
+    validate_certs: False
 
 - name: Extract pycharm to destination
   unarchive:
@@ -10,3 +11,13 @@
     src: /tmp/pycharm-community-4.5.3.tar.gz
     dest: /opt/
     mode: 0644
+
+- name:  Create syslinks for executables
+  file:
+    src: "/opt/pycharm-community-4.5.3/bin/{{ item }}.sh"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: yes
+  with_items:
+    - "pycharm"
+    - "inspect"
