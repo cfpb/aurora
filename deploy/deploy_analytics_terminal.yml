@@ -58,6 +58,7 @@
       yum:
         name: julia
         state: present
+        disable_gpg_check: yes
 
     - name: Install Python RPM dependencies
       yum:
