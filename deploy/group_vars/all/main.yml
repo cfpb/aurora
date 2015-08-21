@@ -169,6 +169,9 @@ python_dep_packages:
 python_packages:
   - requests
 
+python3_packages:
+  - requests
+
 #============================#
 ### ELASTICSEARCH SETTINGS ###
 #============================#
