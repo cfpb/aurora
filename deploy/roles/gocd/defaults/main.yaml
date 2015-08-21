@@ -1,4 +1,5 @@
 ---
+gocd_local_bin_directory: '/artifacts'
 gocd_rpms:
   - screen
   - git

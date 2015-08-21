@@ -29,7 +29,7 @@
 
 - name: Install go agent
   yum:
-    name: go-agent-14.2.0-377.noarch
+    name: "{{ gocd_local_bin_directory }}/go-agent-14.2.0-377.noarch"
     state: present
 
 - name: Replace go-agent file
