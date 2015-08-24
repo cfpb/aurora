@@ -1,9 +1,9 @@
 ---
-- hosts: research_environment
-  sudo: yes
-  roles:
-    - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+# - hosts: research_environment
+#   sudo: yes
+#   roles:
+#     - {role: iptables, when: "iptables_config"}
+#     - {role: common, when: "install_glusterfs"}
 
 - hosts: research_gauss
   sudo: yes
