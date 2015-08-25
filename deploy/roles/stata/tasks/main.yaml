@@ -15,6 +15,11 @@
     src: "{{ stata_local_bin_directory }}/Stata14Linux64.tar.gz"
     dest: "{{ stata_install_directory }}/"
 
+- name: Set permissions for the install script
+  file:
+    path: "{{ stata_install_directory }}/install"
+    mode: 0755
+
 - name: Copy the expect script
   template: 
     src: install_stata.exp
