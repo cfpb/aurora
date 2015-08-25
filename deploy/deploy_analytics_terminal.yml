@@ -91,6 +91,7 @@
     - r-studio-server
     - {role: log-courier, when: "install_logstash"}
     - r-studio-desktop
+    - clouseau
 
 - hosts: analytics_terminal
   sudo: yes
