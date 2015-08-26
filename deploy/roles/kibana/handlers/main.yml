@@ -1,3 +1,0 @@
----
-- name: restart kibana
-  command: restart kibana

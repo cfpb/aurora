@@ -17,26 +17,6 @@
     disable_gpg_check: yes
   when: custom_repo
 
-- name: Install license
-  command: rstudio-server license-manager activate {{ rstudio_server_key }}
-  when: rstudio_server_key is defined
-  notify:
-    - restart rstudio-server
-
-- name: Add ip whitelist
-  template:
-    src: ip-rules.j2
-    dest: /etc/rstudio/ip-rules
-  notify:
-    - restart rstudio-server
-
-- name: Add server config file
-  template:
-    src: rserver.conf.j2
-    dest: /etc/rstudio/rserver.conf
-  notify:
-    - restart rstudio-server
-
 - name: Open port 8787 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8787 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   when: iptables_config

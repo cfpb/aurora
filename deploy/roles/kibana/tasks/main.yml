@@ -24,21 +24,6 @@
   notify:
     - restart kibana
 
-- name: Setup configuration
-  template:
-    src: kibana.yml
-    dest: /opt/kibana/config/kibana.yml
-  notify:
-    - restart kibana
-
-#- name: Load in user file to test for admin user
-#  command: "cat /usr/share/elasticsearch/config/shield/users"
-#  register: users_file
-
-#- name: Create kibana user
-#  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ kibana_user }} -p {{ kibana_password }} -r kibana4_server"
-#  when: "not use_active_directory and not '{{ kibana_user }}' in users_file.stdout"
-
 - name: Open ports 5601 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5601 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
   when: iptables_config
@@ -51,8 +36,3 @@
   service:
     name: kibana
     enabled: yes
-
-- name: Start Kibana
-  command: start kibana
-  register: kibana_start
-  failed_when: kibana_start.rc != 0 and "Job is already running" not in kibana_start.stderr

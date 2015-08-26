@@ -1,3 +1,0 @@
----
-- name: restart rstudio-server
-  command: restart rstudio-server

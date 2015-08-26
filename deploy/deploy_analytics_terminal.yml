@@ -89,6 +89,7 @@
     - revolution-r
     - r-shiny
     - r-studio-server
+    - r-studio-server-config
     - {role: log-courier, when: "install_logstash"}
     - r-studio-desktop
     - clouseau

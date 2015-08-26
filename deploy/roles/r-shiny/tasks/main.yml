@@ -22,11 +22,6 @@
     dest: /opt/shiny-server
     state: directory
 
-- name: Load config file
-  template:
-    src: shiny-server.conf.j2
-    dest: /etc/shiny-server/shiny-server.conf
-
 - name: Open port 3838 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 3838 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   when: iptables_config

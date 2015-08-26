@@ -25,37 +25,12 @@
 
 - name: Install log-courier plugin
   shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-input-courier"'
+  when: install_logstash
   notify:
     - restart logstash
 
 - name: Install logstash-output-elasticsearch-shield plugin
   shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-output-elasticsearch-shield"'
-  notify:
-    - restart logstash
-
-- name: Setup logstash-courier input
-  template:
-    src: 01-logstash-courier-input.conf
-    dest: /etc/logstash/conf.d/01-logstash-courier-input.conf
-  notify:
-    - restart logstash
-
-- name: Setup syslog filter
-  template:
-    src: 10-syslog.conf
-    dest: /etc/logstash/conf.d/10-syslog.conf
-  notify:
-    - restart logstash
-
-- name: Setup elasticsearch output
-  template:
-    src: 30-lumberjack-output.conf
-    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
-  notify:
-    - restart logstash
-
-- name: Ensure permissions are correct
-  shell: "chmod 644 /etc/logstash/conf.d/*"
   notify:
     - restart logstash
 
@@ -66,9 +41,3 @@
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config
-
-- name: Ensure logstash is started
-  service:
-    name: logstash
-    state: started
-    enabled: yes
