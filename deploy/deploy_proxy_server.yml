@@ -70,12 +70,6 @@
         dest: "/srv/www/enclave_proxy/html/restricted/index.php"
         src: templates/enclave_proxy_restricted.php
 
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        disable_gpg_check: yes
-
     - name: Generate LDAP password file
       copy:
         dest: "/srv/www/enclave_proxy/ldap_password"
@@ -83,46 +77,7 @@
         group: apache
         content: "{{ ldap_service_account_password }}"
 
-    - name: Pull down custom proxy configs
-      git:
-        repo: "{{ enclave_proxy_repo }}"
-        dest: "/srv/www/enclave_proxy/repo/"
-        force: yes
-        version: "{{ git_environment }}"
-      when: enclave_proxy_repo is defined
-
-    - name: Ensure symbolic link to vhost confs location
-      file:
-        src: /srv/www/enclave_proxy/repo/vhost_conf
-        dest: /srv/www/enclave_proxy/vhost_conf
-        state: link
-
     - name: Update ldap settings
       template:
         dest: /etc/openldap/ldap.conf
         src: roles/openldap/templates/ldap.conf.j2
-
-    - name: Install git
-      yum:
-        name: git
-        state: present
-
-    - name: Pull down custom proxy configs
-      git:
-        repo: "{{ enclave_proxy_repo }}"
-        dest: "/srv/www/enclave_proxy/repo/"
-        force: yes
-        version: "{{ git_environment }}"
-      when: enclave_proxy_repo is defined
-
-    - name: Ensure symbolic link to vhost confs location
-      file:
-        src: /srv/www/enclave_proxy/repo/vhost_conf
-        dest: /srv/www/enclave_proxy/vhost_conf
-        state: link
-
-    - name: Ensure that DOMAIN env var is set
-      lineinfile:
-        dest: /etc/sysconfig/httpd
-        line: "export DOMAIN={{ domain_name }}"
-        regexp: "^export DOMAIN="
