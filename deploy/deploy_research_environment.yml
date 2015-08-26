@@ -42,8 +42,7 @@
 - hosts: research_python
   sudo: yes
   roles:
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    - python
     - epel
     - r
     - r-studio-desktop
