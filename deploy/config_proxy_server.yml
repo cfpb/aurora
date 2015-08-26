@@ -2,7 +2,7 @@
 - hosts: proxy_server
   sudo: yes
   handlers:
-    - include: roles/apaches/handlers/main.yml
+    - include: roles/apache/handlers/main.yml
   tasks:
     - name: Install git
       yum:
