@@ -10,6 +10,7 @@
         state: present
 
     - name: Pull down custom proxy configs
+      sudo_user: apache
       git:
         repo: "{{ enclave_proxy_repo }}"
         dest: "/srv/www/enclave_proxy/repo/"
@@ -24,6 +25,8 @@
         src: /srv/www/enclave_proxy/repo/vhost_conf
         dest: /srv/www/enclave_proxy/vhost_conf
         state: link
+        owner: apache
+        group: apache
       notify:
         - restart apache
 
