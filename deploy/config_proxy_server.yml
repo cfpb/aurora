@@ -10,8 +10,7 @@
         state: present
 
     - name: Pull down custom proxy configs
-      become_user: apache
-      become_method: sudo
+      sudo_user: apache
       git:
         repo: "{{ enclave_proxy_repo }}"
         dest: "/srv/www/enclave_proxy/repo/"
