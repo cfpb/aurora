@@ -11,9 +11,21 @@
     disable_gpg_check: yes
     state: present
 
+- name: Install R Shiny Server license, if present
+  command: /opt/shiny-server/bin/license-manager{% if proxy_host and proxy_port %} --proxy=http://{{ proxy_host }}:{{ proxy_port }}/{% endif %} activate {{ r_shiny_server_license }}
+  when: r_shiny_server_license is defined
+  notify:
+    - restart shiny-server
+
+- name: Make shiny app directory
+  file:
+    dest: /opt/shiny-server
+    state: directory
+
 - name: Open port 3838 in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 3838 -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 3838 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   when: iptables_config
+  with_items: groups['proxy_server']
 
 - name: Save rules
   command: "/sbin/service iptables save"

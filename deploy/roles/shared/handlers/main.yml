@@ -10,3 +10,21 @@
     name: rsyslog
     state: restarted
 
+- name: restart rstudio-server
+  command: restart rstudio-server
+
+- name: restart elasticsearch
+  service:
+    name: elasticsearch
+    state: restarted
+
+- name: restart kibana
+  command: restart kibana
+
+- name: restart logstash
+  service:
+    name: logstash
+    state: restarted
+
+- name: restart shiny-server
+  command: "restart shiny-server"

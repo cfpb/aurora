@@ -22,6 +22,8 @@
 
 - name: Copy kerberos schema to proper location
   command: cp /usr/share/doc/krb5-server-ldap-1.10.3/kerberos.schema /etc/openldap/schema/
+  args:
+    creates: /etc/openldap/schema/kerberos.schema
 
 - name: Deploy ACL file
   template:

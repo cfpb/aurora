@@ -1,0 +1,11 @@
+- name: Disable pe-puppet
+  service:
+    name: pe-puppet
+    state: stopped
+    enabled: no
+
+- name: Disable pe-mcollective
+  service:
+    name: pe-mcollective
+    state: stopped
+    enabled: no

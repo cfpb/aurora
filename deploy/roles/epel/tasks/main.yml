@@ -1,9 +1,14 @@
 # main.yml - Activate EPEL
 ---
+- name: Get EPEL repo
+  get_url:
+    url: "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+    dest: /tmp/
+
 - name: Install EPEL repo
-  yum:
-    name: "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
-    state: present
+  command: "rpm -ivh /tmp/epel-release-6-8.noarch.rpm"
+  args:
+    creates: /etc/yum.repos.d/epel.repo
 
 - name: Import the EPEL GPG key
   rpm_key:

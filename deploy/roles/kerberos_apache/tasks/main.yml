@@ -3,6 +3,7 @@
 - name: Create http principal
   command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "addprinc -randkey HTTP/{{ proxy_subdomain }}.{{ domain_name }}"
   when: create_keytabs
+  run_once: True
 
 - name: Add keytab for http
   command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "ktadd -k /etc/httpd/http.keytab HTTP/{{ proxy_subdomain }}.{{ domain_name }}"

@@ -6,11 +6,14 @@
   with_items:
     - java-1.6.0-openjdk
     - java-1.7.0-openjdk
+    - 'java-*ibm*'
 
-- name: Install specified JDK version
+- name: Install specified JDK version and dependencies
   yum:
-    name: "{{ jdk_package }}"
+    name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
+  with_items: jdk_packages
 
 - name: Ensure Java environment variables are set
   template:
@@ -25,3 +28,8 @@
     state: present
     create: yes
   with_items: java_deploy_options
+
+- name: Add deployment config
+  template:
+    src: deployment.config
+    dest: "{{ jre_lib_path }}/deployment.config"

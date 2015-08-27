@@ -1,0 +1,32 @@
+---
+- name: Setup logstash-courier input
+  template:
+    src: 01-logstash-courier-input.conf
+    dest: /etc/logstash/conf.d/01-logstash-courier-input.conf
+  notify:
+    - restart logstash
+
+- name: Setup syslog filter
+  template:
+    src: 10-syslog.conf
+    dest: /etc/logstash/conf.d/10-syslog.conf
+  notify:
+    - restart logstash
+
+- name: Setup elasticsearch output
+  template:
+    src: 30-lumberjack-output.conf
+    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+  notify:
+    - restart logstash
+
+- name: Ensure permissions are correct
+  shell: "chmod 644 /etc/logstash/conf.d/*"
+  notify:
+    - restart logstash
+
+- name: Ensure logstash is started
+  service:
+    name: logstash
+    state: started
+    enabled: yes

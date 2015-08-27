@@ -1,0 +1,5 @@
+---
+- name: Load config file
+  template:
+    src: shiny-server.conf.j2
+    dest: /etc/shiny-server/shiny-server.conf

@@ -3,7 +3,7 @@
 - name: Install Kerberos
   yum:
     name: "{{ item }}"
-    state: latest
+    state: present
   with_items:
     - krb5-libs
     - krb5-workstation
@@ -26,7 +26,9 @@
 - name: Create host principal
   command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "addprinc -randkey host/{{ proxy_subdomain }}.{{ domain_name }}"
   when: create_keytabs
+  run_once: True
 
 - name: Add keytab for host
   command: kadmin -p {{ krb_service_user }}/admin -w {{ krb_service_user_password }} -q "ktadd host/{{ proxy_subdomain }}.{{ domain_name }}"
   when: create_keytabs
+  run_once: True

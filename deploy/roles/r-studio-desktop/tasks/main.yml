@@ -9,4 +9,5 @@
   yum:
     name: rstudio
     state: present
+    disable_gpg_check: yes
   when: custom_repo

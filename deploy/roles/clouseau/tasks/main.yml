@@ -1,0 +1,20 @@
+---
+- name: Get clouseau code
+  git:
+    repo: https://github.com/cfpb/clouseau
+    dest: /opt/clouseau
+    force: yes
+
+#- name: Create links
+#  file:
+#    path: "/usr/local/bin/{{ item }}"
+#    src: "/opt/clouseau/bin/{{ item }}"
+#    state: link
+#  with_items:
+#    - clouseau
+#    - clouseau_thin
+
+- name: Install clouseau
+  pip:
+    executable: /usr/local/bin/pip2.7
+    name: /opt/clouseau

@@ -10,10 +10,10 @@ eod_client_ports:
   - 8406
   - 8407
 eod_cm_password: PASSWORD
-eod_cm_preferred_pcm: pcm.test.dev
-cluster_name: cluster.test.dev
+eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
+cluster_name: "{{ ansible_ssh_host }}"
 
-xdmc_query_host: xdmc.test.dev
+xdmc_query_host: "{{ ansible_ssh_host }}"
 eod_use_license_server: 0
 eod_license_server_host:
 eod_license_server_cache: cache.text.dev

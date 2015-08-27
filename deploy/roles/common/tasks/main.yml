@@ -4,7 +4,9 @@
 # Sets up access to RH GlusterFS shared volumes, and mounts them
 ---
 - name: Ensure that FUSE is enabled
-  command: "modprobe fuse"
+  modprobe:
+    name: fuse
+    state: present
 
 - name: Install common packages
   yum:
@@ -19,6 +21,17 @@
   file:
     state: directory
     dest: "/home/{{ item }}"
+    mode: 0777
+  with_items: shared_folders
+
+# Temporary work around, since GlusterFS FUSE does
+# not support '-o remount'
+- name: Unmount the shared drives
+  mount:
+    fstype: glusterfs
+    name: "/home/{{ item }}"
+    src: "{{ default_file_server }}:/{{ item }}"
+    state: unmounted
   with_items: shared_folders
 
 - name: Mount shared drives and add to fstab

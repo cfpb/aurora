@@ -4,12 +4,15 @@
 - hosts: proxy_server
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - ntp
     - kerberos
     - apache
     - kerberos_apache
+    - {role: epel, when: "use_epel and install_logstash and not 'production' in group_names"}
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Create apache directories
@@ -22,7 +25,6 @@
         - /srv/www/enclave_proxy
         - /srv/www/enclave_proxy/html
         - /srv/www/enclave_proxy/html/restricted
-        - /srv/www/enclave_proxy/vhost_conf
 
     - name: Create SSL folder
       file:
@@ -68,8 +70,14 @@
         dest: "/srv/www/enclave_proxy/html/restricted/index.php"
         src: templates/enclave_proxy_restricted.php
 
+    - name: Generate LDAP password file
+      copy:
+        dest: "/srv/www/enclave_proxy/ldap_password"
+        owner: apache
+        group: apache
+        content: "{{ ldap_service_account_password }}"
+
     - name: Update ldap settings
       template:
         dest: /etc/openldap/ldap.conf
         src: roles/openldap/templates/ldap.conf.j2
-

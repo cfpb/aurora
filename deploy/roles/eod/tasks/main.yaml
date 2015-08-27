@@ -73,6 +73,8 @@
   template:
     src: xorg.conf
     dest: /etc/X11/xorg.conf
+  notify:
+    - restart gdm
   # notify:
   #   - ensure video driver
 
@@ -119,6 +121,7 @@
     dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
   notify:
     - restart eod
+    - restart gdm
 
 - name: configure eod license file
   template:
@@ -135,6 +138,16 @@
 - name: save the new ipconfig
   command: "/sbin/service iptables save"
   when: iptables_config
+
+- name: remove S99firstboot
+  file:
+    path: /etc/rc5.d/S99firstboot
+    state: absent
+
+- name: run gdm
+  command: start prefdm
+  register: gdm_status
+  failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
 
 # check netstat to see what ports are open
 - name: ensure ports open

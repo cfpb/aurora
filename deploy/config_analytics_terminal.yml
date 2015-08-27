@@ -1,0 +1,6 @@
+---
+- hosts: analytics_terminal
+  sudo: yes
+  roles:
+    - r-studio-server-config
+    - r-shiny-config

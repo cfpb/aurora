@@ -2,14 +2,17 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  
+
   ### COMMON VARIABLES
-  
+
   # Constant var holding the root directory where this vagrantfile is being run
   VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 
+  ### ELK Component, must be built first to generate
+  # SSL cert for logstash_forwarder, if used
+
   ### SHARED COMPONENT
-  
+
   # GlusterFS File Server 1
   disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
@@ -17,6 +20,9 @@ Vagrant.configure(2) do |config|
     fs_config.vm.host_name = "file-server-1.test.dev"
 
     fs_config.ssh.forward_agent = true
+
+    fs_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
@@ -39,7 +45,10 @@ Vagrant.configure(2) do |config|
   config.vm.define :file_server_2 do |fs_config|
     fs_config.vm.box = "chef/centos-6.5"
     fs_config.vm.host_name = "file-server-2.test.dev"
-  
+
+    fs_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
         v.customize ['createhd', '--filename', disk_file_2, '--size', 500, '--variant', 'fixed']
@@ -70,6 +79,9 @@ Vagrant.configure(2) do |config|
 
     adterm_config.ssh.forward_agent = true
 
+    adterm_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
     adterm_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_admin_terminal.yml"
       ansible.inventory_path = "vagrant_hosts"
@@ -86,6 +98,9 @@ Vagrant.configure(2) do |config|
     kerberos_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.3  proxy.test.dev' >> /etc/hosts"
 
+    kerberos_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
     kerberos_config.ssh.forward_agent = true
 
     kerberos_config.vm.provision "ansible" do |ansible|
@@ -97,6 +112,14 @@ Vagrant.configure(2) do |config|
   end
 
   # Enclave Proxy VM
+  if ENV.has_key?('PROXY_VARS')
+    proxy_extra_vars = {}
+    for var in ENV['PROXY_VARS'].split(' ')
+      key, value = var.split('=')
+      proxy_extra_vars[key] = value
+    end
+  end
+
   config.vm.define :proxy_server do |proxy_config|
     proxy_config.vm.box = "chef/centos-6.5"
     proxy_config.vm.host_name = "proxy.test.dev"
@@ -107,11 +130,15 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.3  proxy.test.dev' >> /etc/hosts"
 
+    proxy_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
     proxy_config.ssh.forward_agent = true
 
     proxy_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_proxy_server.yml"
       ansible.inventory_path = "vagrant_hosts"
+      ansible.extra_vars = proxy_extra_vars
     end
 
     proxy_config.vm.network :private_network, ip: "10.0.1.3"
@@ -126,11 +153,75 @@ Vagrant.configure(2) do |config|
 
     analytics_config.ssh.forward_agent = true
 
+    analytics_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
+    analytics_config.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
     analytics_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_analytics_terminal.yml"
       ansible.inventory_path = "vagrant_hosts"
     end
 
     analytics_config.vm.network :private_network, ip: "10.0.1.12"
+  end
+
+  # Kibana Client Node
+  config.vm.define "elk" do |elk_config|
+    elk_config.vm.box = "chef/centos-6.5"
+    elk_config.vm.host_name = "elk.test.dev"
+    elk_config.ssh.forward_agent = true
+
+    elk_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
+    elk_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_elk.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    elk_config.vm.network :private_network, ip: "10.0.1.16"
+  end
+
+  # Elastic Search Cluster
+  (1..3).each do |i|
+    config.vm.define "es#{i}" do |es_config|
+      es_config.vm.box = "chef/centos-6.5"
+      es_config.vm.host_name = "es#{i}.test.dev"
+      es_config.ssh.forward_agent = true
+
+      es_config.vm.provision :shell,
+        :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+
+      es_config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_elastic_search.yml"
+        ansible.inventory_path = "vagrant_hosts"
+      end
+
+      es_config.vm.network :private_network, ip: "10.0.1.#{i+12}"
+    end
+  end
+
+  # App server
+  config.vm.define :app_server do |app_config|
+    app_config.vm.box = "chef/centos-6.5"
+    app_config.vm.host_name = "app.test.dev"
+
+    app_config.ssh.forward_agent = true
+
+    app_config.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    app_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_app_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    app_config.vm.network :private_network, ip: "10.0.1.17"
   end
 end
