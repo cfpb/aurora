@@ -12,6 +12,20 @@
     dest: /opt/
     mode: 0644
 
+- name: Ensure read permissions are set
+  shell: "chmod a+r /opt/pycharm-community-4.5.3/ -R"
+
+- name: Ensure directories can be displayed
+  shell: "find /opt/pycharm-community-4.5.3/ -type d -exec chmod a+x {} +"
+
+- name: Ensure executables are executable
+  shell: "chmod a+x /opt/pycharm-community-4.5.3/bin/{{ item }}"
+  with_items:
+    - "pycharm.sh"
+    - "inspect.sh"
+    - "fsnotifier"
+    - "fsnotifier64"
+
 - name:  Create syslinks for executables
   file:
     src: "/opt/pycharm-community-4.5.3/bin/{{ item }}.sh"
