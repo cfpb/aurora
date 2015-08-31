@@ -11,4 +11,4 @@
     src: "{{ postgres_install_dir }}/include"
     dest: /usr/include/include/pgsql
     state: link
-    when: postgres_install_dir is defined
+  when: postgres_install_dir is defined
