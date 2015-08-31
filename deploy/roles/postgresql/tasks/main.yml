@@ -8,7 +8,7 @@
 
 - name: Ensure other libraries can see header files
   file:
-    src: {{ postgres_install_dir }}/include
+    src: "{{ postgres_install_dir }}/include"
     dest: /usr/include/include/pgsql
     state: link
     when: postgres_install_dir is defined
