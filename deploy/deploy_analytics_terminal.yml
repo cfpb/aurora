@@ -13,6 +13,7 @@
     - ruby
     - jdk
     - pycharm
+    - postgresql
 
 # Install development packages
 - hosts: analytics_terminal
@@ -28,13 +29,6 @@
         - gcc-gfortran
         - python-devel
         - nodejs
-
-    - name: Install postgres packages
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: postgres_packages
 
     - name: Install custom RPMs
       yum:

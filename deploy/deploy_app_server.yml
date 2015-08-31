@@ -11,6 +11,7 @@
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - ruby
+    - postgresql
 
 # Install development packages
 - hosts: app_server
@@ -26,13 +27,6 @@
         - gcc-gfortran
         - python-devel
         - nodejs
-
-    - name: Install postgres packages
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: postgres_packages
 
     - name: Install custom RPMs
       yum:
