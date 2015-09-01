@@ -1,3 +1,3 @@
 # Server Configuration File
-auth-proxy=1
-auth-proxy-sign-in-url=https://rstudio.{{ domain_name }}/
+auth-proxy={{ rstudio_enable_auth_proxy }}
+auth-proxy-sign-in-url=https://{{ rstudio_domain_name }}/

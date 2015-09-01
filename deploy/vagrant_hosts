@@ -16,7 +16,7 @@ kerberos_server ansible_ssh_host=10.0.1.127
 
 ; Analytics Component
 [analytics_terminal]
-analytics_terminal ansible_ssh_host=10.0.1.12
+analytics_terminal ansible_ssh_host=10.0.1.12 rstudio_domain_name=https://rstudio.test.dev/
 
 [elasticsearch]
 es1 ansible_ssh_host=10.0.1.13
