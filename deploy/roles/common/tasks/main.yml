@@ -26,6 +26,7 @@
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
+
 - name: Unmount the shared drives
   mount:
     fstype: glusterfs
@@ -33,6 +34,7 @@
     src: "{{ default_file_server }}:/{{ item }}"
     state: unmounted
   with_items: shared_folders
+  ignore_errors: yes # Used for now to prevent failure when drive is in use
 
 - name: Mount shared drives and add to fstab
   mount:
