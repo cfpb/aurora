@@ -10,7 +10,6 @@
         state: present
 
     - name: Pull down custom proxy configs
-      sudo_user: apache
       git:
         repo: "{{ enclave_proxy_repo }}"
         dest: "/srv/www/enclave_proxy/repo/"
@@ -19,6 +18,14 @@
       when: enclave_proxy_repo is defined
       notify:
         - restart apache
+
+    - name: Ensure permissions are correct
+      file:
+        dest: /srv/enclave_proxy/repo
+        owner: apache
+        group: apache
+        recurse: yes
+        state: directory
 
     - name: Ensure symbolic link to vhost confs location
       file:
