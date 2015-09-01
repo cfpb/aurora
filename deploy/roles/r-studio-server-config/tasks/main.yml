@@ -12,6 +12,14 @@
   notify:
     - restart rstudio-server
 
+- name: Copy over pam.d config from login (usually works)
+  shell: cp -f /etc/pam.d/login /etc/pam.d/rstudio
+
+- name: Create folder for rstudio-server data
+  file:
+    dest: /opt/rstudio-server/monitoring-data
+    type: directory
+
 - name: Add server config file
   template:
     src: rserver.conf.j2

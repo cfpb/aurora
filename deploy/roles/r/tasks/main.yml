@@ -16,6 +16,14 @@
     - libicu
     - libicu-devel
 
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+
 - name: Install packages required by R packages
   yum:
     name: "{{ item }}"

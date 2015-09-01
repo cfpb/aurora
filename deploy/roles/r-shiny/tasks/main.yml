@@ -5,6 +5,12 @@
     - shiny
     - rmarkdown
 
+- name: Create needed symlinks
+  file:
+    src: "/usr/lib64/{{ item }}.so"
+    dest: "/usr/lib64/{{ item }}.so.6"
+    state: link
+
 - name: Install R Shiny Server
   yum:
     name: "{{ r_shiny_server_package }}"
