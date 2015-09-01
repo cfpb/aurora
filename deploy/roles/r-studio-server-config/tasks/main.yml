@@ -18,7 +18,7 @@
 - name: Create folder for rstudio-server data
   file:
     dest: /opt/rstudio-server/monitoring-data
-    type: directory
+    state: directory
 
 - name: Add server config file
   template:
