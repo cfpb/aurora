@@ -10,6 +10,9 @@
     src: "/usr/lib64/{{ item }}.so"
     dest: "/usr/lib64/{{ item }}.so.6"
     state: link
+  with_items:
+    - libssl
+    - libcrypto
 
 - name: Install R Shiny Server
   yum:
