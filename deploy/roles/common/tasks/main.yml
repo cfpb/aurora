@@ -26,20 +26,20 @@
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
-- name: Determine which drives are in use
-  shell: "fuser -c /home/{{ item }}"
-  register: volume_status
-  with_items: shared_folders
-  failed_when: volume_status.stderr != ""
+#- name: Determine which drives are in use
+#  shell: "fuser -c /home/{{ item }}"
+#  register: volume_status
+#  with_items: shared_folders
+#  failed_when: volume_status.stderr != ""
 
-- name: Unmount the shared drives
-  mount:
-    fstype: glusterfs
-    name: "/home/{{ item.item }}"
-    src: "{{ default_file_server }}:/{{ item.item }}"
-    state: unmounted
-  with_items: "{{ volume_status.results }}"
-  when: item.rc == 1
+#- name: Unmount the shared drives
+#  mount:
+#    fstype: glusterfs
+#    name: "/home/{{ item.item }}"
+#    src: "{{ default_file_server }}:/{{ item.item }}"
+#    state: unmounted
+#  with_items: "{{ volume_status.results }}"
+#  when: item.rc == 1
 
 - name: Mount shared drives and add to fstab
   mount:
