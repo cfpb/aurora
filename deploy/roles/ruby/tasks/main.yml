@@ -31,3 +31,8 @@
   command: "/tmp/rvm-installer.sh stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
+
+- name: Ensure /etc/rvmrc is available
+  file:
+    dest: /etc/rvmrc
+    mode: 0664
