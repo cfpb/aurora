@@ -21,7 +21,7 @@
 
     - name: Ensure permissions are correct
       file:
-        dest: /srv/enclave_proxy/repo
+        dest: /srv/www/enclave_proxy/repo
         owner: apache
         group: apache
         recurse: yes
