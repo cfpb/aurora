@@ -12,3 +12,9 @@
     dest: /usr/include/pgsql
     state: link
   when: postgres_install_dir is defined
+
+- name: Add psql bin directory to path
+  lineinfile:
+    dest: /etc/profile.d/postgres.sh
+    create: yes
+    line: export PATH=$PATH:/usr/pgsql-9.4/bin
