@@ -10,7 +10,7 @@
   roles:
     - emacs
     - open_office
-    - evince
+#    - evince
     - stattransfer
     - odbc
     - sublime
@@ -71,4 +71,3 @@
     # - matlab
     - gocd
     - odbc
-
