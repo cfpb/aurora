@@ -7,26 +7,26 @@
   with_items:
     - "{{gocd_rpms}}"
 
-- name: Create the /usr/java directory
-  file:
-    path: /usr/java
-    state: directory
-    recurse: yes
+#- name: Create the /usr/java directory
+#  file:
+#    path: /usr/java
+#    state: directory
+#    recurse: yes
 
-- name: Symlink the jdk and jre directories
-  file:
-    src: "{{ java_home_path }}/"
-    dest: /usr/java/{{ item }}
-    state: link
-  with_items:
-    - jre
-    - jdk
+#- name: Symlink the jdk and jre directories
+#  file:
+#    src: "{{ java_home_path }}/"
+#    dest: /usr/java/{{ item }}
+#    state: link
+#  with_items:
+#    - jre
+#    - jdk
 
-- name: Replace deployment.properties
-  template:
-    src: deployment.properties
-    dest: /usr/java/jre/lib/deployment.properties
-    mode: a+r
+#- name: Replace deployment.properties
+#  template:
+#    src: deployment.properties
+#    dest: /usr/java/jre/lib/deployment.properties
+#    mode: a+r
 
 - name: Copy over the go agent artifact
   copy:
