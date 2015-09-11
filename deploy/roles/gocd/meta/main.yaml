@@ -1,0 +1,5 @@
+---
+dependencies:
+- role: python
+- role: jdk
+- role: epel

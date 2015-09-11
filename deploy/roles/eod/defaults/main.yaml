@@ -3,7 +3,7 @@
 ### EoD SETTINGS ###
 #==================#
 eod_install_directory: '/usr/local/eod'
-eod_local_bin_directory: /vagrant
+eod_local_bin_directory: '/artifacts'
 eod_bin_directory: '/tmp'
 eod_client_ports:
   - 5500
@@ -19,4 +19,4 @@ eod_license_server_host:
 eod_license_server_cache: cache.text.dev
 # TODO: you can put all the keys you want to here
 eod_license_keys:
-  - XXXX-YYYYYY-ZZZZZZ-AAAA-BBBBBB-CCC -1234567890 123
+  - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
