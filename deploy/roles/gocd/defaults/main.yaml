@@ -7,9 +7,9 @@ gocd_rpms:
   - vim
   - emacs
   - "@Development tools"
-  - libpqxx
+  #- libpqxx
   #- pgdg-redhat94.noarch
   #- postgresql94
   #- postgresql94-devel
   #- postgresql-devel
-  - libpqxx-devel
+  #- libpqxx-devel
