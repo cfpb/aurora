@@ -42,6 +42,7 @@
         - gcc-gfortran
         - python-devel
         - nodejs
+        - pgadmin3_94
 
     - name: Install custom RPMs
       yum:
