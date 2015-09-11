@@ -26,12 +26,12 @@
 #  roles:
 #    - eod
 
-- hosts: research_gauss
-  sudo: yes
-  roles:
-    - gauss
-    - odbc
-    - gocd
+#- hosts: research_gauss
+#  sudo: yes
+#  roles:
+#    - gauss
+#    - odbc
+#    - gocd
 
 - hosts: research_stata
   sudo: yes
