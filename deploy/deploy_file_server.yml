@@ -3,10 +3,12 @@
 - hosts: file_server
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - iptables
     - epel
     - ntp
     - glusterfs
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Create the Filesystem

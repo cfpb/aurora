@@ -4,3 +4,4 @@
   yum:
     name: python27
     state: present
+    disable_gpg_check: yes

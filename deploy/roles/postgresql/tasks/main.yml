@@ -1,0 +1,20 @@
+---
+- name: Install postgres packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: postgres_packages
+
+- name: Ensure other libraries can see header files
+  file:
+    src: "{{ postgres_install_dir }}/include/"
+    dest: /usr/include/pgsql
+    state: link
+  when: postgres_install_dir is defined
+
+- name: Add psql bin directory to path
+  lineinfile:
+    dest: /etc/profile.d/postgres.sh
+    create: yes
+    line: export PATH=$PATH:/usr/pgsql-9.4/bin

@@ -1,5 +1,11 @@
 # main.yml - Installs Python 2.7 from custom RPM
 ---
+- name: Make sure rpmbuild is empty
+  sudo: no
+  file:
+    path: "~/rpmbuild"
+    state: absent
+
 - name: Make sure git is installed
   sudo: yes
   yum:
@@ -28,6 +34,8 @@
 - name: Copy RPM to /tmp so it is accessible by root
   sudo: no
   command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-1.el6.x86_64.rpm /tmp/python27-2.7.6-1.el6.x86_64.rpm"
+  args:
+    creates: "/tmp/python27-2.7.6-1.el6.x86_64.rpm"
 
 - name: Install python
   sudo: yes

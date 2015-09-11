@@ -1,0 +1,28 @@
+---
+- name: Install license
+  command: rstudio-server license-manager activate {{ rstudio_server_key }}
+  when: rstudio_server_key is defined
+  notify:
+    - restart rstudio-server
+
+- name: Add ip whitelist
+  template:
+    src: ip-rules.j2
+    dest: /etc/rstudio/ip-rules
+  notify:
+    - restart rstudio-server
+
+- name: Copy over pam.d config from login (usually works)
+  shell: cp -f /etc/pam.d/login /etc/pam.d/rstudio
+
+- name: Create folder for rstudio-server data
+  file:
+    dest: /opt/rstudio-server/monitoring-data
+    state: directory
+
+- name: Add server config file
+  template:
+    src: rserver.conf.j2
+    dest: /etc/rstudio/rserver.conf
+  notify:
+    - restart rstudio-server

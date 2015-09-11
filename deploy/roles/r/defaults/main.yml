@@ -1,0 +1,10 @@
+---
+r_dependencies:
+  - QuantLib
+  - QuantLib-devel
+
+r_packages:
+  - "http://cran.r-project.org/src/contrib/Archive/RQuantLib/RQuantLib_0.3.12.tar.gz" # The latest version requires QuantLib 1.4.0, which is not supported by Centos 6.5
+
+r_env_vars:
+  DUMMY: "DUMMY"

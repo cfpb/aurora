@@ -1,0 +1,7 @@
+# main.yml - Install Python 2.7, either from a repo or a built RPM
+---
+- name: Install Python34 from repo
+  yum:
+    name: python34
+    state: present
+    disable_gpg_check: yes

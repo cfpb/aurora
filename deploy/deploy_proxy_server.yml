@@ -4,12 +4,15 @@
 - hosts: proxy_server
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - ntp
     - kerberos
     - apache
     - kerberos_apache
+    - {role: epel, when: "use_epel and install_logstash and not 'production' in group_names"}
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Create apache directories
@@ -67,25 +70,12 @@
         dest: "/srv/www/enclave_proxy/html/restricted/index.php"
         src: templates/enclave_proxy_restricted.php
 
-    - name: Install git
-      yum:
-        name: git
-        state: present
-        disable_gpg_check: yes
-
-    - name: Pull down custom proxy configs
-      git:
-        repo: "{{ enclave_proxy_repo }}"
-        dest: "/srv/www/enclave_proxy/repo/"
-        force: yes
-        version: "{{ git_environment }}"
-      when: enclave_proxy_repo is defined
-
-    - name: Ensure symbolic link to vhost confs location
-      file:
-        src: /srv/www/enclave_proxy/repo/vhost_conf
-        dest: /srv/www/enclave_proxy/vhost_conf
-        state: link
+    - name: Generate LDAP password file
+      copy:
+        dest: "/srv/www/enclave_proxy/ldap_password"
+        owner: apache
+        group: apache
+        content: "{{ ldap_service_account_password }}"
 
     - name: Update ldap settings
       template:

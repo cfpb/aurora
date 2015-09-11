@@ -1,0 +1,3 @@
+---
+logstash_user: logstash
+logstash_password: password

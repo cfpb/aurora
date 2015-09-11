@@ -1,0 +1,29 @@
+---
+- hosts: elasticsearch
+  sudo: yes
+  roles:
+    - elasticsearch-config
+
+- hosts: elk
+  sudo: yes
+  roles:
+    - elasticsearch-config
+    - logstash-config
+    - kibana-config
+
+- hosts: elk
+  sudo: yes
+  handlers:
+    - include: roles/shared/handlers/main.yml
+  tasks:
+    - name: Setup elasticsearch as a client node
+      lineinfile:
+        dest: /etc/elasticsearch/elasticsearch.yml
+        regexp: '^(#)?\s+"{{ item }}":'
+        line: "{{ item }}: false"
+        state: present
+      with_items:
+        - "node.master"
+        - "node.data"
+      notify:
+        - restart elasticsearch
