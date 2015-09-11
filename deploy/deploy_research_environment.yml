@@ -21,10 +21,10 @@
         state: present
         disable_gpg_check: yes
 
-- hosts: research_eod
-  sudo: yes
-  roles:
-    - eod
+#- hosts: research_eod
+#  sudo: yes
+#  roles:
+#    - eod
 
 - hosts: research_gauss
   sudo: yes
