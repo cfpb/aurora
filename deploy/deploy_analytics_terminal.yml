@@ -5,10 +5,12 @@
     - name: Check if python27 is installed
       command: rpm -q python27
       register: python27_check
+      failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
 
     - name: Check if python34 is installed
       command: rpm -q python34
       register: python34_check
+      failed_when: python34_check.rc != 0 and "is not installed" not in python34_check.stdout
 
 - hosts: analytics_terminal
   sudo: yes
