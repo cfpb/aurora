@@ -1,14 +1,25 @@
 ---
 - hosts: analytics_terminal
   sudo: yes
+  tasks:
+    - name: Check if python27 is installed
+      command: rpm -q python27
+      register: python27_check
+
+    - name: Check if python34 is installed
+      command: rpm -q python34
+      register: python34_check
+
+- hosts: analytics_terminal
+  sudo: yes
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    - {role: python-build, when: "not custom_repo and 'is not installed' in python27_check.stdout"}
     - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    - {role: python3-build, when: "not custom_repo and 'is not installed' in python34_check.stdout"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - ruby
     - jdk
@@ -82,6 +93,7 @@
     - r
     - revolution-r
     - r-shiny
+    - r-shiny-config
     - r-studio-server
     - r-studio-server-config
     - {role: log-courier, when: "install_logstash"}
