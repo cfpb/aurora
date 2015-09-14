@@ -46,7 +46,7 @@
     - python3
     - epel
     - jdk
-    - postgres
+    - postgresql
     - r
     - r-studio-desktop
     - r-studio-server
