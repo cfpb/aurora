@@ -45,6 +45,7 @@
     - python
     - python3
     - epel
+    - jdk
     - r
     - r-studio-desktop
     - r-studio-server
