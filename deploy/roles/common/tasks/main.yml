@@ -39,6 +39,8 @@
     src: "{{ default_file_server }}:/{{ item }}"
     state: unmounted
   with_items: shared_folders
+  when: not "production" in group_names
+
 #  with_items: "{{ volume_status.results }}"
 #  when: item.rc == 1
 
