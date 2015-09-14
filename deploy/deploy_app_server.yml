@@ -26,6 +26,7 @@
     - ruby
     - postgresql
     - gocd
+    - emacs
 
 # Install development packages
 - hosts: app_server
@@ -41,6 +42,7 @@
         - gcc-gfortran
         - python-devel
         - nodejs
+        - screen
 
     - name: Install custom RPMs
       yum:

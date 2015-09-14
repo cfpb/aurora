@@ -43,6 +43,7 @@
   sudo: yes
   roles:
     - python
+    - python3
     - epel
     - r
     - r-studio-desktop
