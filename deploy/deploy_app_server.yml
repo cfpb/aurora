@@ -27,6 +27,7 @@
     - postgresql
     - gocd
     - emacs
+    - pycharm
 
 # Install development packages
 - hosts: app_server
@@ -42,6 +43,7 @@
         - gcc-gfortran
         - python-devel
         - nodejs
+        - npm
         - screen
 
     - name: Install custom RPMs
