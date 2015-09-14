@@ -33,7 +33,7 @@
 - hosts: app_server
   sudo: yes
   tasks:
-    - name: Install packages development packages
+    - name: Install development packages
       yum:
         name: "{{ item }}"
         state: present
@@ -43,7 +43,6 @@
         - gcc-gfortran
         - python-devel
         - nodejs
-        - npm
         - screen
 
     - name: Install custom RPMs
