@@ -10,7 +10,7 @@
   roles:
     - emacs
     - open_office
-#    - evince
+    - evince
     - stattransfer
     - odbc
     - sublime
@@ -21,17 +21,17 @@
         state: present
         disable_gpg_check: yes
 
-#- hosts: research_eod
-#  sudo: yes
-#  roles:
-#    - eod
+- hosts: research_eod
+  sudo: yes
+  roles:
+    - eod
 
-#- hosts: research_gauss
-#  sudo: yes
-#  roles:
-#    - gauss
-#    - odbc
-#    - gocd
+- hosts: research_gauss
+  sudo: yes
+  roles:
+    - gauss
+    - odbc
+    - gocd
 
 - hosts: research_stata
   sudo: yes
