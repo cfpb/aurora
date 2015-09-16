@@ -32,12 +32,16 @@
 #  with_items: shared_folders
 #  failed_when: volume_status.stderr != ""
 
-#- name: Unmount the shared drives
-#  mount:
-#    fstype: glusterfs
-#    name: "/home/{{ item.item }}"
-#    src: "{{ default_file_server }}:/{{ item.item }}"
-#    state: unmounted
+- name: Unmount the shared drives
+  mount:
+    fstype: glusterfs
+    name: "/home/{{ item }}"
+    src: "{{ default_file_server }}:/{{ item }}"
+    state: unmounted
+  with_items: shared_folders
+  when: not "production" in group_names
+  ignore_errors: yes
+
 #  with_items: "{{ volume_status.results }}"
 #  when: item.rc == 1
 

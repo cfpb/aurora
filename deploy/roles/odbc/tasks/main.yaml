@@ -1,0 +1,33 @@
+---
+- name: Install rpms
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items:
+    - "{{ odbc_rpms }}"
+
+- name: Install unix odbc kde
+  yum:
+    name: unixODBC-kde.x86_64
+    state: present
+
+- name: Install freetds
+  yum:
+    name: freetds.x86_64
+    state: present
+
+- name: Configure odbc.ini
+  template:
+    src: odbc.ini
+    dest: /etc/odbc.ini
+
+- name: Configure odbcinst.ini
+  template:
+    src: odbcinst.ini
+    dest: /etc/odbcinst.ini
+
+- name: Configure freetds.conf
+  template:
+    src: freetds.conf
+    dest: /usr/local/etc/freetds.conf

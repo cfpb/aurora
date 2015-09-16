@@ -154,6 +154,9 @@ ldap_service_account_password: password
 # For the proxy server test page
 restricted_group_name: admin
 
+# Research Environment
+install_odbc: True
+
 #======================#
 ### PACKAGE SETTINGS ###
 #======================#
