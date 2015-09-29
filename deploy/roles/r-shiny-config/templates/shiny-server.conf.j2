@@ -6,6 +6,8 @@ server {
   # Instruct this server to listen on port 3838
   listen 3838;
 
+  whitelist_headers {{ shiny_http_headers }};
+
   {% if r_shiny_pro %}
   # Fails to work for some reason
   # app_session_timeout 900
