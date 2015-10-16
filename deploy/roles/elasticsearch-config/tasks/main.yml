@@ -36,11 +36,17 @@
     - restart elasticsearch
 
 - name: Install the additional ES plugins
-  command: /usr/share/elasticsearch/bin/plugin --install {{ item.plugin_name } {% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  command: /usr/share/elasticsearch/bin/plugin --install {{ item.plugin_name }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
   args:
     creates: "{{ item.plugin_path }}"
   environment:
     ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: es_plugins
+  notify:
+    - restart elasticsearch
+
+- name: Ensure permissions for ES plugins are correct
+  shell: "chmod a+r {{ item.plugin_path }} -R"
   with_items: es_plugins
   notify:
     - restart elasticsearch
