@@ -45,8 +45,18 @@
   notify:
     - restart elasticsearch
 
-- name: Ensure permissions for ES plugins are correct
+- name: Ensure file permissions for ES plugins are correct
   shell: "chmod a+r {{ item.plugin_path }} -R"
+  with_items: es_plugins
+  notify:
+    - restart elasticsearch
+
+- name: Ensure directory permissions for ES plugins are correct
+  file:
+    path: "{{ item.plugin_path }}"
+    mode: a+x
+    recurse: yes
+    state: directory
   with_items: es_plugins
   notify:
     - restart elasticsearch
