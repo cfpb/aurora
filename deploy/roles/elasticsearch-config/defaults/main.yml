@@ -6,6 +6,12 @@ es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
 
+# You can add additional plugins needed for elasticsearch here
+es_plugins:
+  -
+    plugin_name: elasticsearch/elasticsearch-lang-python/2.5.0
+    plugin_path: /usr/share/elasticsearch/plugins/lang-python
+
 # Used when esusers is the authentication scheme
 es_users:
   -

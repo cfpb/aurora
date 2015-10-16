@@ -39,8 +39,8 @@
     src: "{{ default_file_server }}:/{{ item }}"
     state: unmounted
   with_items: shared_folders
-  when: not "production" in group_names
-  ignore_errors: yes
+  # when: not "production" in group_names
+  # ignore_errors: yes
 
 #  with_items: "{{ volume_status.results }}"
 #  when: item.rc == 1
@@ -51,4 +51,5 @@
     name: "/home/{{ item }}"
     src: "{{ default_file_server }}:/{{ item }}"
     state: mounted
+    opts: "acl,_netdev"
   with_items: shared_folders
