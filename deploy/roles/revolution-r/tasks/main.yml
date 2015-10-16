@@ -1,0 +1,64 @@
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - gcc
+    - gcc-gfortran
+
+### Revolution R
+
+- name: Get Revolution R Package
+  get_url:
+    url: http://mran.revolutionanalytics.com/install/RRO-3.2.0-el6.x86_64.tar.gz
+    dest: /tmp
+  when: not custom_repo
+
+- name: Extract Revolution R Package
+  unarchive:
+    src: /tmp/RRO-3.2.0-el6.x86_64.tar.gz
+    dest: /tmp
+    creates: /tmp/RRO-3.2.0/install.sh
+    copy: no
+  when: not custom_repo
+
+- name: Install Revolution R
+  yum:
+    name: "{{ revolution_r_package }}"
+    state: present
+    disable_gpg_check: yes
+
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+
+### MKL Package
+
+- name: Get MKL Package
+  get_url:
+    url: http://mran.revolutionanalytics.com/install/RevoMath-3.2.0.tar.gz
+    dest: /tmp
+  when: install_mkl and not custom_repo
+
+- name: Extract MKL Package
+  unarchive:
+    src: /tmp/RevoMath-3.2.0.tar.gz
+    dest: /tmp
+    creates: /tmp/RevoMath/RevoMath.sh
+    copy: no
+  when: install_mkl and not custom_repo
+
+- name: Install MKL
+  command: /tmp/RevoMath/RevoMath.sh
+  when: install_mkl and not custom_repo
+
+- name: Install MKL
+  yum:
+    name: RevoMath
+    state: present
+  when: install_mkl and custom_repo

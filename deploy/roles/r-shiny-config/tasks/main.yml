@@ -1,0 +1,11 @@
+---
+- name: Create app directory
+  file:
+    dest: /opt/shiny-server/apps
+    state: directory
+    mode: 0755
+
+- name: Load config file
+  template:
+    src: shiny-server.conf.j2
+    dest: /etc/shiny-server/shiny-server.conf

@@ -1,0 +1,6 @@
+---
+rstudio_enable_auth_proxy: 1
+rstudio_admin_group: admins
+rstudio_domain_name: "http://rstudio.test.dev"
+ip_whitelist:
+  - "{{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }}"

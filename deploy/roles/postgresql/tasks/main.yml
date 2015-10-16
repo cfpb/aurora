@@ -1,0 +1,26 @@
+---
+- name: Install postgres repository
+  yum:
+    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+    state: present
+  when: not 'production' in group_names
+
+- name: Install postgres packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: postgres_packages
+
+- name: Ensure other libraries can see header files
+  file:
+    src: "{{ postgres_install_dir }}/include/"
+    dest: /usr/include/pgsql
+    state: link
+  when: postgres_install_dir is defined
+
+- name: Add psql bin directory to path
+  lineinfile:
+    dest: /etc/profile.d/postgres.sh
+    create: yes
+    line: export PATH=$PATH:/usr/pgsql-9.4/bin

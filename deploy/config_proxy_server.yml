@@ -1,0 +1,40 @@
+---
+- hosts: proxy_server
+  sudo: yes
+  handlers:
+    - include: roles/apache/handlers/main.yml
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
+    - name: Pull down custom proxy configs
+      git:
+        repo: "{{ enclave_proxy_repo }}"
+        dest: "/srv/www/enclave_proxy/repo/"
+        force: yes
+        version: "{{ git_environment }}"
+      when: enclave_proxy_repo is defined
+      notify:
+        - restart apache
+
+    - name: Ensure permissions are correct
+      file:
+        dest: /srv/www/enclave_proxy/repo
+        owner: apache
+        group: apache
+        mode: 0600
+        recurse: yes
+        state: directory
+
+    - name: Ensure symbolic link to vhost confs location
+      file:
+        src: /srv/www/enclave_proxy/repo/vhost_conf
+        dest: /srv/www/enclave_proxy/vhost_conf
+        state: link
+        owner: apache
+        group: apache
+        mode: 0600
+      notify:
+        - restart apache

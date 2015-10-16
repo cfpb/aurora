@@ -1,0 +1,76 @@
+---
+- hosts: research_environment
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+
+- hosts: research_ancillary_services
+  sudo: yes
+  roles:
+    - emacs
+    - open_office
+    - evince
+    - stattransfer
+    - odbc
+    - sublime
+  tasks:
+    - name: Install Ultra Edit
+      yum:
+        name: UltraEdit.x86_64
+        state: present
+        disable_gpg_check: yes
+
+- hosts: research_eod
+  sudo: yes
+  roles:
+    - eod
+
+- hosts: research_gauss
+  sudo: yes
+  roles:
+    - gauss
+    - odbc
+    - gocd
+
+- hosts: research_stata
+  sudo: yes
+  roles:
+    - stata
+    - odbc
+
+- hosts: research_python
+  sudo: yes
+  roles:
+    - python
+    - python3
+    - epel
+    - jdk
+    - postgresql
+    - r
+    - r-studio-desktop
+    - r-studio-server
+    - pycharm
+    - odbc
+    - gocd
+
+- hosts: research_sas
+  sudo: yes
+  roles:
+    # - sas
+    - odbc
+    - gocd
+
+- hosts: research_spss
+  sudo: yes
+  roles:
+    - gocd
+    # - spss
+    - odbc
+
+- hosts: research_matlab
+  sudo: yes
+  roles:
+    # - matlab
+    - gocd
+    - odbc

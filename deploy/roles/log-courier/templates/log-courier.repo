@@ -1,0 +1,7 @@
+[driskell-log-courier]
+name=Copr repo for log-courier owned by driskell
+baseurl=https://copr-be.cloud.fedoraproject.org/results/driskell/log-courier/epel-6-$basearch/
+skip_if_unavailable=True
+gpgcheck=1
+gpgkey=https://copr-be.cloud.fedoraproject.org/results/driskell/log-courier/pubkey.gpg
+enabled=1

@@ -1,5 +1,5 @@
 ---
-# TODO: put rpm somewhere accessible 
+# TODO: put rpm somewhere accessible
 - name: Copy over the EOD bin file
   copy:
     src: "{{ eod_local_bin_directory }}/ecs-13.8.5-linux-x64.bin"
@@ -14,7 +14,7 @@
   yum: name=expect state=present
 
 - name: check if eod directory exists
-  stat: 
+  stat:
     path: "{{eod_install_directory}}/"
   register: eod_dir_exists
 
@@ -23,7 +23,7 @@
   when: eod_dir_exists.stat.exists == false
 
 - name: copy the eod expect script
-  template: 
+  template:
     src: install_eod_server.exp
     dest: /tmp/install_eod_server.exp
 
@@ -56,6 +56,11 @@
 
 - name: install X Window System
   yum: name="@X Window System" state=present
+
+- name: Install Firefox
+  yum:
+    name: firefox
+    state: present
 
 - name: configure custom.conf
   template:

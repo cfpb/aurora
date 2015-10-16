@@ -1,0 +1,13 @@
+---
+- name: Install R Studio Desktop
+  yum:
+    name: http://download1.rstudio.org/rstudio-0.98.1103-x86_64.rpm
+    state: present
+  when: not custom_repo
+
+- name: Install R Studio Desktop
+  yum:
+    name: rstudio
+    state: present
+    disable_gpg_check: yes
+  when: custom_repo

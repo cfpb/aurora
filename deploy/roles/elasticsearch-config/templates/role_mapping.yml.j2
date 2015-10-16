@@ -1,0 +1,11 @@
+{{ template_masthead }}
+
+# Role mapping configuration file which has elasticsearch roles as keys
+# that map to one or more user or group distinguished names
+
+{% for role in es_role_mappings %}
+{{ role.name }}:
+{% for mapping in role.mappings %}
+  - "{{ mapping }}"
+{% endfor %}
+{% endfor %}

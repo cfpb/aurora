@@ -3,11 +3,13 @@
 - hosts: all
   sudo: yes
   roles:
+    - {role: puppet_disable, when: "disable_puppet"}
     - iptables
     - epel
     - ntp
     - openldap
     - kerberos_server
+    - {role: log-courier, when: "install_logstash"}
 
   tasks:
     - name: Add LDAP to Kerberos

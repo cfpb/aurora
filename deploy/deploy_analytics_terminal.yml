@@ -1,0 +1,116 @@
+---
+- hosts: analytics_terminal
+  sudo: yes
+  tasks:
+    - name: Check if python27 is installed
+      command: rpm -q python27
+      register: python27_check
+      failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
+
+    - name: Check if python34 is installed
+      command: rpm -q python34
+      register: python34_check
+      failed_when: python34_check.rc != 0 and "is not installed" not in python34_check.stdout
+
+- hosts: analytics_terminal
+  sudo: yes
+  roles:
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo and 'is not installed' in python27_check.stdout"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo and 'is not installed' in python34_check.stdout"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - ruby
+    - jdk
+    - pycharm
+    - postgresql
+
+# Install development packages
+- hosts: analytics_terminal
+  sudo: yes
+  tasks:
+    - name: Install packages development packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - "@development"
+        - gcc-gfortran
+        - python-devel
+        - nodejs
+        - pgadmin3_94
+
+    - name: Install custom RPMs
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - xsv
+        - gnucobol
+        - htop
+        - p7zip
+      when: custom_repo
+
+    - name: Activate Julia repo
+      get_url:
+        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+      when: not 'production' in group_names
+
+    - name: Install Julia
+      yum:
+        name: julia
+        state: present
+        disable_gpg_check: yes
+
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+
+    - name: Install Python packages for 27
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages
+
+- hosts: analytics_terminal
+  sudo: yes
+  roles:
+    - {role: eod, when: "install_eod"}
+    - r
+    - revolution-r
+    - r-shiny
+    - r-shiny-config
+    - r-studio-server
+    - r-studio-server-config
+    - {role: log-courier, when: "install_logstash"}
+    - r-studio-desktop
+    - clouseau
+
+- hosts: analytics_terminal
+  sudo: yes
+  tasks:
+    - name: Open port range for app prototyping
+      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+      when: iptables_config
+      with_items: groups['proxy_server']
+
+    - name: Save rules
+      command: "/sbin/service iptables save"
+      when: iptables_config

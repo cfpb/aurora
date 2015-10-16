@@ -1,0 +1,37 @@
+---
+- name: Download pycharm
+  get_url:
+    url: https://download.jetbrains.com/python/pycharm-community-4.5.4.tar.gz
+    dest: /tmp/pycharm-community-4.5.4.tar.gz
+    validate_certs: False
+
+- name: Extract pycharm to destination
+  unarchive:
+    copy: no
+    src: /tmp/pycharm-community-4.5.4.tar.gz
+    dest: /opt/
+    mode: 0644
+
+- name: Ensure read permissions are set
+  shell: "chmod a+r /opt/pycharm-community-4.5.4/ -R"
+
+- name: Ensure directories can be displayed
+  shell: "find /opt/pycharm-community-4.5.4/ -type d -exec chmod a+x {} +"
+
+- name: Ensure executables are executable
+  shell: "chmod a+x /opt/pycharm-community-4.5.4/bin/{{ item }}"
+  with_items:
+    - "pycharm.sh"
+    - "inspect.sh"
+    - "fsnotifier"
+    - "fsnotifier64"
+
+- name:  Create syslinks for executables
+  file:
+    src: "/opt/pycharm-community-4.5.4/bin/{{ item }}.sh"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: yes
+  with_items:
+    - "pycharm"
+    - "inspect"

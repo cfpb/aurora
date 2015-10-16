@@ -1,0 +1,24 @@
+---
+- name: Install rpms
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items:
+    - libgcc
+    - glibc
+    - atk
+    - gdk-pixbuf2
+    - fontconfig
+    - mesa-libGL
+    - mesa-libGLU
+    - pango
+    - libxml2
+    - libidn
+    - libXt
+    - gtk2
+    # - AdobeReader_enu
+    - libcanberra-gtk2
+    - PackageKit-gtk-module
+    - gtk2-engines
+    - evince

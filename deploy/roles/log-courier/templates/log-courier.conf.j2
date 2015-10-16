@@ -1,0 +1,23 @@
+{
+  "general": {
+    "log file": "/var/log/log-courier/log-courier.log"
+  },
+  "network": {
+    "servers": [
+    {% for host in groups['elk'] %}
+      "{{ hostvars[host]['ansible_ssh_host'] }}:5043"{% if not loop.last %},{% endif %}
+    {% endfor %}
+    ],
+    "transport": "tcp"
+  },
+  "files": [
+    {
+      "paths": [
+        "/var/log/messages",
+        "/var/log/secure",
+        "/var/log/*.log"
+      ],
+      "fields": { "type": "syslog" }
+    }
+  ]
+}

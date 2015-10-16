@@ -21,11 +21,17 @@
   file:
     state: directory
     dest: "/home/{{ item }}"
-    mode: 0755
+    mode: 0777
   with_items: shared_folders
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
+#- name: Determine which drives are in use
+#  shell: "fuser -c /home/{{ item }}"
+#  register: volume_status
+#  with_items: shared_folders
+#  failed_when: volume_status.stderr != ""
+
 - name: Unmount the shared drives
   mount:
     fstype: glusterfs
@@ -33,6 +39,11 @@
     src: "{{ default_file_server }}:/{{ item }}"
     state: unmounted
   with_items: shared_folders
+  # when: not "production" in group_names
+  # ignore_errors: yes
+
+#  with_items: "{{ volume_status.results }}"
+#  when: item.rc == 1
 
 - name: Mount shared drives and add to fstab
   mount:
@@ -40,4 +51,5 @@
     name: "/home/{{ item }}"
     src: "{{ default_file_server }}:/{{ item }}"
     state: mounted
+    opts: "acl,_netdev"
   with_items: shared_folders

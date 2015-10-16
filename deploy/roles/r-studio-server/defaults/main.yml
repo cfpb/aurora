@@ -1,0 +1,3 @@
+---
+ip_whitelist:
+  - "{{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }}"

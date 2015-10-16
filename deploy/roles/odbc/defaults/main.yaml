@@ -1,0 +1,43 @@
+---
+odbc_rpms:
+  - unixODBC.x86_64
+  - unixODBC-kde.x86_64
+  - freetds.x86_64
+
+odbc_ms_sql_hostname: host_ms_sql
+odbc_entries:
+  - {
+    hostname: host1,
+    Server: host1.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+  - {
+    hostname: host2,
+    Server: host2.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+  - {
+    hostname: host3,
+    Server: host3.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+freetds_entries:
+  - {
+    hostname: odbc_host_1,
+    fqdn: odbc_host_1.example.com,
+    use_ntlmv2: True,
+    port: 1433
+  }
+
+  - {
+    hostname: odbc_host_2,
+    fqdn: odbc_host_2.example.com,
+    use_ntlmv2: False,
+    port: 1533
+  }

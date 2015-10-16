@@ -1,0 +1,3 @@
+---
+r_shiny_pro: True
+shiny_http_headers: "X-EXAMPLE"

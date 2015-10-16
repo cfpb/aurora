@@ -1,0 +1,51 @@
+#! /usr/bin/expect
+
+# run the actual installer bin
+spawn {{gauss_bin_directory}}/ginstall
+
+# set a 2 minute timeout
+set timeout 120
+
+set force_conservative 0  ;# set to 1 to force conservative mode even if
+                          ;# script wasn’t run conservatively originally
+if {$force_conservative} {
+        set send_slow {1 .1}
+        proc send {ignore arg} {
+                sleep .1
+                exp_send -s -- $arg
+        }
+}
+
+
+# set up your expects
+expect_background {
+	"Choose installation type" {
+		send "a\r"
+        exp_continue
+    }
+	"Press Enter to continue..." {
+        send "\r"
+        exp_continue
+    }
+    "Read Carefully Before Installing the Software Product" {
+    	send "q"
+    	exp_continue
+   	}
+   	"Do you understand and accept the license agreement" {
+    	send "yes\r"
+    	exp_continue
+    }
+    "Install for \\\[S\\\]ingle-user or \\\[M\\\]ulti-user" {
+    	send "m\r"
+    	exp_continue
+    }
+    "Leave shared libraries in install dir or relocate" {
+    	send "l\r"
+    	exp_continue
+    }
+    "*** PLEASE READ THE FOLLOWING MESSAGES! ***" {
+    	exit 0
+    }
+}
+# interact return
+expect eof

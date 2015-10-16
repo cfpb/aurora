@@ -1,0 +1,52 @@
+---
+- name: Configure elasticsearch
+  template:
+    src: elasticsearch.yml.j2
+    dest: /etc/elasticsearch/elasticsearch.yml
+  notify:
+    - restart elasticsearch
+
+- name: Generate the roles file
+  template:
+    src: roles.yml.j2
+    dest: /etc/elasticsearch/shield/roles.yml
+  notify:
+    - restart elasticsearch
+
+- name: Load in user file to test for admin user
+  command: "cat /etc/elasticsearch/shield/users"
+  register: users_file
+  when: not use_active_directory
+
+- name: Generate the role mappings file
+  template:
+    src: role_mapping.yml.j2
+    dest: /etc/elasticsearch/shield/role_mapping.yml
+  when: use_active_directory
+  notify:
+    - restart elasticsearch
+
+- name: Create users from config file
+  command: "/usr/share/elasticsearch/bin/shield/esusers useradd {{ item.username }} -p {{ item.password }} -r {{ item.roles }}"
+  when: "not use_active_directory and '{{ item.username }}' not in users_file.stdout"
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: es_users
+  notify:
+    - restart elasticsearch
+
+- name: Install the additional ES plugins
+  command: /usr/share/elasticsearch/bin/plugin --install {{ item.plugin_name }} --silent {% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: "{{ item.plugin_path }}"
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: es_plugins
+  notify:
+    - restart elasticsearch
+
+- name: Start elasticsearch
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
