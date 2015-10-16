@@ -55,6 +55,7 @@
         src: templates/enclave_proxy.conf
         owner: apache
         group: apache
+        mode: 0600
       notify: restart apache
 
     - name: Create simple HTML file for proxy
@@ -69,13 +70,6 @@
       template:
         dest: "/srv/www/enclave_proxy/html/restricted/index.php"
         src: templates/enclave_proxy_restricted.php
-
-    - name: Generate LDAP password file
-      copy:
-        dest: "/srv/www/enclave_proxy/ldap_password"
-        owner: apache
-        group: apache
-        content: "{{ ldap_service_account_password }}"
 
     - name: Update ldap settings
       template:

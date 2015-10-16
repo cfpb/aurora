@@ -24,6 +24,7 @@
         dest: /srv/www/enclave_proxy/repo
         owner: apache
         group: apache
+        mode: 0600
         recurse: yes
         state: directory
 
@@ -34,11 +35,6 @@
         state: link
         owner: apache
         group: apache
+        mode: 0600
       notify:
         - restart apache
-
-    - name: Ensure that DOMAIN env var is set
-      lineinfile:
-        dest: /etc/sysconfig/httpd
-        line: "export DOMAIN={{ domain_name }}"
-        regexp: "^export DOMAIN="

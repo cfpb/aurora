@@ -35,6 +35,16 @@
   notify:
     - restart elasticsearch
 
+- name: Install the additional ES plugins
+  command: /usr/share/elasticsearch/bin/plugin --install {{ item.plugin_name }} --silent {% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: "{{ item.plugin_path }}"
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: es_plugins
+  notify:
+    - restart elasticsearch
+
 - name: Start elasticsearch
   service:
     name: elasticsearch
