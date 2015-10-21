@@ -233,6 +233,7 @@ Vagrant.configure(2) do |config|
     app_config.vm.network :private_network, ip: "10.0.1.17"
   end
 
+<<<<<<< HEAD
   #######################
   ### RESEARCH COMPONENT ###
   #######################
