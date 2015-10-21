@@ -29,6 +29,10 @@ elk ansible_ssh_host=10.0.1.16 es_http_enabled=True
 [app_server]
 app ansible_ssh_host=10.0.1.17
 
+; Data Warehouse Component
+[db_server]
+db ansible_ssh_host=10.0.1.18
+
 [all_groups:children]
 admin_terminal
 proxy_server
@@ -37,6 +41,7 @@ analytics_terminal
 elasticsearch
 elk
 app_server
+db_server
 
 [terminals:vars]
 is_terminal=True

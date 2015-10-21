@@ -1,0 +1,39 @@
+---
+## PostgresPlus Advanced Server default variables
+
+# Installer URL and executable
+pp_installer_version: 9.4.1.3
+
+# Directory to install from
+pp_temp_dir: /tmp
+
+# Installation options
+pp_create_samples: yes
+pp_databasemode: oracle
+pp_extract_only: no
+pp_installer_language: en
+
+# Superuser
+pp_superaccount: postgres
+pp_superpassword: password
+
+# EnterpriseDB Web Account (register here: http://www.enterprisedb.com/user-login-registration)
+pp_web_username: webusername_goes_here
+pp_web_password: webpassword_goes_here
+
+# Utilities
+pp_autostart_pgagent: yes
+pp_autostart_pgbouncer: yes
+pp_pgbouncerport: 6432
+pp_install_server_monitor: yes
+
+# Core server config
+pp_datadir: /opt/PostgresPlus/data
+pp_prefix: /opt/PostgresPlus/
+pp_debuglevel: 2
+pp_serverport: 5432
+pp_server_utilization: 66
+pp_servicename: ppas-9.4
+pp_serviceaccount: postgres
+pp_workload_profile: oltp
+pp_xlogdir: /opt/PostgresPlus/pg_xlog
