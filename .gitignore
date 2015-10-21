@@ -75,3 +75,6 @@ dist/
 ###########
 .vagrant/
 *.vdi
+
+# Ansible extra variable files
+.vagrant*

@@ -11,6 +11,9 @@ Vagrant.configure(2) do |config|
   ### ELK Component, must be built first to generate
   # SSL cert for logstash_forwarder, if used
 
+  # Load local config settings from a file
+
+
   ### SHARED COMPONENT
 
   # GlusterFS File Server 1
@@ -352,5 +355,29 @@ Vagrant.configure(2) do |config|
     end
 
     server.vm.network :private_network, ip: "10.0.1.25"
+
+  ### DATA WAREHOUSE COMPONENT
+
+  # DB Server
+  config.vm.define :db_server do |server_config|
+    server_config.vm.box = "chef/centos-6.5"
+    server_config.vm.host_name = "db.test.dev"
+
+    server_config.ssh.forward_agent = true
+
+    server_config.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    server_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_db_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+      if ENV['DB_SERVER_EXTRA_VARS']
+        ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
+      end
+    end
+
+    server_config.vm.network :private_network, ip: "10.0.1.26"
   end
 end

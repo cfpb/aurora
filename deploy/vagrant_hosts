@@ -65,6 +65,10 @@ research_matlab
 research_spss
 research_sas
 
+; Data Warehouse Component
+[db_server]
+db ansible_ssh_host=10.0.1.18
+
 ; Global Groups
 
 [all_groups:children]
@@ -76,6 +80,7 @@ elasticsearch
 elk
 app_server
 research_environment
+db_server
 
 [terminals:vars]
 is_terminal=True
