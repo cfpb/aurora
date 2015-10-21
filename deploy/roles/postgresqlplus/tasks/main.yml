@@ -1,0 +1,28 @@
+---
+- name: Ensure the temporarily directory exists
+  file:
+    path: "{{ pp_temp_dir }}"
+    recurse: yes
+    state: directory
+
+- name: Download PostgresPlus Advanced Server installer
+  unarchive:
+    src: "ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+    dest: "{{ pp_temp_dir }}/"
+    mode: 0700
+
+- name: Create configuration file
+  template:
+    src: config_param.j2
+    dest: "{{ pp_temp_dir }}/config_param"
+    mode: 0600
+
+- name: Run PostgresPlus install script
+  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
+  args:
+    chdir: "{{ pp_temp_dir }}"
+    creates: "{{ pp_prefix }}"
+
+- name: open up ports in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
+  when: iptables_config
