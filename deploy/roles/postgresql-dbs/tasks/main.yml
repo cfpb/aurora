@@ -1,0 +1,12 @@
+
+---
+- name: Create postgres databases
+  postgresql_db:
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    state: present
+    template: "{{ item.template }}"
+    port: "{{ pp_serverport }}"
+  with_items: pp_dbs

@@ -1,4 +1,13 @@
 ---
+- name: Install requirements
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql-devel
+    - python-psycopg2
+    - git
+
 - name: Ensure the temporarily directory exists
   file:
     path: "{{ pp_temp_dir }}"
@@ -22,7 +31,19 @@
   args:
     chdir: "{{ pp_temp_dir }}"
     creates: "{{ pp_prefix }}"
+  notify:
+    - restart postgres
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
   when: iptables_config
+
+- name: Ensure DBA service account exists
+  postgresql_user:
+    encrypted: yes
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    name: "{{ pp_dba_username }}"
+    password: "{{ pp_dba_password }}"
+    port: "{{ pp_serverport }}"
+    role_attr_flags: INHERIT,LOGIN,CREATEDB,CREATEROLE
