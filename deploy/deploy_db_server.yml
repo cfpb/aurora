@@ -10,3 +10,4 @@
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
     - role: postgresqlplus
+    - role: postgresql-config

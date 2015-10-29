@@ -37,3 +37,7 @@ pp_servicename: ppas-9.4
 pp_serviceaccount: postgres
 pp_workload_profile: oltp
 pp_xlogdir: /opt/PostgresPlus/pg_xlog
+
+# DBA service account
+pp_dba_username: dba_user
+pp_dba_password: dba_password
