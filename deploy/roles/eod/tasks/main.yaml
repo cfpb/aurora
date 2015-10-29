@@ -2,12 +2,12 @@
 # TODO: put rpm somewhere accessible
 - name: Copy over the EOD bin file
   copy:
-    src: "{{ eod_local_bin_directory }}/ecs-13.8.5-linux-x64.bin"
-    dest: "{{ eod_bin_directory }}/ecs-13.8.5-linux-x64.bin"
+    src: "{{ eod_local_bin_directory }}/{{ eod_binary }}"
+    dest: "{{ eod_bin_directory }}/{{ eod_binary }}"
 
 - name: chmod eod bin
   file:
-    path: "{{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin"
+    path: "{{eod_bin_directory}}/{{ eod_binary }}"
     mode: a+x
 
 - name: install expect

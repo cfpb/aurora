@@ -2,6 +2,7 @@
 #==================#
 ### EoD SETTINGS ###
 #==================#
+eod_binary: ecs-13.8.5-linux-x64.bin
 eod_install_directory: '/usr/local/eod'
 eod_local_bin_directory: '/artifacts'
 eod_bin_directory: '/tmp'
