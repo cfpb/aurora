@@ -1,0 +1,71 @@
+---
+- name: Install dependencies
+  yum:
+    name: git
+    state: present
+
+- name: Get template database scripting repo
+  git:
+    repo: "{{ pp_template_scripts_repo }}"
+    dest: "{{ pp_template_scripts_path }}"
+    force: yes
+    version: "{{ pp_template_scripts_version }}"
+  when: pp_template_scripts_repo is defined
+
+- name: Get template database scripts from file
+  copy:
+    src: "{{ pp_template_source_path }}/"
+    dest: "{{ pp_template_scripts_path }}/"
+    mode: 0700
+    owner: "{{ pp_serviceaccount }}"
+  when: pp_template_scripts_repo is not defined
+
+- name: Create postgres template databases
+  postgresql_db:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    name: "{{ item.name }}"
+    owner: "{{ pp_superaccount }}"
+    state: present
+    port: "{{ pp_serverport }}"
+  with_items: pp_template_dbs
+  register: template_dbs
+
+- name: Create postgres default roles
+  postgresql_user:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    name: "{{ item.name }}"
+    role_attr_flags: "{{ item.privileges }}"
+  with_items: pp_roles
+
+- name: Populate template DB's
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.item.name }}"
+    script_file: "{{ pp_template_scripts_path }}/{{ item.item.init_script }}"
+  with_items: template_dbs.results
+  #when: item.changed
+
+- name: Turn on template flag
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.item.name }}"
+    script: "UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'"
+  with_items: template_dbs.results
+  #when: item.changed
+
+#- name: Populate template DB's
+#  shell: "psql -d {{ item.item.name }} -p {{ pp_serverport }} -U {{ pp_dba_username }} -a -q -f {{ pp_template_scripts_path }}/{{ item.item.init_script }}"
+#  with_items: template_dbs.results
+  #when: item.changed
+
+#- name: Turn on template flag
+#  shell: "psql -d {{ item.item.name }} -U {{ pp_dba_username }} -q -c \"UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'\""
+#  with_items: template_dbs.results
+  #when: item.changed
