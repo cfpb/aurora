@@ -2,7 +2,7 @@
 
 # run the actual installer bin
 # TODO: figure out where to put this
-spawn {{eod_bin_directory}}/ecs-13.8.5-linux-x64.bin
+spawn {{ eod_bin_directory }}/{{ eod_binary }}
 
 # set a 2 minute timeout
 set timeout 120
