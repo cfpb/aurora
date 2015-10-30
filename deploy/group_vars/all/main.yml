@@ -16,9 +16,16 @@ default_file_server: 10.0.1.4
 # file server based on these settings, and GlusterFS volumes will be created and
 # mounted on client servers.
 shared_folders:
-  - "data"
-  - "work"
-  - "testorg"
+  -
+    name: data
+    state: mounted
+  -
+    name: work
+    state: mounted
+  -
+    name: testorg
+    state: mounted
+
 
 # Allows servers to use one of the GlusterFS volumes as a shared home directory
 home_directory: "/testorg"
