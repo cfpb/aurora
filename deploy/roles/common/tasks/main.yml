@@ -20,9 +20,10 @@
 - name: Make needed folders
   file:
     state: directory
-    dest: "/home/{{ item }}"
+    dest: "/home/{{ item.name }}"
     mode: 0777
   with_items: shared_folders
+  when: item.state == 'mounted'
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
@@ -35,10 +36,12 @@
 - name: Unmount the shared drives
   mount:
     fstype: glusterfs
-    name: "/home/{{ item }}"
-    src: "{{ default_file_server }}:/{{ item }}"
+    name: "/home/{{ item.name }}"
+    src: "{{ default_file_server }}:/{{ item.name }}"
     state: unmounted
   with_items: shared_folders
+  when: item.state == 'mounted'
+
   # when: not "production" in group_names
   # ignore_errors: yes
 
@@ -48,8 +51,15 @@
 - name: Mount shared drives and add to fstab
   mount:
     fstype: glusterfs
-    name: "/home/{{ item }}"
-    src: "{{ default_file_server }}:/{{ item }}"
-    state: mounted
+    name: "/home/{{ item.name }}"
+    src: "{{ default_file_server }}:/{{ item.name }}"
+    state: "{{ item.state }}"
     opts: "acl,_netdev"
   with_items: shared_folders
+
+- name: Remove unneeded folders
+  file:
+    state: absent
+    dest: "/home/{{ item.name }}"
+  with_items: shared_folders
+  when: item.state == 'unmounted'
