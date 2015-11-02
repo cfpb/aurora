@@ -8,7 +8,7 @@
     - python-psycopg2
     - git
 
-- name: Ensure the temporarily directory exists
+- name: Ensure the temporary directory exists
   file:
     path: "{{ pp_temp_dir }}"
     recurse: yes
