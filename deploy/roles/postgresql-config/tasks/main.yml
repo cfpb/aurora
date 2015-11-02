@@ -61,6 +61,21 @@
   with_items: template_dbs.results
   when: item.changed
 
+# Configure default privileges for PUBLIC, other inheritable roles.
+- name: Configure default privileges
+  postgresql_privs:
+    login: "{{ pp_superaccount }}"
+    password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    database: "{{ item.db }}"
+    objs: "{{ item.objs }}"
+    privs: "{{ item.privs }}"
+    roles: "{{ item.roles }}"
+    schema: "{{ item.schema }}"
+    type: "{{ item.type }}"
+    state: "{{ item.state }}"
+  with_items: pp_privs
+
 # Assert that template databases are indeed templates.
 - name: Turn on template flag
   postgresql_exec:
@@ -70,3 +85,21 @@
     db: "{{ item.item.name }}"
     script: "UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'"
   with_items: template_dbs.results
+
+# Setup pg_hba.conf
+- name: Configure postgres connection options
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
+
+# Configure PPAS
+- name: Configure PPAS server
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
