@@ -54,7 +54,7 @@
     name: "/home/{{ item.name }}"
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: "{{ item.state }}"
-    opts: "acl,_netdev"
+    opts: "defaults,acl,_netdev"
   with_items: shared_folders
 
 - name: Remove unneeded folders
