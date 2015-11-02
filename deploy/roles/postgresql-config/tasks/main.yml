@@ -59,7 +59,7 @@
     db: "{{ item.item.name }}"
     script_file: "{{ pp_template_scripts_path }}/{{ item.item.init_script }}"
   with_items: template_dbs.results
-#  when: item.changed
+  when: item.changed
 
 # Assert that template databases are indeed templates.
 - name: Turn on template flag
@@ -70,14 +70,3 @@
     db: "{{ item.item.name }}"
     script: "UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'"
   with_items: template_dbs.results
-  #when: item.changed
-
-#- name: Populate template DB's
-#  shell: "psql -d {{ item.item.name }} -p {{ pp_serverport }} -U {{ pp_dba_username }} -a -q -f {{ pp_template_scripts_path }}/{{ item.item.init_script }}"
-#  with_items: template_dbs.results
-  #when: item.changed
-
-#- name: Turn on template flag
-#  shell: "psql -d {{ item.item.name }} -U {{ pp_dba_username }} -q -c \"UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'\""
-#  with_items: template_dbs.results
-  #when: item.changed
