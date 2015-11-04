@@ -108,6 +108,8 @@ ssl_cert_file: /etc/httpd/ssl/apache.crt
 ssl_key_file: /etc/httpd/ssl/apache.key
 ssl_chain_file: /etc/httpd/ssl/apache.crt
 
+apache_use_ldap: True
+
 #=======================#
 ### KERBEROS SETTINGS ###
 #=======================#
