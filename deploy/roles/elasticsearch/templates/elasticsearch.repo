@@ -1,6 +1,6 @@
-[elasticsearch-1.5]
-name=Elasticsearch repository for 1.5.x packages
-baseurl=http://packages.elasticsearch.org/elasticsearch/1.5/centos
+[elasticsearch-{{ es_version }}]
+name=Elasticsearch repository for {{ es_version }}.x packages
+baseurl=http://packages.elasticsearch.org/elasticsearch/{{ es_version }}/centos
 gpgcheck=1
 gpgkey=http://packages.elasticsearch.org/GPG-KEY-elasticsearch
 enabled=1

@@ -1,2 +1,3 @@
 ---
 es_heap_size: "128M"
+es_version: 1.7
