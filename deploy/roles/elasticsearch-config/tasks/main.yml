@@ -75,6 +75,7 @@
     dest: ./
     fail_on_missing: yes
     flat: yes
+  delegate_to: elk
   when: create_key.changed
 
 - name: Copy key to each node
