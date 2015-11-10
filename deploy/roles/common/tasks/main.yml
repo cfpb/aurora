@@ -63,3 +63,11 @@
     dest: "/home/{{ item.name }}"
   with_items: shared_folders
   when: item.state == 'unmounted'
+
+- name: Create any needed symlinks
+  file:
+    state: link
+    src: "{{ item.target }}"
+    path: "{{ item.path }}"
+  with_items: shared_links
+  when: shared_links is defined

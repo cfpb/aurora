@@ -5,15 +5,11 @@
     state: present
 
 - name: Verify install directory
-  file: 
+  file:
     path: "{{stattransfer_install_directory}}/"
     state: directory
     mode: og+rx
     recurse: yes
-
-- name: debug print
-  debug:
-    msg: "The bin directory is {{stattransfer_local_bin_directory}}/stlinux64_install"
 
 - name: Copy over the install bin
   copy:
@@ -28,7 +24,8 @@
 - name: Run install bin
   shell: ./stlinux64_install --mode silent
   args:
-    chdir: "{{stattransfer_install_directory}}"
+    chdir: "{{ stattransfer_install_directory }}"
+    creates: "{{ stattransfer_install_directory }}/stattransfer"
 
 - name: Copy license file over
   template:
