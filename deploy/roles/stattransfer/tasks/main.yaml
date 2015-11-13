@@ -15,17 +15,20 @@
   copy:
     src: "{{stattransfer_local_bin_directory}}/stlinux64_install"
     dest: "{{stattransfer_install_directory}}/stlinux64_install"
+  when: custom_repo
 
 - name: Set the install bin to be executable
   file:
     path: "{{stattransfer_install_directory}}/stlinux64_install"
     mode: a+x
+  when: custom_repo
 
 - name: Run install bin
   shell: ./stlinux64_install --mode silent
   args:
     chdir: "{{ stattransfer_install_directory }}"
     creates: "{{ stattransfer_install_directory }}/stattransfer"
+  when: custom_repo
 
 - name: Copy license file over
   template:
