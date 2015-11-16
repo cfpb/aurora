@@ -28,12 +28,12 @@
   when: pp_template_scripts_repo is not defined
 
 # Create the template databases with specified settings
-- name: Create postgres template databases
+- name: Create template databases
   postgresql_db:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
     name: "{{ item.name }}"
-    owner: "{{ pp_superaccount }}"
+    owner: "{{ pp_dba_username }}"
     state: present
     port: "{{ pp_serverport }}"
   with_items: pp_template_dbs
@@ -43,8 +43,8 @@
 # permissions.
 - name: Create postgres default roles
   postgresql_user:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
     port: "{{ pp_serverport }}"
     name: "{{ item.name }}"
     role_attr_flags: "{{ item.privileges }}"
@@ -53,8 +53,8 @@
 # Execute the template DB initalization scripts
 - name: Populate template DB's
   postgresql_exec:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
     port: "{{ pp_serverport }}"
     db: "{{ item.item.name }}"
     script_file: "{{ pp_template_scripts_path }}/{{ item.item.init_script }}"
@@ -64,8 +64,8 @@
 # Configure default privileges for PUBLIC, other inheritable roles.
 - name: Configure default privileges
   postgresql_privs:
-    login: "{{ pp_superaccount }}"
-    password: "{{ pp_superpassword }}"
+    login: "{{ pp_dba_username }}"
+    password: "{{ pp_dba_password }}"
     port: "{{ pp_serverport }}"
     database: "{{ item.db }}"
     objs: "{{ item.objs }}"
@@ -76,30 +76,28 @@
     state: "{{ item.state }}"
   with_items: pp_privs
 
+### NOTE ###
+# It seems that these operations must be done by a superuser,
+# and without them ony the pp_dba_username user can create databases
+# based on a given template.
+###########
+
 # Assert that template databases are indeed templates.
-- name: Turn on template flag
-  postgresql_exec:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
-    port: "{{ pp_serverport }}"
-    db: "{{ item.item.name }}"
-    script: "UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'"
-  with_items: template_dbs.results
+#- name: Turn on template flag
+#  postgresql_exec:
+#    login_user: "{{ pp_dba_username }}"
+#    login_password: "{{ pp_dba_password }}"
+#    port: "{{ pp_serverport }}"
+#    db: postgres
+#    script: "UPDATE pg_database SET datistemplate=true WHERE datname='{{ item.item.name }}'"
+#  with_items: template_dbs.results
 
-# Setup pg_hba.conf
-- name: Configure postgres connection options
-  template:
-    src: pg_hba.conf.j2
-    dest: "{{ pp_datadir }}/pg_hba.conf"
-    group: "{{ pp_superaccount }}"
-    owner: "{{ pp_superaccount }}"
-    mode: 0600
-
-# Configure PPAS
-- name: Configure PPAS server
-  template:
-    src: postgresql.conf.j2
-    dest: "{{ pp_datadir }}/pg_hba.conf"
-    group: "{{ pp_superaccount }}"
-    owner: "{{ pp_superaccount }}"
-    mode: 0600
+# Disallow connections to template databases
+#- name: Turn off allowconn flag
+#  postgresql_exec:
+#    login_user: "{{ pp_dba_username }}"
+#    login_password: "{{ pp_dba_password }}"
+#    port: "{{ pp_serverport }}"
+#    db: postgres
+#    script: "UPDATE pg_database SET datallowconn=false WHERE datname='{{ item.item.name }}'"
+#  with_items: template_dbs.results

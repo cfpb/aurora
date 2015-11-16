@@ -39,5 +39,305 @@ pp_workload_profile: oltp
 pp_xlogdir: /opt/PostgresPlus/pg_xlog
 
 # DBA service account
-pp_dba_username: dba_user
-pp_dba_password: dba_password
+pp_dba_username: vagrant
+pp_dba_password: vagrant
+
+## PostgreSQL Configuration Settings
+
+# pg_hba.conf settings
+pp_hba_settings:
+  -
+    comment: '"local" is for Unix domain socket connections only'
+    context: local
+    db: all
+    user: all
+    address: ''
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
+    comment: 'IPv4 local connections:'
+    context: host
+    db: all
+    user: all
+    address:  '127.0.0.1/32'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
+    comment: 'IPv6 local connections:'
+    context: host
+    db: all
+    user: all
+    address: '::1/128'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+
+# Additional postgresql.conf settings
+pp_listen_addresses: '*'
+pp_max_connections: 100
+pp_superuser_reserved_conns: 3
+
+# Unix sockets
+pp_unix_socket_dirs: /tmp
+pp_unix_socket_group: ''
+pp_unix_socket_perms: 0777
+
+# Auth
+pp_auth_timeout: '1min'
+pp_ssl_enable: 'off'
+pp_ssl_ciphers: 'HIGH:MEDIUM:+3DES:!aNULL'
+pp_prefer_server_cyphers: on
+pp_ssl_ecdh_curve: 'prime256v1'
+pp_ssl_renegotiation_limit: '512MB'
+pp_ssl_cert_file: 'server.crt'
+pp_ssl_key_file: 'server.key'
+pp_ssl_ca_file: ''
+pp_ssl_crl_file: ''
+pp_password_encrypt: on
+pp_db_user_namespace: off
+
+# TCP Keepalives
+pp_tcp_idle: 0
+pp_tcp_interval: 0
+pp_tcp_count: 0
+
+# Memory
+pp_shared_buffers: '128MB'
+pp_huge_pages: try
+pp_temp_buffers: '8MB'
+pp_max_prepared_trans: 0
+pp_work_mem: '4MB'
+pp_maintenance_work_mem: '64MB'
+pp_autovacuum_work_mem: '-1'
+pp_max_stack_depth: '2MB'
+pp_dynamic_shared_memory_type: posix
+
+# Disk, etc.
+pp_temp_file_limit: '-1'
+pp_max_files: 1000
+
+pp_vacuum_cost_delay: 0
+pp_vacuum_cost_page_hit: 1
+pp_vacuum_cost_page_miss: 10
+pp_vacuum_cost_page_dirty: 20
+pp_vacuum_cost_limit: 200
+
+pp_bgwriter_delay: '200ms'
+pp_bgwriter_lru_maxpages: 100
+pp_bgwriter_lru_multiplier: 2.0
+
+pp_effective_io_concurrency: 1
+pp_max_worker_processes: 8
+
+pp_edb_max_resource_groups: 16
+pp_edb_resource_group: ''
+
+# WAL
+pp_wal_level: minimal
+pp_fsync: on
+pp_sync_commit: on
+pp_wal_sync_method: fsync
+pp_full_page_writes: on
+pp_wal_log_hints: off
+pp_wal_buffers: -1
+pp_wal_writer_delay: 200ms
+pp_commit_delay: 0
+pp_commit_siblings: 5
+
+pp_checkpoint_segments: 3
+pp_checkpoint_timeout: 5min
+pp_checkpoint_completion_target: 0.5
+pp_checkpoint_warning: 30s
+
+pp_archive_mode: off
+pp_archive_command: off
+pp_archive_timeout: 0
+
+# Replication
+pp_max_wal_senders: 0
+pp_wal_keep_segments: 0
+pp_wal_sender_timeout: 60s
+pp_max_replication_slots: 0
+
+# master
+pp_syncronous_standby_names: ''
+pp_vacuum_defer_cleanup_age: 0
+
+# standby
+pp_hot_standby: off
+pp_max_standby_archive_delay: 30s
+pp_max_standby_streaming_delay: 30s
+pp_wal_receiver_status_interval: 10s
+pp_hot_standby_feedback: off
+pp_wal_receiver_timeout: 60s
+
+# Query tuning
+
+# planner method config
+pp_bitmapscan: on
+pp_hashagg: on
+pp_hashjoin: on
+pp_indexscan: on
+pp_indexonlyscan: on
+pp_material: on
+pp_mergejoin: on
+pp_nestloop: on
+pp_seqscan: on
+pp_sort: on
+pp_tidscan: on
+pp_hints: on
+
+# planner cost constants
+pp_seq_page_cost: 1.0
+pp_random_page_cost: 4.0
+pp_cpu_tuple_cost: 0.01
+pp_cpu_index_tuple_cost: 0.005
+pp_cpu_operator_cost: 0.0025
+pp_effective_cache_size: 4GB
+
+# genetic query optimizer
+pp_geqo: on
+pp_geqo_threshold: 12
+pp_geqo_effort: 5
+pp_geqo_pool_size: 0
+pp_geqo_generations: 0
+pp_geqo_selection_bias: 2.0
+pp_geqo_seed: 0.0
+
+# Others
+pp_default_statistics_target: 100
+pp_constraint_exclusion: partition
+pp_cursor_tuple_fraction: 0.1
+pp_from_collapse_limit: 8
+pp_join_collapse_limit: 8
+pp_edb_custom_plan_tries: 5
+
+# Reporting and Logging
+pp_log_destination: stderr
+pp_logging_collector: on
+pp_log_directory: pg_log
+pp_log_filename: enterprisedb-%Y-%m-%d_%H%M%S.log
+pp_log_file_mode: 0600
+pp_log_truncate_on_rotation: off
+pp_log_rotation_age: 1d
+pp_log_rotation_size: 10MB
+
+pp_syslog_facility: LOCAL0
+pp_syslog_ident: postgres
+
+pp_client_min_messages: notice
+pp_log_min_messages: warning
+pp_log_min_error_statement: error
+pp_log_min_duration_statement: -1
+
+pp_debug_print_parse: off
+pp_debug_print_rewritten: off
+pp_debug_print_plan: off
+pp_debug_pretty_print: on
+
+pp_log_checkpoints: off
+pp_log_connections: off
+pp_log_disconnections: off
+pp_log_duration: off
+pp_log_error_verbosity: default
+pp_log_hostname: off
+pp_log_line_prefix: '%t '
+pp_log_lock_waits: off
+pp_log_statement: none
+pp_log_temp_files: -1
+pp_log_timezone: UTC
+pp_http_debug: off
+
+# EDB Auditing
+pp_edb_audit: none
+pp_edb_audit_dir: edb_audit
+pp_edb_audit_filename: 'audit-%Y-%m-%d_%H%M%S'
+pp_edb_audit_rotation_day: every
+pp_edb_audit_rotation_size: 0
+pp_edb_audit_rotation_seconds: 0
+pp_edb_audit_connect: failed
+pp_edb_audit_disconnect: none
+pp_edb_audit_statement: 'ddl, error'
+
+# Runtimes Statistics
+pp_track_activities: on
+pp_track_counts: on
+pp_track_io_timing: off
+pp_track_functions: none
+pp_track_activity_query_size: 1024
+pp_update_process_title: on
+pp_stats_temp_directory: pg_stat_tmp
+
+pp_log_parser_stats: off
+pp_log_planner_stats: off
+pp_log_executor_stats: off
+pp_log_statement_stats: off
+
+# autovacuum
+pp_autovacuum: on
+pp_log_autovacuum_min_duration: -1
+pp_autovacuum_max_workers: 3
+pp_autovacuum_naptime: 1min
+pp_autovacuum_vacuum_threshold: 50
+pp_autovacuum_analyze_threshold: 50
+pp_autovacuum_vacuum_scale_factor: 0.2
+pp_autovacuum_analyze_scale_factor: 0.1
+pp_autovacuum_freeze_max_age: 200000000
+pp_autovacuum_multixact_freeze_max_age: 400000000
+pp_autovacuum_vacuum_cost_delay: 20ms
+pp_autovacuum_vacuum_cost_limit: -1
+
+# Client Connection Settings
+pp_search_path: '$user,public'
+pp_default_tablespace: ''
+pp_temp_tablespaces: ''
+pp_check_function_bodies: on
+pp_default_transaction_isolation: 'read committed'
+pp_default_transaction_read_only: off
+pp_default_transaction_deferrable: off
+pp_session_replication_role: origin
+pp_statement_timeout: 0
+pp_lock_timeout: 0
+pp_vacuum_freeze_min_age: 50000000
+pp_vacuum_freeze_table_age: 150000000
+pp_vacuum_multixact_freeze_min_age: 5000000
+pp_vacuum_multixact_freeze_table_age: 150000000
+pp_bytea_output: hex
+pp_xmlbinary: base64
+pp_xmloption: content
+
+# Locale and Formatting
+pp_datestyle: 'iso, mdy'
+pp_timezone: UTC
+pp_timezone_abbreviations: Default
+pp_extra_float_digits: 0
+pp_client_encoding: sql_ascii
+
+pp_lc_messages: 'en_US.UTF-8'
+pp_lc_monetary: 'en_US.UTF-8'
+pp_lc_numeric: 'en_US.UTF-8'
+pp_lc_time: 'en_US.UTF-8'
+
+pp_default_text_search_config: pg_catalog.english
+pp_dynamic_library_path: '$libdir'
+pp_local_preload_libraries: ''
+pp_session_preload_libraries: ''
+
+pp_oracle_home: ''
+
+# Lock Management
+pp_deadlock_timeout: 1s
+pp_max_locks_per_transaction: 64
+pp_max_pred_locks_per_transaction: 64
+
+# Error Handling
+pp_exit_on_error: off
+pp_restart_after_crash: on
+
+# EDB Dynatune
+pp_server_utilization: 66
+pp_workload_profile: oltp
+
+pp_timed_statistics: off

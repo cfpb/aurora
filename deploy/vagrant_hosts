@@ -67,7 +67,7 @@ research_sas
 
 ; Data Warehouse Component
 [db_server]
-db ansible_ssh_host=10.0.1.18
+db ansible_ssh_host=10.0.1.26
 
 ; Global Groups
 
