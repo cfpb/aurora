@@ -31,7 +31,7 @@ app ansible_ssh_host=10.0.1.17
 
 ; Data Warehouse Component
 [db_server]
-db ansible_ssh_host=10.0.1.18
+db ansible_ssh_host=10.0.1.26
 
 [all_groups:children]
 admin_terminal

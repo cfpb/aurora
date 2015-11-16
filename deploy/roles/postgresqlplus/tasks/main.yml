@@ -47,3 +47,65 @@
     password: "{{ pp_dba_password }}"
     port: "{{ pp_serverport }}"
     role_attr_flags: INHERIT,LOGIN,CREATEDB,CREATEROLE
+
+- name: Create DBA service account DB
+  postgresql_db:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    name: "{{ pp_dba_username }}"
+    owner: "{{ pp_dba_username }}"
+    state: present
+
+- name: Grant the "postgres" role to DBA service account
+  postgresql_privs:
+    login: "{{ pp_superaccount }}"
+    password: "{{ pp_superpassword }}"
+    database: postgres
+    port: "{{ pp_serverport }}"
+    objs: postgres
+    roles: "{{ pp_dba_username }}"
+    type: group
+    state: present
+
+- name: Grant the dba_username account privileges on the public and pg_catalog schemas
+  postgresql_privs:
+    login: "{{ pp_superaccount }}"
+    password: "{{ pp_superpassword }}"
+    database: postgres
+    port: "{{ pp_serverport }}"
+    objs: "public,pg_catalog"
+    privs: ALL
+    roles: "{{ pp_dba_username }}"
+    type: schema
+    state: present
+    grant_option: yes
+
+- name: Grant the dba_username account privileges on pg_catalog tables
+  postgresql_privs:
+    login: "{{ pp_superaccount }}"
+    password: "{{ pp_superpassword }}"
+    database: postgres
+    port: "{{ pp_serverport }}"
+    objs: "pg_database,pg_authid"
+    privs: ALL
+    roles: "{{ pp_dba_username }}"
+    type: table
+    state: present
+    grant_option: yes
+    schema: pg_catalog
+
+- name: Configure postgres connection options
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
+
+- name: Configure PPAS server
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ pp_datadir }}/postgresql.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
