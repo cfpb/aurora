@@ -80,13 +80,16 @@
     state: present
     grant_option: yes
 
+# This is needed for using the postgres_user command (SELECT on pg_authid),
+# and for updating pg_database to set the datistemplate flag (UPDATE on pg_database).
+# However, the later does not work without superuser privileges.
 - name: Grant the dba_username account privileges on pg_catalog tables
   postgresql_privs:
     login: "{{ pp_superaccount }}"
     password: "{{ pp_superpassword }}"
     database: postgres
     port: "{{ pp_serverport }}"
-    objs: "pg_database,pg_authid"
+    objs: "pg_authid,pg_database"
     privs: ALL
     roles: "{{ pp_dba_username }}"
     type: table
