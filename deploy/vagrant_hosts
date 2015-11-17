@@ -29,10 +29,47 @@ elk ansible_ssh_host=10.0.1.16 es_http_enabled=True
 [app_server]
 app ansible_ssh_host=10.0.1.17
 
+; Research Component
+
+[research_ancillary_services]
+research_ancillary_services ansible_ssh_host=10.0.1.18
+
+[research_eod]
+research_eod ansible_ssh_host=10.0.1.19
+
+[research_gauss]
+research_gauss_1 ansible_ssh_host=10.0.1.20
+
+[research_stata]
+research_stata ansible_ssh_host=10.0.1.21
+
+[research_python]
+research_python ansible_ssh_host=10.0.1.22
+
+[research_matlab]
+research_matlab ansible_ssh_host=10.0.1.23
+
+[research_spss]
+research_spss ansible_ssh_host=10.0.1.24
+
+[research_sas]
+research_sas ansible_ssh_host=10.0.1.25
+
+[research_environment:children]
+research_ancillary_services
+research_eod
+research_gauss
+research_stata
+research_python
+research_matlab
+research_spss
+research_sas
+
 ; Data Warehouse Component
 [db_server]
 db ansible_ssh_host=10.0.1.26
 
+; Global Groups
 [all_groups:children]
 admin_terminal
 proxy_server
@@ -42,6 +79,7 @@ elasticsearch
 elk
 app_server
 db_server
+research_environment
 
 [terminals:vars]
 is_terminal=True

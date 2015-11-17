@@ -14,12 +14,14 @@
     - stattransfer
     - odbc
     - sublime
+    - jdk
   tasks:
     - name: Install Ultra Edit
       yum:
         name: UltraEdit.x86_64
         state: present
         disable_gpg_check: yes
+      when: custom_repo
 
 - hosts: research_eod
   sudo: yes
@@ -42,9 +44,10 @@
 - hosts: research_python
   sudo: yes
   roles:
-    - python
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
     - python3
-    - epel
+    - {role: epel, when: "use_epel"}
     - jdk
     - postgresql
     - r

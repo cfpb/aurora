@@ -4,58 +4,75 @@
   copy:
     src: "{{ eod_local_bin_directory }}/{{ eod_binary }}"
     dest: "{{ eod_bin_directory }}/{{ eod_binary }}"
+  when: custom_repo
 
 - name: chmod eod bin
   file:
     path: "{{eod_bin_directory}}/{{ eod_binary }}"
     mode: a+x
+  when: custom_repo
 
 - name: install expect
   yum: name=expect state=present
 
-- name: check if eod directory exists
-  stat:
+- name: Ensure if eod directory exists
+  file:
     path: "{{eod_install_directory}}/"
-  register: eod_dir_exists
-
-- name: create eod directory
-  shell: sudo mkdir -p {{eod_install_directory}}
-  when: eod_dir_exists.stat.exists == false
+    state: directory
 
 - name: copy the eod expect script
   template:
     src: install_eod_server.exp
     dest: /tmp/install_eod_server.exp
-
-- name: chmod eod expect script
-  file:
-      path: /tmp/install_eod_server.exp
-      mode: a+rx
-
-#- name: run eod expect script
-#  script: /tmp/install_eod_server.exp
+    mode: a+x
 
 - name: run EOD expect script
   shell: /tmp/install_eod_server.exp
+  when: custom_repo
 
 - name: run eod silent install
   shell: "{{eod_install_directory}}/bin/./install -s"
+  when: custom_repo
 
 - name: configure cluster.cfg
   template:
     src: cluster.cfg
     dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
+  when: custom_repo
   notify:
     - restart eod
 
-- name: install General Purpose Desktop
-  yum: name="@General Purpose Desktop" state=present
+- name: configure xdmcp
+  template:
+    src: XDMCP_Query.cfg
+    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
+  notify:
+    - restart eod
+    - restart gdm
+  when: custom_repo
 
-- name: install Desktop
-  yum: name="@Desktop" state=present
+- name: configure eod license file
+  template:
+    src: akeys
+    dest: "{{ eod_install_directory }}/conf/admin/akeys"
+  when: custom_repo
+  notify:
+    - restart eod
 
 - name: install X Window System
-  yum: name="@X Window System" state=present
+  yum:
+    name: "@X Window System"
+    state: present
+
+- name: install Desktop
+  yum:
+    name: "@Desktop"
+    state: present
+
+- name: install General Purpose Desktop
+  yum:
+    name: "@General Purpose Desktop"
+    state: present
 
 - name: Install Firefox
   yum:
@@ -91,47 +108,32 @@
   notify:
     - restart eod
 
-- name: configure system-auth-ac
-  template:
-    src: system-auth-ac
-    dest: /etc/pam.d/system-auth-ac
-  notify:
-    - restart eod
+#- name: configure system-auth-ac
+#  template:
+#    src: system-auth-ac
+#    dest: /etc/pam.d/system-auth-ac
+#  notify:
+#    - restart eod
 
-- name: Update authconfig
-  command: authconfig --enablewinbind --update
+#- name: Update authconfig
+#  command: authconfig --enablewinbind --update
 
-- name: validate password-auth-ac
-  shell: cat /etc/pam.d/password-auth-ac
-  register: password_result
-  notify:
-    - restart eod
+#- name: validate password-auth-ac
+#  shell: cat /etc/pam.d/password-auth-ac
+#  register: password_result
+#  notify:
+#    - restart eod
 
-- assert:
-    that:
-      - "'krb5' in password_result.stdout"
-      - "'winbind' in password_result.stdout"
+#- assert:
+#    that:
+#      - "'krb5' in password_result.stdout"
+#      - "'winbind' in password_result.stdout"
 
 - name: configure package update proxy
   template:
     src: 20-no-show-proxy-dialog.pkla
     dest: /etc/polkit-1/localauthority/30-site.d/20-no-show-proxy-dialog.pkla
     mode: 0644
-  notify:
-    - restart eod
-
-- name: configure xdmcp
-  template:
-    src: XDMCP_Query.cfg
-    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
-  notify:
-    - restart eod
-    - restart gdm
-
-- name: configure eod license file
-  template:
-    src: akeys
-    dest: "{{ eod_install_directory }}/conf/admin/akeys"
   notify:
     - restart eod
 
@@ -153,14 +155,3 @@
   command: start prefdm
   register: gdm_status
   failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
-
-# check netstat to see what ports are open
-- name: ensure ports open
-  shell: /bin/netstat -plnt
-  register: ports_result
-  when: iptables_config
-
-- assert:
-    that:
-      - "'5500' in ports_result.stdout"
-  when: iptables_config
