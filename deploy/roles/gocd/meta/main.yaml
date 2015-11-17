@@ -3,5 +3,5 @@ dependencies:
   - {role: python, when: "custom_repo"}
   - {role: python-build, when: "not custom_repo"}
   - role: jdk
-  - role: epel
+  - {role: epel, when: "use_epel"}
   - role: postgresql
