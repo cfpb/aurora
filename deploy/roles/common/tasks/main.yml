@@ -54,7 +54,7 @@
     name: "/home/{{ item.name }}"
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: "{{ item.state }}"
-    opts: "defaults,resolve-gids,acl,_netdev"
+    opts: "{{ gluster_mount_options }}"
   with_items: shared_folders
 
 - name: Remove unneeded folders
