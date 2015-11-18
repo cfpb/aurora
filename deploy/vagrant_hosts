@@ -70,7 +70,6 @@ research_sas
 db ansible_ssh_host=10.0.1.26
 
 ; Global Groups
-
 [all_groups:children]
 admin_terminal
 proxy_server
@@ -79,6 +78,7 @@ analytics_terminal
 elasticsearch
 elk
 app_server
+db_server
 research_environment
 db_server
 
