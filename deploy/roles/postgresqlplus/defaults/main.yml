@@ -42,6 +42,10 @@ pp_xlogdir: /opt/PostgresPlus/pg_xlog
 pp_dba_username: vagrant
 pp_dba_password: vagrant
 
+# Extensions to install
+pp_extensions:
+  - postgis2_94
+
 ## PostgreSQL Configuration Settings
 
 # pg_hba.conf settings
