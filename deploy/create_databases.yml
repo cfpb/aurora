@@ -1,0 +1,4 @@
+---
+- hosts: db_server
+  roles:
+    - postgresql-dbs
