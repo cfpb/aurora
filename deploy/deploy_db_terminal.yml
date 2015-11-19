@@ -1,0 +1,48 @@
+# deploy_admin_terminal.yml
+---
+- hosts: db_terminal
+  sudo: yes
+  roles:
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - {role: log-courier, when: "install_logstash"}
+    - role: jdk
+    - role: postgresql
+    - role: eod
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
+
+- tasks:
+  - name: Install needed packages
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items:
+      - htop
+      - top
+      - sed
+      - awk
+      - rsync
+      - cut
+      - unzip
+      - gpg
+      - pigz
+      - facter
+      - sysstat # sar, iostat, vmstat
+      - systemtap # dtrace
+      - ant
+
+  - name: Install custom packages
+    yum:
+      name: "{{ item }}"
+      state: present
+    with_items: custom_packages
+#      - https://github.com/Factual/drake
+#      - https://github.com/audreyr/cookiecutter
+#       sudo yum install perl-devel perl-CPAN && curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+#       http://hammerora.sourceforge.net/download.html
+#       - ogr2ogr in GDAL
