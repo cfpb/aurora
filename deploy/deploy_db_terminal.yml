@@ -2,6 +2,18 @@
 ---
 - hosts: db_terminal
   sudo: yes
+
+  pre_tasks:
+    - name: Check if python27 is installed
+      command: rpm -q python27
+      register: python27_check
+      failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
+
+    - name: Check if python34 is installed
+      command: rpm -q python34
+      register: python34_check
+      failed_when: python34_check.rc != 0 and "is not installed" not in python34_check.stdout
+
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
@@ -12,37 +24,35 @@
     - role: postgresql
     - role: eod
     - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    - {role: python-build, when: "not custom_repo and 'is not installed' in python27_check.stdout"}
     - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    - {role: python3-build, when: "not custom_repo and 'is not installed' in python34_check.stdout"}
 
-- tasks:
-  - name: Install needed packages
-    yum:
-      name: "{{ item }}"
-      state: present
-    with_items:
-      - htop
-      - top
-      - sed
-      - awk
-      - rsync
-      - cut
-      - unzip
-      - gpg
-      - pigz
-      - facter
-      - sysstat # sar, iostat, vmstat
-      - systemtap # dtrace
-      - ant
+  tasks:
+    - name: Install needed packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - htop
+        - screen
+        - rsync
+        - unzip
+        - gpg
+        - pigz
+        - facter
+        - sysstat # sar, iostat, vmstat
+        - systemtap # dtrace
+        - ant
 
-  - name: Install custom packages
-    yum:
-      name: "{{ item }}"
-      state: present
-    with_items: custom_packages
-#      - https://github.com/Factual/drake
-#      - https://github.com/audreyr/cookiecutter
-#       sudo yum install perl-devel perl-CPAN && curl -L http://cpanmin.us | perl - --sudo App::cpanminus
-#       http://hammerora.sourceforge.net/download.html
-#       - ogr2ogr in GDAL
+    - name: Install custom packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items: custom_packages
+      when: custom_packages is defined
+  #      - https://github.com/Factual/drake
+  #      - https://github.com/audreyr/cookiecutter
+  #       sudo yum install perl-devel perl-CPAN && curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+  #       http://hammerora.sourceforge.net/download.html
+  #       - ogr2ogr in GDAL

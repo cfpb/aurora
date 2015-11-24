@@ -406,4 +406,19 @@ Vagrant.configure(2) do |config|
 
     server.vm.network :private_network, ip: "10.0.1.26"
   end
+
+  # DB Terminal
+  config.vm.define :db_terminal do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "dbt.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_db_terminal.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.27"
+  end
 end

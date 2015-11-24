@@ -69,6 +69,9 @@ research_sas
 [db_server]
 db ansible_ssh_host=10.0.1.26
 
+[db_terminal]
+dbt ansible_ssh_host=10.0.1.27
+
 ; Global Groups
 [all_groups:children]
 admin_terminal
@@ -81,6 +84,7 @@ app_server
 db_server
 research_environment
 db_server
+db_terminal
 
 [terminals:vars]
 is_terminal=True
@@ -88,3 +92,4 @@ is_terminal=True
 [terminals:children]
 admin_terminal
 analytics_terminal
+db_terminal
