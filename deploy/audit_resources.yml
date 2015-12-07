@@ -31,18 +31,23 @@
         dest: "/tmp/resource_allocation/IN_{{ ansible_fqdn }}.csv"
         content: >
           {{ansible_fqdn }},{{ num_proc.stdout }},{{ total_mem.stdout }},{{ total_disk.stdout }},{{ used_disk.stdout }}\n
-
         force: yes
       delegate_to: admin_terminal
 
 - hosts: admin_terminal
   tasks:
     - name: Rollup all
-      shell: "cat /tmp/resource_allocation/IN_*"
+      shell: cat /tmp/resource_allocation/IN_*
       register: resources
 
     - name: Create file report
       copy:
-        dest: "/tmp/resource_allocation/resource_allocation.csv"
+        dest: /tmp/resource_allocation/resource_allocation.csv
         content: "{{ resources.stdout }}"
         force: yes
+
+    - name: Fetch file
+      fetch:
+        src: /tmp/resource_allocation/resource_allocation.csv
+        dest: ./
+        flat: yes
