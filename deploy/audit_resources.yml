@@ -1,0 +1,53 @@
+---
+- hosts: all
+  sudo: no
+
+  tasks:
+    - name: Make directory for stats
+      file:
+        state: directory
+        path: /tmp/resource_allocation
+        mode: 0755
+      delegate_to: admin_terminal
+
+    - name: Get number of processors
+      shell: "nproc"
+      register: num_proc
+
+    - name: Get memory
+      shell: "vmstat -s | awk -F' ' '{print $1}' | head -1"
+      register: total_mem
+
+    - name: Get disk allocation
+      shell: "df -P | grep '^/dev' | awk -F' ' '{sum += $2} END { print sum }'"
+      register: total_disk
+
+    - name: Get disk usage
+      shell: "df -P | grep '^/dev' | awk -F' ' '{sum += $3} END { print sum }'"
+      register: used_disk
+
+    - name: Output to file
+      copy:
+        dest: "/tmp/resource_allocation/IN_{{ ansible_fqdn }}.csv"
+        content: >
+          {{ansible_fqdn }},{{ num_proc.stdout }},{{ total_mem.stdout }},{{ total_disk.stdout }},{{ used_disk.stdout }}\n
+        force: yes
+      delegate_to: admin_terminal
+
+- hosts: admin_terminal
+  tasks:
+    - name: Rollup all
+      shell: cat /tmp/resource_allocation/IN_*
+      register: resources
+
+    - name: Create file report
+      copy:
+        dest: /tmp/resource_allocation/resource_allocation.csv
+        content: "{{ resources.stdout }}"
+        force: yes
+
+    - name: Fetch file
+      fetch:
+        src: /tmp/resource_allocation/resource_allocation.csv
+        dest: ./
+        flat: yes
