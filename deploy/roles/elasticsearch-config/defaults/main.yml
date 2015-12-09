@@ -1,3 +1,8 @@
+# Startup configuration options
+es_heap_size: "256M"
+
+# Operational configuration options
+es_mlockall: false
 es_http_enabled: False
 es_admin_user: "admin"
 es_admin_group_name: "admin"

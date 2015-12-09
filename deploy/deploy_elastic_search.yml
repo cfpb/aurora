@@ -8,5 +8,9 @@
     - {role: epel, when: "not 'production' in group_names"}
     - jdk
     - elasticsearch
-    - elasticsearch-config
     - {role: log-courier, when: "install_logstash"}
+
+- hosts: elasticsearch
+  sudo: yes
+  roles:
+      - elasticsearch-config
