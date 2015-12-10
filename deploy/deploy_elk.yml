@@ -8,18 +8,36 @@
     - {role: epel, when: "not 'production' in group_names"}
     - jdk
     - elasticsearch
+
+- hosts: elk
+  sudo: yes
+  handlers:
+    - include: roles/shared/handlers/main.yml
+  pre_tasks:
+    - name: Create key for message authentication
+      shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
+      args:
+        creates: /etc/elasticsearch/shield/system_key
+      run_once: true
+      delegate_to: elk
+      register: create_key
+
+    - name: Fetch the key
+      fetch:
+        src: /etc/elasticsearch/shield/system_key
+        dest: ./
+        fail_on_missing: yes
+        flat: yes
+      delegate_to: elk
+      when: create_key.changed
+  roles:
     - elasticsearch-config
     - logstash
     - logstash-config
     - kibana
     - kibana-config
     - {role: log-courier, when: "install_logstash"}
-
-- hosts: elk
-  sudo: yes
-  handlers:
-    - include: roles/shared/handlers/main.yml
-  tasks:
+  post_tasks:
     - name: Setup elasticsearch as a client node
       lineinfile:
         dest: /etc/elasticsearch/elasticsearch.yml

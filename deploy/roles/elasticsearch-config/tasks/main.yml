@@ -1,4 +1,11 @@
 ---
+- name: Configure elasticsearch startup script
+  template:
+    src: elasticsearch.j2
+    dest: /etc/sysconfig/elasticsearch
+  notify:
+    - restart elasticsearch
+
 - name: Configure elasticsearch
   template:
     src: elasticsearch.yml.j2
@@ -61,30 +68,13 @@
   notify:
     - restart elasticsearch
 
-#- name: Create key for message authentication
-#  shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
-#  args:
-#    creates: /etc/elasticsearch/shield/system_key
-#  run_once: true
-#  delegate_to: elk
-#  register: create_key
-#
-#- name: Fetch the key
-#  fetch:
-#    src: /etc/elasticsearch/shield/system_key
-#    dest: ./
-#    fail_on_missing: yes
-#    flat: yes
-#  delegate_to: elk
-#  when: create_key.changed
-
-#- name: Copy key to each node
-#  copy:
-#    src: ./system_key
-#    dest: /etc/elasticsearch/shield/system_key
-#    owner: elasticsearch
-#    group: elasticsearch
-#    mode: 0600
+- name: Copy key to each node
+  copy:
+    src: ./system_key
+    dest: /etc/elasticsearch/shield/system_key
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0600
 
 - name: Start elasticsearch
   service:
