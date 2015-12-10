@@ -192,3 +192,4 @@ install_logstash: true
 es_endpoint: https://es.test.dev
 es_service_account: admin
 es_service_account_password: password
+es_message_auth: False
