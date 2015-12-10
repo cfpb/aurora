@@ -29,7 +29,7 @@
   notify:
     - restart logstash
 
-- name: Install logstash-output-elasticsearch-shield plugin
+- name: Install logstash-output-elasticsearch plugin
   shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-output-elasticsearch"'
   notify:
     - restart logstash
