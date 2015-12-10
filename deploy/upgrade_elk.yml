@@ -82,7 +82,7 @@
       file:
         dest: /etc/yum.repos.d/elasticsearch.repo
         state: absent
-      when: not "production" in group_names
+#      when: not "production" in group_names
   roles:
     - elasticsearch
     - elasticsearch-config
