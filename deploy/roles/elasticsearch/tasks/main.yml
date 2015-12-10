@@ -14,7 +14,7 @@
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
-  when: not "production" in group_names
+  #when: not "production" in group_names
 
 - name: Install elasticsearch
   yum:
