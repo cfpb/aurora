@@ -132,8 +132,10 @@ indices.fielddata.cache.expire: "5m"
 
 ### Shield Settings
 shield:
+{% if es_message_auth %}
   system_key:
     file: /etc/elasticsearch/shield/system_key
+{% endif %}
   authc:
     realms:
     {% if use_active_directory %}

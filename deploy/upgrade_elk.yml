@@ -35,6 +35,7 @@
       run_once: true
       delegate_to: elk
       register: create_key
+      when: es_message_auth
 
     - name: Fetch the key
       fetch:
@@ -44,6 +45,7 @@
         flat: yes
       delegate_to: elk
       when: create_key.changed
+      when: es_message_auth
 
 # Perform serial upgrade
 - hosts: elasticsearch:elk
