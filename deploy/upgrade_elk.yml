@@ -24,6 +24,28 @@
             }
           }
 
+# Ensure key exists
+- hosts: elk
+  sudo: yes
+  tasks:
+    - name: Create key for message authentication
+      shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
+      args:
+        creates: /etc/elasticsearch/shield/system_key
+      run_once: true
+      delegate_to: elk
+      register: create_key
+
+    - name: Fetch the key
+      fetch:
+        src: /etc/elasticsearch/shield/system_key
+        dest: ./
+        fail_on_missing: yes
+        flat: yes
+      delegate_to: elk
+      when: create_key.changed
+
+# Perform serial upgrade
 - hosts: elasticsearch:elk
   serial: 1
   sudo: yes
@@ -61,31 +83,6 @@
         dest: /etc/yum.repos.d/elasticsearch.repo
         state: absent
       when: not "production" in group_names
-
-- hosts: elk
-  sudo: yes
-  tasks:
-    - name: Create key for message authentication
-      shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
-      args:
-        creates: /etc/elasticsearch/shield/system_key
-      run_once: true
-      delegate_to: elk
-      register: create_key
-
-    - name: Fetch the key
-      fetch:
-        src: /etc/elasticsearch/shield/system_key
-        dest: ./
-        fail_on_missing: yes
-        flat: yes
-      delegate_to: elk
-      when: create_key.changed
-
-- hosts: elasticsearch:elk
-  sudo: yes
-  handlers:
-    - include: roles/shared/handlers/main.yml
   roles:
     - elasticsearch
     - elasticsearch-config
