@@ -76,6 +76,12 @@
   notify:
     - restart elasticsearch
 
+- name: Stat key file
+  stat:
+    path: /etc/elasticsearch/shield/system_key
+  register: system_key
+  when: es_message_auth
+
 - name: Copy key to each node
   copy:
     src: ./system_key
@@ -83,7 +89,7 @@
     owner: elasticsearch
     group: elasticsearch
     mode: 0600
-  when: es_message_auth
+  when: es_message_auth and not system_key.exists
 
 - name: Start elasticsearch
   service:
