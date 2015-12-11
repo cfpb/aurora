@@ -89,7 +89,7 @@
     owner: elasticsearch
     group: elasticsearch
     mode: 0600
-  when: es_message_auth and not system_key.exists
+  when: es_message_auth and not system_key.stat.exists
 
 - name: Start elasticsearch
   service:
