@@ -9,8 +9,4 @@
     - jdk
     - elasticsearch
     - {role: log-courier, when: "install_logstash"}
-
-- hosts: elasticsearch
-  sudo: yes
-  roles:
-      - elasticsearch-config
+    - elasticsearch-config

@@ -30,7 +30,7 @@ WORK_DIR=/tmp/elasticsearch
 ES_HEAP_SIZE={{ es_heap_size }}
 
 # Heap new generation
-#ES_HEAP_NEWSIZE=
+ES_HEAP_NEWSIZE={{ es_heap_newsize }}
 
 # Maximum direct memory
 #ES_DIRECT_SIZE=
@@ -72,7 +72,7 @@ MAX_OPEN_FILES=65535
 # in elasticsearch.yml (ES_HEAP_SIZE  must also be set).
 # When using Systemd, the LimitMEMLOCK property must be set
 # in /usr/lib/systemd/system/elasticsearch.service
-#MAX_LOCKED_MEMORY=unlimited
+MAX_LOCKED_MEMORY=unlimited
 
 # Maximum number of VMA (Virtual Memory Areas) a process can own
 # When using Systemd, this setting is ignored and the 'vm.max_map_count'
