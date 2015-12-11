@@ -32,9 +32,15 @@
       shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
       args:
         creates: /etc/elasticsearch/shield/system_key
-      run_once: true
-      delegate_to: elk
       register: create_key
+      when: es_message_auth
+
+    - name: Ensure permissions are correct
+      file:
+        dest: /etc/elasticsearch/shield/system_key
+        owner: "{{ es_user }}"
+        group: "{{ es_user }}"
+        mode: 0600
       when: es_message_auth
 
     - name: Fetch the key
@@ -43,9 +49,7 @@
         dest: ./
         fail_on_missing: yes
         flat: yes
-      delegate_to: elk
-      when: create_key.changed
-      when: es_message_auth
+      when: es_message_auth and create_key.changed
 
 # Perform serial upgrade
 - hosts: elasticsearch:elk

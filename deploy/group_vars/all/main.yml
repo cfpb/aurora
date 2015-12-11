@@ -188,8 +188,9 @@ python3_packages:
 ### ELASTICSEARCH SETTINGS ###
 #============================#
 es_cluster: test_cluster
-install_logstash: true
+install_logstash: True
 es_endpoint: https://es.test.dev
 es_service_account: admin
 es_service_account_password: password
-es_message_auth: False
+es_message_auth: True
+es_user: elasticsearch
