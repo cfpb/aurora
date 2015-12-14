@@ -14,6 +14,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
+    - pentaho
 
 - hosts: ci_terminal
   sudo: yes
@@ -31,6 +32,7 @@
     - clouseau
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
+    - pentaho
 
   tasks:
     - name: Install development packages
