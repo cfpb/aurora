@@ -13,7 +13,7 @@
   get_url:
     url: "{{ gocd_agent_package_url }}"
     dest: /tmp/
-  when: not custom_repo
+#  when: not custom_repo
 
 - name: Install GoCD Agent
   yum:
