@@ -5,3 +5,5 @@ dependencies:
   - role: jdk
   - {role: epel, when: "use_epel"}
   - role: postgresql
+  - role: odbc
+  - role: jdbc

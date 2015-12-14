@@ -1,28 +1,37 @@
 # main.yml - Installs Python 2.7 from custom RPM
 ---
+- name: Check if python27 is installed
+  command: rpm -q python27
+  register: python27_check
+  failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
+
 - name: Make sure rpmbuild is empty
   sudo: no
   file:
     path: "~/rpmbuild"
     state: absent
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Make sure git is installed
   sudo: yes
   yum:
     name: git
     state: latest
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Clone git repo
   sudo: no
   git:
     dest: "~/python27"
     repo: https://github.com/cfpb/python27-for-el6.git
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Run bootstrap script
   sudo: no
   command: "sh ./bootstrap.sh"
   args:
     chdir: "~/python27"
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Build python RPM
   sudo: no
@@ -30,15 +39,18 @@
   args:
     chdir: "~/rpmbuild"
     creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm"
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Copy RPM to /tmp so it is accessible by root
   sudo: no
   command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm /tmp/python27-2.7.6-2.el6.x86_64.rpm"
   args:
     creates: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
+  when: "'is not installed' in python27_check.stdout"
 
 - name: Install python
   sudo: yes
   yum:
     name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
     state: present
+  when: "'is not installed' in python27_check.stdout"
