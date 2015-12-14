@@ -1,0 +1,16 @@
+---
+- hosts: ci_server
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - gocd_server
+
+- hosts: ci_agent
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - gocd

@@ -1,0 +1,6 @@
+export GO_SERVER_PORT={{ gocd_server_port }}
+export GO_SERVER_SSL_PORT={{ gocd_server_ssl_port }}
+export SERVER_WORK_DIR={{ gocd_server_work_dir }}
+DAEMON=Y
+export JAVA_HOME={{ java_home_path }}
+export GO_SERVER_SYSTEM_PROPERTIES="$GO_SERVER_SYSTEM_PROPERTIES -Dh2.trace.level=3"
