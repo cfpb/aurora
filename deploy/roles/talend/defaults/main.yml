@@ -1,0 +1,6 @@
+---
+talend_zip_path: .
+talend_zip_name: TOS_DI-20151029_1337-V6.1.0
+talend_heap_min: 256m
+talend_heap_max: 768m
+talend_max_perm_size: 256m

@@ -1,0 +1,26 @@
+---
+  - name: Ensure opt folder exists
+    file:
+      dest: /opt
+      state: directory
+
+  - name: Copy Talend Zip file
+    copy:
+      src: "{{ talend_zip_path }}/{{ talend_zip_name }}.zip"
+      dest: /tmp/
+
+  - name: Extract Talend
+    unarchive:
+      copy: no
+      src: /tmp/{{ talend_zip_name }}.zip
+      dest: /opt/
+
+  - name: Configure Talend
+    template:
+      src: TOS_DI-linux-gtk-x86.ini.j2
+      dest: /opt/{{ talend_zip_name }}/TOS_DI-linux-gtk-x86.ini
+
+  - name: Ensure talend is executable
+    file:
+      dest: /opt/{{ talend_zip_name }}/TOS_DI-linux-gtk-x86.sh
+      mode: 0755
