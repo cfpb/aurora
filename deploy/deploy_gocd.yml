@@ -93,4 +93,4 @@
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python_packages
+      with_items: python3_packages
