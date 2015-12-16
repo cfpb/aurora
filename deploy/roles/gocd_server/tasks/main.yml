@@ -12,6 +12,16 @@
   notify:
     - restart go-server
 
+- name: Ensure working directory exists
+  file:
+    state: directory
+    dest: "{{ gocd_server_work_dir }}"
+    owner: go
+    group: go
+    mode: 0755
+  notify:
+    - restart go-server
+
 - name: Add configuration options
   template:
     src: go-server.j2

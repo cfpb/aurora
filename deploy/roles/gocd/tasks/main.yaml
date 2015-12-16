@@ -15,6 +15,16 @@
     dest: /tmp/
 #  when: not custom_repo
 
+- name: Ensure working directory exists
+  file:
+    state: directory
+    dest: "{{ gocd_agent_work_dir }}"
+    owner: go
+    group: go
+    mode: 0755
+  notify:
+    - restart go-server
+
 - name: Install GoCD Agent
   yum:
     name: "{{ gocd_agent_package_name }}"
