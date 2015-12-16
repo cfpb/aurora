@@ -46,7 +46,8 @@
   roles:
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - python3
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel"}
     - jdk
     - postgresql
@@ -56,6 +57,27 @@
     - pycharm
     - odbc
     - gocd
+  tasks:
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+
+    - name: Install Python packages for 27
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages
 
 - hosts: research_sas
   sudo: yes
