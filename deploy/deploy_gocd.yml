@@ -25,13 +25,15 @@
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - eod
     - gocd
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
     - r
     - ruby
     - pycharm
     - r-studio-desktop
     - clouseau
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
     - pentaho
     - talend
 
@@ -84,4 +86,11 @@
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
       with_items: python_packages
