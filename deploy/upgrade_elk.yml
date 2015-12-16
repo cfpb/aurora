@@ -34,6 +34,8 @@
         creates: /etc/elasticsearch/shield/system_key
       register: create_key
       when: es_message_auth
+      environment:
+        ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
 
     - name: Ensure permissions are correct
       file:
