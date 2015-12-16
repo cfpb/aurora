@@ -23,7 +23,7 @@
     group: go
     mode: 0755
   notify:
-    - restart go-server
+    - restart go-agent
 
 - name: Install GoCD Agent
   yum:
