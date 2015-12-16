@@ -33,6 +33,7 @@
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - pentaho
+    - talend
 
   tasks:
     - name: Install development packages

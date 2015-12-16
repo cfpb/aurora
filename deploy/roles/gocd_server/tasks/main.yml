@@ -2,6 +2,7 @@
   get_url:
     url: "{{ gocd_server_package_url }}"
     dest: /tmp/
+    validate_certs: False
 #  when: not custom_repo
 
 - name: Install GoCD Server
