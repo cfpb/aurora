@@ -4,6 +4,7 @@
 go_server_address: 10.0.1.26
 gocd_agent_package_url: https://download.go.cd/gocd-rpm/go-agent-15.2.0-2248.noarch.rpm
 gocd_agent_package_name: /tmp/go-agent-15.2.0-2248.noarch.rpm
+gocd_agent_work_dir: /var/lib/go-agent
 gocd_rpms:
   - screen
   - git
