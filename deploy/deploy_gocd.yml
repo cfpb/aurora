@@ -60,6 +60,7 @@
         - gnucobol
         - htop
         - p7zip
+        - sf-dataloader
       when: custom_repo
 
     - name: Activate Julia repo
