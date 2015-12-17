@@ -3,5 +3,5 @@
 - name: Install Python27 from repo
   yum:
     name: python27
-    state: present
+    state: latest
     disable_gpg_check: yes

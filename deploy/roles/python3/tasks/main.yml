@@ -3,5 +3,5 @@
 - name: Install Python34 from repo
   yum:
     name: python34
-    state: present
+    state: latest
     disable_gpg_check: yes
