@@ -26,7 +26,7 @@ Vagrant.configure(2) do |config|
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
-        v.customize ['createhd', '--filename', disk_file_1, '--size', 500, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
         v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
       end
@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
-        v.customize ['createhd', '--filename', disk_file_2, '--size', 500, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
         v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
       end
@@ -228,5 +228,129 @@ Vagrant.configure(2) do |config|
     end
 
     app_config.vm.network :private_network, ip: "10.0.1.17"
+  end
+
+  #######################
+  ### RESEARCH COMPONENT ###
+  #######################
+
+  # Research ancillary server
+  config.vm.define :research_ancillary_services do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-ancillary.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.18"
+  end
+
+  # Research EOD server
+  config.vm.define :research_eod do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-eod.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.19"
+  end
+
+  # Research gauss server
+  config.vm.define :research_gauss do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-gauss.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.20"
+  end
+
+  # Research stata server
+  config.vm.define :research_stata do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-stata.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.21"
+  end
+
+  # Research R/Python server
+  config.vm.define :research_python do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-python.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.22"
+  end
+
+  # Research Matlab server
+  config.vm.define :research_matlab do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-matlab.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.23"
+  end
+
+  # Research SPSS server
+  config.vm.define :research_spss do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-spss.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.24"
+  end
+
+  # Research SAS server
+  config.vm.define :research_sas do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "research-sas.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_research_environment.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.25"
   end
 end

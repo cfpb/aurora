@@ -16,6 +16,7 @@
   yum:
     name: freetds.x86_64
     state: present
+  when: custom_repo
 
 - name: Configure odbc.ini
   template:
@@ -31,3 +32,4 @@
   template:
     src: freetds.conf
     dest: /usr/local/etc/freetds.conf
+  when: custom_repo

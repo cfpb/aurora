@@ -1,4 +1,19 @@
 ---
+- name: Setup limits for elasticsearch
+  template:
+    src: 99-elasticsearch.conf.j2
+    dest: /etc/security/limits.d/99-elasticsearch.conf
+    mode: 0644
+  notify:
+    - restart elasticsearch
+
+- name: Configure elasticsearch startup script
+  template:
+    src: elasticsearch.j2
+    dest: /etc/sysconfig/elasticsearch
+  notify:
+    - restart elasticsearch
+
 - name: Configure elasticsearch
   template:
     src: elasticsearch.yml.j2
@@ -60,6 +75,21 @@
   with_items: es_plugins
   notify:
     - restart elasticsearch
+
+- name: Stat key file
+  stat:
+    path: /etc/elasticsearch/shield/system_key
+  register: system_key
+  when: es_message_auth
+
+- name: Copy key to each node
+  copy:
+    src: ./system_key
+    dest: /etc/elasticsearch/shield/system_key
+    owner: elasticsearch
+    group: elasticsearch
+    mode: 0600
+  when: es_message_auth and not system_key.stat.exists
 
 - name: Start elasticsearch
   service:

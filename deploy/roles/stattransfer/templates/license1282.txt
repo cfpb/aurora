@@ -1,9 +1,8 @@
-
 [Registration]
 PRODUCT=Stat/Transfer
 NAME=Research & Markets Team
 ORGANIZATION=CFPB
-MAJOR-VERSION=12
+MAJOR-VERSION=13
 LICENSE-TYPE={{stattransfer_license_type}}
 EXPIRATION-DATE={{stattransfer_expiration_date}}
 REG-CODE={{stattransfer_reg_code}}

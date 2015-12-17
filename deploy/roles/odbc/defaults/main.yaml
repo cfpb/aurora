@@ -1,8 +1,7 @@
 ---
 odbc_rpms:
-  - unixODBC.x86_64
-  - unixODBC-kde.x86_64
-  - freetds.x86_64
+  - unixODBC
+  - unixODBC-kde
 
 odbc_ms_sql_hostname: host_ms_sql
 odbc_entries:

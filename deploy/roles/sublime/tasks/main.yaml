@@ -1,6 +1,6 @@
 ---
 - name: Verify install directory
-  file: 
+  file:
     path: "{{sublime_install_directory}}/"
     state: directory
 
@@ -9,3 +9,4 @@
     copy: yes
     src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
+  when: custom_repo

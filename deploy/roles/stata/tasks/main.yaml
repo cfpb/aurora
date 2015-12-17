@@ -1,11 +1,11 @@
 ---
 - name: Verify install directory
-  file: 
+  file:
     path: "{{stata_install_directory}}/"
     state: directory
 
 - name: Install expect
-  yum: 
+  yum:
     name: expect
     state: present
 
@@ -14,14 +14,16 @@
     copy: yes
     src: "{{ stata_local_bin_directory }}/Stata14Linux64.tar.gz"
     dest: "{{ stata_install_directory }}/"
+  when: custom_repo
 
 - name: Set permissions for the install script
   file:
     path: "{{ stata_install_directory }}/install"
     mode: 0755
+  when: custom_repo
 
 - name: Copy the expect script
-  template: 
+  template:
     src: install_stata.exp
     dest: "{{stata_install_directory}}/install_stata.exp"
     mode: 0755
@@ -30,6 +32,7 @@
   shell: "./install_stata.exp"
   args:
     chdir: "{{stata_install_directory}}"
+  when: custom_repo
 
 - name: Copy the stinit expect script
   template:
@@ -41,14 +44,15 @@
   shell: "./stinit_stata.exp"
   args:
     chdir: "{{stata_install_directory}}"
+  when: custom_repo
 
 # Do we need to source this?
 - name: Copy configure_stata to /etc/profile.d
-  template: 
+  template:
     src: configure_stata.sh
     dest: /etc/profile.d/configure_stata.sh
 
 - name: Remove the tarball
-  file: 
+  file:
     path: /tmp/Stata14Linux64.tar.gz
     state: absent
