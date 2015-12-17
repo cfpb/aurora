@@ -12,6 +12,13 @@
   notify:
     - restart go-server
 
+- name: Install GoCD dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+
 - name: Ensure working directory exists
   file:
     state: directory
