@@ -1,12 +1,12 @@
 ---
-- name: Remove old java versions
-  yum:
-    name: "{{ item }}"
-    state: absent
-  with_items:
-    - java-1.6.0-openjdk
-    - java-1.7.0-openjdk
-    - 'java-*ibm*'
+#- name: Remove old java versions
+#  yum:
+#    name: "{{ item }}"
+#    state: absent
+#  with_items:
+#    - java-1.6.0-openjdk
+#    - java-1.7.0-openjdk
+#    - 'java-*ibm*'
 
 - name: Install specified JDK version and dependencies
   yum:

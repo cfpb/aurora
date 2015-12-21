@@ -24,6 +24,7 @@
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - eod
+    - talend # Talend goes here because it installs an older java
     - gocd
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
@@ -35,7 +36,6 @@
     - r-studio-desktop
     - clouseau
     - pentaho
-    - talend
 
   tasks:
     - name: Install development packages

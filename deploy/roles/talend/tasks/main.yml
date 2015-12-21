@@ -1,4 +1,9 @@
 ---
+  - name: Install Java version for Pentaho
+    yum:
+      name: "{{ talend_java_version }}"
+      state: present
+
   - name: Ensure opt folder exists
     file:
       dest: /opt
@@ -24,3 +29,9 @@
     file:
       dest: /opt/{{ talend_zip_name }}/TOS_DI-linux-gtk-x86.sh
       mode: 0755
+
+  - name: Create talend shortcut
+    template:
+      src: talend.desktop.j2
+      dest: /usr/share/applications/talend.desktop
+      mode: 0644

@@ -1,6 +1,11 @@
 ---
 talend_zip_path: .
 talend_zip_name: TOS_DI-20151029_1337-V6.1.0
+talend_icon_path: plugins/org.talend.rcp_6.1.0.20151029_1337/icons/designer.ico
+talend_executable: TOS_DI-linux-gtk-x86_64
+talend_version: 6.1
 talend_heap_min: 256m
 talend_heap_max: 768m
 talend_max_perm_size: 256m
+talend_java_version: java-1.7.0-openjdk
+talend_java_path: /usr/lib/jvm/jre-1.7.0/bin
