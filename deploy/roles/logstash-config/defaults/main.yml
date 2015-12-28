@@ -1,3 +1,5 @@
 ---
 logstash_user: logstash
 logstash_password: password
+logstash_filters:
+  - 12-example-filter.conf

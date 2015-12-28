@@ -3,6 +3,7 @@
   template:
     src: 01-logstash-courier-input.conf
     dest: /etc/logstash/conf.d/01-logstash-courier-input.conf
+  when: install_logstash
   notify:
     - restart logstash
 
@@ -19,6 +20,12 @@
     dest: /etc/logstash/conf.d/30-lumberjack-output.conf
   notify:
     - restart logstash
+
+- name: Add custom filters
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/logstash/conf.d/{{ item }}"
+  with_items: logstash_filters
 
 - name: Ensure permissions are correct
   shell: "chmod 644 /etc/logstash/conf.d/*"

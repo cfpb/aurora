@@ -34,8 +34,14 @@
   notify:
     - restart logstash
 
-- name: Open port 5043 in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5043 -j ACCEPT"
+- name: Remove sgroups because it doesn't work with Active Directory
+  lineinfile:
+    dest: /etc/init.d/logstash
+    line: #SGROUPS=$(id -Gn "$LS_USER") | tr " " "," | sed 's/,$//'; echo '')
+    regexp: (.*)SGROUPS=(.*)
+
+- name: Open port 5043:5044 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5043:5044 -j ACCEPT"
   when: iptables_config
 
 - name: Save rules
