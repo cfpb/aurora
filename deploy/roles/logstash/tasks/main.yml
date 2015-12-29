@@ -37,7 +37,8 @@
 - name: Remove sgroups because it doesn't work with Active Directory
   lineinfile:
     dest: /etc/init.d/logstash
-    line: #SGROUPS=$(id -Gn "$LS_USER") | tr " " "," | sed 's/,$//'; echo '')
+    line: >
+      #SGROUPS=$(id -Gn "$LS_USER") | tr " " "," | sed 's/,$//'; echo '')"
     regexp: (.*)SGROUPS=(.*)
 
 - name: Open port 5043:5044 in iptables
