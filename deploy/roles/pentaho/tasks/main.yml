@@ -4,16 +4,11 @@
       dest: /opt
       state: directory
 
-  - name: Copy Pentaho Zip file
-    copy:
-      src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"
-      dest: /tmp/
-
   - name: Extract Pentaho
     unarchive:
-      copy: no
-      src: /tmp/{{ pentaho_zip_file }}
+      src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"
       dest: /opt/
+      creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
 
   - name: Create desktop shortcut for Pentaho
     template:
