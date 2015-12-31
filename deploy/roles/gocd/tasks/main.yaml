@@ -15,6 +15,13 @@
     dest: /tmp/
 #  when: not custom_repo
 
+- name: Install GoCD Agent
+  yum:
+    name: "{{ gocd_agent_package_name }}"
+    state: present
+  notify:
+    - restart go-agent
+
 - name: Ensure working directory exists
   file:
     state: directory
@@ -22,13 +29,6 @@
     owner: go
     group: go
     mode: 0755
-  notify:
-    - restart go-agent
-
-- name: Install GoCD Agent
-  yum:
-    name: "{{ gocd_agent_package_name }}"
-    state: present
   notify:
     - restart go-agent
 
