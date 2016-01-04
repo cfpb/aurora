@@ -33,3 +33,9 @@
   template:
     src: deployment.config
     dest: "{{ jre_lib_path }}/deployment.config"
+
+- name: Ensure this version is the default
+  alternatives:
+    name: java
+    path: "{{ java_home_path }}/bin/java"
+    link: /usr/bin/java
