@@ -91,6 +91,7 @@ elasticsearch
 elk
 app_server
 research_environment
+pipeline
 
 [terminals:vars]
 is_terminal=True

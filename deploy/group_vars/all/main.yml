@@ -194,3 +194,11 @@ es_service_account: admin
 es_service_account_password: password
 es_message_auth: True
 es_user: elasticsearch
+
+#===================#
+### GOCD Settings ###
+#===================#
+
+# Variables used for running the test suite
+gocd_service_username: admin
+gocd_service_password: password
