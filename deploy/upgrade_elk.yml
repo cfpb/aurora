@@ -24,6 +24,36 @@
             }
           }
 
+# Ensure key exists
+- hosts: elk
+  sudo: yes
+  tasks:
+    - name: Create key for message authentication
+      shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
+      args:
+        creates: /etc/elasticsearch/shield/system_key
+      register: create_key
+      when: es_message_auth
+      environment:
+        ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+
+    - name: Ensure permissions are correct
+      file:
+        dest: /etc/elasticsearch/shield/system_key
+        owner: "{{ es_user }}"
+        group: "{{ es_user }}"
+        mode: 0600
+      when: es_message_auth
+
+    - name: Fetch the key
+      fetch:
+        src: /etc/elasticsearch/shield/system_key
+        dest: ./
+        fail_on_missing: yes
+        flat: yes
+      when: es_message_auth and create_key.changed
+
+# Perform serial upgrade
 - hosts: elasticsearch:elk
   serial: 1
   sudo: yes
@@ -60,8 +90,7 @@
       file:
         dest: /etc/yum.repos.d/elasticsearch.repo
         state: absent
-      when: not "production" in group_names
-
+#      when: not "production" in group_names
   roles:
     - elasticsearch
     - elasticsearch-config

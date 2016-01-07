@@ -26,7 +26,6 @@ shared_folders:
     name: testorg
     state: mounted
 
-
 # Allows servers to use one of the GlusterFS volumes as a shared home directory
 home_directory: "/testorg"
 
@@ -56,6 +55,7 @@ use_epel: True
 
 # Toggle whether or not to install GlusterFS clients
 install_glusterfs: True
+mount_glusterfs: True
 
 # Toggle whether or not to install EOD
 # NOTE: If set to yes, you must provide the EOD binary file
@@ -188,7 +188,9 @@ python3_packages:
 ### ELASTICSEARCH SETTINGS ###
 #============================#
 es_cluster: test_cluster
-install_logstash: true
+install_logstash: True
 es_endpoint: https://es.test.dev
 es_service_account: admin
 es_service_account_password: password
+es_message_auth: True
+es_user: elasticsearch

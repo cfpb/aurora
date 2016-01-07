@@ -1,3 +1,9 @@
+# Startup configuration options
+es_heap_size: "128M"
+es_heap_newsize: "32M"
+
+# Operational configuration options
+es_mlockall: True
 es_http_enabled: False
 es_admin_user: "admin"
 es_admin_group_name: "admin"
@@ -5,6 +11,7 @@ es_user_group_name: "user"
 es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
+es_shield_audit: true
 
 # You can add additional plugins needed for elasticsearch here
 es_plugins:

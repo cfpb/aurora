@@ -23,7 +23,7 @@
     dest: "/home/{{ item.name }}"
     mode: 0777
   with_items: shared_folders
-  when: item.state == 'mounted'
+  when: mount_glusterfs and item.state == 'mounted'
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
@@ -40,7 +40,7 @@
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: unmounted
   with_items: shared_folders
-  when: item.state == 'mounted'
+  when: mount_glusterfs and item.state == 'mounted'
 
   # when: not "production" in group_names
   # ignore_errors: yes
@@ -56,13 +56,14 @@
     state: "{{ item.state }}"
     opts: "{{ gluster_mount_options }}"
   with_items: shared_folders
+  when: mount_glusterfs
 
 - name: Remove unneeded folders
   file:
     state: absent
     dest: "/home/{{ item.name }}"
   with_items: shared_folders
-  when: item.state == 'unmounted'
+  when: mount_glusterfs and item.state == 'unmounted'
 
 - name: Create any needed symlinks
   file:
@@ -70,4 +71,4 @@
     src: "{{ item.target }}"
     path: "{{ item.path }}"
   with_items: shared_links
-  when: shared_links is defined
+  when: mount_glusterfs and shared_links is defined

@@ -1,4 +1,10 @@
 ---
+- name: Minimize swapping
+  lineinfile:
+    name: /etc/sysctl.conf
+    line: vm.swappiness=1
+    regexp: (.*)vm.swappiness=(.*)
+
 - name: Install elasticsearch GPG key
   rpm_key:
     key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
@@ -8,7 +14,7 @@
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
-  when: not "production" in group_names
+  #when: not "production" in group_names
 
 - name: Install elasticsearch
   yum:
@@ -17,17 +23,10 @@
 
 - name: Create elasticsearch data directory
   file:
-    dest: /opt/elasticsearch/data
+    dest: "{{ es_data_directory }}"
     state: directory
-    owner: elasticsearch
-    group: elasticsearch
-
-- name: Setup elasticsearch heap size
-  copy:
-    dest: /etc/default/elasticsearch
-    content: "ES_HEAP_SIZE={{ es_heap_size }}"
-  notify:
-    - restart elasticsearch
+    owner: "{{ es_user }}"
+    group: "{{ es_user }}"
 
 - name: Configure ES config path
   copy:
@@ -52,7 +51,7 @@
 #    - restart elasticsearch
 
 - name: Install the Shield plugin
-  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/latest{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/1.3.0{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
   args:
     creates: /usr/share/elasticsearch/plugins/shield
   environment:
