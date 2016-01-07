@@ -9,5 +9,5 @@
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
-    - role: postgresqlplus
+    - role: postgresql-server
     - role: postgresql-config

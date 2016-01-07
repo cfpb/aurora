@@ -1,0 +1,121 @@
+---
+- hosts: ci_server
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - gocd_server
+
+- hosts: ci_agent
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - gocd
+    - pentaho
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - odbc
+    - ruby
+
+- hosts: ci_agent
+  sudo: yes
+  tasks:
+    - name: Activate Julia repo
+      get_url:
+        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+      when: not 'production' in group_names
+
+    - name: Install additional packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nodejs
+        - "@development"
+        - screen
+        - p7zip
+        - julia
+
+- hosts: ci_terminal
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - eod
+    - talend # Talend goes here because it installs an older java
+    - gocd
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
+    - r
+    - ruby
+    - pycharm
+    - r-studio-desktop
+    - clouseau
+    - pentaho
+
+  tasks:
+    - name: Install development packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - "@development"
+        - gcc-gfortran
+        - python-devel
+        - nodejs
+        - pgadmin3_94
+
+    - name: Install custom RPMs
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - xsv
+        - gnucobol
+        - htop
+        - p7zip
+        - sf-dataloader
+      when: custom_repo
+
+    - name: Activate Julia repo
+      get_url:
+        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+      when: not 'production' in group_names
+
+    - name: Install Julia
+      yum:
+        name: julia
+        state: present
+        disable_gpg_check: yes
+
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+
+    - name: Install Python packages for 27
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages

@@ -3,17 +3,6 @@
 - hosts: db_terminal
   sudo: yes
 
-  pre_tasks:
-    - name: Check if python27 is installed
-      command: rpm -q python27
-      register: python27_check
-      failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
-
-    - name: Check if python34 is installed
-      command: rpm -q python34
-      register: python34_check
-      failed_when: python34_check.rc != 0 and "is not installed" not in python34_check.stdout
-
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
@@ -24,9 +13,9 @@
     - role: postgresql
     - role: eod
     - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo and 'is not installed' in python27_check.stdout"}
+    - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo and 'is not installed' in python34_check.stdout"}
+    - {role: python3-build, when: "not custom_repo"}
 
   tasks:
     - name: Install needed packages

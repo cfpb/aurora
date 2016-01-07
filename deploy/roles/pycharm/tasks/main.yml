@@ -11,6 +11,7 @@
     src: /tmp/pycharm-community-4.5.4.tar.gz
     dest: /opt/
     mode: 0644
+    creates: /opt/pycharm-community-4.5.4
 
 - name: Ensure read permissions are set
   shell: "chmod a+r /opt/pycharm-community-4.5.4/ -R"

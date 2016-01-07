@@ -65,12 +65,31 @@ research_matlab
 research_spss
 research_sas
 
+; Pipeline Component
+[ci_server]
+ci_server ansible_ssh_host=10.0.1.26
+
+[ci_agent]
+ci_agent_1 ansible_ssh_host=10.0.1.27
+
+[ci_terminal]
+ci_terminal_1 ansible_ssh_host=10.0.1.28
+
+[pipeline:children]
+ci_server
+ci_agent
+ci_terminal
+
 ; Data Warehouse Component
 [db_server]
-db ansible_ssh_host=10.0.1.26
+db ansible_ssh_host=10.0.1.29
 
 [db_terminal]
-dbt ansible_ssh_host=10.0.1.27
+dbt ansible_ssh_host=10.0.1.30
+
+[datawarehouse]
+db_server
+db_terminal
 
 ; Global Groups
 [all_groups:children]
@@ -81,10 +100,9 @@ analytics_terminal
 elasticsearch
 elk
 app_server
-db_server
 research_environment
-db_server
-db_terminal
+pipeline
+datawarehouse
 
 [terminals:vars]
 is_terminal=True

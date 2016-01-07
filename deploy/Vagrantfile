@@ -152,7 +152,9 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.network :private_network, ip: "10.0.1.3"
   end
 
-  ### ANALYTICS COMPONENT
+  ###########################
+  ### ANALYTICS COMPONENT ###
+  ###########################
 
   # Analytics Terminal
   config.vm.define :analytics_terminal do |analytics_config|
@@ -233,9 +235,9 @@ Vagrant.configure(2) do |config|
     app_config.vm.network :private_network, ip: "10.0.1.17"
   end
 
-  #######################
+  ##########################
   ### RESEARCH COMPONENT ###
-  #######################
+  ##########################
 
   # Research ancillary server
   config.vm.define :research_ancillary_services do |server|
@@ -357,32 +359,55 @@ Vagrant.configure(2) do |config|
     server.vm.network :private_network, ip: "10.0.1.25"
   end
 
-  ### DATA WAREHOUSE COMPONENT
+  ###########################
+  ### PIPELINES COMPONENT ###
+  ###########################
 
-  # DB Server
-  config.vm.define :db_server do |server_config|
-    server_config.vm.box = "chef/centos-6.5"
-    server_config.vm.host_name = "db.test.dev"
+  config.vm.define :ci_server do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "ci-server.test.dev"
 
-    server_config.ssh.forward_agent = true
+    server.ssh.forward_agent = true
 
-    server_config.vm.provider "virtualbox" do |v|
-      v.memory = 1024
-      v.cpus = 1
-    end
-
-    server_config.vm.provision "ansible" do |ansible|
-      ansible.playbook = "deploy_db_server.yml"
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_gocd.yml"
       ansible.inventory_path = "vagrant_hosts"
-      if ENV['DB_SERVER_EXTRA_VARS']
-        ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
-      end
     end
 
-    server_config.vm.network :private_network, ip: "10.0.1.26"
+    server.vm.network :private_network, ip: "10.0.1.26"
   end
 
-  ### DATA WAREHOUSE COMPONENT
+  config.vm.define :ci_agent_1 do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "ci-agent-1.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_gocd.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.27"
+  end
+
+  config.vm.define :ci_terminal_1 do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "ci-terminal-1.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_gocd.yml"
+      ansible.inventory_path = "vagrant_hosts"
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.28"
+  end
+
+  ################################
+  ### DATA WAREHOUSE COMPONENT ###
+  ################################
 
   # DB Server
   config.vm.define :db_server do |server|
@@ -399,12 +424,13 @@ Vagrant.configure(2) do |config|
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
+
       if ENV['DB_SERVER_EXTRA_VARS']
         ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
       end
     end
 
-    server.vm.network :private_network, ip: "10.0.1.26"
+    server.vm.network :private_network, ip: "10.0.1.29"
   end
 
   # DB Terminal
@@ -419,6 +445,6 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "vagrant_hosts"
     end
 
-    server.vm.network :private_network, ip: "10.0.1.27"
+    server.vm.network :private_network, ip: "10.0.1.30"
   end
 end

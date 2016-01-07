@@ -1,0 +1,111 @@
+---
+  # First setup the test pipeline on the GoCD Server
+  # TODO: Upgrade GoCD to 15.3 so we can just use the API
+  - hosts: ci_server
+    sudo: yes
+
+    # Make sure python is installed
+    roles:
+      - {role: '../deploy/roles/python', when: "custom_repo", sudo: yes}
+      - {role: '../deploy/roles/python-build', when: "not custom_repo", sudo: yes}
+
+    # Install dependencies and execute configuration script.
+    tasks:
+      - name: Install libxml2
+        sudo: yes
+        yum:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - "@development"
+          - libxml2
+          - libxml2-devel
+          - libxslt-devel
+
+      - name: Copy requirements and script to the server
+        copy:
+          src: "{{ item }}"
+          dest: /tmp/
+        with_items:
+          - "files/gocd_test_reqs.txt"
+          - "files/load_test_pipeline.py"
+          - "files/test_hmda_etl.xml"
+          - "files/remove_test_pipelines.py"
+
+      - name: Install script requirements in virtualenv
+        pip:
+          requirements: "/tmp/gocd_test_reqs.txt"
+          virtualenv_command: /usr/local/bin/virtualenv
+          virtualenv: ~/.virtualenvs/gocd_tests
+
+      - name:  Run the script to add the test pipeline into GoCD's configuration file
+        shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/load_test_pipeline.py /tmp/test_hmda_etl.xml
+        environment:
+          GOCD_CONFIG_PATH: "/etc/go/"
+        register: script_output
+
+      - debug:
+          msg: "Script output: {{ script_output }}"
+
+  # Now ensure that the Terminal can reach the master,
+  # and trigger the pipeline via API.
+  - hosts: ci_terminal
+    sudo: yes
+    tasks:
+      - name: Install dependencies
+        sudo: yes
+        yum:
+          name: "{{ item }}"
+          state: present
+        with_items:
+          - "@development"
+          - libxml2
+          - libxml2-devel
+          - libxslt-devel
+          - python-httplib2
+
+      - name: Copy requirements and script to the server
+        copy:
+          src: "{{ item }}"
+          dest: /tmp/
+        with_items:
+          - "files/gocd_test_reqs.txt"
+          - "files/wait_for_pipeline.py"
+
+      - name: Install script requirements in virtualenv
+        pip:
+          requirements: /tmp/gocd_test_reqs.txt
+          virtualenv_command: /usr/local/bin/virtualenv
+          virtualenv: ~/.virtualenvs/gocd_tests
+
+      - wait_for: host={{ hostvars[groups["ci_server"][0]]["ansible_ssh_host"] }} port=8153
+
+      - name: Execute pipeline
+        uri:
+          url: "http://{{ hostvars[groups['ci_server'][0]]['ansible_ssh_host'] }}:8153/go/api/pipelines/AutoTest-HMDA-ETL/schedule"
+          method: POST
+          body_format: json
+          status_code: 202
+          force_basic_auth: yes
+          user: "{{ gocd_service_username }}"
+          password: "{{ gocd_service_password }}"
+          body: ""
+
+      # Wait for the pipeline to begin execution
+      - pause:
+          minutes: 1
+
+      - name: Wait for pipeline to finish execution
+        shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/wait_for_pipeline.py http://{{ gocd_service_username }}:{{ gocd_service_password }}@{{ hostvars[groups['ci_server'][0]]['ansible_ssh_host'] }}:8153 AutoTest-HMDA-ETL
+        register: pipeline_result
+
+      - debug:
+          msg: "Pipeline result: {{ pipeline_result }}"
+
+  - hosts: ci_server
+    sudo: yes
+    tasks:
+      - name: Remove pipeline group
+        shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/remove_test_pipelines.py
+        environment:
+          GOCD_CONFIG_PATH: "/etc/go/"

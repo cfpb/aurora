@@ -12,6 +12,7 @@
   yum:
     name: "{{ item }}"
     state: latest
+    disable_gpg_check: yes
   with_items:
     - glusterfs
     - glusterfs-fuse

@@ -4,4 +4,6 @@ dependencies:
   - {role: python-build, when: "not custom_repo"}
   - role: jdk
   - {role: epel, when: "use_epel"}
-  - role: postgresql
+  - role: postgresql-client
+  - role: odbc
+  - role: jdbc
