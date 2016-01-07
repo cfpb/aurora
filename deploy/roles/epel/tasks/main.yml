@@ -4,6 +4,8 @@
   get_url:
     url: "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
     dest: /tmp/
+  retries: 3
+  delay: 15
 
 - name: Install EPEL repo
   command: "rpm -ivh /tmp/epel-release-6-8.noarch.rpm"

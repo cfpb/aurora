@@ -1,0 +1,5 @@
+---
+  - name: restart go-agent
+    service:
+      name: go-agent
+      state: restarted

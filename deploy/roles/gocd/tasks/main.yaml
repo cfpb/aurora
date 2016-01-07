@@ -5,21 +5,40 @@
     state: present
     disable_gpg_check: yes
   with_items:
-    - "{{gocd_rpms}}"
+    - "{{ gocd_rpms }}"
+  notify:
+    - restart go-agent
 
-- name: Copy over the go agent artifact
-  copy:
-    src: "{{ gocd_local_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
-    dest: "{{ gocd_remote_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
-  when: custom_repo
+- name: Get GoCD RPM
+  get_url:
+    url: "{{ gocd_agent_package_url }}"
+    dest: /tmp/
 
-- name: Install go agent
+- name: Install GoCD Agent
   yum:
-    name: "{{ gocd_remote_bin_directory }}/go-agent-14.2.0-377.noarch.rpm"
+    name: "{{ gocd_agent_package_name }}"
     state: present
-  when: custom_repo
+  notify:
+    - restart go-agent
+
+- name: Ensure working directory exists
+  file:
+    state: directory
+    dest: "{{ gocd_agent_work_dir }}"
+    owner: go
+    group: go
+    mode: 0755
+  notify:
+    - restart go-agent
 
 - name: Replace go-agent file
   template:
     src: go-agent
     dest: /etc/default/go-agent
+  notify:
+    - restart go-agent
+
+- name: Start go-agent
+  service:
+    name: go-agent
+    state: started

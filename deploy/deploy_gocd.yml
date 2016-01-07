@@ -1,25 +1,68 @@
 ---
-- hosts: analytics_terminal
+- hosts: ci_server
   sudo: yes
   roles:
+    - common
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+    - gocd_server
+
+- hosts: ci_agent
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - gocd
+    - pentaho
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - odbc
+    - ruby
+
+- hosts: ci_agent
+  sudo: yes
+  tasks:
+    - name: Activate Julia repo
+      get_url:
+        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+      when: not 'production' in group_names
+
+    - name: Install additional packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nodejs
+        - "@development"
+        - screen
+        - p7zip
+        - julia
+
+- hosts: ci_terminal
+  sudo: yes
+  roles:
+    - common
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - eod
+    - talend # Talend goes here because it installs an older java
+    - gocd
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
-    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - r
     - ruby
-    - jdk
     - pycharm
-    - postgresql
+    - r-studio-desktop
+    - clouseau
+    - pentaho
 
-# Install development packages
-- hosts: analytics_terminal
-  sudo: yes
   tasks:
-    - name: Install packages development packages
+    - name: Install development packages
       yum:
         name: "{{ item }}"
         state: present
@@ -41,6 +84,7 @@
         - gnucobol
         - htop
         - p7zip
+        - sf-dataloader
       when: custom_repo
 
     - name: Activate Julia repo
@@ -75,29 +119,3 @@
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: python3_packages
-
-- hosts: analytics_terminal
-  sudo: yes
-  roles:
-    - {role: eod, when: "install_eod"}
-    - r
-    - revolution-r
-    - r-shiny
-    - r-shiny-config
-    - r-studio-server
-    - r-studio-server-config
-    - {role: log-courier, when: "install_logstash"}
-    - r-studio-desktop
-    - clouseau
-
-- hosts: analytics_terminal
-  sudo: yes
-  tasks:
-    - name: Open port range for app prototyping
-      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
-      when: iptables_config
-      with_items: groups['proxy_server']
-
-    - name: Save rules
-      command: "/sbin/service iptables save"
-      when: iptables_config

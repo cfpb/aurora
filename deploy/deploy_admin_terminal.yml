@@ -9,7 +9,7 @@
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - {role: eod, when: "install_eod"}
+    - eod
     - {role: log-courier, when: "install_logstash"}
 
   tasks:

@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Talend Open Studio {{ talend_version }}
+Version={{ talend_version }}
+Type=Application
+Terminal=false
+Categories=Development;
+Icon=/opt/{{ talend_zip_name }}/{{ talend_icon_path }}
+Exec=/opt/{{ talend_zip_name }}/{{ talend_executable }} -vm {{ talend_java_path }} -data talend/workspace
