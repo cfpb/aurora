@@ -17,6 +17,7 @@
           name: "{{ item }}"
           state: present
         with_items:
+          - libxml2
           - libxml2-devel
           - libxslt-devel
 
@@ -56,6 +57,7 @@
           name: "{{ item }}"
           state: present
         with_items:
+          - libxml2
           - libxml2-devel
           - libxslt-devel
           - python-httplib2
