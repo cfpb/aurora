@@ -5,15 +5,6 @@
     state: present
   when: not 'production' in group_names
 
-- name: Install requirements
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - postgresql94-devel
-    - python-psycopg2
-    - git
-
 - name: Ensure the temporary directory exists
   file:
     path: "{{ pp_temp_dir }}"
@@ -22,7 +13,7 @@
 
 - name: Download PostgresPlus Advanced Server installer
   unarchive:
-    src: "ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+    src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
     dest: "{{ pp_temp_dir }}/"
     mode: 0700
 
@@ -40,69 +31,6 @@
   notify:
     - restart postgres
 
-- name: open up ports in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
-  when: iptables_config
-
-- name: Ensure DBA service account exists
-  postgresql_user:
-    encrypted: yes
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
-    name: "{{ pp_dba_username }}"
-    password: "{{ pp_dba_password }}"
-    port: "{{ pp_serverport }}"
-    role_attr_flags: INHERIT,LOGIN,CREATEDB,CREATEROLE
-
-- name: Create DBA service account DB
-  postgresql_db:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
-    name: "{{ pp_dba_username }}"
-    owner: "{{ pp_dba_username }}"
-    state: present
-
-- name: Grant the "postgres" role to DBA service account
-  postgresql_privs:
-    login: "{{ pp_superaccount }}"
-    password: "{{ pp_superpassword }}"
-    database: postgres
-    port: "{{ pp_serverport }}"
-    objs: postgres
-    roles: "{{ pp_dba_username }}"
-    type: group
-    state: present
-
-- name: Grant the dba_username account privileges on the public and pg_catalog schemas
-  postgresql_privs:
-    login: "{{ pp_superaccount }}"
-    password: "{{ pp_superpassword }}"
-    database: postgres
-    port: "{{ pp_serverport }}"
-    objs: "public,pg_catalog"
-    privs: ALL
-    roles: "{{ pp_dba_username }}"
-    type: schema
-    state: present
-    grant_option: yes
-
-# This is needed for using the postgres_user command (SELECT on pg_authid),
-# and for updating pg_database to set the datistemplate flag (UPDATE on pg_database).
-# However, the later does not work without superuser privileges.
-- name: Grant the dba_username account privileges on pg_catalog tables
-  postgresql_privs:
-    login: "{{ pp_superaccount }}"
-    password: "{{ pp_superpassword }}"
-    database: postgres
-    port: "{{ pp_serverport }}"
-    objs: "pg_authid,pg_database"
-    privs: ALL
-    roles: "{{ pp_dba_username }}"
-    type: table
-    state: present
-    grant_option: yes
-    schema: pg_catalog
-
 - name: Configure postgres connection options
   template:
     src: pg_hba.conf.j2
@@ -119,8 +47,10 @@
     owner: "{{ pp_superaccount }}"
     mode: 0600
 
-- name: Install extensions and supplementary packages
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items: pp_extensions
+- name: open up ports in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config

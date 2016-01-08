@@ -1,13 +1,12 @@
-# deploy_admin_terminal.yml
+# deploy_db_server.yml
 ---
 - hosts: db_server
   sudo: yes
   roles:
-    - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
     - role: postgresql-server
-    - role: postgresql-config
+    - role: postgresql-server-config

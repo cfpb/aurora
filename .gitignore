@@ -78,3 +78,6 @@ dist/
 
 # Ansible extra variable files
 .vagrant*
+
+# Ansible Vault password file
+.vault_password

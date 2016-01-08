@@ -69,7 +69,7 @@ Vagrant.configure(2) do |config|
     end
 
     fs_config.vm.provision 'ansible' do |ansible|
-      ansible.playbook = "configure_file_shares.yml"
+      ansible.playbook = "config_file_server.yml"
     end
 
     fs_config.vm.network :private_network, ip: "10.0.1.5"

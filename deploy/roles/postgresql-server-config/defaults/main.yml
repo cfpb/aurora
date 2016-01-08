@@ -1,0 +1,40 @@
+---
+
+# Extensions to install
+pp_extensions:
+  - postgis2_94
+
+# Example privileges setting, this revokes all privileges from
+# the PUBLIC role on the public schema in template1, and thus
+# also in all new databases created.
+pp_privs:
+  -
+    db: template1
+    roles: PUBLIC
+    privs: ALL
+    type: schema
+    objs: public
+    state: absent
+    schema:
+
+# Example script for defining non-superuser DBA privileges
+# This script allows a user to define a database to be a template.
+pp_dba_scripts:
+  - signature: cfpb_define_template(varchar:bool:bool)
+    script: >
+      CREATE OR REPLACE FUNCTION op_dba.cfpb_define_template(database_name varchar, is_template bool, allow_connections bool)
+      RETURNS void
+      AS
+      $$
+      DECLARE
+      template_action varchar(255);
+      conn_action varchar(255);
+      BEGIN
+      template_action:='UPDATE pg_database SET datistemplate='|| quote_literal(is_template) ||' WHERE datname='|| quote_literal(database_name) ;
+      conn_action:='UPDATE pg_database SET datallowconn='|| quote_literal(allow_connections) ||' WHERE datname='|| quote_literal(database_name) ;
+      EXECUTE template_action;
+      EXECUTE conn_action;
+      END;
+      $$
+      SECURITY DEFINER
+      LANGUAGE plpgsql;

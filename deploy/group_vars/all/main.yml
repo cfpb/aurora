@@ -202,3 +202,18 @@ es_user: elasticsearch
 # Variables used for running the test suite
 gocd_service_username: admin
 gocd_service_password: password
+
+#=========================#
+### PostgreSQL Settings ###
+#=========================#
+
+# Superuser
+pp_superaccount: postgres
+pp_superpassword: password
+
+# PPAS Port
+pp_serverport: 5432
+
+# DBA service account
+pp_dba_username: vagrant
+pp_dba_password: vagrant
