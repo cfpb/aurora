@@ -9,13 +9,14 @@
     - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
-    - role: jdk
-    - role: postgresql-client
-    - role: eod
+    - jdk
+    - postgresql-client
+    - eod
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
+    - sqitch
 
   tasks:
     - name: Install RPM dependencies for python packages

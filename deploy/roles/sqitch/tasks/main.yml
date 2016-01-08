@@ -1,0 +1,26 @@
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - perl-devel
+    - perl-CPAN
+    - perl-DBD-Pg
+
+- name: Get CPAN Minus itself
+  get_url:
+    url: http://cpanmin.us
+    dest: /tmp/cpanminus.pl
+
+- name: Run with perl
+  shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
+  args:
+    creates: /usr/local/bin/cpanm
+
+- name: Get sqitch
+  shell: cpanm --quiet --notest --sudo App::Sqitch
+  args:
+    creates: /usr/local/bin/sqitch
+  environment:
+    PATH: /usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
