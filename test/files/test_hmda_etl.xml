@@ -1,0 +1,61 @@
+<pipeline name="AutoTest-HMDA-ETL">
+  <materials>
+    <git url="https://github.com/cfpb/test_hmda_pipeline" dest="test_hmda_pipeline" materialName="HMDAPipelineScripts" />
+  </materials>
+  <stage name="Build-Env" cleanWorkingDir="true">
+    <approval type="manual" />
+    <jobs>
+      <job name="Build-Env">
+        <tasks>
+          <exec command="/usr/local/bin/virtualenv-2.7" workingdir="test_hmda_pipeline">
+            <arg>.py</arg>
+            <arg>--no-site-packages</arg>
+          </exec>
+          <exec command=".py/bin/pip" workingdir="test_hmda_pipeline">
+            <arg>install</arg>
+            <arg>-r</arg>
+            <arg>requirements.txt</arg>
+            <runif status="passed" />
+          </exec>
+          <exec command="tar">
+            <arg>-zcvf</arg>
+            <arg>test_hmda_pipeline.tar.gz</arg>
+            <arg>test_hmda_pipeline/</arg>
+            <runif status="passed" />
+          </exec>
+        </tasks>
+        <artifacts>
+          <artifact src="test_hmda_pipeline.tar.gz"/>
+        </artifacts>
+      </job>
+    </jobs>
+  </stage>
+  <stage name="HMDA-Download" fetchMaterials="false" cleanWorkingDir="true">
+    <jobs>
+      <job name="HMDA-Download">
+        <tasks>
+          <fetchartifact pipeline="AutoTest-HMDA-ETL" stage="Build-Env" job="Build-Env" srcfile="test_hmda_pipeline.tar.gz">
+            <runif status="passed" />
+          </fetchartifact>
+          <exec command="tar">
+            <arg>-xvf</arg>
+            <arg>test_hmda_pipeline.tar.gz</arg>
+          </exec>
+          <exec command=".py/bin/python" workingdir="test_hmda_pipeline">
+            <arg>download.py</arg>
+            <runif status="passed" />
+          </exec>
+          <exec command="tar">
+            <arg>-zcvf</arg>
+            <arg>hmda.json.tar.gz</arg>
+            <arg>test_hmda_pipeline/hmda.json</arg>
+            <runif status="passed" />
+          </exec>
+        </tasks>
+        <artifacts>
+          <artifact src="hmda.json.tar.gz" />
+        </artifacts>
+      </job>
+    </jobs>
+  </stage>
+</pipeline>

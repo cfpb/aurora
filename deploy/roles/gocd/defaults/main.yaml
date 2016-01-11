@@ -1,15 +1,13 @@
 ---
-gocd_local_bin_directory: '/artifacts'
-gocd_remote_bin_directory: '/tmp'
+#gocd_local_bin_directory: '/artifacts'
+#gocd_remote_bin_directory: '/tmp'
+go_server_address: 10.0.1.26
+gocd_agent_package_url: https://download.go.cd/gocd-rpm/go-agent-15.2.0-2248.noarch.rpm
+gocd_agent_package_name: /tmp/go-agent-15.2.0-2248.noarch.rpm
+gocd_agent_work_dir: /var/lib/go-agent
 gocd_rpms:
   - screen
   - git
   - vim
   - emacs
   - "@Development tools"
-  #- libpqxx
-  #- pgdg-redhat94.noarch
-  #- postgresql94
-  #- postgresql94-devel
-  #- postgresql-devel
-  #- libpqxx-devel

@@ -1,0 +1,17 @@
+---
+  - name: Ensure opt folder exists
+    file:
+      dest: /opt
+      state: directory
+
+  - name: Extract Pentaho
+    unarchive:
+      src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"
+      dest: /opt/
+      creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+
+  - name: Create desktop shortcut for Pentaho
+    template:
+      src: pentaho.desktop.j2
+      dest: /usr/share/applications/pentaho.desktop
+      mode: 0644

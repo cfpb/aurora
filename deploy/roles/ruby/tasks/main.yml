@@ -10,7 +10,9 @@
 
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
-  ignore_errors: yes
+  register: import_key
+  failed_when: import_key.rc != 0 and "not changeds" not in import_key.stderr
+  changed_when: import_key.rc == 0
 
 - name: Get script file
   get_url:

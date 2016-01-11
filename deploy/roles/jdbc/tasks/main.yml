@@ -1,0 +1,6 @@
+---
+  - name: Get JDBC driver JAR file for postgresql
+    get_url:
+      url: "{{ jdbc_postgres_url }}"
+      dest: "{{ jre_lib_path }}/"
+      mode: 0644
