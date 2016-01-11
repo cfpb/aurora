@@ -38,6 +38,8 @@
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
     mode: 0600
+  notify:
+    - restart postgres
 
 - name: Configure PPAS server
   template:
@@ -45,6 +47,64 @@
     dest: "{{ pp_datadir }}/postgresql.conf"
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
+    mode: 0600
+  notify:
+    - restart postgres
+
+# IF SSL is enabled, generate the cert and key
+- name: Create SSL certificate request
+  shell: "openssl req -nodes -new -text -subj \"{{ pp_ssl_string }}\" -out server.req"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.req"
+  when: pp_ssl_enable == 'on'
+
+- name: Generate key
+  shell: "openssl rsa -in privkey.pem -out server.key"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.key"
+  when: pp_ssl_enable == 'on'
+
+- name: Generate cert
+  shell: "openssl req -x509 -in server.req -text -key server.key -out server.crt"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.crt"
+  when: pp_ssl_enable == 'on'
+
+- name: Ensure permissions are correct
+  file:
+    dest: "{{ pp_datadir }}/{{ item }}"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+  with_items:
+    - privkey.pem
+    - server.crt
+    - server.key
+    - server.req
+
+- name: Change permissions on server.key
+  file:
+    dest: "{{ pp_datadir }}/server.key"
+    mode: "og-rwx"
+
+- name: Set permissions on PPAS directory
+  file:
+    dest: "{{ pp_prefix }}/9.4AS"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+
+- name: Copy the environment file
+  shell: "cat {{ pp_prefix }}/9.4AS/pgplus_env.sh >> {{ pp_prefix }}/9.4AS/.bash_profile"
+  args:
+    creates: "{{ pp_prefix }}/9.4AS/.bash_profile"
+
+- name: Set ownership of environment file
+  file:
+    dest: "{{ pp_prefix }}/9.4AS/.bash_profile"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
     mode: 0600
 
 - name: open up ports in iptables

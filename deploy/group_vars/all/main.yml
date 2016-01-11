@@ -213,7 +213,3 @@ pp_superpassword: password
 
 # PPAS Port
 pp_serverport: 5432
-
-# DBA service account
-pp_dba_username: vagrant
-pp_dba_password: vagrant

@@ -16,6 +16,19 @@
     state: present
   with_items: pp_extensions
 
+# These scripts allow for the necessary changes that may
+# need to be made to allow the configuration scripts
+# to properly execute.
+- name: Execute pre-configuration scripts
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.db }}"
+    script: "{{ item.script }}"
+  with_items: pp_pre_scripts
+
+# Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
   postgresql_privs:
     login: "{{ pp_superaccount }}"
@@ -29,6 +42,15 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: pp_privs
+
+- name: Execute configuration scripts
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.db }}"
+    script: "{{ item.script }}"
+  with_items: pp_setup_scripts
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -84,3 +106,13 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: pp_dba_scripts
+
+# Any post-configuration scripts that need to be executed go here
+- name: Execute pre-configuration scripts
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.db }}"
+    script: "{{ item.script }}"
+  with_items: pp_post_scripts

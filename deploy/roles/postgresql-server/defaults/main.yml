@@ -90,6 +90,8 @@ pp_ssl_crl_file: ''
 pp_password_encrypt: on
 pp_db_user_namespace: off
 
+pp_ssl_string: '/C=US/ST=DC/L=NE/O=TESTORG/OU=Admin/CN=localhost'
+
 # TCP Keepalives
 pp_tcp_idle: 0
 pp_tcp_interval: 0
@@ -109,6 +111,8 @@ pp_dynamic_shared_memory_type: posix
 # Disk, etc.
 pp_temp_file_limit: '-1'
 pp_max_files: 1000
+
+pp_shared_preload_libraries: '$libdir/dbms_pipe,$libdir/edb_gen'
 
 pp_vacuum_cost_delay: 0
 pp_vacuum_cost_page_hit: 1
@@ -333,3 +337,5 @@ pp_server_utilization: 66
 pp_workload_profile: oltp
 
 pp_timed_statistics: off
+
+pp_extension_settings: []
