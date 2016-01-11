@@ -17,6 +17,7 @@
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - sqitch
+    - {role: pem-client, tags: pem-client}
 
   tasks:
     - name: Install RPM dependencies for python packages

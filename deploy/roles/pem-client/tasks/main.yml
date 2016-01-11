@@ -1,0 +1,11 @@
+---
+- name: Get the PEM Client installer
+  copy:
+    src: "{{ artifacts_dir }}/{{ pem_installer_bin }}"
+    dest: /tmp/
+    mode: a+x
+
+- name: Install PEM Client
+  shell: "/tmp/{{ pem_installer_bin }} --prefix {{ pem_install_dir }} --mode unattended"
+  args:
+    creates: "{{ pem_install_dir }}/client-v5"

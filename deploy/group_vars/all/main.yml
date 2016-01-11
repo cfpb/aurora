@@ -73,6 +73,10 @@ git_environment: master
 # Puppet disabling on?
 disable_puppet: False
 
+# Location on the local machine where artifacts can be found
+# (by default, the directory ansible is run from)
+artifacts_dir: .
+
 #==============#
 ### IPTABLES ###
 #==============#
