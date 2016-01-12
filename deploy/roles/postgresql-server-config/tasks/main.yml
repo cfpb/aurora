@@ -28,6 +28,7 @@
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: pp_pre_scripts
+  always_run: true
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
@@ -117,3 +118,4 @@
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: pp_post_scripts
+  always_run: true
