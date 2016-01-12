@@ -26,7 +26,7 @@ pp_post_scripts: []
 # Example script for defining non-superuser DBA privileges
 # This script allows a user to define a database to be a template.
 pp_dba_scripts:
-  - signature: cfpb_define_template(varchar:bool:bool)
+  - signature: define_template(varchar:bool:bool)
     script: >
       CREATE OR REPLACE FUNCTION op_dba.define_template(database_name varchar, is_template bool, allow_connections bool)
       RETURNS void
