@@ -97,6 +97,7 @@
     db: template1
     script: "{{ item.script }}"
   with_items: pp_dba_scripts
+  always_run: yes
 
 - name: Grant operational_dba role execute permissions on op_dba schema
   postgresql_privs:
