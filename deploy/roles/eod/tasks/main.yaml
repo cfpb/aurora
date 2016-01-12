@@ -37,7 +37,7 @@
 - name: Ensure that EOD log directory exists
   file:
     path: "{{ eod_install_directory }}/log"
-    state: present
+    state: directory
 
 - name: run eod silent install
   shell: "{{ eod_install_directory }}/bin/install -s"
