@@ -66,6 +66,7 @@
     port: "{{ pp_serverport }}"
     name: operational_dba
     role_attr_flags: INHERIT,NOLOGIN
+  always_run: yes
 
 - name: Create Operational DBA schema
   postgresql_exec:
@@ -74,8 +75,9 @@
     port: "{{ pp_serverport }}"
     db: template1
     script: CREATE SCHEMA IF NOT EXISTS op_dba
+  always_run: yes
 
-- name: All operational_dba role to use the op_dba schema.
+- name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
@@ -111,7 +113,7 @@
   with_items: pp_dba_scripts
 
 # Any post-configuration scripts that need to be executed go here
-- name: Execute pre-configuration scripts
+- name: Execute post-configuration scripts
   postgresql_exec:
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
