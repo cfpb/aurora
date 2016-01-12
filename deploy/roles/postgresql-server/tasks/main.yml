@@ -11,6 +11,24 @@
     recurse: yes
     state: directory
 
+- name: Ensure the data directory exists
+  file:
+    path: "{{ pp_datadir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0600
+
+- name: Ensure the log directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0600
+
 - name: Download PostgresPlus Advanced Server installer
   unarchive:
     src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
