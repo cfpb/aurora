@@ -7,6 +7,7 @@
     - perl-devel
     - perl-CPAN
     - perl-DBD-Pg
+    - "@Development Tools"
 
 - name: Get CPAN Minus itself
   get_url:

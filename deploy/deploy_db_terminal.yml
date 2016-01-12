@@ -61,6 +61,7 @@
       yum:
         name: "{{ item }}"
         state: present
+        disable_gpg_check: yes
       with_items: custom_packages
       when: custom_packages is defined
 
