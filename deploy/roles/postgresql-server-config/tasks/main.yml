@@ -53,6 +53,7 @@
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: pp_setup_scripts
+  always_run: "{{ item.always_run }}"
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
