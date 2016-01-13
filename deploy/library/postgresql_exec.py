@@ -155,7 +155,12 @@ def main():
 
     kw['changed'] = True
     kw['status'] = cursor.statusmessage
-    kw['query_result'] = cursor.fetchall()
+
+    try:
+        kw['query_result'] = cursor.fetchall()
+    except ProgrammingError:
+        kw['query_result'] = []
+
     module.exit_json(**kw)
 
 # import module snippets
