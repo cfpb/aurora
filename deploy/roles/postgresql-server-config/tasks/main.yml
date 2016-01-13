@@ -65,7 +65,8 @@
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     name: operational_dba
-    role_attr_flags: INHERIT,NOLOGIN
+    role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+    state: present
   always_run: yes
 
 - name: Create Operational DBA schema
@@ -123,3 +124,26 @@
     script: "{{ item.script }}"
   with_items: pp_post_scripts
   always_run: true
+
+- name: Create default service account
+  postgresql_user:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    name: "{{ pp_dba_username }}"
+    role_attr_flags: INHERIT,LOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
+    encrypted: yes
+    password: "{{ pp_dba_password }}"
+    state: present
+
+- name: Add default service account to operational_dba group
+  postgresql_privs:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    database: postgres
+    roles: "{{ pp_dba_username }}"
+    objs: operational_dba
+    type: group
+    state: present
+    admin_option: no

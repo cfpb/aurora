@@ -154,6 +154,8 @@ def main():
         db_connection.commit()
 
     kw['changed'] = True
+    kw['status'] = cursor.statusmessage
+    kw['query_result'] = cursor.fetchall()
     module.exit_json(**kw)
 
 # import module snippets

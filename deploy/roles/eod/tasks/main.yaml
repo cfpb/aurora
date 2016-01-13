@@ -1,5 +1,13 @@
 ---
-# TODO: put rpm somewhere accessible
+- name: Install EOD dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+    - openssl-devel
+    - expect
+
 - name: Copy over the EOD bin file
   copy:
     src: "{{ eod_local_bin_directory }}/{{ eod_binary }}"
@@ -11,11 +19,6 @@
     path: "{{ eod_bin_directory }}/{{ eod_binary }}"
     mode: a+x
   when: custom_repo
-
-- name: install expect
-  yum:
-    name: expect
-    state: present
 
 - name: Ensure that eod directory exists
   file:

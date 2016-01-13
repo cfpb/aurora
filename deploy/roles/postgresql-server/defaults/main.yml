@@ -32,7 +32,7 @@ pp_server_utilization: 66
 pp_servicename: ppas-9.4
 pp_serviceaccount: postgres
 pp_workload_profile: oltp
-pp_xlogdir: /opt/PostgresPlus/pg_xlog
+pp_xlogdir: /opt/PostgresPlus/
 
 ## PostgreSQL Configuration Settings
 
@@ -52,7 +52,7 @@ pp_hba_settings:
     context: host
     db: all
     user: all
-    address:  '127.0.0.1/32'
+    address:  '10.0.1.0/24'
     ip_mask: ''
     auth_method: md5
     auth_options: ''

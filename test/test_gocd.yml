@@ -27,14 +27,14 @@
           src: "{{ item }}"
           dest: /tmp/
         with_items:
-          - "files/gocd_test_reqs.txt"
-          - "files/load_test_pipeline.py"
-          - "files/test_hmda_etl.xml"
-          - "files/remove_test_pipelines.py"
+          - "files/gocd/test_reqs.txt"
+          - "files/gocd/load_test_pipeline.py"
+          - "files/gocd/test_hmda_etl.xml"
+          - "files/gocd/remove_test_pipelines.py"
 
       - name: Install script requirements in virtualenv
         pip:
-          requirements: "/tmp/gocd_test_reqs.txt"
+          requirements: "/tmp/test_reqs.txt"
           virtualenv_command: /usr/local/bin/virtualenv
           virtualenv: ~/.virtualenvs/gocd_tests
 
@@ -69,8 +69,8 @@
           src: "{{ item }}"
           dest: /tmp/
         with_items:
-          - "files/gocd_test_reqs.txt"
-          - "files/wait_for_pipeline.py"
+          - "files/gocd/test_reqs.txt"
+          - "files/gocd/wait_for_pipeline.py"
 
       - name: Install script requirements in virtualenv
         pip:

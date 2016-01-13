@@ -12,24 +12,6 @@
     recurse: yes
     state: directory
 
-- name: Ensure the data directory exists
-  file:
-    path: "{{ pp_datadir }}"
-    recurse: yes
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0600
-
-- name: Ensure the log directory exists
-  file:
-    path: "{{ pp_xlogdir }}"
-    recurse: yes
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0600
-
 - name: Download PostgresPlus Advanced Server installer
   unarchive:
     src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
@@ -49,6 +31,24 @@
     creates: "{{ pp_prefix }}"
   notify:
     - restart postgres
+
+- name: Ensure the data directory exists
+  file:
+    path: "{{ pp_datadir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+
+- name: Ensure the log directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
 
 - name: Configure postgres connection options
   template:
@@ -102,11 +102,13 @@
     - server.crt
     - server.key
     - server.req
+  when: pp_ssl_enable == 'on'
 
 - name: Change permissions on server.key
   file:
     dest: "{{ pp_datadir }}/server.key"
     mode: "og-rwx"
+  when: pp_ssl_enable == 'on'
 
 - name: Set permissions on PPAS directory
   file:
