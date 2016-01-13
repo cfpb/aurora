@@ -158,7 +158,7 @@ def main():
 
     try:
         kw['query_result'] = cursor.fetchall()
-    except ProgrammingError:
+    except psycopg2.ProgrammingError:
         kw['query_result'] = []
 
     module.exit_json(**kw)
