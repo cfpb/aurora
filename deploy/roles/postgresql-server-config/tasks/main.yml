@@ -17,6 +17,12 @@
     state: present
   with_items: pp_extensions
 
+- name: Ensure PPAS is started
+  service:
+    name: "{{ pp_servicename }}"
+    state: restarted
+    enabled: yes
+
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
 # to properly execute.
@@ -135,6 +141,7 @@
     encrypted: yes
     password: "{{ pp_dba_password }}"
     state: present
+  always_run: true
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
