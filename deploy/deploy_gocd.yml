@@ -19,6 +19,7 @@
     - {role: python-build, when: "not custom_repo"}
     - odbc
     - ruby
+    - sqitch
 
 - hosts: ci_agent
   sudo: yes
