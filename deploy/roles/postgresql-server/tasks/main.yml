@@ -112,18 +112,18 @@
 
 - name: Set permissions on PPAS directory
   file:
-    dest: "{{ pp_prefix }}/9.4AS"
+    dest: "{{ pp_prefix }}9.4AS"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
 
 - name: Copy the environment file
-  shell: "cat {{ pp_prefix }}/9.4AS/pgplus_env.sh >> {{ pp_prefix }}/9.4AS/.bash_profile"
+  shell: "cat {{ pp_prefix }}9.4AS/pgplus_env.sh >> {{ pp_prefix }}9.4AS/.bash_profile"
   args:
-    creates: "{{ pp_prefix }}/9.4AS/.bash_profile"
+    creates: "{{ pp_prefix }}9.4AS/.bash_profile"
 
 - name: Set ownership of environment file
   file:
-    dest: "{{ pp_prefix }}/9.4AS/.bash_profile"
+    dest: "{{ pp_prefix }}9.4AS/.bash_profile"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0600

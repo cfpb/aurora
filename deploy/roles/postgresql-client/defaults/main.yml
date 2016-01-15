@@ -1,4 +1,4 @@
 ---
 postgres_packages:
-  - postgresql
-  - postgresql-devel
+  - postgresql94
+  - postgresql94-devel
