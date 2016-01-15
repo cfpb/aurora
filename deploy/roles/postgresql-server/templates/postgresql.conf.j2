@@ -709,5 +709,5 @@ timed_statistics = {{ pp_timed_statistics }}			# record wait timings, defaults t
 
 # Add settings for extensions here
 {% for setting in pp_extension_settings %}
-{{ setting.name }}: {{ setting.value }}
+{{ setting.name }} = {{ setting.value }}
 {% endfor %}
