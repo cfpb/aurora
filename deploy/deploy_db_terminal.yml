@@ -62,8 +62,8 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: custom_packages
-      when: custom_packages is defined
+      with_items: db_automation_custom_packages
+      when: db_automation_custom_packages is defined
 
   #      - https://github.com/Factual/drake
   #      - https://github.com/audreyr/cookiecutter

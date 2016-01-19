@@ -5,6 +5,13 @@
     dest: /tmp/
     mode: a+x
 
+- name: Ensure umask is correct
+  lineinfile:
+    dest: ~/.bash_profile
+    line: umask 0022
+    regexp: ^(.*)umask(.*)$
+    state: present
+
 - name: Install PEM Client
   shell: "/tmp/{{ pem_installer_bin }} --prefix {{ pem_install_dir }} --mode unattended"
   args:
