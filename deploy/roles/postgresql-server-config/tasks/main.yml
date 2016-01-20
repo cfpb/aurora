@@ -135,17 +135,6 @@
     state: present
   with_items: pp_dba_scripts
 
-# Any post-configuration scripts that need to be executed go here
-- name: Execute post-configuration scripts
-  postgresql_exec:
-    login_user: "{{ pp_superaccount }}"
-    login_password: "{{ pp_superpassword }}"
-    port: "{{ pp_serverport }}"
-    db: "{{ item.db }}"
-    script: "{{ item.script }}"
-  with_items: pp_post_scripts
-  always_run: true
-
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
   postgresql_privs:
@@ -160,6 +149,17 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: pp_privs
+
+# Any post-configuration scripts that need to be executed go here
+- name: Execute post-configuration scripts
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.db }}"
+    script: "{{ item.script }}"
+  with_items: pp_post_scripts
+  always_run: true
 
 ### Step 3: Create default service account using operational_dba role
 

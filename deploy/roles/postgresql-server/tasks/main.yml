@@ -16,6 +16,8 @@
   unarchive:
     src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
     dest: "{{ pp_temp_dir }}/"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
     mode: 0700
 
 - name: Create configuration file
