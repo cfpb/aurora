@@ -36,21 +36,6 @@
   with_items: pp_pre_scripts
   always_run: true
 
-# Setup default user permissions, etc., for template DB's
-- name: Configure default privileges
-  postgresql_privs:
-    login: "{{ pp_superaccount }}"
-    password: "{{ pp_superpassword }}"
-    port: "{{ pp_serverport }}"
-    database: "{{ item.db }}"
-    objs: "{{ item.objs }}"
-    privs: "{{ item.privs }}"
-    roles: "{{ item.roles }}"
-    schema: "{{ item.schema }}"
-    type: "{{ item.type }}"
-    state: "{{ item.state }}"
-  with_items: pp_privs
-
 - name: Execute configuration scripts
   postgresql_exec:
     login_user: "{{ pp_superaccount }}"
@@ -80,23 +65,29 @@
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
-    db: template1
+    db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
   always_run: yes
+  with_items:
+    - postgres
+    - template1
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
-    database: template1
+    database: "{{ item }}"
     roles: operational_dba
     privs: USAGE
     type: schema
     obj: op_dba
     state: present
+  with_items:
+    - postgres
+    - template1
 
-- name: Load custom functions for defining privileged Operational DBA actions
+- name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
@@ -106,12 +97,36 @@
   with_items: pp_dba_scripts
   always_run: yes
 
-- name: Grant operational_dba role execute permissions on op_dba schema
+- name: Load custom functions for defining privileged Operational DBA actions in postgres
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "{{ item.script }}"
+  with_items: pp_dba_scripts
+  always_run: yes
+
+- name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     database: template1
+    roles: operational_dba
+    privs: EXECUTE
+    schema: op_dba
+    type: function
+    obj: "{{ item.signature }}"
+    state: present
+  with_items: pp_dba_scripts
+
+- name: Grant operational_dba role execute permissions on op_dba schema in postgres
+  postgresql_privs:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    database: postgres
     roles: operational_dba
     privs: EXECUTE
     schema: op_dba
@@ -130,6 +145,23 @@
     script: "{{ item.script }}"
   with_items: pp_post_scripts
   always_run: true
+
+# Setup default user permissions, etc., for template DB's
+- name: Configure default privileges
+  postgresql_privs:
+    login: "{{ pp_superaccount }}"
+    password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    database: "{{ item.db }}"
+    objs: "{{ item.objs }}"
+    privs: "{{ item.privs }}"
+    roles: "{{ item.roles }}"
+    schema: "{{ item.schema }}"
+    type: "{{ item.type }}"
+    state: "{{ item.state }}"
+  with_items: pp_privs
+
+### Step 3: Create default service account using operational_dba role
 
 - name: Create default service account
   postgresql_user:

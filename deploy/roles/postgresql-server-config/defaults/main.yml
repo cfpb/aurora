@@ -16,6 +16,14 @@ pp_privs:
     objs: public
     state: absent
     schema:
+  -
+    db: template1
+    roles: operational_dba
+    privs: ALL
+    type: schema
+    objs: public
+    state: present
+    schema:
 
 pp_pre_scripts: []
 

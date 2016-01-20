@@ -12,7 +12,7 @@
     recurse: yes
     state: directory
 
-- name: Download PostgresPlus Advanced Server installer
+- name: Download and extract PostgresPlus Advanced Server installer
   unarchive:
     src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
     dest: "{{ pp_temp_dir }}/"
