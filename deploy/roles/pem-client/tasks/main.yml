@@ -6,6 +6,7 @@
     mode: a+x
 
 - name: Ensure umask is correct
+  sudo: no
   lineinfile:
     dest: ~/.bash_profile
     line: umask 0022

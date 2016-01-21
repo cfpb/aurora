@@ -9,6 +9,14 @@
     - perl-DBD-Pg
     - "@Development Tools"
 
+- name: Ensure umask is correct
+  sudo: no
+  lineinfile:
+    dest: ~/.bash_profile
+    line: umask 0022
+    regexp: ^(.*)umask(.*)$
+    state: present
+
 - name: Get CPAN Minus itself
   get_url:
     url: http://cpanmin.us
@@ -24,4 +32,9 @@
   args:
     creates: /usr/local/bin/sqitch
   environment:
-    PATH: /usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+    PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+- name: Get pg engine
+  shell: cpanm --quiet --notest --sudo DBD::Pg
+  environment:
+    PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
