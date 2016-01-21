@@ -8,7 +8,7 @@
 - name: Ensure umask is correct
   sudo: no
   lineinfile:
-    dest: ~/.bash_profile
+    dest: ~/.bashrc
     line: umask 0022
     regexp: ^(.*)umask(.*)$
     state: present
