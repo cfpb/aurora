@@ -28,13 +28,13 @@
     creates: /usr/local/bin/cpanm
 
 - name: Get sqitch
-  shell: cpanm --quiet --notest --sudo App::Sqitch
+  shell: cpanm --notest --sudo App::Sqitch
   args:
     creates: /usr/local/bin/sqitch
   environment:
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 - name: Get pg engine
-  shell: cpanm --quiet --notest --sudo DBD::Pg
+  shell: cpanm --notest --sudo DBD::Pg
   environment:
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin

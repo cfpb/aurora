@@ -24,3 +24,4 @@
     dest: /etc/profile.d/postgres.sh
     create: yes
     line: export PATH=/usr/pgsql-9.4/bin:$PATH
+    mode: 0644
