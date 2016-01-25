@@ -1,0 +1,153 @@
+{
+  "group": "automated-test",
+  "pipeline": {
+    "label_template": "${COUNT}",
+    "enable_pipeline_locking": true,
+    "name": "AutoTest-HMDA-ETL",
+    "template": null,
+    "materials": [
+      {
+        "type": "git",
+        "attributes": {
+          "url": "https://github.com/cfpb/test_hmda_pipeline",
+          "destination": "test_hmda_pipeline",
+          "filter": null,
+          "name": "HMDAPipelineScripts",
+          "auto_update": true,
+          "branch": "master",
+          "submodule_folder": null
+        }
+      }
+    ],
+    "stages": [
+      {
+        "name": "Build-Env",
+        "fetch_materials": true,
+        "clean_working_directory": true,
+        "approval": {
+          "type": "manual"
+        },
+        "jobs": [
+          {
+            "name": "Build-Env",
+            "tasks": [
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": "/usr/local/bin/virtualenv-2.7",
+                  "working_directory": "test_hmda_pipeline",
+                  "arguments": [
+                    ".py",
+                    "--no-site-packages"
+                  ]
+                }
+              },
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": ".py/bin/pip",
+                  "working_directory": "test_hmda_pipeline",
+                  "arguments": [
+                    "install",
+                    "-r",
+                    "requirements.txt"
+                  ],
+                  "run_if": [
+                    "passed"
+                  ]
+                }
+              },
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": "tar",
+                  "arguments": [
+                    "-zcvf",
+                    "test_hmda_pipeline.tar.gz",
+                    "test_hmda_pipeline"
+                  ],
+                  "run_if": [
+                    "passed"
+                  ]
+                }
+              }
+            ],
+            "artifacts": [
+              {
+                "source": "test_hmda_pipeline.tar.gz",
+                "type": "build"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "HMDA-Download",
+        "fetch_materials": false,
+        "clean_working_directory": true,
+        "jobs": [
+          {
+            "name": "HMDA-Download",
+            "tasks": [
+              {
+                "type": "fetch",
+                "attributes": {
+                  "pipeline": "AutoTest-HMDA-ETL",
+                  "stage": "Build-Env",
+                  "job": "Build-Env",
+                  "source": "test_hmda_pipeline.tar.gz",
+                  "run_if": [
+                    "passed"
+                  ]
+                }
+              },
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": "tar",
+                  "arguments": [
+                    "-xvf",
+                    "test_hmda_pipeline.tar.gz"
+                  ]
+                }
+              },
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": "py/bin/python",
+                  "working_directory": "test_hmda_pipeline",
+                  "arguments": [
+                    "download.py"
+                  ],
+                  "run_if": [
+                    "passed"
+                  ]
+                }
+              },
+              {
+                "type": "exec",
+                "attributes": {
+                  "command": "tar",
+                  "arguments": [
+                    "-zcvf",
+                    "hmda.json.tar.gz",
+                    "test_hmda_pipeline/hmda.json"
+                  ],
+                  "run_if": [
+                    "passed"
+                  ]
+                }
+              }
+            ],
+            "artifacts": [
+              {
+                "source": "hmda.json.tar.gz",
+                "type": "build"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
