@@ -137,3 +137,8 @@
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config
+
+- name: Remove the temporary folder
+  file:
+    path: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64"
+    state: absent
