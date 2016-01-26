@@ -1,0 +1,144 @@
+---
+- name: Install postgres repository
+  yum:
+    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+    state: present
+  when: not 'production' in group_names
+  always_run: true
+
+- name: Ensure the temporary directory exists
+  file:
+    path: "{{ pp_temp_dir }}"
+    recurse: yes
+    state: directory
+
+- name: Download and extract PostgresPlus Advanced Server installer
+  unarchive:
+    src: "{{ pp_bin_path }}/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+    dest: "{{ pp_temp_dir }}/"
+    owner: "{{ ansible_ssh_user }}"
+    group: "{{ ansible_ssh_user }}"
+    mode: 0700
+
+- name: Create configuration file
+  template:
+    src: config_param.j2
+    dest: "{{ pp_temp_dir }}/config_param"
+    mode: 0600
+
+- name: Run PostgresPlus install script
+  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
+  args:
+    chdir: "{{ pp_temp_dir }}"
+    creates: "{{ pp_prefix }}"
+  notify:
+    - restart postgres
+
+- name: Ensure the data directory exists
+  file:
+    path: "{{ pp_datadir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+
+- name: Ensure the log directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+
+- name: Configure postgres connection options
+  template:
+    src: pg_hba.conf.j2
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
+  notify:
+    - restart postgres
+
+- name: Configure PPAS server
+  template:
+    src: postgresql.conf.j2
+    dest: "{{ pp_datadir }}/postgresql.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
+  notify:
+    - restart postgres
+
+# IF SSL is enabled, generate the cert and key
+- name: Create SSL certificate request
+  shell: "openssl req -nodes -new -text -subj \"{{ pp_ssl_string }}\" -out server.req"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.req"
+  when: pp_ssl_enable == 'on'
+
+- name: Generate key
+  shell: "openssl rsa -in privkey.pem -out server.key"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.key"
+  when: pp_ssl_enable == 'on'
+
+- name: Generate cert
+  shell: "openssl req -x509 -in server.req -text -key server.key -out server.crt"
+  args:
+    chdir: "{{ pp_datadir }}"
+    creates: "{{ pp_datadir }}/server.crt"
+  when: pp_ssl_enable == 'on'
+
+- name: Ensure permissions are correct
+  file:
+    dest: "{{ pp_datadir }}/{{ item }}"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+  with_items:
+    - privkey.pem
+    - server.crt
+    - server.key
+    - server.req
+  when: pp_ssl_enable == 'on'
+
+- name: Change permissions on server.key
+  file:
+    dest: "{{ pp_datadir }}/server.key"
+    mode: "og-rwx"
+  when: pp_ssl_enable == 'on'
+
+- name: Set permissions on PPAS directory
+  file:
+    dest: "{{ pp_prefix }}9.4AS"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+
+- name: Copy the environment file
+  shell: "cat {{ pp_prefix }}9.4AS/pgplus_env.sh >> {{ pp_prefix }}9.4AS/.bash_profile"
+  args:
+    creates: "{{ pp_prefix }}9.4AS/.bash_profile"
+
+- name: Set ownership of environment file
+  file:
+    dest: "{{ pp_prefix }}9.4AS/.bash_profile"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0600
+
+- name: open up ports in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
+  when: iptables_config
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
+
+- name: Remove the temporary folder
+  file:
+    path: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64"
+    state: absent

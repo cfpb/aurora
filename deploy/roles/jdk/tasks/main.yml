@@ -19,6 +19,7 @@
   template:
     src: jdk.sh.j2
     dest: /etc/profile.d/jdk.sh
+    mode: 0644
 
 - name: Add additional deployment settings
   lineinfile:

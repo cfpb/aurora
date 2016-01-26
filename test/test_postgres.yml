@@ -1,0 +1,38 @@
+---
+- hosts: db_terminal
+  tasks:
+    - name: Install requirements for postgresql Ansible tasks
+      sudo: yes
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python-psycopg2
+
+    - name: Ensure that a connection can be made
+      postgresql_exec:
+        login_user: "{{ pp_dba_username }}"
+        login_password: "{{ pp_dba_password }}"
+        login_host: "{{ hostvars[groups['db_server'][0]]['ansible_ssh_host'] }}"
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT 1;"
+
+    - name: Run custom test scripts
+      postgresql_exec:
+        login_user: "{{ pp_dba_username }}"
+        login_password: "{{ pp_dba_password }}"
+        login_host: "{{ hostvars[groups['db_server'][0]]['ansible_ssh_host'] }}"
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "{{ item.script }}"
+      register: test_output
+      with_items: pp_custom_test_scripts
+
+    - debug:
+        msg: "{{ test_output }}"
+
+    - name: Assert results are correct
+      assert:
+        that: "{{ item.assertion }}"
+      with_items: pp_custom_test_scripts

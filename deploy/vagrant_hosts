@@ -80,8 +80,18 @@ ci_server
 ci_agent
 ci_terminal
 
-; Global Groups
+; Data Warehouse Component
+[db_server]
+db_server ansible_ssh_host=10.0.1.29
 
+[db_terminal]
+db_terminal ansible_ssh_host=10.0.1.30
+
+[datawarehouse]
+db_server
+db_terminal
+
+; Global Groups
 [all_groups:children]
 admin_terminal
 proxy_server
@@ -92,6 +102,7 @@ elk
 app_server
 research_environment
 pipeline
+datawarehouse
 
 [terminals:vars]
 is_terminal=True
@@ -99,3 +110,4 @@ is_terminal=True
 [terminals:children]
 admin_terminal
 analytics_terminal
+db_terminal

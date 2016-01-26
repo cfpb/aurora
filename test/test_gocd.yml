@@ -27,25 +27,25 @@
           src: "{{ item }}"
           dest: /tmp/
         with_items:
-          - "files/gocd_test_reqs.txt"
-          - "files/load_test_pipeline.py"
-          - "files/test_hmda_etl.xml"
-          - "files/remove_test_pipelines.py"
+          - "files/gocd/test_reqs.txt"
+          # - "files/gocd/load_test_pipeline.py"
+          # - "files/gocd/test_hmda_etl.xml"
+          - "files/gocd/remove_test_pipelines.py"
 
       - name: Install script requirements in virtualenv
         pip:
-          requirements: "/tmp/gocd_test_reqs.txt"
+          requirements: "/tmp/test_reqs.txt"
           virtualenv_command: /usr/local/bin/virtualenv
           virtualenv: ~/.virtualenvs/gocd_tests
 
-      - name:  Run the script to add the test pipeline into GoCD's configuration file
-        shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/load_test_pipeline.py /tmp/test_hmda_etl.xml
-        environment:
-          GOCD_CONFIG_PATH: "/etc/go/"
-        register: script_output
+      #- name:  Run the script to add the test pipeline into GoCD's configuration file
+      #  shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/load_test_pipeline.py /tmp/test_hmda_etl.xml
+      #  environment:
+      #    GOCD_CONFIG_PATH: "/etc/go/"
+      #  register: script_output
 
-      - debug:
-          msg: "Script output: {{ script_output }}"
+      #- debug:
+      #    msg: "Script output: {{ script_output }}"
 
   # Now ensure that the Terminal can reach the master,
   # and trigger the pipeline via API.
@@ -69,16 +69,45 @@
           src: "{{ item }}"
           dest: /tmp/
         with_items:
-          - "files/gocd_test_reqs.txt"
-          - "files/wait_for_pipeline.py"
+          - "files/gocd/test_reqs.txt"
+          - "files/gocd/wait_for_pipeline.py"
 
       - name: Install script requirements in virtualenv
         pip:
-          requirements: /tmp/gocd_test_reqs.txt
+          requirements: /tmp/test_reqs.txt
           virtualenv_command: /usr/local/bin/virtualenv
           virtualenv: ~/.virtualenvs/gocd_tests
 
       - wait_for: host={{ hostvars[groups["ci_server"][0]]["ansible_ssh_host"] }} port=8153
+
+      - name: Create the pipeline
+        uri:
+          url: "http://{{ hostvars[groups['ci_server'][0]]['ansible_ssh_host'] }}:8153/go/api/admin/pipelines"
+          method: POST
+          body_format: json
+          status_code: 200
+          force_basic_auth: yes
+          user: "{{ gocd_service_username }}"
+          password: "{{ gocd_service_password }}"
+          body: "{{ lookup('file', 'files/gocd/test_hmda_etl.json') }}"
+          HEADER_Accept: "application/vnd.go.cd.v1+json"
+          HEADER_Content-Type: "application/json"
+          timeout: 120
+
+      # Wait for the pipeline creation process to complete
+      - pause:
+          minutes: 0.1
+
+      - name: Unpause the pipeline
+        uri:
+          url: "http://{{ hostvars[groups['ci_server'][0]]['ansible_ssh_host'] }}:8153/go/api/pipelines/AutoTest-HMDA-ETL/unpause"
+          method: POST
+          body_format: json
+          status_code: 200
+          force_basic_auth: yes
+          user: "{{ gocd_service_username }}"
+          password: "{{ gocd_service_password }}"
+          body: ""
 
       - name: Execute pipeline
         uri:
@@ -99,8 +128,8 @@
         shell: ~/.virtualenvs/gocd_tests/bin/python /tmp/wait_for_pipeline.py http://{{ gocd_service_username }}:{{ gocd_service_password }}@{{ hostvars[groups['ci_server'][0]]['ansible_ssh_host'] }}:8153 AutoTest-HMDA-ETL
         register: pipeline_result
 
-      - debug:
-          msg: "Pipeline result: {{ pipeline_result }}"
+      - assert:
+          that: '"completed successfully" in pipeline_result.stdout'
 
   - hosts: ci_server
     sudo: yes

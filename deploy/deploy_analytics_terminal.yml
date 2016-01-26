@@ -13,7 +13,7 @@
     - ruby
     - jdk
     - pycharm
-    - postgresql
+    - postgresql-client
 
 # Install development packages
 - hosts: analytics_terminal

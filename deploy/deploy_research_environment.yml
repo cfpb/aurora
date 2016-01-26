@@ -50,7 +50,7 @@
     - {role: python3-build, when: "not custom_repo"}
     - {role: epel, when: "use_epel"}
     - jdk
-    - postgresql
+    - postgresql-client
     - r
     - r-studio-desktop
     - r-studio-server
