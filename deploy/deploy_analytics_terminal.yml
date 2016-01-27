@@ -80,7 +80,6 @@
   sudo: yes
   roles:
     - {role: eod, when: "install_eod"}
-    - zeromq
     - r
     - revolution-r
     - r-shiny
