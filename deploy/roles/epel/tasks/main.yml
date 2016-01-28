@@ -6,13 +6,22 @@
     dest: /tmp/
   retries: 3
   delay: 15
+  always_run: true
+  tags:
+    - epel
 
 - name: Install EPEL repo
   command: "rpm -ivh /tmp/epel-release-6-8.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/epel.repo
+  always_run: true
+  tags:
+    - epel
 
 - name: Import the EPEL GPG key
   rpm_key:
     key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6"
     state: present
+  always_run: true
+  tags:
+    - epel
