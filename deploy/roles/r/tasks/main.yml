@@ -25,16 +25,6 @@
   tags:
     - r
 
-- name: Ensure that R is executable
-  file:
-    dest: /usr/lib64/R/etc/{{ item }}
-    mode: 0644
-  with_items:
-    - ldpaths
-    - Makeconf
-  tags:
-    - r
-
 - name: Install packages required by R packages
   yum:
     name: "{{ item }}"
@@ -62,5 +52,15 @@
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
   environment: r_env_vars
+  tags:
+    - r
+
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
   tags:
     - r
