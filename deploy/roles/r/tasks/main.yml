@@ -9,7 +9,7 @@
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
     disable_gpg_check: yes
   with_items:
     - R-core
