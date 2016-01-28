@@ -42,6 +42,8 @@
 - name: Update existing R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE);"
   environment: r_env_vars
+  async: 600
+  poll: 10
   tags:
     - r
 
