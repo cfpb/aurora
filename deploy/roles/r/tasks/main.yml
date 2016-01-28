@@ -1,4 +1,11 @@
 ---
+- name: Ensure umask is correct
+  lineinfile:
+    dest: "~/.bashrc"
+    line: umask 0022
+    regexp: (.*)umask(.*)
+    state: present
+
 - name: Install base packages
   yum:
     name: "{{ item }}"
@@ -39,6 +46,12 @@
 
 - name: Ensure Java is configured
   shell: "R CMD javareconf"
+  tags:
+    - r
+
+- name: Update existing R packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE);"
+  environment: r_env_vars
   tags:
     - r
 
