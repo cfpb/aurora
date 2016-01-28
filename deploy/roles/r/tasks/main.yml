@@ -1,8 +1,15 @@
 ---
+- name: Ensure umask is correct
+  lineinfile:
+    dest: "~/.bashrc"
+    line: umask 0022
+    regexp: (.*)umask(.*)
+    state: present
+
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
     disable_gpg_check: yes
   with_items:
     - R-core
@@ -15,14 +22,8 @@
     - texinfo-tex
     - libicu
     - libicu-devel
-
-- name: Ensure that R is executable
-  file:
-    dest: /usr/lib64/R/etc/{{ item }}
-    mode: 0644
-  with_items:
-    - ldpaths
-    - Makeconf
+  tags:
+    - r
 
 - name: Install packages required by R packages
   yum:
@@ -30,9 +31,19 @@
     state: present
     disable_gpg_check: yes
   with_items: r_dependencies
+  tags:
+    - r
 
 - name: Ensure Java is configured
   shell: "R CMD javareconf"
+  tags:
+    - r
+
+- name: Update existing R packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE);"
+  environment: r_env_vars
+  tags:
+    - r
 
 - name: Install R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/')); print('Added'); } else { print('Already installed'); }"
@@ -41,3 +52,15 @@
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
   environment: r_env_vars
+  tags:
+    - r
+
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+  tags:
+    - r
