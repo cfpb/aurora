@@ -6,6 +6,5 @@
 - name: restart eod
   command: "{{ eod_install_directory }}/bin/otecs restart"
 
-# TODO: we need to figure out a clean way to killall the gdm processes, *then* run this step
 - name: restart gdm
   shell: killall gdm-binary && restart prefdm
