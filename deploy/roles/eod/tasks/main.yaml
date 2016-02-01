@@ -137,12 +137,16 @@
     src: custom.conf
     dest: /etc/gdm/custom.conf
     mode: 0644
+  notify:
+    - restart gdm
   tags:
     - eod
 
 - name: Set configuration settings for gdm
   shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
   with_items: gconf_settings
+  notify:
+    - restart gdm
   tags:
     - eod
 
