@@ -21,3 +21,11 @@ eod_license_server_cache: cache.text.dev
 # TODO: you can put all the keys you want to here
 eod_license_keys:
   - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
+
+# GDM Settings
+# This example disables the login user list
+gconf_settings:
+  -
+    setting: "/apps/gdm/simple-greeter/disable_user_list"
+    type: "bool"
+    value: "true"
