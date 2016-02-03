@@ -180,9 +180,11 @@ python_dep_packages:
 
 python_packages:
   - requests
+  - cookiecutter
 
 python3_packages:
   - requests
+  - cookiecutter
 
 #============================#
 ### ELASTICSEARCH SETTINGS ###
