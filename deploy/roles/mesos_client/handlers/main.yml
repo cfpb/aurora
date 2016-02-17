@@ -1,3 +1,0 @@
----
-- name: restart mesos-client
-  command: restart mesos-slave

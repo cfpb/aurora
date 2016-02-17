@@ -106,10 +106,10 @@ mesos-agent-3 ansible_ssh_host=10.0.1.36
 mesos_master
 mesos_agent
 
-[mesos_client]
-mesos-client-1 ansible_ssh_host=10.0.1.9
-mesos-client-2 ansible_ssh_host=10.0.1.10
-mesos-client-3 ansible_ssh_host=10.0.1.11
+[mesos_agent]
+mesos-agent-1 ansible_ssh_host=10.0.1.34
+mesos-agent-2 ansible_ssh_host=10.0.1.35
+mesos-agent-3 ansible_ssh_host=10.0.1.36
 
 [all_groups:children]
 admin_terminal
