@@ -469,7 +469,7 @@ Vagrant.configure(2) do |config|
   #######################
   ### MESOS COMPONENT ###
   #######################
-  
+
   mesos_masters = [
     "10.0.1.31",
     "10.0.1.32",
@@ -479,7 +479,7 @@ Vagrant.configure(2) do |config|
   mesos_masters.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos-master-#{id}" do |mm_config|
-      mm_config.vm.box = "chef/centos-6.5"
+      mm_config.vm.box = "bento/centos-6.7"
       mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
 
@@ -493,24 +493,24 @@ Vagrant.configure(2) do |config|
     end
   end
 
-  # Mesos Clients
-  mesos_clients = [
-    "10.0.1.9",
-    "10.0.1.10",
-    "10.0.1.11",
+  # Mesos Agents
+  mesos_agents = [
+    "10.0.1.34",
+    "10.0.1.35",
+    "10.0.1.36",
   ]
 
-  mesos_clients.each_with_index do |ip, idx|
+  mesos_agents.each_with_index do |ip, idx|
     id = idx+1
-    config.vm.define "mesos-client-#{id}" do |mm_config|
-      mm_config.vm.box = "chef/centos-6.5"
-      mm_config.vm.host_name = "mesos-client-#{id}.test.dev"
+    config.vm.define "mesos-agent-#{id}" do |mm_config|
+      mm_config.vm.box = "bento/centos-6.7"
+      mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
-      
+
       mm_config.ssh.forward_agent = true
 
       mm_config.vm.provision "ansible" do |ansible|
-        ansible.playbook = "deploy_mesos_client.yml"
+        ansible.playbook = "deploy_mesos_agent.yml"
         ansible.inventory_path = "vagrant_hosts"
       end
     end

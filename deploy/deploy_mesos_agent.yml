@@ -1,7 +1,7 @@
 # deploy_mesos_client.yml
 ---
-- hosts: mesos_client
+- hosts: mesos_agent
   sudo: yes
   roles:
     - iptables
-    - mesos_client
+    - mesos_agent

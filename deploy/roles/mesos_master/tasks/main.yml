@@ -4,16 +4,19 @@
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
+  when: not 'production' in group_names
 
 - name: Install the CDH key
   rpm_key:
     key: http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
     state: present
+  when: not 'production' in group_names
 
 - name: Add the CDH repository
   command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm"
   args:
     creates: /etc/yum.repos.d/cloudera-cdh4.repo
+  when: not 'production' in group_names
 
 # Note: Even though the installed packages are the same version
 # for some reason they must be removed and reinstalled as
@@ -32,7 +35,6 @@
     state: present
   with_items:
     - libselinux-python
-    - java-1.7.0-openjdk
     - mesos
     - marathon
     - zookeeper-server
@@ -73,24 +75,34 @@
 
 - name: Add the ip address to the mesos-master folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-master/ip"
+  args:
+    creates: /etc/mesos-master/ip
   notify:
     - restart mesos-master
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-master/ip /etc/mesos-master/hostname"
+  args:
+    creates: /etc/mesos-master/hostname
   notify:
     - restart mesos-master
 
 - name: Create Marathon config folders
-  shell: "sudo mkdir -p /etc/marathon/conf"
+  file:
+    path: /etc/marathon/conf
+    state: directory
 
 - name: Copy hostname file to Marathon config
-  shell: "sudo cp /etc/mesos-master/hostname /etc/marathon/conf"
+  shell: "cp /etc/mesos-master/hostname /etc/marathon/conf"
+  args:
+    creates: /etc/marathon/conf
   notify:
     - restart marathon
 
 - name: Copy the zk file to Marathon
   shell: "sudo cp /etc/mesos/zk /etc/marathon/conf/master"
+  args:
+    creates: /etc/marathon/conf/master
   notify:
     - restart marathon
 

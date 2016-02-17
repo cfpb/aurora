@@ -1,4 +1,4 @@
-# mesos-client-role.yml
+# mesos-agent/main.yml
 ---
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
@@ -18,17 +18,17 @@
     src: zk.j2
     dest: /etc/mesos/zk
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Add the ip address to the Mesos client config folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Stop the Mesos master process
   command: "stop mesos-master"
@@ -43,26 +43,26 @@
 - name: Add the ip address to the mesos client folder
   shell: "echo {{ ansible_ssh_host }} | sudo tee /etc/mesos-slave/ip"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Add the ip to the hostname file too
   shell: "sudo cp /etc/mesos-slave/ip /etc/mesos-slave/hostname"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
-- name: Add isolation to mesos client 
+- name: Add isolation to mesos client
   copy:
     dest: /etc/mesos-slave/isolation
-    content: "cgroups/cpu,cgroups/mem" 
+    content: "cgroups/cpu,cgroups/mem"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Configure correct cgroups route
   copy:
     dest: /etc/mesos-slave/cgroups_hierarchy
     content: "/cgroups"
   notify:
-    - restart mesos-client
+    - restart mesos-agent
 
 - name: Make mesos working directory
   file:
@@ -90,4 +90,3 @@
   command: "start mesos-slave"
   register: mesos_client_start
   failed_when: mesos_client_start.rc != 0 and 'Job is already running' not in mesos_client_start.stderr
-
