@@ -3,5 +3,5 @@
 - hosts: mesos_master
   sudo: yes
   roles:
-    - iptables
+    - {role: iptables, when: "iptables_config"}
     - mesos_master
