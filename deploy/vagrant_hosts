@@ -103,6 +103,10 @@ mesos-agent-1 ansible_ssh_host=10.0.1.34
 mesos-agent-2 ansible_ssh_host=10.0.1.35
 mesos-agent-3 ansible_ssh_host=10.0.1.36
 
+[mesos:children]
+mesos_master
+mesos_agent
+
 [all_groups:children]
 admin_terminal
 proxy_server
@@ -115,8 +119,7 @@ app_server
 research_environment
 pipeline
 datawarehouse
-mesos_master
-mesos_agent
+mesos
 
 [terminals:vars]
 is_terminal=True
