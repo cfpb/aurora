@@ -4,7 +4,7 @@
 - hosts: mesos_agent
   sudo: yes
   roles:
-    - common
+    #- common
     - {role: iptables, when: "iptables_config"}
     - mesos_agent
     - {role: epel, when: "use_epel"}
