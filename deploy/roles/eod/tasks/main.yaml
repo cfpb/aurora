@@ -7,6 +7,8 @@
     - openssl
     - openssl-devel
     - expect
+  tags:
+    - eod
 
 - name: Copy over the EOD bin file
   copy:
@@ -24,16 +26,6 @@
   tags:
     - eod
 
-<<<<<<< HEAD
-=======
-- name: install expect
-  yum:
-    name: expect
-    state: present
-  tags:
-    - eod
-
->>>>>>> 3a6b12c... Added command for setting gconf options
 - name: Ensure that eod directory exists
   file:
     path: "{{ eod_install_directory }}/"
@@ -65,13 +57,10 @@
 - name: run eod silent install
   shell: "{{ eod_install_directory }}/bin/install -s"
   when: custom_repo
-<<<<<<< HEAD
-=======
   args:
     creates: "{{ eod_install_directory }}/bin/otecs"
   tags:
     - eod
->>>>>>> 3a6b12c... Added command for setting gconf options
 
 - name: configure cluster.cfg
   template:
@@ -137,16 +126,12 @@
     src: custom.conf
     dest: /etc/gdm/custom.conf
     mode: 0644
-  notify:
-    - restart gdm
   tags:
     - eod
 
 - name: Set configuration settings for gdm
   shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
   with_items: gconf_settings
-  notify:
-    - restart gdm
   tags:
     - eod
 
