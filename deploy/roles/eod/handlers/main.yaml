@@ -9,4 +9,3 @@
 
 - name: restart gdm
   shell: killall gdm-binary && restart prefdm
-  when: install_eod
