@@ -15,6 +15,7 @@
     - gocd
     - emacs
     - pycharm
+    - nginx
 
 # Install development packages
 - hosts: app_server
