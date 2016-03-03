@@ -23,7 +23,7 @@
     state: directory
     dest: "/home/{{ item.name }}"
     mode: 0777
-  with_items: shared_folders
+  with_items: "{{ shared_folders }}"
   when: mount_glusterfs and item.state == 'mounted'
 
 # Temporary work around, since GlusterFS FUSE does
@@ -40,14 +40,8 @@
     name: "/home/{{ item.name }}"
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: unmounted
-  with_items: shared_folders
+  with_items: "{{ shared_folders }}"
   when: mount_glusterfs and item.state == 'mounted'
-
-  # when: not "production" in group_names
-  # ignore_errors: yes
-
-#  with_items: "{{ volume_status.results }}"
-#  when: item.rc == 1
 
 - name: Mount shared drives and add to fstab
   mount:
@@ -56,14 +50,14 @@
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: "{{ item.state }}"
     opts: "{{ gluster_mount_options }}"
-  with_items: shared_folders
+  with_items: "{{ shared_folders }}"
   when: mount_glusterfs
 
 - name: Remove unneeded folders
   file:
     state: absent
     dest: "/home/{{ item.name }}"
-  with_items: shared_folders
+  with_items: "{{ shared_folders }}"
   when: mount_glusterfs and item.state == 'unmounted'
 
 - name: Create any needed symlinks
@@ -71,5 +65,5 @@
     state: link
     src: "{{ item.target }}"
     path: "{{ item.path }}"
-  with_items: shared_links
+  with_items: "{{ shared_links }}"
   when: mount_glusterfs and shared_links is defined
