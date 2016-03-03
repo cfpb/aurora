@@ -1,9 +1,9 @@
 ---
-#gocd_local_bin_directory: '/artifacts'
-#gocd_remote_bin_directory: '/tmp'
 go_server_address: 10.0.1.26
-gocd_agent_package_url: https://download.go.cd/gocd-rpm/go-agent-15.2.0-2248.noarch.rpm
-gocd_agent_package_name: /tmp/go-agent-15.2.0-2248.noarch.rpm
+gocd_agent_package_url: https://download.go.cd/binaries/16.2.1-3027/rpm/go-agent-16.2.1-3027.noarch.rpm
+gocd_agent_package_name: go-agent-16.2.1-3027.noarch.rpm
+gocd_agent_package_path: /tmp
+gocd_agent_checksum: "d8de24ebab766e09c2bb12c8e674015b12debb59"
 gocd_agent_work_dir: /var/lib/go-agent
 gocd_rpms:
   - screen

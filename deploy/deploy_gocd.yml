@@ -1,6 +1,7 @@
 ---
 - hosts: ci_server
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}
@@ -8,7 +9,8 @@
     - gocd_server
 
 - hosts: ci_agent
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}
@@ -20,15 +22,17 @@
     - odbc
     - ruby
     - sqitch
+    - julia
 
 - hosts: ci_agent
-  sudo: yes
+  become: yes
+  become_method: sudo
   tasks:
-    - name: Activate Julia repo
-      get_url:
-        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
-        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
-      when: not 'production' in group_names
+    #- name: Activate Julia repo
+    #  get_url:
+    #    url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+    #    dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+    #  when: not 'production' in group_names
 
     - name: Install additional packages
       yum:
@@ -39,7 +43,7 @@
         - "@development"
         - screen
         - p7zip
-        - julia
+    #    - julia
 
     - name: Install Additional Database Automation packages
       yum:
@@ -65,7 +69,8 @@
       when: db_automation_custom_packages is defined
 
 - hosts: ci_terminal
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}

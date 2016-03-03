@@ -9,14 +9,35 @@
   notify:
     - restart go-agent
 
-- name: Get GoCD RPM
-  get_url:
-    url: "{{ gocd_agent_package_url }}"
-    dest: /tmp/
+# Does not work due to lack of SNI support in Python < 2.7.9
+#- name: Get GoCD RPM
+#  get_url:
+#    url: "{{ gocd_agent_package_url }}"
+#    dest: /tmp/
+#    checksum: "sha1:{{ gocd_agent_checksum }}"
+#    validate_certs: False
+
+- name: Download GoCD Server RPM
+  shell: "curl -o {{ gocd_agent_package_path }}/{{ gocd_agent_package_name }} {{ gocd_agent_package_url }}"
+  args:
+    creates: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+
+- name: Verify RPM checksum
+  stat:
+    path: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+    get_md5: False
+  register: gocd_rpm
+
+- debug:
+    var: gocd_rpm
+
+- name: Ensure the checksum maches expected value
+  assert:
+    that: "gocd_rpm.stat.checksum == '{{ gocd_agent_checksum }}'"
 
 - name: Install GoCD Agent
   yum:
-    name: "{{ gocd_agent_package_name }}"
+    name: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
     state: present
   notify:
     - restart go-agent
