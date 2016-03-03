@@ -32,7 +32,7 @@ Vagrant.configure(2) do |config|
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
         v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
-        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+#        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
       end
     end
@@ -58,7 +58,7 @@ Vagrant.configure(2) do |config|
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
         v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
-        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+ #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
       end
     end

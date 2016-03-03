@@ -10,29 +10,31 @@
     - name: Probe for other file server
       command: "gluster peer probe 10.0.1.4"
 
-#    - name: Create volume
-#      command: "gluster volume create {{ item }} replica 2 transport tcp 10.0.1.4:/data/{{ item }} 10.0.1.5:/data/{{ item }}"
-#      with_items: shared_folders
-#      register: gluster_create
-#      failed_when: gluster_create.rc != 0 and "already exists" not in gluster_create.stderr
-#      changed_when: gluster_create.rc == 0
-
-    - name: Create gluster volumes
-      gluster_volume:
-        name: "{{ item }}"
-        state: present
-        transport: tcp
-        cluster: "10.0.1.4"
-        brick: "/data/{{ item }}"
-        replicas: 2
+    - name: Create volume
+      command: "gluster volume create {{ item.name }} replica 2 transport tcp 10.0.1.4:/data/{{ item.name }} 10.0.1.5:/data/{{ item.name }}"
       with_items: shared_folders
-      run_once: True
+      register: gluster_create
+      failed_when: gluster_create.rc != 0 and "already exists" not in gluster_create.stderr
+      changed_when: gluster_create.rc == 0
+      when: item.state == 'mounted'
+
+#    - name: Create gluster volumes
+#      gluster_volume:
+#        name: "{{ item }}"
+#        state: present
+#        transport: tcp
+#        cluster: "10.0.1.4"
+#        brick: "/data/{{ item }}"
+#        replicas: 2
+#      with_items: shared_folders
+#      run_once: True
 
     - name: Start gluster volumes
       gluster_volume:
-        name: "{{ item }}"
+        name: "{{ item.name }}"
         state: started
       with_items: shared_folders
+      when: item.state == "mounted"
 
 #    - name: Start the volume
 #      command: "gluster volume start {{ item }}"
