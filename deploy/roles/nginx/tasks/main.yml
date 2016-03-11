@@ -5,16 +5,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - httpd
-    - httpd-devel
-    - mod_ssl
-    - openssh
-    - php
-    - php-common
-    - php-ldap
-
-
-
+    - nginx
 
 - name: Ensure Nginx is started and enabled at boot time.
   service:
