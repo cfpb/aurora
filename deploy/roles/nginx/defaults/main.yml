@@ -16,7 +16,7 @@ nginx_worker_connections: 1024
 
 ## BLOCKING CERTAIN ROBOTS AND MALICIOUS TRAFFIC FROM ABUSING SERVERS.
 #
-http {
+    http {
     if ($http_user_agent~* msnbot|scrapbot){
         return 403;
       }
