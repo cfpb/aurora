@@ -1,0 +1,39 @@
+
+
+user {{ nginx_user }}
+
+error_log {{ nginx_error_log }}
+pid       {{ nginx_pid }}
+
+worker_processes {{ nginx_worker_processes }}
+
+
+events { 
+    worker_connections  {{ nginx_worker_connections }};
+}
+
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    access_log  {{ nginx_access_log }};
+
+    sendfile    {{ nginx_sendfile }};
+    tcp_nopush  {{ nginx_tcp_nopush }};
+    tcp_nodelay {{ nginx_tcp_nodelay }};
+
+    keepalive_timeouts  {{ nginx_keepalive_timeout }}
+
+    include {{ nginx_conf_dir }}/*.conf;
+
+## BLOCKING CERTAIN ROBOTS AND MALICIOUS TRAFFIC FROM ABUSING SERVERS.
+
+    if ($http_user_agent~* msnbot|scrapbot){
+        return 403;
+      }
+    if ($http_user_agent~* LWP::Simple|BBBike|wget){
+        return 403
+      }
+
+}

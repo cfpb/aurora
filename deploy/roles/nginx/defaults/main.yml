@@ -4,34 +4,64 @@ nginx_listen: 80
 
 nginx_user: nginx_user
 
-nginx_dir: /etc/nginx
+nginx_dir: "/etc/nginx"
 
 nginx_worker_processes: 1
-
-nginx_log_dir: /var/log/nginx
-
-nginx_pid: /var/run/nginx.pid
-
 nginx_worker_connections: 1024
+
+nginx_log_dir: "/var/log/nginx"
+nginx_error_log: "/var/log/nginx/error.log warn"
+nginx_access_log: "/var/log/nginx/access.log main"
+
+nginx_pid: "/var/run/nginx.pid"
+
+nginx_sendfile: "on"
+nginx_tcp_nopush: "on"
+nginx_tcp_nodelay: "on"
+
+nginx_keepalive_timeout: "0"
+
+nginx_conf_dir: "/etc/nginx/conf.d/"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## BLOCKING CERTAIN ROBOTS AND MALICIOUS TRAFFIC FROM ABUSING SERVERS.
 #
-    http {
-    if ($http_user_agent~* msnbot|scrapbot){
-        return 403;
-      }
-    if ($http_user_agent~* LWP::Simple|BBBike|wget){
-        return 403
-      }
-    }
+#    http {
+#    if ($http_user_agent~* msnbot|scrapbot){
+#        return 403;
+#      }
+#    if ($http_user_agent~* LWP::Simple|BBBike|wget){
+#        return 403
+#      }
+#}
 
-nginx_http_params:
-  - sendfile "on"
-  - tcp_nopush "on"
-  - tcp_nodelay "on"
-  - keepalive_timeout "65"
-  - access_log "{{nginx_log_dir}}/access.log"
-  - error_log "{{nginx_log_dir}}/error.log"
+#nginx_http_params:
+#  - sendfile "on"
+#  - tcp_nopush "on"
+#  - tcp_nodelay "on"
+#  - keepalive_timeout "65"
+#  - access_log "{{nginx_log_dir}}/access.log"
+#  - error_log "{{nginx_log_dir}}/error.log"
 
 
 
