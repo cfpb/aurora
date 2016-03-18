@@ -56,7 +56,6 @@
     group: zookeeper
   with_items:
     - "/etc/zookeeper"
-    - "/etc/zookeeper/conf"
 
 - name: Create zookeeper config file
   template:
