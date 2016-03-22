@@ -6,7 +6,9 @@ server {
   # Instruct this server to listen on port 3838
   listen 3838;
 
+  {% if r_shiny_pro %}
   whitelist_headers {{ shiny_http_headers }};
+  {% endif %}
 
   {% if r_shiny_pro %}
   # Fails to work for some reason

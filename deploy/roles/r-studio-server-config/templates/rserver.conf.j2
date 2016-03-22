@@ -1,7 +1,14 @@
-# Server Configuration File
+{{ template_masthead }}
+
+# R Studio Server Configuration File
+www-port={{ rstudio_port }}
+www-address={{ rstudio_address }}
+
+{% if rstudio_pro %}
 auth-proxy={{ rstudio_enable_auth_proxy }}
 auth-proxy-sign-in-url={{ rstudio_domain_name }}
 monitor-data-path=/opt/rstudio-server/monitoring-data
 server-health-check-enabled=1
 admin-enabled=1
 admin-group={{ rstudio_admin_group }}
+{% endif %}
