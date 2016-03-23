@@ -14,6 +14,8 @@ events {
 
 
 http {
+
+
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
@@ -23,17 +25,39 @@ http {
     tcp_nopush  {{ nginx_tcp_nopush }};
     tcp_nodelay {{ nginx_tcp_nodelay }};
 
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$remote_host $body_bytes_sent $body_bytes_received "$http_referer" '
+                    ' "$http_user_agent" $server_port $host '
+
+
     keepalive_timeouts  {{ nginx_keepalive_timeout }}
 
     include {{ nginx_conf_dir }}/*.conf;
 
-## BLOCKING CERTAIN ROBOTS AND MALICIOUS TRAFFIC FROM ABUSING SERVERS.
+    server_tokens {{ nginx_server_tokens }}
 
-    if ($http_user_agent~* msnbot|scrapbot){
+    client_max_body_size        {{ nginx_client_max_body_size }};
+    client_header_buffer_size   {{ nginx_client_header_buffer_size }};
+    client_body_buffer_size     {{ nginx_client_body_buffer_size }};
+    large_client_buffers        {{ nginx_large_client_buffers }};
+
+
+### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
+
+    if {{ nginx_block_download_agents}} {
         return 403;
       }
-    if ($http_user_agent~* LWP::Simple|BBBike|wget){
+
+### BLOCKING ROBOTS: To prevent enumeration and other attacks
+
+    if {{ nginx_block_robots }} {
         return 403
-      }
+
+### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
+
+    if {{ nginx_webcrawler_protect }} {
+        return 444;
+    }
 
 }
