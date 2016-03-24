@@ -53,7 +53,7 @@ http {
 
     if {{ nginx_block_robots }} {
         return 403
-
+    }
 ### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
 
     if {{ nginx_webcrawler_protect }} {
