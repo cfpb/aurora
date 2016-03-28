@@ -4,6 +4,11 @@
       dest: /opt
       state: directory
 
+  - name: Ensure unzip is installed
+    yum:
+      name: unzip
+      state: present
+
   - name: Extract Pentaho
     unarchive:
       src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"

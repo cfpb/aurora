@@ -91,11 +91,35 @@ db_terminal ansible_ssh_host=10.0.1.30
 db_server
 db_terminal
 
+[mesos_master]
+mesos-master-1 ansible_ssh_host=10.0.1.31
+mesos-master-2 ansible_ssh_host=10.0.1.32
+mesos-master-3 ansible_ssh_host=10.0.1.33
+
 ; Global Groups
+[mesos_agent]
+mesos-agent-1 ansible_ssh_host=10.0.1.34
+mesos-agent-2 ansible_ssh_host=10.0.1.35
+mesos-agent-3 ansible_ssh_host=10.0.1.36
+
+[mesos:children]
+mesos_master
+mesos_agent
+
+[mesos_agent]
+mesos-agent-1 ansible_ssh_host=10.0.1.34
+mesos-agent-2 ansible_ssh_host=10.0.1.35
+mesos-agent-3 ansible_ssh_host=10.0.1.36
+
+[mesos:children]
+mesos_master
+mesos_agent
+
 [all_groups:children]
 admin_terminal
 proxy_server
 file_server
+kerberos_server
 analytics_terminal
 elasticsearch
 elk
@@ -103,6 +127,7 @@ app_server
 research_environment
 pipeline
 datawarehouse
+mesos
 
 [terminals:vars]
 is_terminal=True

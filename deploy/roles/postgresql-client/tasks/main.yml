@@ -17,7 +17,12 @@
     src: "{{ postgres_install_dir }}/include/"
     dest: /usr/include/pgsql
     state: link
-  when: postgres_install_dir is defined
+
+- name: Ensure other libraries can see library files
+  file:
+    src: "{{ postgres_install_dir }}/lib"
+    dest: /usr/lib/pgsql
+    state: link
 
 - name: Add psql bin directory to path
   lineinfile:

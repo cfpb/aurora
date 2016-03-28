@@ -1,0 +1,7 @@
+# deploy_mesos_master.yml
+---
+- hosts: mesos_master
+  sudo: yes
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - mesos_master

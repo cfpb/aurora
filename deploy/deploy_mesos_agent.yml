@@ -1,0 +1,107 @@
+# deploy_mesos_client.yml
+### The Mesos agent comes with everything included in a GoCD agent and the App Server
+---
+- hosts: mesos_agent
+  sudo: yes
+  roles:
+    #- common
+    - {role: iptables, when: "iptables_config"}
+    - mesos_agent
+    - {role: epel, when: "use_epel"}
+    - jdk
+    - postgresql-client
+    - pentaho
+    - gocd
+
+- hosts: mesos_agent
+  sudo: yes
+  tasks:
+    - name: Activate Julia repo
+      get_url:
+        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
+        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
+      when: not 'production' in group_names
+
+    - name: Install additional packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - nodejs
+        - "@Development Tools"
+        - screen
+        - p7zip
+        #- julia
+
+- hosts: mesos_agent
+  sudo: yes
+  roles:
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
+    - odbc
+    - jdbc
+    - ruby
+    - sqitch
+    - r
+    - r-shiny
+
+- hosts: mesos_agent
+  sudo: yes
+  tasks:
+    - name: Install custom RPMs
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - xsv
+        - gnucobol
+        - htop
+        - p7zip
+      when: custom_repo
+
+    - name: Install Additional Database Automation packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - htop
+        - rsync
+        - unzip
+        - gpg
+        - pigz
+        - facter
+        - sysstat # sar, iostat, vmstat
+        - systemtap # dtrace equivalent
+        - ant
+
+    - name: Install Database Automation custom packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: db_automation_custom_packages
+      when: db_automation_custom_packages is defined
+
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+
+    - name: Install Python packages for 2.7
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 3.4
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages

@@ -41,7 +41,7 @@
 
 - name: Update existing R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE);"
-  environment: r_env_vars
+  environment: '{{ r_env_vars }}'
   async: 2400
   poll: 60
   tags:
@@ -53,7 +53,7 @@
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
-  environment: r_env_vars
+  environment: '{{ r_env_vars }}'
   tags:
     - r
 
