@@ -26,7 +26,7 @@
     src: "{{ item }}"
     dest: "/etc/logstash/conf.d/{{ item }}"
     mode: 0644
-  with_items: logstash_filters
+  with_items: "{{ logstash_filters }}"
 
 - name: Ensure permissions are correct
   shell: "chmod 644 /etc/logstash/conf.d/*"
