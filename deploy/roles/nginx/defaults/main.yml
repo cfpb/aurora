@@ -1,3 +1,5 @@
+
+# file: aurora/deploy/roles/nginx/defaults/main.yml
 ---
 
 nginx_listen: 80
@@ -30,4 +32,3 @@ nginx_block_download_agents: "$http_user_agent~* msnbot|scrapbot"
 nginx_block_robots: "$http_user_agent~* LWP::Simple|BBBike|wget"
 nginx_webcrawler_protect: "$host !~ ^(nixcraft.in|www.nixcraft.in|images.nixcraft.in"
 
-# file: aurora/deploy/roles/nginx/defaults/main.yml

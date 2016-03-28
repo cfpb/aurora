@@ -5,9 +5,6 @@
   register: python27_check
   failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
 
-#- debug: 
-#    var: python27_check
-
 - name: Make sure rpmbuild is empty
   sudo: no
   file:

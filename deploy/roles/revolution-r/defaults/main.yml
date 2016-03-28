@@ -1,3 +1,4 @@
 ---
 revolution_r_package: /tmp/RRO-3.2.0/RRO-3.2.0-el6.x86_64.rpm
+revolution_r_path: /usr/lib64/RRO-3.2.0/R-3.2.0/lib64/R/etc/
 install_mkl: false
