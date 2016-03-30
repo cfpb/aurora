@@ -8,18 +8,27 @@
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
   when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Install the CDH key
   rpm_key:
     key: http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
     state: present
   when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Add the CDH repository
   command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm"
   args:
     creates: /etc/yum.repos.d/cloudera-cdh4.repo
   when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
 
 ### INSTALL MESOS MASTER PACKAGES
 
@@ -33,12 +42,18 @@
   with_items:
     - redhat-lsb-graphics
     - redhat-lsb-core
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Install mesos and supporting packages
   yum:
     name: "{{ item }}"
     state: present
-  with_items: mesos_server_packages
+  with_items: "{{ mesos_server_packages }}"
+  tags:
+    - mesos
+    - mesos-master
 
 ### CONFIGURE ZOOKEEPER
 - name: Configure zookeeper with the IP's of all masters
@@ -47,6 +62,9 @@
     dest: /etc/mesos/zk
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Create zookeeper config folders
   file:
@@ -56,6 +74,9 @@
     group: zookeeper
   with_items:
     - "/etc/zookeeper"
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Create zookeeper config file
   template:
@@ -63,11 +84,17 @@
     src: zoo.cfg
     owner: zookeeper
     group: zookeeper
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Initialize zookeeper
   command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
   args:
     creates: /var/lib/zookeeper/myid
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Ensure ownership is correct
   file:
@@ -76,6 +103,9 @@
     recurse: yes
     owner: zookeeper
     group: zookeeper
+  tags:
+    - mesos
+    - mesos-master
 
 ### CONFIGURE MESOS
 
@@ -85,6 +115,9 @@
     dest: /etc/mesos/zk
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Update the quorum config file
   template:
@@ -92,6 +125,9 @@
     src: quorum.j2
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Add the ip address to the mesos-master folder
   copy:
@@ -99,6 +135,9 @@
     content: "{{ ansible_ssh_host }}"
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Add the ip to the hostname file too
   copy:
@@ -106,6 +145,9 @@
     content: "{{ ansible_ssh_host }}"
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure port for Mesos to run on
   lineinfile:
@@ -114,6 +156,9 @@
     regexp: ^(.*)PORT=[0-9]+$
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Setup credentials
   template:
@@ -123,6 +168,9 @@
   when: mesos_credentials is defined
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure credentials
   copy:
@@ -131,6 +179,9 @@
   when: mesos_credentials is defined
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Enable framework authentication, if desired
   copy:
@@ -138,6 +189,9 @@
     dest: /etc/mesos-master/authenticate
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Enable agent authentication, if desired
   copy:
@@ -145,6 +199,9 @@
     dest: /etc/mesos-master/authenticate_slaves
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Setup ACL's, if desired
   copy:
@@ -152,6 +209,9 @@
     dest: /etc/mesos-master/acls
   notify:
     - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 ### CONFIGURE MARATHON
 
@@ -159,6 +219,9 @@
   file:
     path: /etc/marathon/conf
     state: directory
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Copy hostname file to Marathon config
   copy:
@@ -166,6 +229,9 @@
     content: "{{ ansible_ssh_host }}"
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Copy the zk file to Marathon
   template:
@@ -173,6 +239,9 @@
     dest: /etc/marathon/conf/master
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Setup Zookeeper config for Marathon
   template:
@@ -180,6 +249,9 @@
     src: zk.marathon.j2
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Confgiure Marathon HTTP port
   copy:
@@ -187,6 +259,9 @@
     content: "{{ marathon_http_port }}"
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Confgiure Mesos user for Marathon
   copy:
@@ -194,6 +269,9 @@
     content: "{{ marathon_mesos_user }}"
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure Marathon principal
   copy:
@@ -201,6 +279,9 @@
     content: "{{ marathon_mesos_principal }}"
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure Marathon secret file path
   copy:
@@ -209,6 +290,9 @@
     mode: 0600
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure Marathon secret
   copy:
@@ -217,6 +301,9 @@
     mode: 0600
   notify:
     - restart marathon
+  tags:
+    - mesos
+    - mesos-master
 
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
@@ -226,11 +313,17 @@
   command: "stop mesos-slave"
   register: mesos_client_stop
   failed_when: mesos_client_stop.rc != 0 and 'Unknown instance' not in mesos_client_stop.stderr
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Override the mesos-slave service
   file:
     dest: /etc/init/mesos-slave.conf.override
     state: touch
+  tags:
+    - mesos
+    - mesos-master
 
 ### START ZOOKEEPER, MESOS, AND MARATHON
 
@@ -239,6 +332,9 @@
     name: zookeeper-server
     state: started
     enabled: yes
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Start the Mesos master and Marathon processes (they are already enabled)
   command: "start {{ item }}"
@@ -247,6 +343,9 @@
     - marathon
   register: mesos_master_start
   failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+  tags:
+    - mesos
+    - mesos-master
 
 ## CONFIGURE IP TABLES
 
@@ -263,9 +362,15 @@
     - 2888
     - 3888
   when: iptables_config
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Save iptables
   command: "/sbin/service iptables save"
   when: iptables_config
   notify:
     - restart iptables
+  tags:
+    - mesos
+    - mesos-master

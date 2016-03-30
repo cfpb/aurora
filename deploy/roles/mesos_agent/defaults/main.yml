@@ -10,4 +10,4 @@ mesos_agent_principal: "username"
 mesos_agent_secret: "password"
 
 # User to run processes in Mesos as
-marathon_mesos_user: "mesos_agent"
+marathon_mesos_user: "mesagent"

@@ -10,7 +10,7 @@
     name: "{{ item }}"
     state: present
     disable_gpg_check: yes
-  with_items: postgres_packages
+  with_items: "{{ postgres_packages }}"
 
 - name: Ensure other libraries can see header files
   file:
