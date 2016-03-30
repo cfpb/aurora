@@ -99,6 +99,13 @@
   notify:
     - restart mesos-agent
 
+- name: Create mesos user
+  user:
+    name: "{{ marathon_mesos_user }}"
+    comment: "Mesos User"
+    home: /home/"{{ marathon_mesos_user }}"
+
+
 ### SETUP IP TABLES AND START MESOS AGENT
 
 - name: Open required ports

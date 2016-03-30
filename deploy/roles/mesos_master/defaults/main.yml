@@ -57,7 +57,7 @@ mesos_acls: >
 marathon_http_port: 8080
 
 # User to run processes in Mesos as
-marathon_mesos_user: "vagrant"
+marathon_mesos_user: "mesos_agent"
 
 # Framework authentication credentials
 marathon_mesos_principal: "username"
