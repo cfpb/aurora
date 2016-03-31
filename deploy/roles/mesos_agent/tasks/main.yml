@@ -7,6 +7,7 @@
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
+  when: not 'production' in group_names
   tags:
     - mesos
     - mesos-agent
