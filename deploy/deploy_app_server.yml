@@ -16,7 +16,7 @@
     - emacs
     - pycharm
     - nginx
-#    - julia
+    - julia
 
 # Install development packages
 - hosts: app_server
