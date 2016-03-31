@@ -1,11 +1,11 @@
 
 
-user {{ nginx_user }}
+user {{ nginx_user }};
 
-error_log {{ nginx_error_log }}
-pid       {{ nginx_pid }}
+error_log {{ nginx_error_log }};
+pid       {{ nginx_pid }};
 
-worker_processes {{ nginx_worker_processes }}
+worker_processes {{ nginx_worker_processes }};
 
 events {
     worker_connections  {{ nginx_worker_connections }};
@@ -24,14 +24,14 @@ http {
 
     log_format main '$remote_addr - $remote_user [$time_local] "$request" '
                     '$remote_host $body_bytes_sent $body_bytes_received "$http_referer" '
-                    ' "$http_user_agent" $server_port $host '
+                    ' "$http_user_agent" $server_port $host ';
 
 
-    keepalive_timeouts  {{ nginx_keepalive_timeout }}
+    keepalive_timeouts  {{ nginx_keepalive_timeout }};
 
     include {{ nginx_conf_dir }}/*.conf;
 
-    server_tokens {{ nginx_server_tokens }}
+    server_tokens {{ nginx_server_tokens }};
 
     client_max_body_size        {{ nginx_client_max_body_size }};
     client_header_buffer_size   {{ nginx_client_header_buffer_size }};
@@ -46,7 +46,7 @@ http {
 
     ### BLOCKING ROBOTS: To prevent enumeration and other attacks
     if {{ nginx_block_robots }} {
-        return 403
+        return 403;
     }
 
     ### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
