@@ -7,6 +7,9 @@
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Install mesos package
   yum:
@@ -15,16 +18,25 @@
   with_items:
     - mesos
     - libselinux-python
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Stop the Mesos master process
   command: "stop mesos-master"
   register: mesos_master_stop
   failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Override the mesos-master service
   file:
-    dest: /etc/init/mesos-master.conf.override
+    dest: /etc/init/mesos-agent.conf.override
     state: touch
+  tags:
+    - mesos
+    - mesos-agent
 
 ### CONFIGURE MESOS AGENT
 
@@ -34,6 +46,9 @@
     dest: /etc/mesos/zk
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Add the ip address to the Mesos agent config folder
   copy:
@@ -41,6 +56,9 @@
     content: "{{ ansible_ssh_host }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Add the ip to the hostname file too
   copy:
@@ -48,6 +66,9 @@
     content: "{{ ansible_ssh_host }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure port for Mesos to run on
   copy:
@@ -55,6 +76,9 @@
     content: "{{ mesos_agent_port }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Add isolation to mesos client
   copy:
@@ -62,6 +86,9 @@
     content: "{{ mesos_agent_isolation }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure correct cgroups route
   copy:
@@ -69,6 +96,9 @@
     content: "{{ mesos_agent_cgroups_path }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Create credential file, if needed
   copy:
@@ -77,6 +107,9 @@
   when: mesos_agent_credential is defined
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure Mesos agent to use credential
   copy:
@@ -85,12 +118,18 @@
   when: mesos_agent_credential is defined
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Make mesos working directory
   file:
     dest: "{{ mesos_agent_work_dir }}"
     state: directory
     mode: 0755
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure working directory
   copy:
@@ -98,6 +137,18 @@
     content: "{{ mesos_agent_work_dir }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Create mesos user
+  user:
+    name: "{{ marathon_mesos_user }}"
+    comment: "Mesos User"
+    home: /home/{{ marathon_mesos_user }}
+  tags:
+    - mesos
+    - mesos-agent
 
 ### SETUP IP TABLES AND START MESOS AGENT
 
@@ -106,14 +157,23 @@
   with_items:
     - 5051
   when: iptables_config
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Save iptables
   command: "/sbin/service iptables save"
   when: iptables_config
   notify:
     - restart iptables
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Start the Mesos agent
   command: "start mesos-slave"
   register: mesos_agent_start
   failed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
+  tags:
+    - mesos
+    - mesos-agent

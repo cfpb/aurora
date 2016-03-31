@@ -89,13 +89,13 @@
 - hosts: research_spss
   sudo: yes
   roles:
-    - gocd
     # - spss
     - odbc
+    - gocd
 
 - hosts: research_matlab
   sudo: yes
   roles:
     # - matlab
-    - gocd
     - odbc
+    - gocd

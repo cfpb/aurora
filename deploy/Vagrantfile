@@ -257,6 +257,7 @@ Vagrant.configure(2) do |config|
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_research_environment.yml"
       ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
     end
 
     server.vm.network :private_network, ip: "10.0.1.18"
@@ -446,6 +447,8 @@ Vagrant.configure(2) do |config|
       if ENV['DB_SERVER_EXTRA_VARS']
         ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
       end
+
+      ansible.tags = ansible_tags
     end
 
     server.vm.network :private_network, ip: "10.0.1.29"
@@ -461,6 +464,7 @@ Vagrant.configure(2) do |config|
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_db_terminal.yml"
       ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
     end
 
     server.vm.network :private_network, ip: "10.0.1.30"
@@ -478,7 +482,7 @@ Vagrant.configure(2) do |config|
 
   mesos_masters.each_with_index do |ip, idx|
     id = idx+1
-    config.vm.define "mesos-master-#{id}" do |mm_config|
+    config.vm.define "mesos_master_#{id}" do |mm_config|
       mm_config.vm.box = "bento/centos-6.7"
       mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
@@ -489,6 +493,7 @@ Vagrant.configure(2) do |config|
         ansible.playbook = "deploy_mesos_master.yml"
         ansible.inventory_path = "vagrant_hosts"
         ansible.extra_vars = {:zookeeper_id => "#{id}"}
+        ansible.tags = ansible_tags
       end
     end
   end
@@ -502,7 +507,7 @@ Vagrant.configure(2) do |config|
 
   mesos_agents.each_with_index do |ip, idx|
     id = idx+1
-    config.vm.define "mesos-agent-#{id}" do |mm_config|
+    config.vm.define "mesos_agent_#{id}" do |mm_config|
       mm_config.vm.box = "bento/centos-6.7"
       mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
@@ -512,6 +517,7 @@ Vagrant.configure(2) do |config|
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_agent.yml"
         ansible.inventory_path = "vagrant_hosts"
+        ansible.tags = ansible_tags
       end
     end
   end

@@ -30,7 +30,7 @@ mesos_acls: >
       },
       {
         "principals": { "type": "ANY" },
-        "users": { "values": ["vagrant"] }
+        "users": { "values": ["mesagent"] }
       }
     ],
     "teardown_frameworks": [
@@ -57,7 +57,7 @@ mesos_acls: >
 marathon_http_port: 8080
 
 # User to run processes in Mesos as
-marathon_mesos_user: "vagrant"
+marathon_mesos_user: "mesagent"
 
 # Framework authentication credentials
 marathon_mesos_principal: "username"

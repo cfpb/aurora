@@ -2,9 +2,9 @@
 ### The Mesos agent comes with everything included in a GoCD agent and the App Server
 ---
 - hosts: mesos_agent
-  sudo: yes
+  become: yes
   roles:
-    #- common
+    - common
     - {role: iptables, when: "iptables_config"}
     - mesos_agent
     - {role: epel, when: "use_epel"}
@@ -14,7 +14,7 @@
     - gocd
 
 - hosts: mesos_agent
-  sudo: yes
+  become: yes
   tasks:
     - name: Activate Julia repo
       get_url:
@@ -34,7 +34,7 @@
         #- julia
 
 - hosts: mesos_agent
-  sudo: yes
+  become: yes
   roles:
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
@@ -48,8 +48,20 @@
     - r-shiny
 
 - hosts: mesos_agent
-  sudo: yes
+  become: yes
   tasks:
+    - name: Turn off Shiny Server
+      service:
+        name: shiny-server
+        state: stopped
+        enabled: no
+
+    - name: Turn off GoCD Agent
+      service:
+        name: go-agent
+        state: stopped
+        enabled: no
+
     - name: Install custom RPMs
       yum:
         name: "{{ item }}"
@@ -90,18 +102,18 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: python_dep_packages
+      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 2.7
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: python_packages
+      with_items: "{{ python_packages }}"
 
     - name: Install Python packages for 3.4
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python3_packages
+      with_items: "{{ python3_packages }}"
