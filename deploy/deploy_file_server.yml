@@ -1,12 +1,15 @@
 # deploy_file_server.yml
 ---
 - hosts: file_server
-  sudo: yes
+# sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - iptables
     - epel
     - ntp
+    - nginx
     - glusterfs
     - {role: log-courier, when: "install_logstash"}
 

@@ -31,7 +31,8 @@
 
 - name: Ensure that R is executable
   file:
-    dest: {{ revolution_r_path }}/lib64/R/etc/{{ item }}
+    dest: /usr/lib64/RRO-3.2.0/R-3.2.0/lib64/R/etc/{{ item }}
+    dest: {{  }}{{ item }}
     mode: 0644
   with_items:
     - ldpaths
