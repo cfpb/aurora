@@ -1,11 +1,9 @@
+user {{ nginx_user }};
 
+error_log {{ nginx_error_log }} {{ nginx_error_log_format }};
+pid       {{ nginx_pid }};
 
-user {{ nginx_user }}
-
-error_log {{ nginx_error_log }}
-pid       {{ nginx_pid }}
-
-worker_processes {{ nginx_worker_processes }}
+worker_processes {{ nginx_worker_processes }};
 
 events {
     worker_connections  {{ nginx_worker_connections }};
@@ -15,42 +13,24 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
-    access_log  {{ nginx_access_log }};
+    log_format main '$remote_addr - $remote_user [$time_local] "$status" '
+                    '"$request" $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" $server_port $host ';
+
+    access_log  {{ nginx_access_log }} {{ nginx_access_log_format }};
 
     sendfile    {{ nginx_sendfile }};
     tcp_nopush  {{ nginx_tcp_nopush }};
     tcp_nodelay {{ nginx_tcp_nodelay }};
 
+    keepalive_timeout  {{ nginx_keepalive_timeout }};
 
-    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
-                    '$remote_host $body_bytes_sent $body_bytes_received "$http_referer" '
-                    ' "$http_user_agent" $server_port $host '
-
-
-    keepalive_timeouts  {{ nginx_keepalive_timeout }}
-
-    include {{ nginx_conf_dir }}/*.conf;
-
-    server_tokens {{ nginx_server_tokens }}
+    server_tokens {{ nginx_server_tokens }};
 
     client_max_body_size        {{ nginx_client_max_body_size }};
     client_header_buffer_size   {{ nginx_client_header_buffer_size }};
     client_body_buffer_size     {{ nginx_client_body_buffer_size }};
-    large_client_buffers        {{ nginx_large_client_buffers }};
+    large_client_header_buffers {{ nginx_large_client_buffers }};
 
-
-    ### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
-    if {{ nginx_block_download_agents }} {
-        return 403;
-    }
-
-    ### BLOCKING ROBOTS: To prevent enumeration and other attacks
-    if {{ nginx_block_robots }} {
-        return 403
-    }
-
-    ### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
-    if {{ nginx_webcrawler_protect }} {
-        return 444;
-    }
+    include {{ nginx_conf_dir }}/*.conf;
 }

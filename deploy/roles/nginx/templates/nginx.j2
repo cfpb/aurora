@@ -1,0 +1,4 @@
+Cmnd_Alias NGINX_RESTART = /sbin/service nginx restart
+Cmnd_Alias NGINX_RELOAD  = /sbin/service nginx reload
+
+{{ deploy_user }} ALL=NOPASSWD: NGINX_RESTART, NGINX_RELOAD

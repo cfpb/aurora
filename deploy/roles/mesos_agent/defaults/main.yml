@@ -1,4 +1,5 @@
 ---
+mesos_package: mesos-0:0.25.0-0.2.70.centos65.x86_64
 mesos_agent_port: 5051
 mesos_agent_isolation: "cgroups/cpu,cgroups/mem"
 mesos_agent_cgroups_path: "/cgroups"
