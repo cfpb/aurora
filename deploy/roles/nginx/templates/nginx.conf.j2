@@ -15,21 +15,17 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$remote_host $body_bytes_sent $body_bytes_received "$http_referer" '
+                    ' "$http_user_agent" $server_port $host ';
+
     access_log  {{ nginx_access_log }};
 
     sendfile    {{ nginx_sendfile }};
     tcp_nopush  {{ nginx_tcp_nopush }};
     tcp_nodelay {{ nginx_tcp_nodelay }};
 
-
-    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
-                    '$remote_host $body_bytes_sent $body_bytes_received "$http_referer" '
-                    ' "$http_user_agent" $server_port $host ';
-
-
     keepalive_timeouts  {{ nginx_keepalive_timeout }};
-
-    include {{ nginx_conf_dir }}/*.conf;
 
     server_tokens {{ nginx_server_tokens }};
 
@@ -37,7 +33,6 @@ http {
     client_header_buffer_size   {{ nginx_client_header_buffer_size }};
     client_body_buffer_size     {{ nginx_client_body_buffer_size }};
     large_client_buffers        {{ nginx_large_client_buffers }};
-
 
     ### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
     if {{ nginx_block_download_agents }} {
@@ -53,4 +48,6 @@ http {
     if {{ nginx_webcrawler_protect }} {
         return 444;
     }
+
+    include {{ nginx_conf_dir }}/*.conf;
 }
