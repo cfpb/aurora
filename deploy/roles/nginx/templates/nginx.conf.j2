@@ -25,7 +25,7 @@ http {
     tcp_nopush  {{ nginx_tcp_nopush }};
     tcp_nodelay {{ nginx_tcp_nodelay }};
 
-    keepalive_timeouts  {{ nginx_keepalive_timeout }};
+    keepalive_timeout  {{ nginx_keepalive_timeout }};
 
     server_tokens {{ nginx_server_tokens }};
 
