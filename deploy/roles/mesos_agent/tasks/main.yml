@@ -17,7 +17,7 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - mesos
+    - "{{ mesos_package }}"
     - libselinux-python
   tags:
     - mesos
@@ -33,7 +33,7 @@
 
 - name: Override the mesos-master service
   file:
-    dest: /etc/init/mesos-agent.conf.override
+    dest: /etc/init/mesos-master.conf.override
     state: touch
   tags:
     - mesos

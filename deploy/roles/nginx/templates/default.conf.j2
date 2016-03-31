@@ -1,0 +1,27 @@
+server {
+    listen {{ nginx_listen }} default_server;
+
+    root /usr/share/nginx/html;
+    index index.html index.htm;
+
+    server_name localhost;
+
+    ### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
+    if ({{ nginx_block_download_agents }}) {
+        return 403;
+    }
+
+    ### BLOCKING ROBOTS: To prevent enumeration and other attacks
+    if ({{ nginx_block_robots }}) {
+        return 403;
+    }
+
+    ### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
+    if ($host !~ ^({{ nginx_webcrawler_protect }}|{{ ansible_ssh_host }})) {
+        return 444;
+    }
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+}
