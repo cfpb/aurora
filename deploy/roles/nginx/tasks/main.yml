@@ -21,7 +21,7 @@
     src: nginx.conf.j2
     dest: "{{ nginx_dir }}/nginx.conf"
     mode: 0640
-  handlers:
+  notify:
     - restart nginx
   tags:
     - nginx
@@ -33,7 +33,7 @@
     mode: 0644
     owner: "{{ deploy_user }}"
     group: "{{ deploy_user }}"
-  handlers:
+  notify:
     - restart nginx
   tags:
     - nginx
