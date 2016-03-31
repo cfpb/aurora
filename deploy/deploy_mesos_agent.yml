@@ -12,6 +12,7 @@
     - postgresql-client
     - pentaho
     - gocd
+    - nginx
 
 - hosts: mesos_agent
   become: yes

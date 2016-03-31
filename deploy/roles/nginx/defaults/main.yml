@@ -24,11 +24,11 @@ nginx_client_max_body_size: "1k"
 nginx_client_header_buffer_size: "1k"
 nginx_client_body_buffer_size: "1k"
 nginx_large_client_buffers: "2 1k"
-#disabling version number display
-nginx_server_tokens: 'off' 
+
+# disabling version number display
+nginx_server_tokens: 'off'
 
 # Blocking download agents and configuring nginx to return error message
 nginx_block_download_agents: "$http_user_agent~* msnbot|scrapbot"
 nginx_block_robots: "$http_user_agent~* LWP::Simple|BBBike|wget"
 nginx_webcrawler_protect: "$host !~ ^(nixcraft.in|www.nixcraft.in|images.nixcraft.in"
-

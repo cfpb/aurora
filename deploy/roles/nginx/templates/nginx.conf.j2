@@ -7,15 +7,11 @@ pid       {{ nginx_pid }}
 
 worker_processes {{ nginx_worker_processes }}
 
-
-events { 
+events {
     worker_connections  {{ nginx_worker_connections }};
 }
 
-
 http {
-
-
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
@@ -43,21 +39,18 @@ http {
     large_client_buffers        {{ nginx_large_client_buffers }};
 
 
-### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
-
-    if {{ nginx_block_download_agents}} {
+    ### BLOCKING DOWNLOAD AGENTS: To prevent malicious traffic
+    if {{ nginx_block_download_agents }} {
         return 403;
-      }
+    }
 
-### BLOCKING ROBOTS: To prevent enumeration and other attacks
-
+    ### BLOCKING ROBOTS: To prevent enumeration and other attacks
     if {{ nginx_block_robots }} {
         return 403
     }
-### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
 
+    ### ALLOWING CONFIGURED DOMAINS OR REVERSE PROXIED REQUESTS: To provide layered security
     if {{ nginx_webcrawler_protect }} {
         return 444;
     }
-
 }
