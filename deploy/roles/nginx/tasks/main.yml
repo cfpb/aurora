@@ -57,11 +57,11 @@
   tags:
     - nginx
 
-- name: Ensure Nginx is started and enabled at boot time.
+- name: Ensure Nginx is started and enabled at boot time, if desired.
   service:
     name: nginx
-    state: started
-    enabled: yes
+    state: "{{ nginx_state }}"
+    enabled: "{{ nginx_enable }}"
   tags:
     - nginx
 

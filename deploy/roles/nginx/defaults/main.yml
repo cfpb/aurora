@@ -36,3 +36,7 @@ nginx_server_tokens: 'off'
 nginx_block_download_agents: "$http_user_agent ~* msnbot|scrapbot"
 nginx_block_robots: "$http_user_agent ~* LWP::Simple|BBBike|wget"
 nginx_webcrawler_protect: "(.*).test.dev"
+
+# Nginx initial state
+nginx_state: "started"
+nginx_enable: "yes"
