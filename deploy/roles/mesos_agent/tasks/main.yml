@@ -19,6 +19,8 @@
   with_items:
     - "{{ mesos_package }}"
     - libselinux-python
+  notify:
+    - restart mesos-agent
   tags:
     - mesos
     - mesos-agent
@@ -32,9 +34,9 @@
     - mesos-agent
 
 - name: Override the mesos-master service
-  file:
+  copy:
     dest: /etc/init/mesos-master.conf.override
-    state: touch
+    content: manual
   tags:
     - mesos
     - mesos-agent
@@ -75,6 +77,16 @@
   copy:
     dest: /etc/mesos-slave/port
     content: "{{ mesos_agent_port }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure logging level
+  copy:
+    dest: /etc/mesos-slave/logging_level
+    content: "{{ mesos_agent_logging_level }}"
   notify:
     - restart mesos-agent
   tags:
@@ -123,7 +135,7 @@
     - mesos
     - mesos-agent
 
-- name: Make mesos working directory
+- name: Make Mesos working directory
   file:
     dest: "{{ mesos_agent_work_dir }}"
     state: directory
@@ -136,6 +148,58 @@
   copy:
     dest: /etc/mesos-slave/work_dir
     content: "{{ mesos_agent_work_dir }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure containerizers
+  copy:
+    dest: /etc/mesos-slave/containerizers
+    content: "{{ mesos_containerizers }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure image providers
+  copy:
+    dest: /etc/mesos-slave/image_providers
+    content: "{{ mesos_image_providers }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure AppC URI
+  copy:
+    dest: /etc/mesos-slave/appc_simple_discovery_uri_prefix
+    content: "{{ mesos_appc_simple_discovery_uri_prefix }}"
+  when: mesos_appc_enable
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Ensure AppC URI exists, if file
+  file:
+    state: directory
+    dest: "{{ mesos_appc_simple_discovery_uri_prefix[7:] }}"
+    mode: 0755
+  when: mesos_appc_enable and mesos_appc_simple_discovery_uri_prefix[:7] == "file://"
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure AppC image cache
+  copy:
+    dest: /etc/mesos-slave/appc_store_dir
+    content: "{{ mesos_appc_store_dir }}"
+  when: mesos_appc_enable
   notify:
     - restart mesos-agent
   tags:

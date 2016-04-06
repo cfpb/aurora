@@ -2,17 +2,20 @@
 ### MESOS SETTINGS
 mesos_server_packages:
   - libselinux-python
-  - mesos-0:0.25.0-0.2.70.centos65.x86_64
-  - marathon-0:0.13.1-1.0.456.el6.x86_64
+  - mesos-0:0.28.0-2.0.16.centos65.x86_64
+  - marathon-0:0.15.3-1.0.463.el6.x86_64
   - zookeeper-server
 
+mesos_cluster_name: "Test Cluster"
 mesos_master_port: 5050
+mesos_master_logging_level: "INFO"
+
 mesos_credentials:
   -
     principal: "username"
     secret: "password"
 
-mesos_authenticate_frameworks: "true"
+mesos_authenticate_frameworks: "false"
 mesos_authenticate_agents: "true"
 
 mesos_acls: >
@@ -30,7 +33,7 @@ mesos_acls: >
       },
       {
         "principals": { "type": "ANY" },
-        "users": { "values": ["mesagent"] }
+        "users": { "values": ["mesagent", "vagrant"] }
       }
     ],
     "teardown_frameworks": [
@@ -63,3 +66,6 @@ marathon_mesos_user: "mesagent"
 marathon_mesos_principal: "username"
 marathon_mesos_secret: "password"
 marathon_secret_file: "/etc/marathon_secret"
+
+# Artifact store
+marathon_artifact_store: "file:///home/work/marathon/store"
