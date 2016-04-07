@@ -15,6 +15,7 @@
     - pycharm
     - postgresql-client
     - nginx
+    - spark
     #- julia
 
 # Install development packages
