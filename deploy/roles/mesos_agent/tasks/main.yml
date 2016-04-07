@@ -33,13 +33,25 @@
     - mesos
     - mesos-agent
 
-- name: Override the mesos-master service
-  copy:
-    dest: /etc/init/mesos-master.conf.override
-    content: manual
+- name: Stop the mesos-master service
+  lineinfile:
+    dest: /etc/init/mesos-master.conf
+    regexp: "^(.*)(start on(.*))$"
+    line: "#\\2"
+    backrefs: yes
+    state: present
   tags:
     - mesos
     - mesos-agent
+
+# FYI, only works on newer versions of Upstart, not RHEL 6
+# - name: Override the mesos-master service
+#  copy:
+#    dest: /etc/init/mesos-master.conf.override
+#    content: manual
+#  tags:
+#    - mesos
+#    - mesos-agent
 
 ### CONFIGURE MESOS AGENT
 
@@ -117,6 +129,7 @@
   copy:
     dest: "{{ mesos_agent_credential }}"
     content: "{{ mesos_agent_principal }} {{ mesos_agent_secret }}"
+  mode: 0600
   when: mesos_agent_credential is defined
   notify:
     - restart mesos-agent

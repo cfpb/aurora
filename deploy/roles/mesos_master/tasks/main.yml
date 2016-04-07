@@ -356,16 +356,19 @@
 # do it manually
 - name: Stop the Mesos agent process
   command: "stop mesos-slave"
-  register: mesos_client_stop
-  failed_when: mesos_client_stop.rc != 0 and 'Unknown instance' not in mesos_client_stop.stderr
+  register: mesos_agent_stop
+  failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
   tags:
     - mesos
     - mesos-master
 
-- name: Override the mesos-slave service
-  copy:
-    dest: /etc/init/mesos-slave.conf.override
-    content: "manual"
+- name: Disable the mesos-agent service
+  lineinfile:
+    dest: /etc/init/mesos-slave.conf
+    regexp: "^(.*)(start on(.*))$"
+    line: "#\\2"
+    backrefs: yes
+    state: present
   tags:
     - mesos
     - mesos-master
