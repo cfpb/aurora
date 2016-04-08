@@ -129,7 +129,7 @@
   copy:
     dest: "{{ mesos_agent_credential }}"
     content: "{{ mesos_agent_principal }} {{ mesos_agent_secret }}"
-  mode: 0600
+    mode: 0600
   when: mesos_agent_credential is defined
   notify:
     - restart mesos-agent
@@ -167,6 +167,17 @@
     - mesos
     - mesos-agent
 
+- name: Create mesos user
+  user:
+    name: "{{ marathon_mesos_user }}"
+    comment: "Mesos User"
+    home: /home/{{ marathon_mesos_user }}
+  tags:
+    - mesos
+    - mesos-agent
+
+### Containerization
+
 - name: Configure containerizers
   copy:
     dest: /etc/mesos-slave/containerizers
@@ -186,6 +197,8 @@
   tags:
     - mesos
     - mesos-agent
+
+### AppC Container Images
 
 - name: Configure AppC URI
   copy:
@@ -219,11 +232,26 @@
     - mesos
     - mesos-agent
 
-- name: Create mesos user
-  user:
-    name: "{{ marathon_mesos_user }}"
-    comment: "Mesos User"
-    home: /home/{{ marathon_mesos_user }}
+### Docker container images
+
+- name: Configure Docker image cache
+  copy:
+    dest: /etc/mesos-slave/docker_store_dir
+    content: "{{ mesos_docker_store_dir }}"
+  when: mesos_docker_enable
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure Docker registry
+  copy:
+    dest: /etc/mesos-slave/docker_registry
+    content: "{{ mesos_docker_registry }}"
+  when: mesos_docker_enable
+  notify:
+    - restart mesos_agent
   tags:
     - mesos
     - mesos-agent
