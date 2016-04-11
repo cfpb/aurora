@@ -17,6 +17,7 @@ marathon_mesos_user: "mesagent"
 
 # Container images
 mesos_containerizers: "mesos"
+mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
 
 # File uri is not working, perhaps a bug in Mesos

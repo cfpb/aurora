@@ -188,6 +188,16 @@
     - mesos
     - mesos-agent
 
+- name: Configure container launcher
+  copy:
+    dest: /etc/mesos-slave/launcher
+    content: "{{ mesos_launcher }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
 - name: Configure image providers
   copy:
     dest: /etc/mesos-slave/image_providers

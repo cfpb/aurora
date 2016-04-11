@@ -90,6 +90,15 @@
     - mesos
     - mesos-master
 
+- name: Configure number of log files to keep
+  lineinfile:
+    dest: /etc/zookeeper/conf/log4j.properties
+    regex: "(.*)zookeeper.log.maxbackupindex=(.*)"
+    line: "zookeeper.log.maxbackupindex={{ zookeeper_maxbackupindex }}"
+  tags:
+    - mesos
+    - mesos-master
+
 - name: Initialize zookeeper
   command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
   args:
