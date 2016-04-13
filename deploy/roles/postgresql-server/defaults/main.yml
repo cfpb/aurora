@@ -15,6 +15,7 @@ pp_extract_only: no
 pp_installer_language: en
 
 # EnterpriseDB Web Account (register here: http://www.enterprisedb.com/user-login-registration)
+# Put these settings in your DB_SERVER_EXTRA_VARS file with your username and password.
 pp_web_username: webusername_goes_here
 pp_web_password: webpassword_goes_here
 
