@@ -69,7 +69,7 @@
 - hosts: analytics_terminal
   become: yes
   roles:
-    - {role: eod, when: "install_eod"}
+    - eod
     - r
     - revolution-r
     - r-shiny

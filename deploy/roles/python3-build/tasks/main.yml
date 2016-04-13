@@ -4,6 +4,7 @@
   command: rpm -q python34
   register: python34_check
   failed_when: python34_check.rc != 0 and "is not installed" not in python34_check.stdout
+  changed_when: no
 
 - name: Make sure rpmbuild is empty
   sudo: no

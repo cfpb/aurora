@@ -1,0 +1,20 @@
+---
+- hosts: admin_terminal
+  tasks:
+    - name: Copy needed files
+      copy:
+        src: "{{ item }}"
+        dest: /tmp/
+      with_items:
+        - "files/mesos/simple_app.c"
+        - "files/mesos/test.sh"
+
+    - name: Ensure gcc is installed
+      yum:
+        name: gcc
+        state: present
+
+    - name: Build simple_app and deploy to mesos
+      shell: "sh test.sh"
+      args:
+        chdir: /tmp

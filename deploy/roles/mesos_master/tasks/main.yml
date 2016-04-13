@@ -51,6 +51,8 @@
     name: "{{ item }}"
     state: present
   with_items: "{{ mesos_server_packages }}"
+  notify:
+    - restart mesos-master
   tags:
     - mesos
     - mesos-master
@@ -88,6 +90,15 @@
     - mesos
     - mesos-master
 
+- name: Configure number of log files to keep
+  lineinfile:
+    dest: /etc/zookeeper/conf/log4j.properties
+    regex: "(.*)zookeeper.log.maxbackupindex=(.*)"
+    line: "zookeeper.log.maxbackupindex={{ zookeeper_maxbackupindex }}"
+  tags:
+    - mesos
+    - mesos-master
+
 - name: Initialize zookeeper
   command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
   args:
@@ -108,6 +119,16 @@
     - mesos-master
 
 ### CONFIGURE MESOS
+
+- name: Set cluster name
+  copy:
+    dest: /etc/mesos-master/cluster
+    content: "{{ mesos_cluster_name }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Configure mesos with the IP's of all zookeepers
   template:
@@ -154,6 +175,16 @@
     dest: /etc/default/mesos-master
     line: "PORT={{ mesos_master_port }}"
     regexp: ^(.*)PORT=[0-9]+$
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure logging level
+  copy:
+    dest: /etc/mesos-master/logging_level
+    content: "{{ mesos_master_logging_level }}"
   notify:
     - restart mesos-master
   tags:
@@ -219,6 +250,7 @@
   file:
     path: /etc/marathon/conf
     state: directory
+    mode: 0644
   tags:
     - mesos
     - mesos-master
@@ -305,22 +337,47 @@
     - mesos
     - mesos-master
 
+- name: Configure Marathon artifact store
+  copy:
+    dest: "/etc/marathon/conf/artifact_store"
+    content: "{{ marathon_artifact_store }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Ensure artifact store directory exists
+  file:
+    dest: "{{ marathon_artifact_store[7:] }}"
+    state: directory
+    mode: 0755
+  when: marathon_artifact_store[:7] == "file://"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
 # Ansible "service" command doesn't work with upstart jobs on Centos, so
 # do it manually
 - name: Stop the Mesos agent process
   command: "stop mesos-slave"
-  register: mesos_client_stop
-  failed_when: mesos_client_stop.rc != 0 and 'Unknown instance' not in mesos_client_stop.stderr
+  register: mesos_agent_stop
+  failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
   tags:
     - mesos
     - mesos-master
 
-- name: Override the mesos-slave service
-  file:
-    dest: /etc/init/mesos-slave.conf.override
-    state: touch
+- name: Disable the mesos-agent service
+  lineinfile:
+    dest: /etc/init/mesos-slave.conf
+    regexp: "^(.*)(start on(.*))$"
+    line: "#\\2"
+    backrefs: yes
+    state: present
   tags:
     - mesos
     - mesos-master
