@@ -13,16 +13,24 @@
         state=directory
   tags: ["config"]
 
-- name: Make sure Spark logs and run directories exists
+- name: Make sure Spark directories exists
   file: path="{{ item }}" 
         owner={{ spark_user }}
         group={{ spark_user }}
         mode=0755
         state=directory
   with_items:
-    - "{{ spark_log_dir }}"
     - "{{ spark_run_dir }}"
     - "{{ spark_main_dir }}"
+
+- name: Ensure Spark log directory with appropriate permissions
+  file: path="{{ item }}" 
+        owner={{ spark_user }}
+        group={{ spark_user }}
+        mode=1777
+        state=directory
+  with_items:
+    - "{{ spark_log_dir }}"
 
 - name: Download Spark
   get_url: url="{{ spark_mirror }}"                                                             
@@ -41,6 +49,17 @@
     - { src: "{{ spark_main_dir }}/conf", dest: "{{ spark_conf_dir }}/conf" }
   tags: ["symlinks"] 
 
+- name: Spark binaries set up
+  template: src=spark-bin.j2
+            dest="/usr/bin/{{ item }}"
+            mode=0755
+  with_items:
+    - spark-class
+    - spark-shell
+    - spark-sql
+    - spark-submit
+  tags: ["binaries"]
+
 - name: Set up SPARK_HOME environment variables
   template: src="spark-env.sh.j2"
             dest="{{ spark_main_dir }}/conf/spark-env.sh"
@@ -49,6 +68,11 @@
 - name: Set up spark defaults config file
   template: src=spark-defaults.conf.j2
             dest="{{ spark_main_dir }}/conf/spark-defaults.conf"
+  tags: ["config"]
+
+- name: Set up spark log4j config
+  template: src=log4j.properties
+            dest="{{ spark_main_dir }}/conf/spark.properties"
   tags: ["config"]
 
 - name: Ensure Spark environmental variables are set
