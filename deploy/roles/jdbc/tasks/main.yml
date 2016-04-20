@@ -12,7 +12,7 @@
 
 - name: Move the JAR file to the right location
   copy:
-    src: "/tmp/sqljdbc/sqljdbc.jar"
+    src: "/tmp/sqljdbc/sqljdbc42.jar"
     dest: "{{ jre_lib_path }}"
     remote: no
     mode: 0644
