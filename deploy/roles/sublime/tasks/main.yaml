@@ -9,4 +9,23 @@
     copy: yes
     src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
+    mode: 0644
   when: custom_repo
+
+- name: Ensure sublime_text is executable
+  file:
+    path: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    mode: 0755
+
+- name: Create symlink
+  file:
+    dest: /usr/local/bin/subl
+    src: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    mode: 0755
+    state: link
+
+- name: Add Desktop entry
+  template:
+    src: sublime.desktop.j2
+    dest: /usr/share/applications/sublime.desktop
+    mode: 0644
