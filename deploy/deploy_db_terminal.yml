@@ -18,6 +18,7 @@
     - {role: python3-build, when: "not custom_repo"}
     - sqitch
     - {role: pem-client, tags: pem-client}
+    - sublime
 
   tasks:
     - name: Ensure umask is correct

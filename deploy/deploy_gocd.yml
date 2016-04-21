@@ -89,6 +89,7 @@
     - r-studio-desktop
     - clouseau
     - pentaho
+    - sublime
 #   - julia
 
   tasks:
