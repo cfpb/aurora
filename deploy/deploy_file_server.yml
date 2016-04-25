@@ -1,7 +1,6 @@
 # deploy_file_server.yml
 ---
 - hosts: file_server
-# sudo: yes
   become: yes
   become_method: sudo
   roles:
@@ -9,7 +8,6 @@
     - iptables
     - epel
     - ntp
-    - nginx
     - glusterfs
     - {role: log-courier, when: "install_logstash"}
 
