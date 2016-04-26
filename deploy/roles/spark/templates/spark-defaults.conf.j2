@@ -28,5 +28,5 @@
 
 spark.eventLog.enabled          true
 spark.eventLog.dir              file://{{ spark_log_dir }}
-spark.authenticate              true
+spark.authenticate              {{ spark_authenticate_variable }}
 spark.authenticate.secret       {{ spark_secret_variable }}
