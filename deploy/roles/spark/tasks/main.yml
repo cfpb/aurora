@@ -8,13 +8,11 @@
     state: present
     groups: "{{ spark_user_groups | join(',') }}"
     comment: "Spark-User"
-  tags: ["spark-user"]
 
 - name: Make sure Spark configuration directory exists
   file: 
     path: "{{ spark_conf_dir }}"
     state: directory
-  tags: ["config"]
 
 - name: Make sure Spark directories exists
   file: 
@@ -55,7 +53,6 @@
      state: link
   with_items:
     - { src: "{{ spark_main_dir }}/conf", dest: "{{ spark_conf_dir }}/conf" }
-  tags: ["symlinks"] 
 
 - name: Spark binaries set up
   template: 
@@ -67,25 +64,21 @@
     - spark-shell
     - spark-sql
     - spark-submit
-  tags: ["binaries"]
 
 - name: Set up SPARK_HOME environment variables
   template: 
     src: "spark-env.sh.j2"
     dest: "{{ spark_main_dir }}/conf/spark-env.sh"
-  tags: ["config"]
 
 - name: Set up spark defaults config file
   template: 
     src: spark-defaults.conf.j2
     dest: "{{ spark_main_dir }}/conf/spark-defaults.conf"
-  tags: ["config"]
 
 - name: Set up spark log4j config
   template: 
     src: log4j.properties
     dest: "{{ spark_main_dir }}/conf/spark.properties"
-  tags: ["config"]
 
 - name: Ensure Spark environmental variables are set
   template:
