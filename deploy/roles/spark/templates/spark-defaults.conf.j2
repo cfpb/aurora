@@ -27,6 +27,6 @@
 # spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"
 
 spark.eventLog.enabled          true
-spark.eventLog.dir              file:///{{ spark_log_dir }}
+spark.eventLog.dir              file://{{ spark_log_dir }}
 spark.authenticate              true
 spark.authenticate.secret       {{ spark_secret_variable }}
