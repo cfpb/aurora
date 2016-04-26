@@ -7,7 +7,7 @@ spark_usr_parent_dir: "/usr/lib"                                                
 spark_main_dir: "/usr/lib/spark-1.5.2-bin-without-hadoop"                                   #symlink to the extracted/installed spark
 spark_lib_dir: "/var/lib/spark"
 spark_log_dir: "/var/log/spark"
-spark_run_dir: "/run/spark"
+spark_run_dir: "/var/run/spark"
 spark_user: "spark"
 spark_user_groups: []
 spark_user_shell: "/bin/false"
