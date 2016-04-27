@@ -10,6 +10,7 @@
     name: postgresql
     state: absent
     disablerepo: pgdg94
+  ignore_errors: yes
 
 - name: Install postgres packages
   yum:
