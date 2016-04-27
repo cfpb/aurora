@@ -1,14 +1,15 @@
 ---
-- name: Ensure older versions are removed
-  yum:
-    name: postgresql
-    state: absent
-
 - name: Install postgres repository
   yum:
     name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
     state: present
   when: not 'production' in group_names
+
+- name: Ensure older versions are removed
+  yum:
+    name: postgresql
+    state: absent
+    disablerepo: pgdg94
 
 - name: Install postgres packages
   yum:
