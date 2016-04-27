@@ -32,3 +32,15 @@
     dest: "/opt/data-integration/lib/"
     remote: no
     mode: 0644
+
+- name: Add an option to disable cairo, which is buggy in this case
+  lineinfile:
+    line: OPT="$OPT -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false"
+    insertafter: $OPT\=\"$OPT $PENTAHO_DI_JAVA_OPTIONS\".*
+    state: present
+
+- name: Set memory usage
+  lineinfile:
+    regexp: $(.*)PENTAHO_DI_JAVA_OPTIONS=\"(.*)\"
+    line: "    PENTAHO_DI_JAVA_OPTIONS=\"-Xmx{{ pentaho_heap_size }} -XX:MaxPermSize={{ pentaho_perm_size }}\""
+    state: present
