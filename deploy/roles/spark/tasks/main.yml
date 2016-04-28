@@ -19,7 +19,7 @@
     path: "{{ item }}" 
     owner: "{{ spark_user }}"
     group: "{{ spark_user }}"
-    mode: 0755, a+x
+    mode: 0755
     state: directory
   with_items:
     - "{{ spark_run_dir }}"
@@ -30,7 +30,7 @@
     path: "{{ item }}" 
     owner: "{{ spark_user }}"
     group: "{{ spark_user }}"
-    mode: 1777, a+x
+    mode: 1755
     state: directory
   with_items:
     - "{{ spark_log_dir }}"
@@ -58,7 +58,7 @@
   template: 
     src: spark-bin.j2
     dest: "/usr/bin/{{ item }}"
-    mode: 0755, a+x
+    mode: 0755
   with_items:
     - spark-class
     - spark-shell
