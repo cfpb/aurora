@@ -39,6 +39,7 @@
   get_url: 
     url: "{{ spark_mirror }}"                                                             
     dest: "{{ spark_src_dir }}"
+    validate_certs: no
 
 - name: Extract Spark
   unarchive: 

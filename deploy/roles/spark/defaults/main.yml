@@ -1,10 +1,11 @@
 ---
 spark_tar_file:             "spark-1.5.2-bin-without-hadoop.tgz"
-spark_mirror:               "http://apache.claz.org/spark/spark-1.5.2/spark-1.5.2-bin-without-hadoop.tgz"
+spark_tar_file:             "spark-1.3.1-bin-hadoop2.6.tgz"
+spark_mirror:               "https://www.apache.org/dist/spark/spark-1.3.1/spark-1.3.1-bin-hadoop2.6.tgz"
 spark_src_dir:              "/usr/local/src"
 spark_conf_dir:             "/etc/spark"
 spark_usr_parent_dir:       "/usr/lib"                                                                  #spark extraction folder 
-spark_main_dir:             "/usr/lib/spark-1.5.2-bin-without-hadoop"                                   #symlink to the extracted/installed spark
+spark_main_dir:             "/usr/lib/spark-1.3.1-bin-hadoop2.6"
 spark_lib_dir:              "/var/lib/spark"
 spark_log_dir:              "/var/log/spark"
 spark_run_dir:              "/var/run/spark"
