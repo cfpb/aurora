@@ -1,0 +1,23 @@
+---
+spark_tar_file:             "spark-1.5.2-bin-hadoop2.6.tgz"
+spark_mirror:               "http://mirror.cc.columbia.edu/pub/software/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz"
+spark_src_dir:              "/usr/local/src"
+spark_conf_dir:             "/etc/spark"
+spark_usr_parent_dir:       "/usr/lib"                                                                  #spark extraction folder 
+spark_main_dir:             "/usr/lib/spark-1.5.2-bin-hadoop2.6"
+
+spark_lib_dir:              "/var/lib/spark"
+spark_log_dir:              "/var/log/spark"
+spark_run_dir:              "/var/run/spark"
+spark_user:                 "spark"
+spark_user_groups:          []   
+spark_user_shell:           "/bin/false"
+spark_source_file:          "/etc/profile.d/spark.sh"
+
+# Spark uses log4j for logging.
+# The valid log levels are "ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN"
+
+spark_log_level:            WARN                                           
+spark_bin_dir:              "/usr/bin"
+spark_secret:               "test"
+spark_auth:                 "TRUE"
