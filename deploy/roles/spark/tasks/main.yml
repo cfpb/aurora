@@ -13,6 +13,7 @@
   file: 
     path: "{{ spark_conf_dir }}"
     state: directory
+    mode: 0755
 
 - name: Make sure Spark directories exists
   file: 
@@ -70,16 +71,19 @@
   template: 
     src: "spark-env.sh.j2"
     dest: "{{ spark_main_dir }}/conf/spark-env.sh"
+    mode: 0644
 
 - name: Set up spark defaults config file
   template: 
     src: spark-defaults.conf.j2
     dest: "{{ spark_main_dir }}/conf/spark-defaults.conf"
+    mode: 0755
 
 - name: Set up spark log4j config
   template: 
     src: log4j.properties
     dest: "{{ spark_main_dir }}/conf/spark.properties"
+    mode: 0755
 
 - name: Ensure Spark environmental variables are set
   template:
@@ -87,6 +91,4 @@
     dest: /etc/profile.d/spark.sh
     mode: 0644
 
-- name: reload profile
-  action: shell source /etc/profile.d/spark.sh
 
