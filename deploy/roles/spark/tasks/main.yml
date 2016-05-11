@@ -77,13 +77,13 @@
   template: 
     src: spark-defaults.conf.j2
     dest: "{{ spark_main_dir }}/conf/spark-defaults.conf"
-    mode: 0755
+    mode: 0644
 
 - name: Set up spark log4j config
   template: 
     src: log4j.properties
     dest: "{{ spark_main_dir }}/conf/spark.properties"
-    mode: 0755
+    mode: 0644
 
 - name: Ensure Spark environmental variables are set
   template:
