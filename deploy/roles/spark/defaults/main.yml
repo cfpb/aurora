@@ -3,7 +3,8 @@ spark_tar_file:             "spark-1.5.2-bin-hadoop2.6.tgz"
 spark_mirror:               "http://mirror.cc.columbia.edu/pub/software/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz"
 spark_src_dir:              "/usr/local/src"
 spark_conf_dir:             "/etc/spark"
-spark_usr_parent_dir:       "/usr/lib"                                                                  #spark extraction folder
+# Spark extraction folder
+spark_usr_parent_dir:       "/usr/lib"                                                                  
 spark_main_dir:             "/usr/lib/spark-1.5.2-bin-hadoop2.6"
 
 spark_lib_dir:              "/var/lib/spark"
