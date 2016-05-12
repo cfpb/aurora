@@ -26,6 +26,8 @@
 # spark.driver.memory              5g
 # spark.executor.extraJavaOptions  -XX:+PrintGCDetails -Dkey=value -Dnumbers="one two three"
 
+spark.cores.max                 {{ spark_num_cores }}
+
 spark.eventLog.enabled          true
 spark.eventLog.dir              file://{{ spark_log_dir }}
 spark.authenticate              {{ spark_auth }}
