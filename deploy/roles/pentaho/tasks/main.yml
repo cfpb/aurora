@@ -24,12 +24,12 @@
 - name: Get the JDBC driver for SQLServer
   unarchive:
     src: "{{ jdbc_sql_url }}"
-    dest: "/tmp/sqljdbc42.jar"
+    dest: "/tmp/"
     copy: no
 
 - name: Move the JAR file to the right location
   copy:
-    src: "/tmp/sqljdbc42.jar"
+    src: "/tmp/sqljdbc_4.2/enu/sqljdbc42.jar"
     dest: "/opt/data-integration/lib/"
     remote: no
     mode: 0644
