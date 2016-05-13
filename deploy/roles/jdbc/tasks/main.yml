@@ -15,5 +15,5 @@
   copy:
     src: "/tmp/sqljdbc_4.2/enu/sqljdbc42.jar"
     dest: "{{ jre_lib_path }}"
-    remote: no
+    remote_src: yes
     mode: 0644

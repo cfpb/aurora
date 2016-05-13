@@ -31,7 +31,7 @@
   copy:
     src: "/tmp/sqljdbc_4.2/enu/sqljdbc42.jar"
     dest: "/opt/data-integration/lib/"
-    remote: no
+    remote_src: yes
     mode: 0644
 
 - name: Add an option to disable cairo, which is buggy in this case
