@@ -37,6 +37,6 @@
 - name: Get pg engine
   shell: cpanm --notest --sudo DBD::Pg
   register: pg_engine
-  changed_when: "is up to date" not in pg_engine.stdout
+  changed_when: '"is up to date" not in pg_engine.stdout'
   environment:
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
