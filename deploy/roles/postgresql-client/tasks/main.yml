@@ -5,6 +5,14 @@
     state: present
   when: not 'production' in group_names
 
+- name: Ensure older versions are removed
+  yum:
+    name: postgresql
+    state: absent
+    disablerepo: pgdg94
+  ignore_errors: yes
+  when: clean_postgresql
+
 - name: Install postgres packages
   yum:
     name: "{{ item }}"

@@ -11,6 +11,8 @@
 - hosts: ci_agent
   become: yes
   become_method: sudo
+  serial: 1
+  max_fail_percentage: 10
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}
