@@ -9,6 +9,7 @@
   unarchive:
     src: "{{ jdbc_sql_url }}"
     dest: "/tmp"
+    copy: no
 
 - name: Move the JAR file to the right location
   copy:
