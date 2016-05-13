@@ -1,0 +1,6 @@
+# main.yml - Establishes dependency on the shared role, specifically for the
+# iptables handler
+---
+dependencies:
+  - role: shared
+  - role: jdk

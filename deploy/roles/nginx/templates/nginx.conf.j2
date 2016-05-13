@@ -1,0 +1,36 @@
+user {{ nginx_user }};
+
+error_log {{ nginx_error_log }} {{ nginx_error_log_format }};
+pid       {{ nginx_pid }};
+
+worker_processes {{ nginx_worker_processes }};
+
+events {
+    worker_connections  {{ nginx_worker_connections }};
+}
+
+http {
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$status" '
+                    '"$request" $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" $server_port $host ';
+
+    access_log  {{ nginx_access_log }} {{ nginx_access_log_format }};
+
+    sendfile    {{ nginx_sendfile }};
+    tcp_nopush  {{ nginx_tcp_nopush }};
+    tcp_nodelay {{ nginx_tcp_nodelay }};
+
+    keepalive_timeout  {{ nginx_keepalive_timeout }};
+
+    server_tokens {{ nginx_server_tokens }};
+
+    client_max_body_size        {{ nginx_client_max_body_size }};
+    client_header_buffer_size   {{ nginx_client_header_buffer_size }};
+    client_body_buffer_size     {{ nginx_client_body_buffer_size }};
+    large_client_header_buffers {{ nginx_large_client_buffers }};
+
+    include {{ nginx_conf_dir }}/*.conf;
+}

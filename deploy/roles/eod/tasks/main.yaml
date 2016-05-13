@@ -1,44 +1,66 @@
 ---
-# TODO: put rpm somewhere accessible
+- name: Install EOD dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+    - openssl-devel
+    - expect
+  tags:
+    - eod
+
 - name: Copy over the EOD bin file
   copy:
     src: "{{ eod_local_bin_directory }}/{{ eod_binary }}"
     dest: "{{ eod_bin_directory }}/{{ eod_binary }}"
   when: custom_repo
+  tags:
+    - eod
 
 - name: chmod eod bin
   file:
     path: "{{ eod_bin_directory }}/{{ eod_binary }}"
     mode: a+x
   when: custom_repo
-
-- name: install expect
-  yum:
-    name: expect
-    state: present
+  tags:
+    - eod
 
 - name: Ensure that eod directory exists
   file:
     path: "{{ eod_install_directory }}/"
     state: directory
+  tags:
+    - eod
 
 - name: copy the eod expect script
   template:
     src: install_eod_server.exp
     dest: /tmp/install_eod_server.exp
     mode: a+x
+  tags:
+    - eod
 
 - name: run EOD expect script
   shell: /tmp/install_eod_server.exp
   when: custom_repo
   args:
     creates: "{{ eod_install_directory }}/bin/install"
+  tags:
+    - eod
+
+- name: Ensure that EOD log directory exists
+  file:
+    path: "{{ eod_install_directory }}/log"
+    state: directory
 
 - name: run eod silent install
   shell: "{{ eod_install_directory }}/bin/install -s"
   when: custom_repo
   args:
     creates: "{{ eod_install_directory }}/bin/otecs"
+  tags:
+    - eod
 
 - name: configure cluster.cfg
   template:
@@ -47,6 +69,8 @@
   when: custom_repo
   notify:
     - restart eod
+  tags:
+    - eod
 
 - name: configure xdmcp
   template:
@@ -55,7 +79,10 @@
   notify:
     - restart eod
     - restart gdm
+    - restart prefdm
   when: custom_repo
+  tags:
+    - eod
 
 - name: configure eod license file
   template:
@@ -64,37 +91,63 @@
   when: custom_repo
   notify:
     - restart eod
+  tags:
+    - eod
 
 - name: install X Window System
   yum:
     name: "@X Window System"
     state: present
+  tags:
+    - eod
 
 - name: install Desktop
   yum:
     name: "@Desktop"
     state: present
+  tags:
+    - eod
 
 - name: install General Purpose Desktop
   yum:
     name: "@General Purpose Desktop"
     state: present
+  tags:
+    - eod
 
 - name: Install Firefox
   yum:
     name: firefox
     state: present
+  tags:
+    - eod
 
 - name: configure custom.conf
   template:
     src: custom.conf
     dest: /etc/gdm/custom.conf
     mode: 0644
+  notify:
+    - restart gdm
+    - restart prefdm
+  tags:
+    - eod
+
+- name: Set configuration settings for gdm
+  shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
+  with_items: gconf_settings
+  notify:
+    - restart gdm
+    - restart prefdm
+  tags:
+    - eod
 
 - name: configure inittab
   template:
     src: inittab
     dest: /etc/inittab
+  tags:
+    - eod
 
 # TODO: ensure video driver?
 - name: configure xorg.conf
@@ -103,8 +156,11 @@
     dest: /etc/X11/xorg.conf
   notify:
     - restart gdm
+    - restart prefdm
   # notify:
   #   - ensure video driver
+  tags:
+    - eod
 
 - name: configure exceed connection server
   template:
@@ -113,6 +169,8 @@
     mode: 0644
   notify:
     - restart eod
+  tags:
+    - eod
 
 #- name: configure system-auth-ac
 #  template:
@@ -142,23 +200,33 @@
     mode: 0644
   notify:
     - restart eod
+  tags:
+    - eod
 
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: eod_client_ports
   when: iptables_config
+  tags:
+    - eod
 
 - name: save the new ipconfig
   command: "/sbin/service iptables save"
   when: iptables_config
+  tags:
+    - eod
 
 - name: remove S99firstboot
   file:
     path: /etc/rc5.d/S99firstboot
     state: absent
+  tags:
+    - eod
 
 - name: run gdm
   command: start prefdm
   register: gdm_status
   failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
   changed_when: gdm_status.rc == 0
+  tags:
+    - eod

@@ -1,16 +1,26 @@
-- name: Get GoCD RPM
-  get_url:
-    url: "{{ gocd_server_package_url }}"
-    dest: /tmp/
-    validate_certs: False
-#  when: not custom_repo
+# GOCD now uses a new CA and SNI, which is not supported when
+# the "managed" machine is using Python < 2.7.9.
+#- name: Get GoCD RPM
+#  get_url:
+#    url: "{{ gocd_server_package_url }}"
+#    dest: /tmp/
+#    checksum: "sha1:{{ gocd_server_checksum }}"
+#    validate_certs: False
 
-- name: Install GoCD Server
-  yum:
-    name: "{{ gocd_server_package_name }}"
-    state: present
-  notify:
-    - restart go-server
+- name: Download GoCD Server RPM
+  shell: "curl -o {{ gocd_server_package_path }}/{{ gocd_server_package_name }} {{ gocd_server_package_url }}"
+  args:
+    creates: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+
+- name: Verify RPM checksum
+  stat:
+    path: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+    get_md5: False
+  register: gocd_rpm
+
+- name: Ensure the checksum maches expected value
+  assert:
+    that: "gocd_rpm.stat.checksum == '{{ gocd_server_checksum }}'"
 
 - name: Install GoCD dependencies
   yum:
@@ -18,6 +28,13 @@
     state: present
   with_items:
     - git
+
+- name: Install GoCD Server
+  yum:
+    name: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+    state: present
+  notify:
+    - restart go-server
 
 - name: Ensure working directory exists
   file:

@@ -1,0 +1,23 @@
+---
+- name: Create postgres databases
+  postgresql_db:
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
+    port: "{{ pp_serverport }}"
+    name: "{{ item.name }}"
+    owner: "{{ item.owner }}"
+    template: "{{ item.template }}"
+    state: present
+  with_items: pp_dbs
+
+- name: Enable extensions for databases
+  postgresql_ext:
+    login_user: "{{ pp_dba_username }}"
+    login_password: "{{ pp_dba_password }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item.0.name }}"
+    name: "{{ item.1 }}"
+    state: present
+  with_subelements:
+    - pp_dbs
+    - extensions

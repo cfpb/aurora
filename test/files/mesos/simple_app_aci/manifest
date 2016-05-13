@@ -1,0 +1,16 @@
+{
+  "acKind": "ImageManifest",
+  "acVersion": "0.7.4",
+  "name": "simple_app",
+  "labels": [
+    {"name": "os", "value": "linux"},
+    {"name": "arch", "value": "amd64"}
+  ],
+  "app": {
+    "exec": [
+      "/bin/simple_app 2"
+    ],
+    "user": "vagrant",
+    "group": "vagrant"
+  }
+}

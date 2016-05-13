@@ -1,5 +1,6 @@
 ---
 odbc_rpms:
+  - libselinux-python
   - unixODBC
   - unixODBC-kde
 

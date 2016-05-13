@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<title>CFPB Data Enclave</title>
-	
+
     <style>
       #header, #content {
         width: 960px;
@@ -29,7 +29,7 @@
 
 	<body>
     <div id="header">
-      <img src="http://www.consumerfinance.gov/wp-content/themes/cfpb_nemo/_/img/logo.svg" />
+      <img src="https://www.consumerfinance.gov/wp-content/themes/cfpb_nemo/_/img/logo.svg" />
 		  <h1>Welcome to the CFPB Data Enclave, <?php echo $_SERVER['REMOTE_USER']; ?>!</h1>
     </div>
 

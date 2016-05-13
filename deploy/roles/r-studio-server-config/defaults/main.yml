@@ -1,6 +1,12 @@
 ---
-rstudio_enable_auth_proxy: 1
-rstudio_admin_group: admins
 rstudio_domain_name: "http://rstudio.test.dev"
+rstudio_port: 8787
+rstudio_address: 0.0.0.0
+rstudio_pro: False
+rstudio_session_timeout: 15
+
+# Pro settings
+rstudio_enable_auth_proxy: 0
+rstudio_admin_group: admins
 ip_whitelist:
   - "{{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }}"

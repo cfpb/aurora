@@ -75,3 +75,13 @@ dist/
 ###########
 .vagrant/
 *.vdi
+
+# extra variable files
+.vagrant*
+
+# Ansible #
+###########
+*.retry
+
+# Ansible Vault password file
+.vault_password

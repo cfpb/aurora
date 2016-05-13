@@ -2,8 +2,8 @@
 dependencies:
   - {role: python, when: "custom_repo"}
   - {role: python-build, when: "not custom_repo"}
+  - role: postgresql-client
   - role: jdk
-  - {role: epel, when: "use_epel"}
-  - role: postgresql
+  - {role: epel, when: "use_epel and not 'production' in group_names"}
   - role: odbc
   - role: jdbc

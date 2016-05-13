@@ -50,7 +50,7 @@
 
 - name: Allow each port listed in iptables_common group variable
   command: "iptables -A {{ iptables_chain }}{% if 'state' in item %} -m state --state {{ item.state }}{% endif %} -p {{ item.protocol }} -m {{ item.protocol }}{% if 'port' in item %} --dport {{ item.port }}{% endif %}{% if 'extra' in item %} {{ item.extra }}{% endif %}{% if 'source' in item %} -s {{ item.source }}{% endif %} -j ACCEPT"
-  with_items: iptables_standard
+  with_items: "{{ iptables_standard }}"
 
 - name: Allow ssh access from "Terminals"
   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"

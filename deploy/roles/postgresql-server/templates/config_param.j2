@@ -1,0 +1,28 @@
+mode=unattended
+unattendedmodeui=none
+create_samples={{ pp_create_samples }}
+databasemode={{ pp_databasemode }}
+extract-only={{ pp_extract_only }}
+installer-language={{ pp_installer_language }}
+
+autostart_pgagent={{ pp_autostart_pgagent }}
+autostart_pgbouncer={{ pp_autostart_pgbouncer }}
+pgbouncerport={{ pp_pgbouncerport }}
+install_server_monitor={{ pp_install_server_monitor }}
+
+datadir={{ pp_datadir }}
+prefix={{ pp_prefix }}
+debuglevel={{ pp_debuglevel }}
+serverport={{ pp_serverport }}
+server_utilization={{ pp_server_utilization }}
+serviceaccount={{ pp_serviceaccount }}
+servicename={{ pp_servicename }}
+workload_profile={{ pp_workload_profile }}
+xlogdir={{ pp_xlogdir }}
+
+superaccount={{ pp_superaccount }}
+superpassword={{ pp_superpassword }}
+webusername={{ pp_web_username }}
+webpassword={{ pp_web_password }}
+
+{% if pp_disable_components is defined %}disable-components={{ pp_disable_components }}{% endif %}

@@ -1,0 +1,92 @@
+# main.yml - Nginx installation
+---
+- name: Install Nginx
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - libselinux-python
+    - nginx
+  tags:
+    - nginx
+
+- name: Create Nginx user, if needed
+  user:
+    name: "{{ nginx_user }}"
+    comment: "Nginx User"
+  tags:
+    - nginx
+
+- name: Configure
+  template:
+    src: nginx.conf.j2
+    dest: "{{ nginx_dir }}/nginx.conf"
+    mode: 0640
+  notify:
+    - restart nginx
+  tags:
+    - nginx
+
+- name: Create default server
+  template:
+    src: default.conf.j2
+    dest: "{{ nginx_conf_dir }}/default.conf"
+    mode: 0644
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+  notify:
+    - restart nginx
+  tags:
+    - nginx
+
+- name: Allow "deploy" user to deploy config changes
+  file:
+    dest: "{{ nginx_conf_dir }}"
+    mode: 0755
+    owner: "{{ deploy_user }}"
+    group: "{{ deploy_user }}"
+  tags:
+    - nginx
+
+- name: Ensure permissions are correct to view logs
+  file:
+    dest: "{{ nginx_log_dir }}"
+    mode: 0755
+    state: directory
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
+  tags:
+    - nginx
+
+- name: Ensure Nginx is started and enabled at boot time, if desired.
+  service:
+    name: nginx
+    state: "{{ nginx_state }}"
+    enabled: "{{ nginx_enable }}"
+  tags:
+    - nginx
+
+- name: Allow "deploy" user to restart Nginx
+  template:
+    src: nginx.j2
+    dest: /etc/sudoers.d/nginx
+  tags:
+    - nginx
+
+- name: Open port 80 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
+  when: iptables_config
+  tags:
+    - nginx
+
+- name: Open port 443 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 443 -j ACCEPT"
+  when: iptables_config
+  tags:
+    - nginx
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config
+  tags:
+    - nginx

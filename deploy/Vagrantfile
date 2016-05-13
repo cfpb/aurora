@@ -1,24 +1,30 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
+require 'fileutils'
 
 Vagrant.configure(2) do |config|
 
   ### COMMON VARIABLES
+
+  # First make sure that an .vault_password file exists, and if it doesn't
+  # then create an empty file
+  if not File.file?('.vault_password')
+    FileUtils.touch('.vault_password')
+  end
 
   # Constant var holding the root directory where this vagrantfile is being run
   VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
 
   ansible_tags = ENV['TAGS']
 
-  ### ELK Component, must be built first to generate
-  # SSL cert for logstash_forwarder, if used
-
-  ### SHARED COMPONENT
+  ########################
+  ### SHARED COMPONENT ###
+  ########################
 
   # GlusterFS File Server 1
   disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
-    fs_config.vm.box = "chef/centos-6.5"
+    fs_config.vm.box = "bento/centos-6.7"
     fs_config.vm.host_name = "file-server-1.test.dev"
 
     fs_config.ssh.forward_agent = true
@@ -29,7 +35,10 @@ Vagrant.configure(2) do |config|
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
         v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
-        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+
+#       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+#       TODO: Detect if SATA controller exists, and only add it if needed
+
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
       end
     end
@@ -46,7 +55,7 @@ Vagrant.configure(2) do |config|
   # GlusterFS File Server 2
   disk_file_2 = File.join(VAGRANT_ROOT, 'gfs_brick_2.vdi')
   config.vm.define :file_server_2 do |fs_config|
-    fs_config.vm.box = "chef/centos-6.5"
+    fs_config.vm.box = "bento/centos-6.7"
     fs_config.vm.host_name = "file-server-2.test.dev"
 
     fs_config.vm.provision :shell,
@@ -55,7 +64,10 @@ Vagrant.configure(2) do |config|
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
         v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
-        v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+
+#       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
+#       TODO: Detect if SATA controller exists, and only add it if needed
+#
         v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
       end
     end
@@ -69,7 +81,7 @@ Vagrant.configure(2) do |config|
     end
 
     fs_config.vm.provision 'ansible' do |ansible|
-      ansible.playbook = "configure_file_shares.yml"
+      ansible.playbook = "config_file_server.yml"
       ansible.tags = ansible_tags
     end
 
@@ -78,7 +90,7 @@ Vagrant.configure(2) do |config|
 
   # Admin Terminal VM
   config.vm.define :admin_terminal do |adterm_config|
-    adterm_config.vm.box = "chef/centos-6.5"
+    adterm_config.vm.box = "bento/centos-6.7"
     adterm_config.vm.host_name = "admin.test.dev"
 
     adterm_config.ssh.forward_agent = true
@@ -97,7 +109,7 @@ Vagrant.configure(2) do |config|
 
   # Kerberos Server VM - for testing purposes only
   config.vm.define :kerberos_server do |kerberos_config|
-    kerberos_config.vm.box = "chef/centos-6.5"
+    kerberos_config.vm.box = "bento/centos-6.7"
     kerberos_config.vm.host_name = "kdc.test.dev"
 
     kerberos_config.vm.provision :shell,
@@ -127,7 +139,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :proxy_server do |proxy_config|
-    proxy_config.vm.box = "chef/centos-6.5"
+    proxy_config.vm.box = "bento/centos-6.7"
     proxy_config.vm.host_name = "proxy.test.dev"
 
     proxy_config.vm.provision :shell,
@@ -157,11 +169,13 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.network :private_network, ip: "10.0.1.3"
   end
 
-  ### ANALYTICS COMPONENT
+  ###########################
+  ### ANALYTICS COMPONENT ###
+  ###########################
 
   # Analytics Terminal
   config.vm.define :analytics_terminal do |analytics_config|
-    analytics_config.vm.box = "chef/centos-6.5"
+    analytics_config.vm.box = "bento/centos-6.7"
     analytics_config.vm.host_name = "analytics.test.dev"
 
     analytics_config.ssh.forward_agent = true
@@ -170,8 +184,8 @@ Vagrant.configure(2) do |config|
       :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
     analytics_config.vm.provider "virtualbox" do |v|
-      v.memory = 1024
-      v.cpus = 1
+      v.memory = 2048
+      v.cpus = 2
     end
 
     analytics_config.vm.provision "ansible" do |ansible|
@@ -185,7 +199,7 @@ Vagrant.configure(2) do |config|
 
   # Kibana Client Node
   config.vm.define "elk" do |elk_config|
-    elk_config.vm.box = "chef/centos-6.5"
+    elk_config.vm.box = "bento/centos-6.7"
     elk_config.vm.host_name = "elk.test.dev"
     elk_config.ssh.forward_agent = true
 
@@ -204,7 +218,7 @@ Vagrant.configure(2) do |config|
   # Elastic Search Cluster
   (1..3).each do |i|
     config.vm.define "es#{i}" do |es_config|
-      es_config.vm.box = "chef/centos-6.5"
+      es_config.vm.box = "bento/centos-6.7"
       es_config.vm.host_name = "es#{i}.test.dev"
       es_config.ssh.forward_agent = true
 
@@ -223,7 +237,7 @@ Vagrant.configure(2) do |config|
 
   # App server
   config.vm.define :app_server do |app_config|
-    app_config.vm.box = "chef/centos-6.5"
+    app_config.vm.box = "bento/centos-6.7"
     app_config.vm.host_name = "app.test.dev"
 
     app_config.ssh.forward_agent = true
@@ -242,13 +256,13 @@ Vagrant.configure(2) do |config|
     app_config.vm.network :private_network, ip: "10.0.1.17"
   end
 
-  #######################
+  ##########################
   ### RESEARCH COMPONENT ###
-  #######################
+  ##########################
 
   # Research ancillary server
   config.vm.define :research_ancillary_services do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-ancillary.test.dev"
 
     server.ssh.forward_agent = true
@@ -256,6 +270,7 @@ Vagrant.configure(2) do |config|
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_research_environment.yml"
       ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
     end
 
     server.vm.network :private_network, ip: "10.0.1.18"
@@ -263,7 +278,7 @@ Vagrant.configure(2) do |config|
 
   # Research EOD server
   config.vm.define :research_eod do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-eod.test.dev"
 
     server.ssh.forward_agent = true
@@ -279,7 +294,7 @@ Vagrant.configure(2) do |config|
 
   # Research gauss server
   config.vm.define :research_gauss do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-gauss.test.dev"
 
     server.ssh.forward_agent = true
@@ -295,7 +310,7 @@ Vagrant.configure(2) do |config|
 
   # Research stata server
   config.vm.define :research_stata do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-stata.test.dev"
 
     server.ssh.forward_agent = true
@@ -311,7 +326,7 @@ Vagrant.configure(2) do |config|
 
   # Research R/Python server
   config.vm.define :research_python do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-python.test.dev"
 
     server.ssh.forward_agent = true
@@ -327,7 +342,7 @@ Vagrant.configure(2) do |config|
 
   # Research Matlab server
   config.vm.define :research_matlab do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-matlab.test.dev"
 
     server.ssh.forward_agent = true
@@ -343,7 +358,7 @@ Vagrant.configure(2) do |config|
 
   # Research SPSS server
   config.vm.define :research_spss do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-spss.test.dev"
 
     server.ssh.forward_agent = true
@@ -359,7 +374,7 @@ Vagrant.configure(2) do |config|
 
   # Research SAS server
   config.vm.define :research_sas do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "research-sas.test.dev"
 
     server.ssh.forward_agent = true
@@ -373,11 +388,12 @@ Vagrant.configure(2) do |config|
     server.vm.network :private_network, ip: "10.0.1.25"
   end
 
-  #######################
+  ###########################
   ### PIPELINES COMPONENT ###
-  #######################
+  ###########################
+
   config.vm.define :ci_server do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "ci-server.test.dev"
 
     server.ssh.forward_agent = true
@@ -392,7 +408,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :ci_agent_1 do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "ci-agent-1.test.dev"
 
     server.ssh.forward_agent = true
@@ -407,7 +423,7 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :ci_terminal_1 do |server|
-    server.vm.box = "chef/centos-6.5"
+    server.vm.box = "bento/centos-6.7"
     server.vm.host_name = "ci-terminal-1.test.dev"
 
     server.ssh.forward_agent = true
@@ -419,5 +435,112 @@ Vagrant.configure(2) do |config|
     end
 
     server.vm.network :private_network, ip: "10.0.1.28"
+  end
+
+  ################################
+  ### DATA WAREHOUSE COMPONENT ###
+  ################################
+
+  # DB Server
+  config.vm.define :db_server do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "db.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    server.vm.provision "ansible" do |ansible|
+      if ENV['DB_SERVER_EXTRA_VARS']
+        ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
+      else
+        print "You must set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
+        print "Example:\n"
+        print "$ export DB_SERVER_EXTRA_VARS=local_settings.yml\n"
+        print "$ cat local_settings.yml\n"
+        print "---\n"
+        print "pp_web_username: myusername@example.com\n"
+        print "pp_web_password: mypassword\n"
+        exit
+      end
+
+      ansible.playbook = "deploy_db_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+
+      ansible.tags = ansible_tags
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.29"
+  end
+
+  # DB Terminal
+  config.vm.define :db_terminal do |server|
+    server.vm.box = "chef/centos-6.5"
+    server.vm.host_name = "dbt.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_db_terminal.yml"
+      ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.30"
+  end
+
+  #######################
+  ### MESOS COMPONENT ###
+  #######################
+
+  mesos_masters = [
+    "10.0.1.31",
+    "10.0.1.32",
+    "10.0.1.33",
+  ]
+
+  mesos_masters.each_with_index do |ip, idx|
+    id = idx+1
+    config.vm.define "mesos_master_#{id}" do |mm_config|
+      mm_config.vm.box = "bento/centos-6.7"
+      mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
+      mm_config.vm.network :private_network, ip: ip
+
+      mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_mesos_master.yml"
+        ansible.inventory_path = "vagrant_hosts"
+        ansible.extra_vars = {:zookeeper_id => "#{id}"}
+        ansible.tags = ansible_tags
+      end
+    end
+  end
+
+  # Mesos Agents
+  mesos_agents = [
+    "10.0.1.34",
+    "10.0.1.35",
+    "10.0.1.36",
+  ]
+
+  mesos_agents.each_with_index do |ip, idx|
+    id = idx+1
+    config.vm.define "mesos_agent_#{id}" do |mm_config|
+      mm_config.vm.box = "bento/centos-6.7"
+      mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
+      mm_config.vm.network :private_network, ip: ip
+
+      mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_mesos_agent.yml"
+        ansible.inventory_path = "vagrant_hosts"
+        ansible.tags = ansible_tags
+      end
+    end
   end
 end

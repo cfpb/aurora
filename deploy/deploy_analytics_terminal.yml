@@ -1,6 +1,6 @@
 ---
 - hosts: analytics_terminal
-  sudo: yes
+  become: yes
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
@@ -13,11 +13,15 @@
     - ruby
     - jdk
     - pycharm
-    - postgresql
+    - postgresql-client
+    - nginx
+    - spark
+    - sublime
+    #- julia
 
 # Install development packages
 - hosts: analytics_terminal
-  sudo: yes
+  become: yes
   tasks:
     - name: Install packages development packages
       yum:
@@ -43,18 +47,6 @@
         - p7zip
       when: custom_repo
 
-    - name: Activate Julia repo
-      get_url:
-        url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
-        dest: /etc/yum.repos.d/nalimilan-julia-epel-6.repo
-      when: not 'production' in group_names
-
-    - name: Install Julia
-      yum:
-        name: julia
-        state: present
-        disable_gpg_check: yes
-
     - name: Install Python RPM dependencies
       yum:
         name: "{{ item }}"
@@ -77,9 +69,9 @@
       with_items: python3_packages
 
 - hosts: analytics_terminal
-  sudo: yes
+  become: yes
   roles:
-    - {role: eod, when: "install_eod"}
+    - eod
     - r
     - revolution-r
     - r-shiny
@@ -91,7 +83,7 @@
     - clouseau
 
 - hosts: analytics_terminal
-  sudo: yes
+  become: yes
   tasks:
     - name: Open port range for app prototyping
       command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"

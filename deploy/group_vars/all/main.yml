@@ -73,6 +73,10 @@ git_environment: master
 # Puppet disabling on?
 disable_puppet: False
 
+# Location on the local machine where artifacts can be found
+# (by default, the directory ansible is run from)
+artifacts_dir: .
+
 #==============#
 ### IPTABLES ###
 #==============#
@@ -169,10 +173,6 @@ install_odbc: True
 #======================#
 ### PACKAGE SETTINGS ###
 #======================#
-postgres_packages:
-  - postgresql
-  - postgresql-devel
-
 r_shiny_server_package: http://download3.rstudio.org/centos-5.9/x86_64/shiny-server-1.3.0.403-rh5-x86_64.rpm
 
 python_dep_packages:
@@ -180,9 +180,11 @@ python_dep_packages:
 
 python_packages:
   - requests
+  - cookiecutter
 
 python3_packages:
   - requests
+  - cookiecutter
 
 #============================#
 ### ELASTICSEARCH SETTINGS ###
@@ -202,3 +204,23 @@ es_user: elasticsearch
 # Variables used for running the test suite
 gocd_service_username: admin
 gocd_service_password: password
+
+#=========================#
+### PostgreSQL Settings ###
+#=========================#
+
+# Superuser
+pp_superaccount: postgres
+pp_superpassword: password
+
+# PPAS Port
+pp_serverport: 5432
+
+# Default service account
+pp_dba_username: vagrant
+pp_dba_password: vagrant
+
+pp_custom_test_scripts:
+  -
+    script: "SELECT 1;"
+    assertion: "test_output['results'][0]['query_result'] == [[1]]"

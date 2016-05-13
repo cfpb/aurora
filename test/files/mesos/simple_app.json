@@ -1,0 +1,19 @@
+{
+  "id": "simple_app",
+  "cpus": 0.5,
+  "mem": 32.0,
+  "disk": 10.0,
+  "instances": 1,
+  "cmd": "./simple_app",
+  "container": {
+    "type": "MESOS",
+    "mesos": {
+      "image": {
+        "type": "APPC",
+        "appc": {
+          "name": "test/simple_app"
+        }
+      }
+    }
+  }
+}

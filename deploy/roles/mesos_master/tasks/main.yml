@@ -1,0 +1,433 @@
+# mesos-master
+---
+
+### SETUP REPOSITORIES
+
+- name: Add mesosphere repository
+  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  args:
+    creates: /etc/yum.repos.d/mesosphere.repo
+  when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Install the CDH key
+  rpm_key:
+    key: http://archive.cloudera.com/cdh4/redhat/6/x86_64/cdh/RPM-GPG-KEY-cloudera
+    state: present
+  when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Add the CDH repository
+  command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm"
+  args:
+    creates: /etc/yum.repos.d/cloudera-cdh4.repo
+  when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-master
+
+### INSTALL MESOS MASTER PACKAGES
+
+# Note: Even though the installed packages are the same version
+# for some reason they must be removed and reinstalled as
+# dependencies
+- name: Remove incompatible packages
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - redhat-lsb-graphics
+    - redhat-lsb-core
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Install mesos and supporting packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ mesos_server_packages }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+### CONFIGURE ZOOKEEPER
+- name: Configure zookeeper with the IP's of all masters
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Create zookeeper config folders
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: zookeeper
+    group: zookeeper
+  with_items:
+    - "/etc/zookeeper"
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Create zookeeper config file
+  template:
+    dest: /etc/zookeeper/conf/zoo.cfg
+    src: zoo.cfg
+    owner: zookeeper
+    group: zookeeper
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure number of log files to keep
+  lineinfile:
+    dest: /etc/zookeeper/conf/log4j.properties
+    regexp: "(.*)zookeeper.log.maxbackupindex=(.*)"
+    line: "zookeeper.log.maxbackupindex={{ zookeeper_maxbackupindex }}"
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Initialize zookeeper
+  command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
+  args:
+    creates: /var/lib/zookeeper/myid
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Ensure ownership is correct
+  file:
+    dest: /var/lib/zookeeper
+    state: directory
+    recurse: yes
+    owner: zookeeper
+    group: zookeeper
+  tags:
+    - mesos
+    - mesos-master
+
+### CONFIGURE MESOS
+
+- name: Set cluster name
+  copy:
+    dest: /etc/mesos-master/cluster
+    content: "{{ mesos_cluster_name }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure mesos with the IP's of all zookeepers
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Update the quorum config file
+  template:
+    dest: /etc/mesos-master/quorum
+    src: quorum.j2
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Add the ip address to the mesos-master folder
+  copy:
+    dest: /etc/mesos-master/ip
+    content: "{{ ansible_ssh_host }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Add the ip to the hostname file too
+  copy:
+    dest: /etc/mesos-master/hostname
+    content: "{{ ansible_ssh_host }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure port for Mesos to run on
+  lineinfile:
+    dest: /etc/default/mesos-master
+    line: "PORT={{ mesos_master_port }}"
+    regexp: ^(.*)PORT=[0-9]+$
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure logging level
+  copy:
+    dest: /etc/mesos-master/logging_level
+    content: "{{ mesos_master_logging_level }}"
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Setup credentials
+  template:
+    src: mesos_credentials.j2
+    dest: /etc/mesos_credentials
+    mode: 600
+  when: mesos_credentials is defined
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure credentials
+  copy:
+    content: "/etc/mesos_credentials"
+    dest: /etc/mesos-master/credentials
+  when: mesos_credentials is defined
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Enable framework authentication, if desired
+  copy:
+    content: "{{ mesos_authenticate_frameworks }}"
+    dest: /etc/mesos-master/authenticate
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Enable agent authentication, if desired
+  copy:
+    content: "{{ mesos_authenticate_agents }}"
+    dest: /etc/mesos-master/authenticate_slaves
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Setup ACL's, if desired
+  copy:
+    content: "{{ mesos_acls }}"
+    dest: /etc/mesos-master/acls
+  notify:
+    - restart mesos-master
+  tags:
+    - mesos
+    - mesos-master
+
+### CONFIGURE MARATHON
+
+- name: Create Marathon config folders
+  file:
+    path: /etc/marathon/conf
+    state: directory
+    mode: 0644
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Copy hostname file to Marathon config
+  copy:
+    dest: /etc/marathon/conf/hostname
+    content: "{{ ansible_ssh_host }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Copy the zk file to Marathon
+  template:
+    src: zk.j2
+    dest: /etc/marathon/conf/master
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Setup Zookeeper config for Marathon
+  template:
+    dest: /etc/marathon/conf/zk
+    src: zk.marathon.j2
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Confgiure Marathon HTTP port
+  copy:
+    dest: /etc/marathon/conf/http_port
+    content: "{{ marathon_http_port }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Confgiure Mesos user for Marathon
+  copy:
+    dest: /etc/marathon/conf/mesos_user
+    content: "{{ marathon_mesos_user }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure Marathon principal
+  copy:
+    dest: /etc/marathon/conf/mesos_authentication_principal
+    content: "{{ marathon_mesos_principal }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure Marathon secret file path
+  copy:
+    dest: /etc/marathon/conf/mesos_authentication_secret_file
+    content: "{{ marathon_secret_file }}"
+    mode: 0600
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure Marathon secret
+  copy:
+    dest: "{{ marathon_secret_file }}"
+    content: "{{ marathon_mesos_secret }}"
+    mode: 0600
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Configure Marathon artifact store
+  copy:
+    dest: "/etc/marathon/conf/artifact_store"
+    content: "{{ marathon_artifact_store }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Ensure artifact store directory exists
+  file:
+    dest: "{{ marathon_artifact_store[7:] }}"
+    state: directory
+    mode: 0755
+  when: marathon_artifact_store[:7] == "file://"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+### DISABLE MESOS AGENT (INSTALLED BY RPM)
+
+# Ansible "service" command doesn't work with upstart jobs on Centos, so
+# do it manually
+- name: Stop the Mesos agent process
+  command: "stop mesos-slave"
+  register: mesos_agent_stop
+  failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Disable the mesos-agent service
+  lineinfile:
+    dest: /etc/init/mesos-slave.conf
+    regexp: "^(.*)(start on(.*))$"
+    line: "#\\2"
+    backrefs: yes
+    state: present
+  tags:
+    - mesos
+    - mesos-master
+
+### START ZOOKEEPER, MESOS, AND MARATHON
+
+- name: Start zookeeper
+  service:
+    name: zookeeper-server
+    state: started
+    enabled: yes
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Start the Mesos master and Marathon processes (they are already enabled)
+  command: "start {{ item }}"
+  with_items:
+    - mesos-master
+    - marathon
+  register: mesos_master_start
+  failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+  tags:
+    - mesos
+    - mesos-master
+
+## CONFIGURE IP TABLES
+
+# TODO: More restrictive iptables rules are needed, specifically ports
+# 5050 and 8080 should only be open to the proxy server, with 5050 also
+# open to the Mesos client nodes.  Ports 2181, 2888, and 3888 should be open
+# to the Mesos cluster only.
+- name: Open required ports
+  command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 2181
+    - 5050
+    - 8080
+    - 2888
+    - 3888
+  when: iptables_config
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Save iptables
+  command: "/sbin/service iptables save"
+  when: iptables_config
+  notify:
+    - restart iptables
+  tags:
+    - mesos
+    - mesos-master

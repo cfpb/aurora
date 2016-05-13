@@ -1,4 +1,0 @@
----
-postgres_packages:
-  - postgresql
-  - postgresql-devel

@@ -1,0 +1,76 @@
+---
+### ZOOKEEPER SETTINGS
+
+# Number of log files to keep at a time
+zookeeper_maxbackupindex: 20
+
+### MESOS SETTINGS
+mesos_server_packages:
+  - libselinux-python
+  - mesos-0:0.28.0-2.0.16.centos65.x86_64
+  - marathon-0:0.15.3-1.0.463.el6.x86_64
+  - zookeeper-server
+
+mesos_cluster_name: "Test Cluster"
+mesos_master_port: 5050
+mesos_master_logging_level: "INFO"
+
+mesos_credentials:
+  -
+    principal: "username"
+    secret: "password"
+
+mesos_authenticate_frameworks: "false"
+mesos_authenticate_agents: "true"
+
+mesos_acls: >
+  {
+    "register_frameworks": [
+      {
+        "principals": { "type": "ANY" },
+        "roles": { "type": "ANY" }
+      }
+    ],
+    "run_tasks": [
+      {
+        "principals": { "type": "NONE" },
+        "users": { "values": ["root"] }
+      },
+      {
+        "principals": { "type": "ANY" },
+        "users": { "values": ["mesagent", "vagrant"] }
+      }
+    ],
+    "teardown_frameworks": [
+      {
+        "principals": { "type": "ANY" },
+        "framework_principals": { "type": "ANY" }
+      }
+    ],
+    "set_quotas": [
+      {
+        "principals": { "type": "ANY" },
+        "roles": { "type": "ANY" }
+      }
+    ],
+    "remove_quotas": [
+      {
+        "principals": { "type": "ANY" },
+        "quota_principals": { "type": "ANY" }
+      }
+    ]
+  }
+
+### MARATHON SETTINGS
+marathon_http_port: 8080
+
+# User to run processes in Mesos as
+marathon_mesos_user: "mesagent"
+
+# Framework authentication credentials
+marathon_mesos_principal: "username"
+marathon_mesos_secret: "password"
+marathon_secret_file: "/etc/marathon_secret"
+
+# Artifact store
+marathon_artifact_store: "file:///home/work/marathon/store"

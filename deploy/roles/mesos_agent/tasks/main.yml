@@ -1,0 +1,295 @@
+# mesos-agent/main.yml
+---
+
+### SETUP MESOS REPOSITORIES AND INSTALL
+
+- name: Add mesosphere repository
+  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  args:
+    creates: /etc/yum.repos.d/mesosphere.repo
+  when: not 'production' in group_names
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Install mesos package
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ mesos_package }}"
+    - libselinux-python
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Stop the Mesos master process
+  command: "stop mesos-master"
+  register: mesos_master_stop
+  failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Stop the mesos-master service
+  lineinfile:
+    dest: /etc/init/mesos-master.conf
+    regexp: "^(.*)(start on(.*))$"
+    line: "#\\2"
+    backrefs: yes
+    state: present
+  tags:
+    - mesos
+    - mesos-agent
+
+# FYI, only works on newer versions of Upstart, not RHEL 6
+# - name: Override the mesos-master service
+#  copy:
+#    dest: /etc/init/mesos-master.conf.override
+#    content: manual
+#  tags:
+#    - mesos
+#    - mesos-agent
+
+### CONFIGURE MESOS AGENT
+
+- name: Configure zookeeper with the IP's of all masters
+  template:
+    src: zk.j2
+    dest: /etc/mesos/zk
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Add the ip address to the Mesos agent config folder
+  copy:
+    dest: /etc/mesos-slave/ip
+    content: "{{ ansible_ssh_host }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Add the ip to the hostname file too
+  copy:
+    dest: /etc/mesos-slave/hostname
+    content: "{{ ansible_ssh_host }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure port for Mesos to run on
+  copy:
+    dest: /etc/mesos-slave/port
+    content: "{{ mesos_agent_port }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure logging level
+  copy:
+    dest: /etc/mesos-slave/logging_level
+    content: "{{ mesos_agent_logging_level }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Add isolation to mesos client
+  copy:
+    dest: /etc/mesos-slave/isolation
+    content: "{{ mesos_agent_isolation }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure correct cgroups route
+  copy:
+    dest: /etc/mesos-slave/cgroups_hierarchy
+    content: "{{ mesos_agent_cgroups_path }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Create credential file, if needed
+  copy:
+    dest: "{{ mesos_agent_credential }}"
+    content: "{{ mesos_agent_principal }} {{ mesos_agent_secret }}"
+    mode: 0600
+  when: mesos_agent_credential is defined
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure Mesos agent to use credential
+  copy:
+    dest: /etc/mesos-slave/credential
+    content: "{{ mesos_agent_credential }}"
+  when: mesos_agent_credential is defined
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Make Mesos working directory
+  file:
+    dest: "{{ mesos_agent_work_dir }}"
+    state: directory
+    mode: 0755
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure working directory
+  copy:
+    dest: /etc/mesos-slave/work_dir
+    content: "{{ mesos_agent_work_dir }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Create mesos user
+  user:
+    name: "{{ marathon_mesos_user }}"
+    comment: "Mesos User"
+    home: /home/{{ marathon_mesos_user }}
+  tags:
+    - mesos
+    - mesos-agent
+
+### Containerization
+
+- name: Configure containerizers
+  copy:
+    dest: /etc/mesos-slave/containerizers
+    content: "{{ mesos_containerizers }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure container launcher
+  copy:
+    dest: /etc/mesos-slave/launcher
+    content: "{{ mesos_launcher }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure image providers
+  copy:
+    dest: /etc/mesos-slave/image_providers
+    content: "{{ mesos_image_providers }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+### AppC Container Images
+
+- name: Configure AppC URI
+  copy:
+    dest: /etc/mesos-slave/appc_simple_discovery_uri_prefix
+    content: "{{ mesos_appc_simple_discovery_uri_prefix }}"
+  when: mesos_appc_enable
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Ensure AppC URI exists, if file
+  file:
+    state: directory
+    dest: "{{ mesos_appc_simple_discovery_uri_prefix[7:] }}"
+    mode: 0755
+  when: mesos_appc_enable and mesos_appc_simple_discovery_uri_prefix[:7] == "file://"
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure AppC image cache
+  copy:
+    dest: /etc/mesos-slave/appc_store_dir
+    content: "{{ mesos_appc_store_dir }}"
+  when: mesos_appc_enable
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+### Docker container images
+
+- name: Configure Docker image cache
+  copy:
+    dest: /etc/mesos-slave/docker_store_dir
+    content: "{{ mesos_docker_store_dir }}"
+  when: mesos_docker_enable
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure Docker registry
+  copy:
+    dest: /etc/mesos-slave/docker_registry
+    content: "{{ mesos_docker_registry }}"
+  when: mesos_docker_enable
+  notify:
+    - restart mesos_agent
+  tags:
+    - mesos
+    - mesos-agent
+
+### SETUP IP TABLES AND START MESOS AGENT
+
+- name: Open required ports
+  command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
+  with_items:
+    - 5051
+  when: iptables_config
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Save iptables
+  command: "/sbin/service iptables save"
+  when: iptables_config
+  notify:
+    - restart iptables
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Start the Mesos agent
+  command: "start mesos-slave"
+  register: mesos_agent_start
+  failed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
+  tags:
+    - mesos
+    - mesos-agent

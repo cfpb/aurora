@@ -5,22 +5,36 @@
     state: present
   when: not 'production' in group_names
 
+- name: Ensure older versions are removed
+  yum:
+    name: postgresql
+    state: absent
+    disablerepo: pgdg94
+  ignore_errors: yes
+  when: clean_postgresql
+
 - name: Install postgres packages
   yum:
     name: "{{ item }}"
     state: present
     disable_gpg_check: yes
-  with_items: postgres_packages
+  with_items: "{{ postgres_packages }}"
 
 - name: Ensure other libraries can see header files
   file:
     src: "{{ postgres_install_dir }}/include/"
     dest: /usr/include/pgsql
     state: link
-  when: postgres_install_dir is defined
+
+- name: Ensure other libraries can see library files
+  file:
+    src: "{{ postgres_install_dir }}/lib"
+    dest: /usr/lib/pgsql
+    state: link
 
 - name: Add psql bin directory to path
   lineinfile:
     dest: /etc/profile.d/postgres.sh
     create: yes
-    line: export PATH=$PATH:/usr/pgsql-9.4/bin
+    line: export PATH=/usr/pgsql-9.4/bin:$PATH
+    mode: 0644

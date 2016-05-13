@@ -1,0 +1,15 @@
+---
+# Account for automated DB management
+pp_dba_username: vagrant
+pp_dba_password: vagrant
+
+# Business DB's to create
+pp_dbs:
+  -
+    name: example_db
+    template: master_template
+    owner: vagrant
+    extensions:
+      - postgis
+      - postgis_topology
+      - address_standardizer

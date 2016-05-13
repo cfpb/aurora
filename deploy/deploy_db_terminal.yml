@@ -1,0 +1,81 @@
+# deploy_admin_terminal.yml
+---
+- hosts: db_terminal
+  sudo: yes
+
+  roles:
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+#    - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - {role: log-courier, when: "install_logstash"}
+    - jdk
+    - postgresql-client
+    - eod
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
+    - sqitch
+    - {role: pem-client, tags: pem-client}
+    - sublime
+
+  tasks:
+    - name: Ensure umask is correct
+      sudo: no
+      lineinfile:
+        dest: ~/.bashrc
+        line: umask 0022
+        regexp: ^(.*)umask(.*)$
+        state: present
+
+    - name: Install RPM dependencies for python packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+
+    - name: Install Python packages for 27
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages
+
+    - name: Install needed packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - htop
+        - screen
+        - rsync
+        - unzip
+        - gpg
+        - pigz
+        - facter
+        - sysstat # sar, iostat, vmstat
+        - systemtap # dtrace equivalent
+        - ant
+
+    - name: Install custom packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: db_automation_custom_packages
+      when: db_automation_custom_packages is defined
+
+  #      - https://github.com/Factual/drake
+  #      - https://github.com/audreyr/cookiecutter
+  #       sudo yum install perl-devel perl-CPAN && curl -L http://cpanmin.us | perl - --sudo App::cpanminus
+  #       http://hammerora.sourceforge.net/download.html
+  #       - ogr2ogr in GDAL
