@@ -16,6 +16,7 @@
     - postgresql-client
     - nginx
     - spark
+    - sublime
     #- julia
 
 # Install development packages
