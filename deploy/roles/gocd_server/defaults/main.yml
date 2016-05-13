@@ -8,4 +8,6 @@ gocd_server_port: 8153
 gocd_server_ssl_port: 8154
 gocd_server_mem: "256m"
 gocd_server_max_mem: "512m"
+gocd_server_min_perm_gen: "128m"
+gocd_server_max_perm_gen: "256m"
 gocd_admin_password: W6ph5Mm5Pz8GgiULbPgzG37mj9g= # "password"
