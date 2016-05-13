@@ -8,4 +8,9 @@
   when: install_eod
 
 - name: restart gdm
-  shell: killall gdm-binary && restart prefdm
+  shell: killall gdm-binary
+  ignore_errors: yes
+
+- name: restart prefdm
+  shell: restart prefdm
+  ignore_errors: yes

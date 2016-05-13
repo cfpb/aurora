@@ -79,6 +79,7 @@
   notify:
     - restart eod
     - restart gdm
+    - restart prefdm
   when: custom_repo
   tags:
     - eod
@@ -128,6 +129,7 @@
     mode: 0644
   notify:
     - restart gdm
+    - restart prefdm
   tags:
     - eod
 
@@ -136,6 +138,7 @@
   with_items: gconf_settings
   notify:
     - restart gdm
+    - restart prefdm
   tags:
     - eod
 
@@ -153,6 +156,7 @@
     dest: /etc/X11/xorg.conf
   notify:
     - restart gdm
+    - restart prefdm
   # notify:
   #   - ensure video driver
   tags:
