@@ -24,23 +24,26 @@
 - name: Get the JDBC driver for SQLServer
   unarchive:
     src: "{{ jdbc_sql_url }}"
-    dest: "/tmp/sqljdbc"
+    dest: "/tmp/"
+    copy: no
 
 - name: Move the JAR file to the right location
   copy:
-    src: "/tmp/sqljdbc/sqljdbc42.jar"
+    src: "/tmp/sqljdbc_4.2/enu/sqljdbc42.jar"
     dest: "/opt/data-integration/lib/"
-    remote: no
+    remote_src: yes
     mode: 0644
 
 - name: Add an option to disable cairo, which is buggy in this case
   lineinfile:
+    dest: /opt/data-integration/spoon.sh
     line: OPT="$OPT -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false"
-    insertafter: $OPT\=\"$OPT $PENTAHO_DI_JAVA_OPTIONS\".*
+    insertafter: ^OPT="\$OPT \$PENTAHO_DI_JAVA_OPTIONS(.*)"$
     state: present
 
 - name: Set memory usage
   lineinfile:
-    regexp: $(.*)PENTAHO_DI_JAVA_OPTIONS=\"(.*)\"
+    dest: /opt/data-integration/spoon.sh
+    regexp: ^(.*)PENTAHO_DI_JAVA_OPTIONS="(.*)"
     line: "    PENTAHO_DI_JAVA_OPTIONS=\"-Xmx{{ pentaho_heap_size }} -XX:MaxPermSize={{ pentaho_perm_size }}\""
     state: present
