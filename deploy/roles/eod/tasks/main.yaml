@@ -230,3 +230,12 @@
   changed_when: gdm_status.rc == 0
   tags:
     - eod
+
+- name: Check if EOD is configured to run on boot
+  shell: sudo /usr/local/eod/bin/otecs bootstatus
+  register: eod_bootstatus
+  changed_when: false
+
+- name: Configure EOD to start on boot
+  shell: sudo /usr/local/eod/bin/otecs bootstart
+  changed_when: eod_bootstatus.stdout == 'off'

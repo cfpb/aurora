@@ -38,12 +38,12 @@
   lineinfile:
     dest: /opt/data-integration/spoon.sh
     line: OPT="$OPT -Dorg.eclipse.swt.internal.gtk.cairoGraphics=false"
-    insertafter: $OPT="$OPT $PENTAHO_DI_JAVA_OPTIONS(.*)"^
+    insertafter: ^OPT="\$OPT \$PENTAHO_DI_JAVA_OPTIONS(.*)"$
     state: present
 
 - name: Set memory usage
   lineinfile:
     dest: /opt/data-integration/spoon.sh
-    regexp: $(.*)PENTAHO_DI_JAVA_OPTIONS=\"(.*)\"
+    regexp: ^(.*)PENTAHO_DI_JAVA_OPTIONS="(.*)"
     line: "    PENTAHO_DI_JAVA_OPTIONS=\"-Xmx{{ pentaho_heap_size }} -XX:MaxPermSize={{ pentaho_perm_size }}\""
     state: present
