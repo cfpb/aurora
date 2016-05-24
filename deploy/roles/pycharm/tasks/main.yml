@@ -1,7 +1,7 @@
 ---
 - name: Download pycharm
   get_url:
-    url: https://download.jetbrains.com/python/pycharm-community-4.5.4.tar.gz
+    url: http://download.jetbrains.com/python/pycharm-community-4.5.4.tar.gz
     dest: /tmp/pycharm-community-4.5.4.tar.gz
   register: result
   until: '"failed" not in result'
