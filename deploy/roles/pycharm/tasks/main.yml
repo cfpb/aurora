@@ -4,6 +4,10 @@
     url: https://download.jetbrains.com/python/pycharm-community-4.5.4.tar.gz
     dest: /tmp/pycharm-community-4.5.4.tar.gz
     validate_certs: False
+  register: result
+  until: '"failed" not in result'
+  retries: 3
+  delay: 10
 
 - name: Extract pycharm to destination
   unarchive:
