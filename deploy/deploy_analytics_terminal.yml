@@ -17,6 +17,7 @@
     - nginx
     - spark
     - sublime
+    - nodejs
     #- julia
 
 # Install development packages
@@ -32,7 +33,6 @@
         - "@development"
         - gcc-gfortran
         - python-devel
-        - nodejs
         - pgadmin3_94
 
     - name: Install custom RPMs

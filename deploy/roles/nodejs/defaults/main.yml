@@ -1,0 +1,5 @@
+---
+nvm_parent_path: /opt
+nvm_install_path: "{{ nvm_parent_path }}/nvm"
+nvm_exe_path: "{{ nvm_install_path }}/nvm.sh"
+node_version: "6.2.0"
