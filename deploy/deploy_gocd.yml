@@ -24,6 +24,7 @@
     - odbc
     - ruby
     - sqitch
+    - nodejs
     #- julia
 
 - hosts: ci_agent
@@ -41,7 +42,6 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - nodejs
         - "@development"
         - screen
         - p7zip
