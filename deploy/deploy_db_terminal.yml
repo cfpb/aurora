@@ -4,6 +4,7 @@
   sudo: yes
 
   roles:
+    - umask
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
 #    - {role: common, when: "install_glusterfs"}
@@ -21,14 +22,6 @@
     - sublime
 
   tasks:
-    - name: Ensure umask is correct
-      sudo: no
-      lineinfile:
-        dest: ~/.bashrc
-        line: umask 0022
-        regexp: ^(.*)umask(.*)$
-        state: present
-
     - name: Install RPM dependencies for python packages
       yum:
         name: "{{ item }}"

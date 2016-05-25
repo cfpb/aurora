@@ -35,16 +35,19 @@
 # Note: Even though the installed packages are the same version
 # for some reason they must be removed and reinstalled as
 # dependencies
-- name: Remove incompatible packages
-  yum:
-    name: "{{ item }}"
-    state: absent
-  with_items:
-    - redhat-lsb-graphics
-    - redhat-lsb-core
-  tags:
-    - mesos
-    - mesos-master
+
+# Disable this for now
+
+#- name: Remove incompatible packages
+#  yum:
+#    name: "{{ item }}"
+#    state: absent
+#  with_items:
+#    - redhat-lsb-graphics
+#    - redhat-lsb-core
+#  tags:
+#    - mesos
+#    - mesos-master
 
 - name: Install mesos and supporting packages
   yum:
@@ -295,7 +298,7 @@
     - mesos
     - mesos-master
 
-- name: Confgiure Mesos user for Marathon
+- name: Configure Mesos user for Marathon
   copy:
     dest: /etc/marathon/conf/mesos_user
     content: "{{ marathon_mesos_user }}"
@@ -367,6 +370,7 @@
   command: "stop mesos-slave"
   register: mesos_agent_stop
   failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
+  changed_when: "'Unknown instance' not in mesos_agent_stop.stderr"
   tags:
     - mesos
     - mesos-master

@@ -1,0 +1,59 @@
+---
+- name: Remove system installs of node/npm
+  yum:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - nodejs
+    - npm
+  tags:
+    - nodejs
+
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - git
+    - gcc
+    - gcc-c++
+    - make
+    - openssl-devel
+    - libselinux-python
+  tags:
+    - nodejs
+
+- name: Install NVM
+  git:
+    repo: https://github.com/creationix/nvm.git
+    dest: "{{ nvm_install_path }}"
+  tags:
+    - nodejs
+
+- name: Activate NVM
+  template:
+    src: nvm.sh.j2
+    dest: /etc/profile.d/nvm.sh
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - nodejs
+
+- name: Install latest version of Node
+  shell: source {{ nvm_install_path }}/nvm.sh && nvm install {{ node_version }}
+  register: nvm_install_status
+  changed_when: not 'is already installed' in nvm_install_status.stderr
+  tags:
+    - nodejs
+
+- name: Create symlinks
+  file:
+    state: link
+    src: "{{ nvm_install_path }}/versions/node/v{{ node_version }}/bin/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+  with_items:
+    - node
+    - npm
+  tags:
+    - nodejs

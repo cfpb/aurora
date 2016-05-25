@@ -28,7 +28,6 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - nodejs
         - "@Development Tools"
         - screen
         - p7zip
@@ -47,6 +46,7 @@
     - sqitch
     - r
     - r-shiny
+    - nodejs
 
 - hosts: mesos_agent
   become: yes
