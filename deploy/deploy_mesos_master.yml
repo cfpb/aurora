@@ -2,7 +2,8 @@
 ---
 - hosts: mesos_master
   sudo: yes
-  serial: "25%"
+  serial: 1
+  max_fail_percentage: 30
   roles:
     - {role: iptables, when: "iptables_config"}
     - common
