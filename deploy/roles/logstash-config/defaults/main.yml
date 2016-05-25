@@ -2,4 +2,11 @@
 logstash_user: logstash
 logstash_password: password
 logstash_filters:
-  - 12-example-filter.conf
+  -
+    name: 12-example-filter.conf
+    content: >
+      filter {
+        date {
+          match => [ "timestamp", "ISO8601" ]
+        }
+      }
