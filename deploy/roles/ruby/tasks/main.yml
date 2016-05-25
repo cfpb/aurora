@@ -7,34 +7,102 @@
   get_url:
     url: https://rvm.io/mpapis.asc
     dest: /tmp/mpapis.asc
+  tags:
+    - ruby
 
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
   register: import_key
   failed_when: import_key.rc != 0 and "not changeds" not in import_key.stderr
   changed_when: import_key.rc == 0
+  tags:
+    - ruby
 
 - name: Get script file
   get_url:
     url: https://get.rvm.io/
     dest: /tmp/rvm-installer.sh
+  tags:
+    - ruby
 
 - name: Configure rvm-installer
   file:
     dest: /tmp/rvm-installer.sh
     mode: 0755
+  tags:
+    - ruby
 
 #- name: Import GPG Keys
 #  command: 'gpg --keyserver hkp://keys.gnupg.net:80 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3'
 #  changed_when: false
 #  ignore_errors: yes
+#  tags:
+#    - ruby
 
 - name: Install RVM and stable Ruby
   command: "/tmp/rvm-installer.sh stable --ruby"
   args:
     creates: /usr/local/rvm/bin/rvm
+  tags:
+    - ruby
 
 - name: Ensure /etc/rvmrc is available
   file:
     dest: /etc/rvmrc
     mode: 0664
+  tags:
+    - ruby
+
+- name: Determine if system-wide ruby is installed
+  stat:
+    path: "{{ item }}"
+  register: stat_result
+  with_items:
+    - /usr/bin/ruby
+    - /usr/bin/gem
+  tags:
+    - ruby
+
+- name: Create symlink for ruby to /usr/bin if not present
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/ruby
+    dest: /usr/bin/ruby
+  when: not stat_result.results[0].stat.exists
+  tags:
+    - ruby
+
+- name: Create symlink for ruby to /usr/local/bin otherwise
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/ruby
+    dest: /usr/local/bin/ruby
+  when: stat_result.results[0].stat.exists
+  tags:
+    - ruby
+
+- name: Create symlink for gem to /usr/bin if not present
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/gem
+    dest: /usr/bin/gem
+  when: not stat_result.results[1].stat.exists
+  tags:
+    - ruby
+
+- name: Create symlink for gem to /usr/local/bin otherwise
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/gem
+    dest: /usr/local/bin/gem
+  when: stat_result.results[1].stat.exists
+  tags:
+    - ruby
+
+- name: Install bundler globally
+  gem:
+    name: bundler
+    state: present
+    user_install: no
+  tags:
+    - ruby
