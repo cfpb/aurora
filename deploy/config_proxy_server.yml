@@ -27,14 +27,3 @@
         mode: 0600
         recurse: yes
         state: directory
-
-    - name: Ensure symbolic link to vhost confs location
-      file:
-        src: /srv/www/enclave_proxy/repo/vhost_conf
-        dest: /srv/www/enclave_proxy/vhost_conf
-        state: link
-        owner: apache
-        group: apache
-        mode: 0600
-      notify:
-        - restart apache
