@@ -85,7 +85,7 @@
         - unzip
         - gpg
         - pigz
-        - facter
+        # - facter
         - sysstat # sar, iostat, vmstat
         - systemtap # dtrace equivalent
         - ant

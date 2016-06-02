@@ -104,3 +104,19 @@
     user_install: no
   tags:
     - ruby
+
+- name: Create symlink for Bundler
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/bundle
+    dest: /usr/bin/bundle
+  tags:
+    - ruby
+
+- name: Create symlink for ruby_executable_hooks
+  file:
+    state: link
+    src: /usr/local/rvm/rubies/default/bin/ruby_executable_hooks
+    dest: /usr/bin/ruby_executable_hooks
+  tags:
+    - ruby
