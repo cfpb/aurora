@@ -3,6 +3,11 @@
 #- name: Add mpapis public key
 #  shell: "curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
 
+- name: Remove any RPM installed Ruby
+  yum:
+    name: ruby
+    state: absent
+
 - name: Get mpapis.asc
   get_url:
     url: https://rvm.io/mpapis.asc
