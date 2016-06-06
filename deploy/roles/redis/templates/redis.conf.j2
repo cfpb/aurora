@@ -1,0 +1,36 @@
+
+daemonize                   {{ redis_daemonize }}
+pidfile                     {{ redis_pidfile }}
+port                        {{ redis_port }}
+bind                        {{redis_bind_address }}
+timeout                     {{ redis_timeout }}
+loglevel                    {{ redis_loglevel }}
+
+logfile                     {{ redis_logfile }}
+syslog-enabled              {{ redis_syslog_enabled }}
+databases                   {{ redis_databases }}
+
+
+##############  DATABASES ##############################
+
+rdbcompression
+dbfilename                  {{ redis_dbfilename }}
+dir                         {{ redis_working_directory }}
+
+##############  SECURITY  ##############################
+
+masterauth                  {{ redis_masterauth }}
+
+
+{% if redis_requirepass %} 
+requirepass {{ redis_pass }}
+{% endif %}
+
+
+rename-command              {{ redis_rename_commands }}
+
+##############  LIMITS    ##############################
+
+maxclients                  {{ redis_max_clients }} 
+maxmemory                   {{ redis_max_memory }} 
+maxmemory-policy            {{ redis_maxmemory_policy }}
