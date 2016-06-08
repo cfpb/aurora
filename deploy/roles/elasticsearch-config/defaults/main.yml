@@ -15,6 +15,7 @@ es_admin_password: &es_admin_password "password"
 
 es_shield_enabled: true
 es_shield_audit: true
+es_message_auth: true
 
 # You can add additional plugins needed for elasticsearch here
 es_plugins:

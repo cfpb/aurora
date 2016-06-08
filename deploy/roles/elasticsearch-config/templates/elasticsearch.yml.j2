@@ -133,7 +133,7 @@ indices.fielddata.cache.size: "30%"
 indices.fielddata.cache.expire: "5m"
 
 ### Shield Settings
-{% if es_enable_shield %}
+{% if es_shield_enabled %}
 shield:
 {% if es_message_auth %}
   system_key:

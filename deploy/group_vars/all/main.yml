@@ -194,7 +194,6 @@ install_logstash: True
 es_endpoint: https://es.test.dev
 es_service_account: admin
 es_service_account_password: password
-es_message_auth: True
 es_user: elasticsearch
 
 #===================#
