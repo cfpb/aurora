@@ -12,6 +12,8 @@
 # you use.
 default_file_server: 10.0.1.4
 
+default_admin_terminal: admin_terminal
+
 # Define all GlusterFS "bricks" you want here.  Folders will be created on the
 # file server based on these settings, and GlusterFS volumes will be created and
 # mounted on client servers.
