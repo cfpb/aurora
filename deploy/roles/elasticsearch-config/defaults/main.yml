@@ -12,6 +12,8 @@ es_user_group_name: "user"
 es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
+
+es_shield_enabled: true
 es_shield_audit: true
 
 # You can add additional plugins needed for elasticsearch here
