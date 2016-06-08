@@ -67,7 +67,7 @@
         force_basic_auth: yes
         status_code: 200
         validate_certs: no
-      delegate_to: {{ default_admin_terminal }}
+      delegate_to: "{{ default_admin_terminal }}"
 
     # Only for ES 2.0
     #- name: Perform a synced flush, if possible
