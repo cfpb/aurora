@@ -1,3 +1,7 @@
+# Logging options
+es_logging_file_size: "50MB"
+es_logging_max_files: 20
+
 # Startup configuration options
 es_heap_size: "128M"
 es_heap_newsize: "32M"

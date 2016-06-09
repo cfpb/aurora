@@ -21,6 +21,13 @@
   notify:
     - restart elasticsearch
 
+- name: Configure logging
+  template:
+    src: logging.yml.j2
+    dest: /etc/elasticsearch/logging.yml
+  notify:
+    - restart elasticsearch
+
 - name: Generate the roles file
   template:
     src: roles.yml.j2
