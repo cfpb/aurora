@@ -1,9 +1,13 @@
 ---
 jdk_packages:
-  - java-1.8.0-openjdk-1:1.8.0.77-0.b03.el6_7.x86_64
-  - java-1.8.0-openjdk-devel-1:1.8.0.77-0.b03.el6_7.x86_64
+  - java-1.8.0-openjdk-1:1.8.0.91-1.b14.el6.x86_64
+
+
+  - java-1.8.0-openjdk-devel-1:1.8.0.91-1.b14.el6.x86_64
   - libselinux-python
 
 java_deploy_options: []
-jre_lib_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.77-0.b03.el6_7.x86_64/jre/lib
-java_home_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.77-0.b03.el6_7.x86_64
+jre_lib_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.91-1.b14.el6.x86_64/jre/lib
+
+
+java_home_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.91-1.b14.el6.x86_64
