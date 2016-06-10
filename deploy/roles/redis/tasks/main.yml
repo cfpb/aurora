@@ -1,35 +1,51 @@
 ---
 
-- name: Install EPEL repo.
-  yum:
-   name: "{{ epel_repo_url }}"
-   state: present
-   when: not custom_repo
+- name: Create Redis user
+  user:
+    name: "{{ redis_user }}"
+    system: yes
+    home: "{{ redis_db_dir }}"
+    shell: "{{ redis_user_shell }}"
+    state: present
+    groups: "{{ redis_user_groups | join(',') }}"
 
 - name: Install the Redis package
-  yum: name=redis  state=present
+  yum: 
+   name: redis  
+   state: present
 
 - name: Make Configuration directory
   file:
-   path: "{{ redis_conf_dir }}"
+   path: "{{ redis_config_directory }}"   ## /etc/redis
    state: directory
    mode: 0755
 
 - name: Make Redis working directory
   file:
-   path: "{{ redis_working_directory }}" 
+   path: "{{ redis_working_directory }}"   ## /var/redis
    state: directory
    mode: 0755
 
-- name: Copy Redis Init script to /etc/init.dest
-  template: src=redis_6379.j2 dest={{ redis_init_directory }}
-  
+- name: Make Redis logfile
+  file:
+   path: "{{ redis_logfile }}"
+   state: touch
+   owner: "{{ redis_user }}"
+   group: "{{ redis_user }}"
+   mode: 1755
+
 - name: Copy the Redis configuration file
-  template: src=redis.conf.j2 dest={{ redis_config_file }
+  template: 
+   src: redis.conf.j2 
+   dest: "{{ redis_config_file }}"      ## /etc/redis/6379.conf
+  
 
-#- name: Open port 6379 in iptables
-#  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 6379 -j ACCEPT"
-#  when: iptables_config
+- name: Open port 6379 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 6379 -j ACCEPT"
+  when: iptables_config
 
-- name: Start the Redis service
-  service: name:{{ redis_service }} state=started enabled=yes
+- name: Ensure redis is running
+  service: 
+   name: "{{ redis_service }}"    # redis
+   state: started 
+   enabled: yes
