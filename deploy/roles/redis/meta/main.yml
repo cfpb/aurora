@@ -2,3 +2,4 @@
 ---
 dependencies:
 - role: shared
+- role: epel
