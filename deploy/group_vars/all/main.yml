@@ -12,6 +12,8 @@
 # you use.
 default_file_server: 10.0.1.4
 
+default_admin_terminal: admin_terminal
+
 # Define all GlusterFS "bricks" you want here.  Folders will be created on the
 # file server based on these settings, and GlusterFS volumes will be created and
 # mounted on client servers.
@@ -194,7 +196,6 @@ install_logstash: True
 es_endpoint: https://es.test.dev
 es_service_account: admin
 es_service_account_password: password
-es_message_auth: True
 es_user: elasticsearch
 
 #===================#
