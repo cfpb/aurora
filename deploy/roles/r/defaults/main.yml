@@ -4,7 +4,13 @@ r_dependencies:
   - QuantLib-devel
 
 r_packages:
+  - "devtools"
   - "http://cran.r-project.org/src/contrib/Archive/RQuantLib/RQuantLib_0.3.12.tar.gz" # The latest version requires QuantLib 1.4.0, which is not supported by Centos 6.5
+
+r_packages_github:
+  -
+    name: shinydashboard
+    user: rstudio
 
 r_env_vars:
   DUMMY: "DUMMY"
