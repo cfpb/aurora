@@ -2,6 +2,9 @@
 r_dependencies:
   - QuantLib
   - QuantLib-devel
+  - libcurl-devel
+  - libxml2-devel
+  - hunspell-devel
 
 r_packages:
   - "devtools"
