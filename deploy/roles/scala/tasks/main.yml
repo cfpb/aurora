@@ -33,20 +33,20 @@
     dest: "/etc/profile.d/scala.sh"
     mode: 0644
 
-#- name: set Scala location
-#  command: "{{ item }}"
-#  with_items:
-#    - update-alternatives --install "/usr/bin/scala" "scala" "/usr/local/scala/default/bin/scala" 1
-#    - update-alternatives --install "/usr/bin/scalac" "scalac" "/usr/local/scala/default/bin/scalac" 1
-#    - update-alternatives --install "/usr/bin/scalap" "scalap" "/usr/local/scala/default/bin/scalap" 1
+- name: set Scala location
+  command: "{{ item }}"
+  with_items:
+    - update-alternatives --install "/usr/bin/scala" "scala" "/usr/local/scala/default/bin/scala" 1
+    - update-alternatives --install "/usr/bin/scalac" "scalac" "/usr/local/scala/default/bin/scalac" 1
+    - update-alternatives --install "/usr/bin/scalap" "scalap" "/usr/local/scala/default/bin/scalap" 1
 
 
-#- name: Set the system default for Scala
-#  command: "{{ item }}"
-#  with_items:
-#    - update-alternatives --set scala /usr/local/scala/default/bin/scala
-#    - update-alternatives --set scalac /usr/local/scala/default/bin/scalac
-#    - update-alternatives --set scalap /usr/local/scala/default/bin/scalap
+- name: Set the system wide default for Scala
+  command: "{{ item }}"
+  with_items:
+    - update-alternatives --set scala /usr/local/scala/default/bin/scala
+    - update-alternatives --set scalac /usr/local/scala/default/bin/scalac
+    - update-alternatives --set scalap /usr/local/scala/default/bin/scalap
 
 ######### SBT SECTION #######################
 #
