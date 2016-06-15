@@ -167,3 +167,5 @@ shield.enabled: false
 ### Marvel Settings
 marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ marvel_user }}:{{ marvel_password }}@{{ es_hostname }}/"]
 marvel.agent.exporter.es.ssl.hostname_verification: {{ es_marvel_hostname_verification }}
+marvel.agent.exporter.es.ssl.truststore.path: {{ java_home_path }}/lib/security/cacerts
+marvel.agent.exporter.es.ssl.truststore.password: {{ java_keystore_password }}
