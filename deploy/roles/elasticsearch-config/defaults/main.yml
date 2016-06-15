@@ -1,4 +1,5 @@
 # Logging options
+es_log_level: INFO
 es_logging_file_size: "50MB"
 es_logging_max_files: 20
 
