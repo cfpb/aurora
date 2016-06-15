@@ -20,6 +20,7 @@ es_admin_password: &es_admin_password "password"
 
 marvel_user: "marvel"
 marvel_password: "password"
+es_marvel_hostname_verification: "true"
 
 es_shield_enabled: true
 es_shield_audit: true
