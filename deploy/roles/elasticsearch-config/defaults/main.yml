@@ -18,6 +18,9 @@ es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
 
+marvel_user: "marvel"
+marvel_password: "password"
+
 es_shield_enabled: true
 es_shield_audit: true
 es_message_auth: true
@@ -86,3 +89,10 @@ es_role_mappings:
     name: kibana4_server
     mappings:
       - 'cn={{ kibana_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
+  -
+    name: marvel_agent
+    mappings:
+      - 'cn={{ marvel_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
+  -
+    name: marvel_user:
+      - 'cn={{ es_user_group_name }},dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'

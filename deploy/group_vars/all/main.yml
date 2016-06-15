@@ -196,6 +196,8 @@ python3_packages:
 es_cluster: test_cluster
 install_logstash: True
 es_endpoint: https://es.test.dev
+es_protocol: https
+es_hostname: es.test.dev
 es_service_account: admin
 es_service_account_password: password
 es_user: elasticsearch

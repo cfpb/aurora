@@ -163,3 +163,6 @@ shield.audit.enabled: false
 {% else %}
 shield.enabled: false
 {% endif %}
+
+### Marvel Settings
+marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ marvel_user }}:{{ marvel_password }}@{{ es_hostname }}/"]
