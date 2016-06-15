@@ -94,5 +94,5 @@ es_role_mappings:
     mappings:
       - 'cn={{ marvel_user }},ou=Users,dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
   -
-    name: marvel_user:
+    name: marvel_user
       - 'cn={{ es_user_group_name }},dc={{ kdc_domain_name.split(".")[-2] }},dc={{ kdc_domain_name.split(".")[-1] }}'
