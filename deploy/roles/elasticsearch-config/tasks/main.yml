@@ -53,7 +53,7 @@
   when: "not use_active_directory and '{{ item.username }}' not in users_file.stdout"
   environment:
     ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  with_items: es_users
+  with_items: "{{ es_users }}"
   notify:
     - restart elasticsearch
 
@@ -63,13 +63,13 @@
     creates: "{{ item.plugin_path }}"
   environment:
     ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  with_items: es_plugins
+  with_items: "{{ es_plugins }}"
   notify:
     - restart elasticsearch
 
 - name: Ensure file permissions for ES plugins are correct
   shell: "chmod a+r {{ item.plugin_path }} -R"
-  with_items: es_plugins
+  with_items: "{{ es_plugins }}"
   notify:
     - restart elasticsearch
 
@@ -79,7 +79,7 @@
     mode: a+x
     recurse: yes
     state: directory
-  with_items: es_plugins
+  with_items: "{{ es_plugins }}"
   notify:
     - restart elasticsearch
 
