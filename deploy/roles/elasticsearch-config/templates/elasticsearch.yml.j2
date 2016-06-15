@@ -165,7 +165,7 @@ shield.enabled: false
 {% endif %}
 
 ### Marvel Settings
-marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ marvel_user }}:{{ marvel_password }}@{{ es_hostname }}"]
+marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ es_hostname }}"]
 marvel.agent.exporter.es.timeout: {{ es_marvel_timeout }}
 marvel.agent.exporter.es.ssl.hostname_verification: {{ es_marvel_hostname_verification }}
 marvel.agent.exporter.es.ssl.truststore.path: {{ java_home_path }}/lib/security/cacerts
