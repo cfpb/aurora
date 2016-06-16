@@ -524,7 +524,7 @@ maxclients                          {{ redis_max_clients }}
 
 #############  EXTRA  - can be configured later.
 #
-# maxmemory                         {{ redis_max_memory }}
-# maxmemory-policy                  {{ redis_maxmemory_policy }}
-# appendonly                        {{ redis_appendonly }}
-# appendfsync                       {{ redis_appendfsync }}
+maxmemory                         {{ redis_max_memory }}
+maxmemory-policy                  {{ redis_maxmemory_policy }}
+appendonly                        {{ redis_appendonly }}
+appendfsync                       {{ redis_appendfsync }}

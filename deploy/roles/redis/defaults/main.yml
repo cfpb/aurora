@@ -11,7 +11,6 @@ redis_dbfilename:                       dump.rdb
 redis_config_directory:                 /etc/redis
 
 
-#redis_config_file:                      /etc/redis/{{ redis_port }}.conf
 redis_config_file:                      /etc/redis.conf
 
 redis_init_directory:                   /etc/init.d

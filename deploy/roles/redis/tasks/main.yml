@@ -41,7 +41,7 @@
   
 
 - name: Open port 6379 in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 6379 -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ redis_port }} -j ACCEPT"
   when: iptables_config
 
 - name: Ensure redis is running
