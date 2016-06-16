@@ -18,6 +18,7 @@
     - nginx
     - nodejs
     - redis
+    - scala
     #- julia
 
 # Install development packages
