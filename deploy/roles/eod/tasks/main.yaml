@@ -235,11 +235,13 @@
   shell: /usr/local/eod/bin/otecs bootstatus
   register: eod_bootstatus
   changed_when: false
+  when: custom_repo
   tags:
     - eod
 
 - name: Configure EOD to start on boot
   shell: /usr/local/eod/bin/otecs bootstart
   changed_when: eod_bootstatus.stdout == 'off'
+  when: custom_repo
   tags:
     - eod

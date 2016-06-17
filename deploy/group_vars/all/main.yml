@@ -159,6 +159,8 @@ krb_ask_pass: "On"
 # LDAP Server
 ldap_subdomain: ldap
 ldap_server: kdc.test.dev
+ldap_user_scope: "cn=Users"
+ldap_group_scope: "cn=Groups"
 
 # LDAP Service Account
 ldap_service_account: admin

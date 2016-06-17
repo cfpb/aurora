@@ -57,6 +57,16 @@
   tags:
     - r
 
+- name: Install R packages from Github
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages_github }}"
+  register: r_github_result
+  failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
+  changed_when: "'Added' in r_github_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r
+
 - name: Ensure that R is executable
   file:
     dest: /usr/lib64/R/etc/{{ item }}
