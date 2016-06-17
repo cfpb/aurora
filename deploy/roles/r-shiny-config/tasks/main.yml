@@ -15,3 +15,5 @@
   tags:
     - shiny
     - config
+  notify:
+    - restart shiny-server
