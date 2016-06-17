@@ -45,6 +45,8 @@ server {
 
 {% if use_active_directory %}
 auth_active_dir ldap://{{ ldap_server }}/dc={{ ldap_server.split(".")[-2] }},dc={{ ldap_server.split(".")[-1] }} {{ domain_name }}{
+  user_search_base {{ ldap_user_scope }}
+  group_search_base {{ ldap_group_scope }}
 }
 {% else %}
 auth_passwd_file /etc/shiny-server/passwd;
