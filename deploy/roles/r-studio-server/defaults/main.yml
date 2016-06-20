@@ -1,2 +1,3 @@
 ---
 rstudio_server_package_name: http://download2.rstudio.org/rstudio-server-rhel-0.99.892-x86_64.rpm
+rstudio_server_package_state: present

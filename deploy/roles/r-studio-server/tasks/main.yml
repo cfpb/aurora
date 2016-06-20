@@ -9,7 +9,7 @@
 - name: Install R Studio Server
   yum:
     name: "{{ rstudio_server_package_name }}"
-    state: latest
+    state: "{{ rstudio_server_package_state }}"
     disable_gpg_check: yes
   tags:
     - rstudio-server
