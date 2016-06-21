@@ -9,7 +9,6 @@
   tags:
     - scala
 
-
 - name: Set up Scala directory
   file: 
     path: "{{ scala_dir }}"
