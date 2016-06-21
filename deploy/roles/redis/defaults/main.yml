@@ -39,5 +39,5 @@ redis_requirepass:                      []
 redis_max_clients:                      10000
 redis_max_memory:                       512mb
 redis_maxmemory_policy:                 "noeviction"
-redis_appendonly:                       yes
+redis_appendonly:                       "yes"
 redis_appendfsync:                      everysec
