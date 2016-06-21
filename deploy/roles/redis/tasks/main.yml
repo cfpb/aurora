@@ -9,14 +9,14 @@
     state: present
     groups: "{{ redis_user_groups | join(',') }}"
   tags:
-    redis
+    - redis
 
 - name: Install the Redis package
   yum: 
    name: redis  
    state: present
   tags:
-    redis
+    - redis
 
 - name: Make Configuration directory
   file:
@@ -24,7 +24,7 @@
    state: directory
    mode: 0755
   tags:
-    redis
+    - redis
 
 - name: Make Redis working directory
   file:
@@ -32,7 +32,7 @@
    state: directory
    mode: 0755
   tags:
-    redis
+    - redis
 
 - name: Make Redis logfile
   file:
@@ -42,20 +42,20 @@
    group: "{{ redis_user }}"
    mode: 1755
   tags:
-    redis
+    - redis
 
 - name: Copy the Redis configuration file
   template: 
    src: redis.conf.j2 
    dest: "{{ redis_config_file }}"      ## /etc/redis/6379.conf
   tags:
-    redis
+    - redis
 
 - name: Open port 6379 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ redis_port }} -j ACCEPT"
   when: iptables_config
   tags:
-    redis
+    - redis
 
 - name: Ensure redis is running
   service: 
@@ -63,4 +63,4 @@
    state: started 
    enabled: yes
   tags:
-    redis
+    - redis
