@@ -138,3 +138,12 @@
   when: install_mkl and custom_repo
   tags:
     - revolution_r
+
+- name: Execute R configuration commands
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "{{ item }}"
+  with_items: "{{ revolution_r_commands }}"
+  register: r_command_result
+  failed_when: "r_command_result.rc != 0 or 'had non-zero exit status' in r_command_result.stderr"
+  environment: "{{ revolution_r_env_vars }}"
+  tags:
+    - revolution_r
