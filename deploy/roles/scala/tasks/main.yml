@@ -1,7 +1,6 @@
 ---
 ########## SCALA SECTION ####################
 #
-#
 - name: Download Scala
   get_url:
     url:  "{{ scala_url }}"
