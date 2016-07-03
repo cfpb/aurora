@@ -1,0 +1,103 @@
+---
+########## SCALA SECTION ####################
+#
+- name: Download Scala
+  get_url:
+    url:  "{{ scala_url }}"
+    dest: "/tmp/scala-{{ scala_version }}.tgz"
+  tags:
+    - scala
+
+- name: Set up Scala directory
+  file: 
+    path: "{{ scala_dir }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  tags:
+    - scala
+
+- name: Extract Scala
+  unarchive:
+     src: "/tmp/scala-{{ scala_version }}.tgz"
+     dest: "{{ scala_dir }}"
+     copy: no
+  tags:
+    - scala
+     
+- name: Set symbolic link location for Scala
+  file: 
+    path: "{{ scala_dir }}/default"  
+    src: "{{ scala_dir }}/scala-{{ scala_version }}"
+    state: link
+  tags:
+    - scala
+    
+- name: Add Scala binaries to system path
+  template:
+    src: scala.sh.j2
+    dest: "/etc/profile.d/scala.sh"
+    mode: 0644
+  tags:
+    - scala
+
+- name: set Scala location
+  command: "{{ item }}"
+  with_items:
+    - update-alternatives --install "/usr/bin/scala" "scala" "/usr/local/scala/default/bin/scala" 1
+    - update-alternatives --install "/usr/bin/scalac" "scalac" "/usr/local/scala/default/bin/scalac" 1
+    - update-alternatives --install "/usr/bin/scalap" "scalap" "/usr/local/scala/default/bin/scalap" 1
+  tags:
+    - scala
+
+
+- name: Set the system wide default for Scala
+  command: "{{ item }}"
+  with_items:
+    - update-alternatives --set scala /usr/local/scala/default/bin/scala
+    - update-alternatives --set scalac /usr/local/scala/default/bin/scalac
+    - update-alternatives --set scalap /usr/local/scala/default/bin/scalap
+  tags:
+    - scala
+
+######### SBT SECTION #######################
+#
+- name: Download Sbt
+  get_url: 
+    url: " {{ scala_sbt_url }} "
+    dest: "/tmp/sbt-{{ scala_sbt_version }}.tgz"
+  tags:
+    - scala
+
+- name: Set up Sbt directory
+  file:
+    path: "{{ sbt_dir }}"
+    state: directory
+    mode: 0755
+    recurse: yes
+  tags:
+    - scala
+
+- name: Extract Sbt 
+  unarchive: 
+     src: "/tmp/sbt-{{ scala_sbt_version }}.tgz"
+     dest: "{{ sbt_dir }}"
+     copy: no
+  tags:
+    - scala
+
+- name: Set symbolic link for Sbt
+  file: 
+    path: "{{ sbt_dir }}/default"
+    src: "{{ sbt_dir }}/sbt"
+    state: link
+  tags:
+    - scala
+
+- name: Add Sbt binaries to system path
+  template:
+    src: "sbt.sh.j2"
+    dest: "/etc/profile.d/sbt.sh"
+    mode: 0644
+  tags:
+    - scala
