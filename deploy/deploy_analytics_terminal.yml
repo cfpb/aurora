@@ -18,6 +18,7 @@
     - spark
     - sublime
     - nodejs
+    - redis
     #- julia
 
 # Install development packages
