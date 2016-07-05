@@ -19,6 +19,7 @@
     - sublime
     - nodejs
     - redis
+    - maven
     #- julia
 
 # Install development packages
