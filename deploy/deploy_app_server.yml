@@ -17,6 +17,7 @@
     - pycharm
     - nginx
     - nodejs
+    - maven
     #- julia
 
 # Install development packages
