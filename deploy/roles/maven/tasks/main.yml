@@ -1,0 +1,33 @@
+---
+- name: Download maven
+  get_url:
+    url: "{{ maven_url }}"
+    dest: "/tmp/maven-{{ maven_version }}"
+  tags:
+  - maven 
+
+- name: Extract Maven from /tmp 
+  unarchive:
+      src: "/tmp/maven-{{ maven_version }}"
+      dest: "{{ maven_install_dir }}"
+      copy: no 
+  tags:
+  - maven 
+
+- name: Create symlink to Maven
+  file: 
+    path: "{{ maven_install_dir }}/maven" 
+    src: "{{ maven_install_dir }}/apache-maven-{{ maven_version }}"
+    state: link 
+  tags: 
+  - maven
+
+
+- name: Add Maven path to system path 
+  template:
+      src: maven.sh.j2
+      dest: "/etc/profile.d/maven.sh"
+      mode: 0644
+  tags: 
+  - maven
+
