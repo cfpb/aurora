@@ -62,3 +62,15 @@
     name: RevoMath
     state: present
   when: install_mkl and custom_repo
+
+### Create needed symbolic links
+### This is probably due to an issue with how we are packaging the
+### Revolution R RPM
+- name: Create symlinks to "a" directory
+  file:
+    state: link
+    src: "{{ revolution_r_path }}{{ item }}"
+    dest: "{{ revolution_r_path }}{{ item }}/a"
+  with_items:
+    - /lib64/R/etc
+    - /lib64/R/bin/exec
