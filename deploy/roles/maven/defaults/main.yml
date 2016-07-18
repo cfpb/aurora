@@ -1,0 +1,5 @@
+---
+maven_version:         3.3.9
+maven_url:             http://mirrors.advancedhosters.com/apache/maven/maven-3/{{ maven_version }}/binaries/apache-maven-{{ maven_version }}-bin.tar.gz
+maven_install_dir:     /usr/local
+
