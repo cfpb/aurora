@@ -22,6 +22,5 @@
   service:
     name: shiny-server
     state: started
-    enabled: yes
   tags:
     - shiny
