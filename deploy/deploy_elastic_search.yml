@@ -6,7 +6,6 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "not 'production' in group_names"}
-    - jdk
     - elasticsearch
     - {role: log-courier, when: "install_logstash"}
     - elasticsearch-config
