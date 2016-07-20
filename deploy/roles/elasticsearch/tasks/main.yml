@@ -33,6 +33,22 @@
     dest: /etc/profile.d/elasticsearch.sh
     content: 'export ES_JAVA_OPTS="-Des.path.conf=/etc/elasticsearch"'
 
+- name: Install the license plugin
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/license/latest{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: /usr/share/elasticsearch/plugins/license
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
+- name: Install the Shield plugin
+  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/{{ shield_version }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
 #- name: Make sure shield directory has proper permissions
 #  shell: "chmod 755 /etc/elasticsearch/shield"
 #  notify:
