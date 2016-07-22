@@ -1,8 +1,26 @@
 ---
+- name: Install elasticsearch GPG key
+  rpm_key:
+    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    state: present
+
+- name: Install the Kibana repository
+  template:
+    src: kibana.repo.j2
+    dest: /etc/yum.repos.d/kibana.repo
+  when: not "production" in group_names
+
+- name: Install Kibana
+  yum:
+    name: kibana
+    state: latest
+
+### OLD WAY
 - name: Get the Kibana tar
   get_url:
     url: https://download.elasticsearch.org/kibana/kibana/kibana-4.0.2-linux-x64.tar.gz
     dest: /tmp
+  when: False
 
 - name: Extract the Kibana tar
   unarchive:
@@ -10,12 +28,14 @@
     src: /tmp/kibana-4.0.2-linux-x64.tar.gz
     dest: /opt/
     creates: /opt/kibana/bin/kibana
+  when: False
 
 - name: Rename the kibana directory for convenience
   command: mv /opt/kibana-4.0.2-linux-x64 /opt/kibana
   args:
     creates: /opt/kibana
     removes: /opt/kibana-4.0.2-linux-x64
+  when: False
 
 - name: Install Kibana upstart script
   template:
@@ -23,6 +43,7 @@
     dest: /etc/init/kibana.conf
   notify:
     - restart kibana
+  when: False
 
 - name: Open ports 5601 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5601 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
