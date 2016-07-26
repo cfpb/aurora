@@ -19,8 +19,6 @@
     - restart shiny-server
 
 - name: Ensure Shiny Server is started
-  service:
-    name: shiny-server
-    state: started
+  shell: "start shiny-server"
   tags:
     - shiny
