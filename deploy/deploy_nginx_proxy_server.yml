@@ -1,0 +1,76 @@
+# deploy_proxy_server.yml - Provisioning Playbook for setting up the proxy server
+# that allows external access to the data enclave.
+---
+- hosts: nginx_server
+  sudo: yes
+  roles:
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and install_logstash and not 'production' in group_names"}
+    - nginx
+    - {role: log-courier, when: "install_logstash"}
+
+  tasks:
+    - name: Create Nginx directories
+      file:
+        dest: "{{ item }}"
+        state: directory
+        owner: nginx
+        group: nginx
+      with_items:
+        - /srv/www/proxy
+        - /srv/www/proxy/html
+        - /srv/www/proxy/html/restricted
+        - /srv/www/proxy/repo/vhost_conf
+
+    - name: Ensure symbolic link to vhost confs location
+      file:
+        src: /srv/www/proxy/repo/vhost_conf
+        dest: /srv/www/proxy/vhost_conf
+        state: link
+        owner: nginx
+        group: nginx
+        mode: 0600
+      notify:
+        - restart nginx
+
+    - name: Create SSL folder
+      file:
+        dest: /etc/nginx/ssl
+        state: directory
+      when: generate_certs
+
+    - name: Generate SSL Certs if requested
+      command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ nginx_ssl_key_file }} -out {{ nginx_ssl_cert_file }} -extensions v3_ca"
+      when: generate_certs
+      args:
+        creates: "{{ nginx_ssl_cert_file }}"
+
+    - name: Ensure permissions are correct
+      file:
+        dest: "{{ item }}"
+        mode: 700
+        owner: nginx
+        group: nginx
+      when: generate_certs
+      with_items:
+        - "{{ nginx_ssl_cert_file }}"
+        - "{{ nginx_ssl_key_file }}"
+
+    - name: Configure Nginx as a proxy
+      template:
+        dest: "/etc/nginx/conf.d/proxy.conf"
+        src: templates/proxy.conf
+        owner: nginx
+        group: nginx
+        mode: 0600
+      notify: restart nginx
+
+    - name: Create simple HTML file for proxy
+      template:
+        dest: "/srv/www/proxy/html/index.html"
+        src: templates/proxy.html
+        owner: nginx
+        group: nginx
+      notify: restart nginx
