@@ -58,7 +58,7 @@
     name: "{{ item }}"
     state: present
     disable_gpg_check: yes
-  with_items: "{{ revoultion_r_dependencies }}"
+  with_items: "{{ revolution_r_dependencies }}"
   tags:
     - revolution_r
 
