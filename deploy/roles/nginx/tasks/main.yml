@@ -4,6 +4,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
   with_items:
     - libselinux-python
     - nginx
