@@ -105,6 +105,14 @@
   tags:
     - revolution_r
 
+- name: Override errant R_ARCH variable
+  template:
+    src: revor.sh.j2
+    dest: /etc/profile.d/revor.sh
+    mode: 0644
+  tags:
+    - revolution_r
+
 ### MKL Package
 
 - name: Get MKL Package
