@@ -1,0 +1,50 @@
+---
+
+- name: Add neo4j user
+  user:
+    name: "{{ neo4j_user }}"
+    system: yes 
+    home: "{{ neo4j_dir }}"
+    shell: "{{ neo4j_user_shell }}"
+    state: present
+    #groups: "{{ neo4j_user_groups | join(',') }} "
+  tags:
+  - neo4j
+
+- name: Create neo4j directory
+  file: 
+    state: directory
+    path: "{{ neo4j_dir }}"
+    mode: 0755
+  tags:
+  - neo4j
+
+- name: Download neo4j
+  get_url: 
+    url: "{{ neo4j_url }}"
+    dest: "/tmp/neo4j-{{ neo4j_version }}"
+  tags:
+  - neo4j
+
+- name: Extract neo4j tarball
+  unarchive:
+    src: "/tmp/neo4j-{{ neo4j_version }}"
+    dest: "{{ neo4j_dir }}"
+    copy: no
+  tags:
+  - neo4j
+  
+- name: Open port for neo4j in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ neo4j_port }} -j ACCEPT"
+  when: iptables_config
+  tags:
+  - neo4j
+
+- name: Configure neo4j properties
+  template:
+     src: neo4j-server.properties.j2
+     dest: /etc/neo4j/neo4j-server.properties
+     mode: 0644
+  notify: restart neo4j
+  tags:
+  - neo4j
