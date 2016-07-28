@@ -1,8 +1,17 @@
 ---
+- name: Install intellij rpm
+  yum:
+    name: "intellij"
+    state: present
+  when: custom_repo
+  tags:
+  - intellij
+
 - name: Download intellij
   get_url: 
     url: "{{ intellij_url }}"
     dest: "/tmp/intellij-{{ intellij_version }}"
+  when: not custom_repo
   tags: 
   - intellij
 
@@ -19,6 +28,7 @@
     src: "/tmp/intellij-{{ intellij_version }}"
     dest: "{{ intellij_install_dir }}"
     copy: no 
+  when: not custom_repo
   tags:
   - intellij
 
@@ -27,14 +37,16 @@
     src: "{{ intellij_install_dir }}/idea-IC-145.1617.8/bin/idea.sh"
     dest: "{{ intellij_main_dir }}/bin/idea.sh"
     state: link
+  when: not custom_repo
   tags:
   - intellij 
 
 - name: Install Intellij IDEA desktop file
   template:
     src: idea.desktop.j2
-    dest: "{{ inteillij_desktop_dir }}/idea.desktop"
+    dest: "{{ intellij_desktop_dir }}/idea.desktop"
     mode: 0644
+  when: not custom_repo
   tags:
   - intellij
 
@@ -42,6 +54,7 @@
   template:
     src: idea.png.j2
     dest: "{{ intellij_main_dir }}/bin"
+  when: not custom_repo
   tags:
   - intellij
 
