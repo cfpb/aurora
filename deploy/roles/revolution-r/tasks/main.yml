@@ -90,6 +90,7 @@
   environment: "{{ revolution_r_env_vars }}"
   async: 2400
   poll: 60
+  environment: "{{ revolution_r_env_vars }}"
   tags:
     - revolution_r
 
