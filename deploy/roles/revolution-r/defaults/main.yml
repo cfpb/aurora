@@ -14,5 +14,9 @@ revolution_r_dependencies:
 revolution_r_packages:
   - "devtools"
 
+revolution_r_packages_url: []
+
+revolution_r_packages_github: []
+
 revolution_r_commands:
   - 'print("Hello world!")'
