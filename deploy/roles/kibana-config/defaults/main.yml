@@ -1,3 +1,4 @@
 ---
+kibana_config_path: /opt/kibana/config
 kibana_user: kibana4-user
 kibana_password: password

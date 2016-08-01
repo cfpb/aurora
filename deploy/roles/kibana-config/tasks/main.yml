@@ -1,8 +1,8 @@
 ---
 - name: Setup configuration
   template:
-    src: kibana.yml
-    dest: /opt/kibana/config/kibana.yml
+    src: kibana.yml.j2
+    dest: "{{ kibana_config_path }}/kibana.yml"
   notify:
     - restart kibana
 

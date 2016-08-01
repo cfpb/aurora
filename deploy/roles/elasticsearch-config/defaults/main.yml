@@ -28,6 +28,7 @@ es_fielddata_cache_size: "30%"
 es_fielddata_cache_expire: "5m"
 
 # Shield settings
+es_license_version: license
 es_shield_version: shield
 es_shield_enabled: True
 es_message_auth_enabled: True
