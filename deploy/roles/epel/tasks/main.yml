@@ -4,6 +4,8 @@
   get_url:
     url: "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
     dest: /tmp/
+  register: get_url_result
+  until: '"OK" in get_url_result.msg'
   retries: 3
   delay: 15
   always_run: true

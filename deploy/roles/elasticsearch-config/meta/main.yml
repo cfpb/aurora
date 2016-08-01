@@ -1,4 +1,5 @@
 # main.yml
 ---
 dependencies:
-- role: shared
+  - role: shared
+  - role: jdk
