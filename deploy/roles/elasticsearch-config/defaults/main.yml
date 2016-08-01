@@ -1,6 +1,8 @@
 # The install command for plugins switched from "-i" to "install"
 es_plugin_install_cmd: "install"
 es_set_conf_file: False
+es_master_node: "true"
+es_data_node: "true"
 
 # Logging options
 es_log_level: INFO

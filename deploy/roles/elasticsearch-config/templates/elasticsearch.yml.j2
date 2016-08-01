@@ -30,6 +30,8 @@ cluster.name: {{ es_cluster }}
 # node.rack: r1
 #
 node.name: {{ inventory_hostname }}
+node.master: {{ es_master_node }}
+node.data: {{ es_data_node }}
 
 # ----------------------------------- Paths ------------------------------------
 #
