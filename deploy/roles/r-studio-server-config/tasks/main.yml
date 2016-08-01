@@ -23,8 +23,13 @@
 
 - name: Create folder for monitoring data
   file:
-    dest: /opt/rstudio-server/monitoring-data
+    dest: "{{ item }}"
     state: directory
+    owner: rstudio-server
+    group: rstudio-server
+  with_items:
+    - /opt/rstudio-server
+    - /opt/rstudio-server/monitoring-data
   tags:
     - rstudio-server
 
