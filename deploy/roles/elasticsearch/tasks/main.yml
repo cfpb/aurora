@@ -7,7 +7,7 @@
 
 - name: Install elasticsearch GPG key
   rpm_key:
-    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    key: https://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
 
 - name: Setup elasticsearch repo

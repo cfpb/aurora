@@ -16,8 +16,8 @@
 
 - name: Setup elasticsearch output
   template:
-    src: 30-lumberjack-output.conf
-    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+    src: 30-elasticsearch-output.conf
+    dest: /etc/logstash/conf.d/30-elasticsearch-output.conf
   notify:
     - restart logstash
 
