@@ -15,6 +15,7 @@
   yum: 
    name: redis  
    state: present
+   disable_gpg_check: yes
   tags:
     - redis
 
