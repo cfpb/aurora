@@ -2,3 +2,5 @@
 kibana_config_path: /opt/kibana/config
 kibana_user: kibana4-user
 kibana_password: password
+kibana_plugins:
+  - elasticsearch/marvel/2.3.4
