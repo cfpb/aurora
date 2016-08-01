@@ -46,11 +46,6 @@
   notify:
     - restart kibana
   when: not kibana_use_repository
-<<<<<<< HEAD
-=======
-
-### END OLD WAY
->>>>>>> 66d30c1... Updated Kibana deploy for 4.5
 
 - name: Open ports 5601 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 5601 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
