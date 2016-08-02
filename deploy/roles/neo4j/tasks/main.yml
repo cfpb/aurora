@@ -11,7 +11,7 @@
   tags:
   - neo4j
 
-- name: Create neo4j directory
+- name: Create neo4j install directory
   file: 
     state: directory
     path: "{{ neo4j_dir }}"
@@ -40,11 +40,23 @@
   tags:
   - neo4j
 
-- name: Configure neo4j properties
+- name: Ensure neo4j environment is set
   template:
-     src: neo4j-server.properties.j2
-     dest: /etc/neo4j/neo4j-server.properties
-     mode: 0644
-  notify: restart neo4j
+    src: neo4j-env.sh.j2
+    dest: /etc/profile.d/neo4j.sh
+  tags:
+  - neo4j
+
+- name: set open fd soft and hard limit
+  lineinfile: 
+    dest=/etc/security/limits.conf 
+    regexp="{{ item.regexp }}"  
+    line="{{ item.line }}" 
+    insertbefore="# End of file" 
+    state=present
+  with_items:
+    - { regexp: '^neo4j\s+soft', line: 'neo4j   soft    nofile  {{ neo4j_nofile_value }}' }
+    - { regexp: '^neo4j\s+hard', line: 'neo4j   hard    nofile  {{ neo4j_nofile_value }}' }
+  when: neo4j_update_limits 
   tags:
   - neo4j
