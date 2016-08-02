@@ -1,7 +1,7 @@
 ---
 - name: Setup configuration
   template:
-    src: kibana.yml.j2
+    src: "{{ kibana_config_file }}"
     dest: "{{ kibana_config_path }}/kibana.yml"
   notify:
     - restart kibana
@@ -10,7 +10,7 @@
   command: /opt/kibana/bin/kibana plugin --install {{ item }}
   with_items: "{{ kibana_plugins }}"
   register: kibana_result
-  failed_when: kibana_result.rc == 0 and "already exists" not in kibana_result.stderr
+  failed_when: kibana_result.rc != 0 and "already exists" not in kibana_result.stderr
 
 - name: Start Kibana
   service:
