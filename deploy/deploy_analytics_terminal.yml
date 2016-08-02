@@ -21,6 +21,7 @@
     - redis
     - maven
     - intellij
+    - neo4j
     #- julia
 
 # Install development packages
