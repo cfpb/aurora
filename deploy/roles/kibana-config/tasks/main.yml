@@ -11,6 +11,9 @@
   with_items: "{{ kibana_plugins }}"
   register: kibana_result
   failed_when: kibana_result.rc != 0 and "already exists" not in kibana_result.stderr
+  changed_when: '"already exists" not in kibana_result.stderr'
+  notify:
+    - restart kibana
 
 - name: Start Kibana
   service:
