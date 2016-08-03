@@ -35,6 +35,7 @@ es_shield_version: shield
 es_shield_enabled: True
 es_message_auth_enabled: True
 es_shield_audit: "true"
+es_shield_roles_file: roles.yml.j2
 
 # Default users
 es_admin_user: "admin"
@@ -74,19 +75,21 @@ es_roles:
   -
     description: "Admin role, with all privileges"
     name: *es_admin_role
-    cluster_priv: "all"
+    cluster_privs:
+      - "all"
     indices:
       -
         name: '*'
-        role: "all"
-
+        privs:
+          - "all"
   -
     description: "User role, with read only privileges"
     name: "user"
     indices:
       -
         name: '*'
-        role: "read"
+        privs:
+          - "read"
 
 es_role_mappings:
   -

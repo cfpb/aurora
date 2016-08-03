@@ -85,7 +85,7 @@
 
 - name: Generate the roles file
   template:
-    src: roles.yml.j2
+    src: "{{ es_shield_roles_file }}"
     dest: /etc/elasticsearch/shield/roles.yml
   notify:
     - restart elasticsearch
