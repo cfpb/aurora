@@ -9,8 +9,7 @@
   template:
     src: kibana.repo.j2
     dest: /etc/yum.repos.d/kibana.repo
-  when: not "production" in group_names
-  when: kibana_use_repository
+  when: not "production" in group_names and kibana_use_repository
 
 - name: Install Kibana
   yum:

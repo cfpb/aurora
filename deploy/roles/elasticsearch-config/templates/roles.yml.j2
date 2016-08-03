@@ -40,22 +40,11 @@ kibana4:
 # The required permissions for the kibana 4 server
 kibana4_server:
   cluster:
-      - cluster:monitor/nodes/info
-      - cluster:monitor/health
+      - monitor
   indices:
     - names: '.kibana'
       privileges:
-        - indices:admin/exists
-        - indices:admin/mapping/put
-        - indices:admin/mappings/fields/get
-        - indices:admin/refresh
-        - indices:admin/validate/query
-        - indices:data/read/get
-        - indices:data/read/mget
-        - indices:data/read/search
-        - indices:data/write/delete
-        - indices:data/write/index
-        - indices:data/write/update
+        - all
 
 # The required role for logstash users
 logstash:
