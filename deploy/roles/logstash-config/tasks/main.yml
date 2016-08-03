@@ -21,11 +21,7 @@
 
 - name: Setup elasticsearch output
   template:
-<<<<<<< HEAD
     src: "{{ logstash_es_output_file }}"
-=======
-    src: 30-elasticsearch-output.conf
->>>>>>> ec31dbb... Updated default logstash to 2.3
     dest: /etc/logstash/conf.d/30-elasticsearch-output.conf
   notify:
     - restart logstash
