@@ -12,8 +12,8 @@
     - redis
 
 - name: Install the Redis package
-  yum: 
-   name: redis  
+  yum:
+   name: redis
    state: present
    disable_gpg_check: yes
   tags:
@@ -46,8 +46,8 @@
     - redis
 
 - name: Copy the Redis configuration file
-  template: 
-   src: redis.conf.j2 
+  template:
+   src: redis.conf.j2
    dest: "{{ redis_config_file }}"      ## /etc/redis/6379.conf
   tags:
     - redis
@@ -59,9 +59,10 @@
     - redis
 
 - name: Ensure redis is running
-  service: 
-   name: "{{ redis_service }}"    # redis
-   state: started 
+  service:
+   name: "{{ redis_service }}"
+   state: started
    enabled: yes
+  when: not custom_repo # Redis doesn't have an init file when using our RPM
   tags:
     - redis
