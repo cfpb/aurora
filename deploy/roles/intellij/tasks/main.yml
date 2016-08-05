@@ -1,18 +1,18 @@
 ---
-- name: Install intellij rpm
-  yum:
-    name: "intellij"
-    state: present
-  when: custom_repo
-  tags:
-  - intellij
+# - name: Install intellij rpm
+#   yum:
+#     name: "intellij"
+#     state: present
+#   when: custom_repo
+#   tags:
+#   - intellij
 
 - name: Download intellij
-  get_url: 
+  get_url:
     url: "{{ intellij_url }}"
     dest: "/tmp/intellij-{{ intellij_version }}"
   when: not custom_repo
-  tags: 
+  tags:
   - intellij
 
 - name: Create install directory
@@ -23,11 +23,11 @@
   tags:
   - intellij
 
-- name: Extract intellij from /tmp 
+- name: Extract intellij from /tmp
   unarchive:
     src: "/tmp/intellij-{{ intellij_version }}"
     dest: "{{ intellij_install_dir }}"
-    copy: no 
+    copy: no
   when: not custom_repo
   tags:
   - intellij
@@ -39,7 +39,7 @@
     state: link
   when: not custom_repo
   tags:
-  - intellij 
+  - intellij
 
 - name: Install Intellij IDEA desktop file
   template:
@@ -57,4 +57,3 @@
   when: not custom_repo
   tags:
   - intellij
-
