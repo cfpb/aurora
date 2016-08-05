@@ -49,7 +49,6 @@
         - gnucobol
         - htop
         - p7zip
-        - devtools
       when: custom_repo
 
     - name: Install Python RPM dependencies
