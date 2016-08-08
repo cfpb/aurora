@@ -1,0 +1,35 @@
+# .travis.yml
+---
+sudo: required
+
+env:
+  - >
+    container_id=$(mktemp)
+
+services:
+  - docker
+
+before_install:
+  - sudo apt-get update
+  # Pull container
+  - sudo docker pull centos:6
+  # Customize container
+  - sudo docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
+
+script:
+    # Run container in detached state
+  - sudo docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
+
+    # Syntax check
+  - sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /aurora/deploy/deploy_admin_terminal.yml --syntax-check #replace all yml files with variable - whatever is next
+    # Test role
+  - sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /aurora/deploy/deploy_admin_terminal.yml
+    # Idempotence test
+  - >
+    sudo docker exec "$(cat ${container_id})" ansible-playbook /aurora/deploy/deploy_admin_terminal.yml
+    | grep -q 'changed=0.*failed=0'
+    && (echo 'Idempotence test: pass' && exit 0)
+    || (echo 'Idempotence test: fail' && exit 1)
+
+    # Clean up
+  - sudo docker stop "$(cat ${container_id})"
