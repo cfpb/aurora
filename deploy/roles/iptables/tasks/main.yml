@@ -56,6 +56,7 @@
   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   with_items:
     - "{{ groups['terminals'] }}"
+  when: '"terminals" in groups'
 
 - name: Allow SSH access from internal subnet
   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 22 -s {{ subnet }} -j ACCEPT"

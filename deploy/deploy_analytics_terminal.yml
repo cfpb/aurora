@@ -8,10 +8,10 @@
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
     - devtools
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    - {role: python, when: "install_python and custom_repo"}
+    - {role: python-build, when: "install_python and not custom_repo"}
+    - {role: python3, when: "install_python and custom_repo"}
+    - {role: python3-build, when: "install_python and not custom_repo"}
     - ruby
     - jdk
     - pycharm
@@ -60,6 +60,7 @@
         state: present
         disable_gpg_check: yes
       with_items: "{{ python_dep_packages }}"
+      when: install_python
 
     - name: Install Python packages for 27
       pip:
@@ -67,6 +68,7 @@
         state: present
         executable: /usr/local/bin/pip2.7
       with_items: "{{ python_packages }}"
+      when: install_python
 
     - name: Install Python packages for 34
       pip:
@@ -74,12 +76,13 @@
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: "{{ python3_packages }}"
+      when: install_python
 
 - hosts: analytics_terminal
   become: yes
   become_method: sudo
   roles:
-    - eod
+    - {role: eod, when: "install_desktop"}
     - r
     - revolution-r
     - r-shiny

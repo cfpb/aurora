@@ -3,11 +3,27 @@
 sudo: required
 
 env:
+ global:
+  - container_id=$(mktemp)
+ matrix:
+ # admin terminal  
   - >
-    container_id=$(mktemp)
+    HOST_GROUP=admin_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
+    INSTALL_GLUSTERFS=false
+ # analytics terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_analytics_terminal.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false}'
+    INSTALL_GLUSTERFS=false
 
 services:
   - docker
+
+language: 
+  - python
 
 before_install:
   - sudo apt-get update
@@ -17,19 +33,65 @@ before_install:
   - sudo docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
 
 script:
-    # Run container in detached state
-  - sudo docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
-
-    # Syntax check
-  - sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /aurora/deploy/deploy_admin_terminal.yml --syntax-check #replace all yml files with variable - whatever is next
-    # Test role
-  - sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook /aurora/deploy/deploy_admin_terminal.yml
-    # Idempotence test
+# Run container in detached state
   - >
-    sudo docker exec "$(cat ${container_id})" ansible-playbook /aurora/deploy/deploy_admin_terminal.yml
-    | grep -q 'changed=0.*failed=0'
-    && (echo 'Idempotence test: pass' && exit 0)
-    || (echo 'Idempotence test: fail' && exit 1)
+    sudo docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
+  - >
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
+  - >
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
+# Parameterize docker temp file build
+  - >
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_connection=local\" > /etc/ansible/hosts"
+# Syntax check
+  - >
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+# -e '{"install_glusterfs": "${INSTALL_GLUSTERFS}"}'
+# --extra-vars "${EXTRA_VAR_DEF}"
+# Test role
+  - >
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" &
 
-    # Clean up
+    minutes=0;
+    limit=90;
+
+    while true; do
+
+      echo -n -e " \b"; 
+
+      if [ $minutes == $limit ]; then
+        break;
+      fi
+
+      minutes=$((minutes+1));
+
+      sleep 60;
+    done
+
+
+#    while kill -0 $! >/dev/null 2>&1; do
+# sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" &
+#   minutes=0
+#   limit=30
+#   while kill -0 $! >/dev/null 2>&1; do
+#     echo -n -e " \b" 
+
+#     if [ $minutes == $limit ]; then
+#       break;
+#     fi
+
+#     minutes=$((minutes+1))
+
+#     sleep 60
+#   done
+
+# --extra-vars "${EXTRA_VAR_DEF}"
+# Idempotence test
+# - >
+#   sudo docker exec "$(cat ${container_id})" ansible-playbook /aurora/deploy/deploy_admin_terminal.yml --extra-vars "{"install_glusterfs": false, "install_python": false, "install_logstash": false}"
+#   | grep -q 'changed=0.*failed=0'
+#   && (echo 'Idempotence test: pass' && exit 0)
+#   || (echo 'Idempotence test: fail' && exit 1)
+
+# Clean up
   - sudo docker stop "$(cat ${container_id})"
