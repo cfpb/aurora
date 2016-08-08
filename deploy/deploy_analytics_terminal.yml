@@ -49,6 +49,7 @@
         - gnucobol
         - htop
         - p7zip
+        - rhobot
       when: custom_repo
 
     - name: Install Python RPM dependencies
