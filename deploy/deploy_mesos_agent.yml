@@ -6,6 +6,7 @@
   roles:
     - common
     - {role: iptables, when: "iptables_config"}
+    - devtools
     - mesos_agent
     - {role: epel, when: "use_epel"}
     - jdk
