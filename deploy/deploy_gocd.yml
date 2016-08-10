@@ -15,6 +15,7 @@
   max_fail_percentage: 10
   roles:
     - common
+    - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
@@ -75,6 +76,7 @@
   become_method: sudo
   roles:
     - common
+    - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
