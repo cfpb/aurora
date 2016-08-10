@@ -187,8 +187,8 @@ Vagrant.configure(2) do |config|
 
     analytics_config.ssh.forward_agent = true
 
-    #analytics_config.vm.provision :shell,
-    #  :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+    analytics_config.vm.provision :shell,
+      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
     analytics_config.vm.provider "virtualbox" do |v|
       v.memory = 2048

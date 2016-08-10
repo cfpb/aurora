@@ -21,7 +21,7 @@
     - nodejs
     - redis
     - maven
-    - intellij
+    - {role: intellij, when: "not 'production' in group_names"}
     #- julia
 
 # Install development packages
