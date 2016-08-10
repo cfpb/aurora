@@ -10,6 +10,10 @@ events {
 }
 
 http {
+    {% for restriction in nginx_access_list %}
+    {{ restriction.type }} {{ restriction.address }};
+    {% endfor %}
+
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
