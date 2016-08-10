@@ -16,4 +16,6 @@ r_packages_github:
     user: rstudio
 
 r_env_vars:
-  DUMMY: "DUMMY"
+  CC: /opt/rh/devtoolset-2/root/usr/bin/gcc
+  CPP: /opt/rh/devtoolset-2/root/usr/bin/cpp
+  CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
