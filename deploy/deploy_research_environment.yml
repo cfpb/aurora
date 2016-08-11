@@ -8,6 +8,7 @@
 - hosts: research_ancillary_services
   sudo: yes
   roles:
+    - devtools
     - emacs
     - open_office
     - evince
@@ -44,6 +45,7 @@
 - hosts: research_python
   sudo: yes
   roles:
+    - devtools
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}

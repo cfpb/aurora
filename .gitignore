@@ -75,6 +75,7 @@ dist/
 ###########
 .vagrant/
 *.vdi
+local_settings.yml
 
 # extra variable files
 .vagrant*
@@ -85,3 +86,6 @@ dist/
 
 # Ansible Vault password file
 .vault_password
+
+# ES Message Auth Key
+system_key

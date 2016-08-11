@@ -4,6 +4,7 @@
   yum:
     name: "{{ item }}"
     state: present
+    disable_gpg_check: yes
   with_items:
     - libselinux-python
     - nginx
@@ -45,6 +46,7 @@
     mode: 0755
     owner: "{{ deploy_user }}"
     group: "{{ deploy_user }}"
+    state: directory
   tags:
     - nginx
 
@@ -55,6 +57,7 @@
     state: directory
     owner: "{{ nginx_user }}"
     group: "{{ nginx_user }}"
+    state: directory
   tags:
     - nginx
 
