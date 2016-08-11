@@ -107,6 +107,21 @@
   with_items: pp_dba_scripts
   always_run: yes
 
+- name: Retrieve list of databases
+  postgresql_exec:
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
+  register: database_list
+
+- debug:
+    var: database_list
+
+- include: create_functions.yml
+  with_items: "{{ database_list.query_result }}"
+
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
     login_user: "{{ pp_superaccount }}"
