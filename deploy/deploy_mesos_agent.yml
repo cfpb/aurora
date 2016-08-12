@@ -45,7 +45,7 @@
     - jdbc
     - ruby
     - sqitch
-    - r
+    # - r
     - r-shiny
     - nodejs
 
