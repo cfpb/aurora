@@ -96,7 +96,7 @@
 #    - revolution_r
 
 - name: Install R packages from URL (for specific versions)
-  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "options(download.file.method='wget'); if (! ('{{ item.package }}' %in% installed.packages()[,'Package'])) { install.packages('{{ item.url }}', INSTALL_opts=c('--no-test-load'),repos=NULL,type='source'); print('Added'); } else { print('Already installed'); }"
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "options(download.file.method='wget'); if (! ('{{ item.package }}' %in% installed.packages()[,'Package'])) { install.packages('{{ item.url }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),type='source',dep=TRUE); print('Added'); } else { print('Already installed'); }"
   with_items: "{{ revolution_r_packages_url }}"
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
