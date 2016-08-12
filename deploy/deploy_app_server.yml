@@ -56,7 +56,7 @@
         disable_gpg_check: yes
       with_items: "{{ python_dep_packages }}"
 
-   - name: Install Python packages for 2.7
+    - name: Install Python packages for 2.7
       pip:
         name: "{{ item }}"
         state: present
