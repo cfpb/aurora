@@ -4,7 +4,7 @@ revolution_r_path: /usr/lib64/RRO-3.2.0/R-3.2.0
 install_mkl: false
 
 revolution_r_env_vars:
-  R_ARCH:
+  R_ARCH: ""
 
 revolution_r_dependencies:
   - libcurl-devel
@@ -14,7 +14,10 @@ revolution_r_dependencies:
 revolution_r_packages:
   - "devtools"
 
-revolution_r_packages_url: []
+revolution_r_packages_url:
+  -
+    package: devtools
+    url: "https://cran.r-project.org/src/contrib/Archive/devtools/devtools_1.11.1.tar.gz"
 
 revolution_r_packages_github: []
 
