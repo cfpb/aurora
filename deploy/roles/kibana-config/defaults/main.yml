@@ -6,3 +6,4 @@ kibana_password: password
 kibana_plugins:
   - kibana/shield/2.3.4
   - elasticsearch/marvel/2.3.4
+kibana_encryption_key: "secret_key"
