@@ -3,10 +3,50 @@
   file:
     path: "{{sublime_install_directory}}/"
     state: directory
+    mode: 0755
+  tags:
+    - sublime
+
+- name: Unarchive sublime (from remote)
+  unarchive:
+    copy: no
+    src: "http://c758482.r82.cf2.rackcdn.com/Sublime%20Text%202.0.2.tar.bz2"
+    dest: "{{ sublime_install_directory }}"
+    mode: a+r
+  when: not custom_repo
+  tags:
+    - sublime
 
 - name: Unarchive sublime
   unarchive:
     copy: yes
     src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
+    mode: 0644
   when: custom_repo
+  tags:
+    - sublime
+
+- name: Ensure sublime_text is executable
+  file:
+    path: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    mode: 0755
+  tags:
+    - sublime
+
+- name: Create symlink
+  file:
+    dest: /usr/local/bin/subl
+    src: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    mode: 0755
+    state: link
+  tags:
+    - sublime
+
+- name: Add Desktop entry
+  template:
+    src: sublime.desktop.j2
+    dest: /usr/share/applications/sublime.desktop
+    mode: 0644
+  tags:
+    - sublime

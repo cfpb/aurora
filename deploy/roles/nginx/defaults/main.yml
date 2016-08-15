@@ -40,3 +40,9 @@ nginx_webcrawler_protect: "(.*).test.dev"
 # Nginx initial state
 nginx_state: "started"
 nginx_enable: "yes"
+
+# Access restrictions
+nginx_access_list:
+  -
+    type: allow
+    address: all

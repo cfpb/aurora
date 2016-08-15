@@ -1,0 +1,13 @@
+#
+# location: /etc/profile.d
+# purpose: install nvm to this place so all users can use it
+#
+# @see http://stackoverflow.com/a/19040346
+#
+
+export NVM_DIR={{ nvm_install_path }}
+
+LC_ALL=en_US.UTF-8      \
+  LANG=en_US.UTF-8      \
+  LANGUAGE=en_US.UTF-8  \
+  source {{ nvm_exe_path }}

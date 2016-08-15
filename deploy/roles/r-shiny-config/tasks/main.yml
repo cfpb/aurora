@@ -15,3 +15,12 @@
   tags:
     - shiny
     - config
+  notify:
+    - restart shiny-server
+
+- name: Ensure Shiny Server is started
+  shell: "start shiny-server"
+  register: shiny_result
+  failed_when: shiny_result.rc != 0 and "already running" not in shiny_result.stderr
+  tags:
+    - shiny

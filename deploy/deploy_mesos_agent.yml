@@ -6,6 +6,7 @@
   roles:
     - common
     - {role: iptables, when: "iptables_config"}
+    # - devtools
     - mesos_agent
     - {role: epel, when: "use_epel"}
     - jdk
@@ -28,7 +29,6 @@
         name: "{{ item }}"
         state: present
       with_items:
-        - nodejs
         - "@Development Tools"
         - screen
         - p7zip
@@ -45,8 +45,9 @@
     - jdbc
     - ruby
     - sqitch
-    - r
+    # - r
     - r-shiny
+    - nodejs
 
 - hosts: mesos_agent
   become: yes
@@ -85,7 +86,7 @@
         - unzip
         - gpg
         - pigz
-        - facter
+        # - facter
         - sysstat # sar, iostat, vmstat
         - systemtap # dtrace equivalent
         - ant

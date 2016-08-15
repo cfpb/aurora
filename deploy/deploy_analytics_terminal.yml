@@ -6,6 +6,7 @@
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - devtools
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
@@ -16,6 +17,11 @@
     - postgresql-client
     - nginx
     - spark
+    - sublime
+    - nodejs
+    - redis
+    - maven
+    - {role: intellij, when: "not 'production' in group_names"}
     #- julia
 
 # Install development packages
@@ -31,7 +37,6 @@
         - "@development"
         - gcc-gfortran
         - python-devel
-        - nodejs
         - pgadmin3_94
 
     - name: Install custom RPMs
@@ -44,6 +49,7 @@
         - gnucobol
         - htop
         - p7zip
+        - rhobot
       when: custom_repo
 
     - name: Install Python RPM dependencies

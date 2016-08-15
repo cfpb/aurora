@@ -1,0 +1,29 @@
+---
+- hosts: nginx_server
+  sudo: yes
+  handlers:
+    - include: roles/apache/handlers/main.yml
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
+    - name: Pull down custom proxy configs
+      git:
+        repo: "{{ nginx_proxy_repo }}"
+        dest: "/srv/www/proxy/repo/"
+        force: yes
+        version: "{{ git_environment }}"
+      when: nginx_proxy_repo is defined
+      notify:
+        - restart apache
+
+    - name: Ensure permissions are correct
+      file:
+        dest: /srv/www/proxy/repo
+        owner: nginx
+        group: nginx
+        mode: 0600
+        recurse: yes
+        state: directory

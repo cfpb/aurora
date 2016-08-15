@@ -4,6 +4,7 @@
   sudo: yes
 
   roles:
+    - umask
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
 #    - {role: common, when: "install_glusterfs"}
@@ -12,22 +13,16 @@
     - jdk
     - postgresql-client
     - eod
+    - devtools
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - sqitch
     - {role: pem-client, tags: pem-client}
+    - sublime
 
   tasks:
-    - name: Ensure umask is correct
-      sudo: no
-      lineinfile:
-        dest: ~/.bashrc
-        line: umask 0022
-        regexp: ^(.*)umask(.*)$
-        state: present
-
     - name: Install RPM dependencies for python packages
       yum:
         name: "{{ item }}"

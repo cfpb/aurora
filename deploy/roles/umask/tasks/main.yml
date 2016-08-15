@@ -1,0 +1,7 @@
+- name: Ensure umask is correct
+  become: no
+  lineinfile:
+    dest: ~/.bashrc
+    line: umask 0022
+    regexp: ^(.*)umask(.*)$
+    state: present

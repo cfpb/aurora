@@ -4,3 +4,5 @@ postgres_install_dir: /usr/pgsql-9.4
 postgres_packages:
   - postgresql94
   - postgresql94-devel
+
+clean_postgresql: False

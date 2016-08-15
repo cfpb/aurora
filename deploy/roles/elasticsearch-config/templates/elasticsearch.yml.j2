@@ -39,6 +39,8 @@ path.data: /opt/elasticsearch/data
 # Path to log files:
 path.logs: /var/log/elasticsearch
 
+path.scripts: {{ es_scripts_path }}
+
 # ----------------------------------- Memory -----------------------------------
 #
 # Lock the memory on startup:
@@ -131,6 +133,7 @@ indices.fielddata.cache.size: "30%"
 indices.fielddata.cache.expire: "5m"
 
 ### Shield Settings
+{% if es_shield_enabled %}
 shield:
 {% if es_message_auth %}
   system_key:
@@ -151,4 +154,19 @@ shield:
         order: 0
     {% endif %}
 
-shield.audit.enabled: {{ es_shield_audit }}
+{% if es_shield_audit %}
+shield.audit.enabled: true
+{% else %}
+shield.audit.enabled: false
+{% endif %}
+
+{% else %}
+shield.enabled: false
+{% endif %}
+
+### Marvel Settings
+marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ es_hostname }}"]
+marvel.agent.exporter.es.timeout: {{ es_marvel_timeout }}
+marvel.agent.exporter.es.ssl.hostname_verification: {{ es_marvel_hostname_verification }}
+marvel.agent.exporter.es.ssl.truststore.path: {{ java_home_path }}/lib/security/cacerts
+marvel.agent.exporter.es.ssl.truststore.password: {{ java_keystore_password }}

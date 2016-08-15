@@ -23,8 +23,8 @@
 
 - name: Add custom filters
   copy:
-    src: "{{ item }}"
-    dest: "/etc/logstash/conf.d/{{ item }}"
+    dest: "/etc/logstash/conf.d/{{ item.name }}"
+    content: "{{ item.content }}"
     mode: 0644
   with_items: "{{ logstash_filters }}"
 

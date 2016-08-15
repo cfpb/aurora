@@ -1,0 +1,7 @@
+---
+scala_version:              2.11.8
+scala_url:                  "http://downloads.lightbend.com/scala/{{ scala_version }}/scala-{{ scala_version }}.tgz"
+scala_sbt_version:          0.13.11
+scala_sbt_url:              "https://dl.bintray.com/sbt/native-packages/sbt/{{ scala_sbt_version }}/sbt-{{ scala_sbt_version }}.tgz"
+scala_dir:                  "/usr/local/scala"
+sbt_dir:                    "/usr/local/sbt"

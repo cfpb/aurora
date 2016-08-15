@@ -1,0 +1,43 @@
+---
+
+epel_repo_url:                          "https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm" 
+redis_user:                             redis
+redis_user_shell:                       "/bin/false"
+redis_group:                            "{{ redis_user }}"
+redis_user_groups:                      []
+redis_pidfile:                          /var/run/redis/redis.{{ redis_port }}
+redis_db_dir:                           /var/lib/redis
+redis_dbfilename:                       dump.rdb
+redis_config_directory:                 /etc/redis
+
+
+redis_config_file:                      /etc/redis.conf
+
+redis_init_directory:                   /etc/init.d
+redis_service:                          redis
+
+redis_working_directory:                /var/redis/{{ redis_port }}
+redis_logfile:                          /var/log/redis_{{ redis_port }}.log
+
+redis_daemonize:                        "yes"
+redis_version:                          2.0.
+redis_bind_address:                     "127.0.0.1"
+redis_port:                             6379
+redis_timeout:                          300
+redis_loglevel:                         notice
+redis_rename_command:                   CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
+redis_syslog_enabled:                   "yes"               
+
+
+redis_databases:                        16
+
+redis_rdbcompression:                   "yes"
+
+redis_role:                             master
+redis_master_auth:                      []
+redis_requirepass:                      []
+redis_max_clients:                      10000
+redis_max_memory:                       512mb
+redis_maxmemory_policy:                 "noeviction"
+redis_appendonly:                       "yes"
+redis_appendfsync:                      everysec

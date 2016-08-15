@@ -12,6 +12,8 @@
 # you use.
 default_file_server: 10.0.1.4
 
+default_admin_terminal: admin_terminal
+
 # Define all GlusterFS "bricks" you want here.  Folders will be created on the
 # file server based on these settings, and GlusterFS volumes will be created and
 # mounted on client servers.
@@ -112,6 +114,10 @@ ssl_cert_file: /etc/httpd/ssl/apache.crt
 ssl_key_file: /etc/httpd/ssl/apache.key
 ssl_chain_file: /etc/httpd/ssl/apache.crt
 
+nginx_ssl_cert_file: /etc/nginx/ssl/nginx.crt
+nginx_ssl_key_file: /etc/nginx/ssl/nginx.key
+nginx_ssl_protocols: "TLSv1.2 TLSv1.1"
+
 apache_use_ldap: True
 
 #=======================#
@@ -157,6 +163,8 @@ krb_ask_pass: "On"
 # LDAP Server
 ldap_subdomain: ldap
 ldap_server: kdc.test.dev
+ldap_user_scope: "cn=Users"
+ldap_group_scope: "cn=Groups"
 
 # LDAP Service Account
 ldap_service_account: admin
@@ -192,9 +200,10 @@ python3_packages:
 es_cluster: test_cluster
 install_logstash: True
 es_endpoint: https://es.test.dev
+es_protocol: https
+es_hostname: es.test.dev
 es_service_account: admin
 es_service_account_password: password
-es_message_auth: True
 es_user: elasticsearch
 
 #===================#

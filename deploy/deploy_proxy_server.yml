@@ -25,6 +25,18 @@
         - /srv/www/enclave_proxy
         - /srv/www/enclave_proxy/html
         - /srv/www/enclave_proxy/html/restricted
+        - /srv/www/enclave_proxy/repo/vhost_conf
+
+    - name: Ensure symbolic link to vhost confs location
+      file:
+        src: /srv/www/enclave_proxy/repo/vhost_conf
+        dest: /srv/www/enclave_proxy/vhost_conf
+        state: link
+        owner: apache
+        group: apache
+        mode: 0600
+      notify:
+        - restart apache
 
     - name: Create SSL folder
       file:

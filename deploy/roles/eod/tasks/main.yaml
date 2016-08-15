@@ -79,6 +79,7 @@
   notify:
     - restart eod
     - restart gdm
+    - restart prefdm
   when: custom_repo
   tags:
     - eod
@@ -128,14 +129,16 @@
     mode: 0644
   notify:
     - restart gdm
+    - restart prefdm
   tags:
     - eod
 
 - name: Set configuration settings for gdm
   shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
-  with_items: gconf_settings
+  with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
+    - restart prefdm
   tags:
     - eod
 
@@ -153,6 +156,7 @@
     dest: /etc/X11/xorg.conf
   notify:
     - restart gdm
+    - restart prefdm
   # notify:
   #   - ensure video driver
   tags:
@@ -201,7 +205,7 @@
 
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
-  with_items: eod_client_ports
+  with_items: "{{ eod_client_ports }}"
   when: iptables_config
   tags:
     - eod
@@ -224,5 +228,20 @@
   register: gdm_status
   failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
   changed_when: gdm_status.rc == 0
+  tags:
+    - eod
+
+- name: Check if EOD is configured to run on boot
+  shell: /usr/local/eod/bin/otecs bootstatus
+  register: eod_bootstatus
+  changed_when: false
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Configure EOD to start on boot
+  shell: /usr/local/eod/bin/otecs bootstart
+  changed_when: eod_bootstatus.stdout == 'off'
+  when: custom_repo
   tags:
     - eod

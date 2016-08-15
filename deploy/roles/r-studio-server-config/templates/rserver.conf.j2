@@ -10,5 +10,6 @@ auth-proxy-sign-in-url={{ rstudio_domain_name }}
 monitor-data-path=/opt/rstudio-server/monitoring-data
 server-health-check-enabled=1
 admin-enabled=1
-admin-group={{ rstudio_admin_group }}
+admin-group={{ rstudio_manager_group }}
+admin-superuser-group={{ rstudio_admin_group }}
 {% endif %}

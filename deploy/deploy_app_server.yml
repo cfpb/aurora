@@ -16,6 +16,9 @@
     - emacs
     - pycharm
     - nginx
+    - nodejs
+    - redis
+    - maven
     #- julia
 
 # Install development packages
@@ -31,7 +34,6 @@
         - "@development"
         - gcc-gfortran
         - python-devel
-        - nodejs
         - screen
 
     - name: Install custom RPMs
@@ -44,6 +46,7 @@
         - gnucobol
         - htop
         - p7zip
+        - rhobot
       when: custom_repo
 
     - name: Install Python RPM dependencies

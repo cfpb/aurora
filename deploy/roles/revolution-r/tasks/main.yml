@@ -6,6 +6,8 @@
   with_items:
     - gcc
     - gcc-gfortran
+  tags:
+    - revolution_r
 
 ### Revolution R
 
@@ -14,6 +16,8 @@
     url: http://mran.revolutionanalytics.com/install/RRO-3.2.0-el6.x86_64.tar.gz
     dest: /tmp
   when: not custom_repo
+  tags:
+    - revolution_r
 
 - name: Extract Revolution R Package
   unarchive:
@@ -22,12 +26,32 @@
     creates: /tmp/RRO-3.2.0/install.sh
     copy: no
   when: not custom_repo
+  tags:
+    - revolution_r
 
 - name: Install Revolution R
   yum:
     name: "{{ revolution_r_package }}"
     state: present
     disable_gpg_check: yes
+  tags:
+    - revolution_r
+
+- name: Create symlink for Revolution R
+  file:
+    state: link
+    src: "{{ revolution_r_path }}/bin/R"
+    dest: "/usr/local/bin/RevoR"
+  tags:
+    - revolution_r
+
+- name: Create symlink for Revolution R Script command
+  file:
+    state: link
+    src: "{{ revolution_r_path }}/bin/Rscript"
+    dest: "/usr/local/bin/RevoRscript"
+  tags:
+    - revolution_r
 
 - name: Ensure that R is executable
   file:
@@ -36,6 +60,70 @@
   with_items:
     - ldpaths
     - Makeconf
+  tags:
+    - revolution_r
+
+- name: Override errant R_ARCH variable
+  template:
+    src: revor.sh.j2
+    dest: /etc/profile.d/revor.sh
+    mode: 0644
+  tags:
+    - revolution_r
+
+- name: Ensure Java is configured
+  shell: "/usr/local/bin/RevoR CMD javareconf"
+  tags:
+    - revolution_r
+
+- name: Install packages required by R packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ revolution_r_dependencies }}"
+  tags:
+    - revolution_r
+
+# Don't update packages for now, as devtools must be at a fixed version
+#- name: Update existing R packages
+#  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE);"
+#  environment: "{{ revolution_r_env_vars }}"
+#  async: 2400
+#  poll: 60
+#  environment: "{{ revolution_r_env_vars }}"
+#  tags:
+#    - revolution_r
+
+- name: Install R packages from URL (for specific versions)
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "options(download.file.method='wget'); if (! ('{{ item.package }}' %in% installed.packages()[,'Package'])) { install.packages('{{ item.url }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),type='source',dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ revolution_r_packages_url }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ revolution_r_env_vars }}"
+  tags:
+    - revolution_r
+
+- name: Install R packages
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ revolution_r_packages }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ revolution_r_env_vars }}"
+  tags:
+    - revolution_r
+
+- name: Install R packages from Github
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ revolution_r_packages_github }}"
+  register: r_github_result
+  failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
+  changed_when: "'Added' in r_github_result.stdout"
+  environment: "{{ revolution_r_env_vars }}"
+  tags:
+    - revolution_r
 
 ### MKL Package
 
@@ -44,6 +132,8 @@
     url: http://mran.revolutionanalytics.com/install/RevoMath-3.2.0.tar.gz
     dest: /tmp
   when: install_mkl and not custom_repo
+  tags:
+    - revolution_r
 
 - name: Extract MKL Package
   unarchive:
@@ -52,13 +142,28 @@
     creates: /tmp/RevoMath/RevoMath.sh
     copy: no
   when: install_mkl and not custom_repo
+  tags:
+    - revolution_r
 
 - name: Install MKL
   command: /tmp/RevoMath/RevoMath.sh
   when: install_mkl and not custom_repo
+  tags:
+    - revolution_r
 
 - name: Install MKL
   yum:
     name: RevoMath
     state: present
   when: install_mkl and custom_repo
+  tags:
+    - revolution_r
+
+- name: Execute R configuration commands
+  command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "{{ item }}"
+  with_items: "{{ revolution_r_commands }}"
+  register: r_command_result
+  failed_when: "r_command_result.rc != 0 or 'had non-zero exit status' in r_command_result.stderr"
+  environment: "{{ revolution_r_env_vars }}"
+  tags:
+    - revolution_r
