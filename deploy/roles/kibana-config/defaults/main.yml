@@ -4,4 +4,5 @@ kibana_config_file: kibana.yml.j2
 kibana_user: kibana4-user
 kibana_password: password
 kibana_plugins:
+  - kibana/shield/2.3.4
   - elasticsearch/marvel/2.3.4
