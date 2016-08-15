@@ -6,6 +6,18 @@
   notify:
     - restart kibana
 
+- name: Create SSL folder
+  file:
+    dest: /opt/kibana/ssl
+    state: directory
+  when: kibana_generate_certs
+
+- name: Generate SSL Certs if requested
+  command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ kibana_ssl_key_file }} -out {{ kibana_ssl_cert_file }} -extensions v3_ca"
+  when: kibana_generate_certs
+  args:
+    creates: "{{ kibana_ssl_cert_file }}"
+
 - name: Install kibana plugins
   command: /opt/kibana/bin/kibana plugin --install {{ item }}
   with_items: "{{ kibana_plugins }}"
