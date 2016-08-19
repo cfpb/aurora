@@ -93,26 +93,10 @@
       file:
         dest: /etc/yum.repos.d/elasticsearch.repo
         state: absent
-#      when: not "production" in group_names
+        when: not "production" in group_names
   roles:
     - elasticsearch
     - elasticsearch-config
-
-- hosts: elk
-  become: yes
-  become_method: sudo
-  tasks:
-    - name: Setup elasticsearch as a client node
-      lineinfile:
-        dest: /etc/elasticsearch/elasticsearch.yml
-        regexp: '^(#)?\s+"{{ item }}":'
-        line: "{{ item }}: false"
-        state: present
-      with_items:
-        - "node.master"
-        - "node.data"
-      notify:
-        - restart elasticsearch
 
 - hosts: admin_terminal
   become: yes
