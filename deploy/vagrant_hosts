@@ -125,6 +125,7 @@ research_environment
 pipeline
 datawarehouse
 mesos
+neo4j_server
 
 [terminals:vars]
 is_terminal=True

@@ -1,0 +1,62 @@
+---
+
+- name: Add neo4j user
+  user:
+    name: "{{ neo4j_user }}"
+    system: yes 
+    home: "{{ neo4j_dir }}"
+    shell: "{{ neo4j_user_shell }}"
+    state: present
+    #groups: "{{ neo4j_user_groups | join(',') }} "
+  tags:
+  - neo4j
+
+- name: Create neo4j install directory
+  file: 
+    state: directory
+    path: "{{ neo4j_dir }}"
+    mode: 0755
+  tags:
+  - neo4j
+
+- name: Download neo4j
+  get_url: 
+    url: "{{ neo4j_url }}"
+    dest: "/tmp/neo4j-{{ neo4j_version }}"
+  tags:
+  - neo4j
+
+- name: Extract neo4j tarball
+  unarchive:
+    src: "/tmp/neo4j-{{ neo4j_version }}"
+    dest: "{{ neo4j_dir }}"
+    copy: no
+  tags:
+  - neo4j
+  
+- name: Open port for neo4j in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ neo4j_port }} -j ACCEPT"
+  when: iptables_config
+  tags:
+  - neo4j
+
+- name: Ensure neo4j environment is set
+  template:
+    src: neo4j-env.sh.j2
+    dest: /etc/profile.d/neo4j.sh
+  tags:
+  - neo4j
+
+- name: set open fd soft and hard limit
+  lineinfile: 
+    dest=/etc/security/limits.conf 
+    regexp="{{ item.regexp }}"  
+    line="{{ item.line }}" 
+    insertbefore="# End of file" 
+    state=present
+  with_items:
+    - { regexp: '^neo4j\s+soft', line: 'neo4j   soft    nofile  {{ neo4j_nofile_value }}' }
+    - { regexp: '^neo4j\s+hard', line: 'neo4j   hard    nofile  {{ neo4j_nofile_value }}' }
+  when: neo4j_update_limits 
+  tags:
+  - neo4j

@@ -1,0 +1,24 @@
+# deploy_neo4j_server
+---
+- hosts: neo4j_server
+  become: yes 
+  roles:
+    - {role: puppet_disable, when: "disable_puppet"}
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - jdk
+    - neo4j 
+
+- hosts: neo4j_server 
+  become: yes 
+  tasks: 
+    - name: Open ports for neo4j 
+      command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 30000:31000 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+      when: iptables_config
+      with_items: "{{ groups['proxy_server'] }}"
+
+    - name: Save rules
+      command: "/sbin/service iptables save"
+      when: iptables_config 
+
