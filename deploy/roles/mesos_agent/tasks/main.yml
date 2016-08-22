@@ -125,6 +125,16 @@
     - mesos
     - mesos-agent
 
+- name: Set any customized attributes
+  copy:
+    dest: /etc/mesos-slave/attributes
+    content: "{{ mesos_agent_attributes }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
 - name: Create credential file, if needed
   copy:
     dest: "{{ mesos_agent_credential }}"
