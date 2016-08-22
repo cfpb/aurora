@@ -7,7 +7,6 @@
     home: "{{ neo4j_dir }}"
     shell: "{{ neo4j_user_shell }}"
     state: present
-    #groups: "{{ neo4j_user_groups | join(',') }} "
   tags:
   - neo4j
 
@@ -39,6 +38,13 @@
   when: iptables_config
   tags:
   - neo4j
+
+- name: Open HTTP port for neo4j in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ neo4j_http_port }} -j ACCEPT"
+  when: iptables_config
+  tags:
+  - neo4j 
+
 
 - name: Ensure neo4j environment is set
   template:
