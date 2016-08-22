@@ -19,7 +19,6 @@
     - nodejs
     - redis
     - maven
-    - neo4j
     #- julia
 
 # Install development packages
