@@ -1,8 +1,7 @@
 ---
 neo4j_version:                                      2.3.6
 neo4j_port:                                         7474
-neo4j_https_port:                                   7473
-neo4j_http_port:                                    80
+neo4j_http_port:                                    7473
 neo4j_user:                                         neo4j
 neo4j_user_shell:                                   "/bin/false"
 neo4j_user_groups:                                  []
