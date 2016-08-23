@@ -42,10 +42,10 @@
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
-    mode: 0755
+    mode: 0700
   when: pp_install or pp_upgrade
-  tags:
-    - postgresql-server
+    tags:
+      - postgresql-server
 
 - name: Ensure the log directory exists
   file:
@@ -54,9 +54,6 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0755
-  when: pp_install or pp_upgrade
-  tags:
-    - postgresql-server
 
 - name: Ensure the data directory exists
   file:
@@ -65,9 +62,6 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: pp_install or pp_upgrade
-  tags:
-    - postgresql-server
 
 - name: Run PostgresPlus install script
   shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
@@ -174,9 +168,6 @@
   shell: "cat {{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
   args:
     creates: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
-  when: pp_install or pp_upgrade
-  tags:
-    - postgresql-server
 
 - name: Set ownership of environment file
   file:
