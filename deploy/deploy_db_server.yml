@@ -36,3 +36,18 @@
 - hosts: db_server
   roles:
     - role: postgresql-server-config
+
+  tasks:
+    - name: Ensure file transfer folder exists
+      file:
+        dest: "{{ pp_file_transfer_dir }}"
+        state: directory
+        mode: 0755
+        owner: postgres
+        group: postgres
+
+    - name: Create symlink from PPAS data directory
+      file:
+        dest: "{{ pp_datadir }}/file_transfers"
+        src: "{{ pp_file_transfer_dir }}"
+        state: link

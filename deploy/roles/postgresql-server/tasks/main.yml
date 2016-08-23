@@ -228,6 +228,7 @@
   tags:
     - postgresql-server
 
+<<<<<<< HEAD
 - name: Install requirements for postgresql Ansible tasks
   yum:
     name: "{{ item }}"
@@ -248,6 +249,25 @@
   with_items: "{{ pp_extensions }}"
   tags:
     - postgresql-server
+=======
+- name: Set permissions on PPAS directory
+  file:
+    dest: "{{ pp_prefix }}{{ pp_install_path }}"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+
+- name: Copy the environment file
+  shell: "cat {{ pp_prefix }}{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+  args:
+    creates: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+
+- name: Set ownership of environment file
+  file:
+    dest: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0600
+>>>>>>> 58037dc... Added variables for setting PPAS version correctly.
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
