@@ -1,7 +1,7 @@
 ---
-- name: Install postgres repository
+- name: Install Postgres repository
   yum:
-    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-{{ pp_rpm_version }}.noarch.rpm
+    name: "{{ pp_repository }}"
     state: present
   when: not 'production' in group_names
   always_run: true
@@ -74,7 +74,7 @@
 
 - name: Configure PPAS server
   template:
-    src: postgresql.conf.j2
+    src: "{{ pp_config_template }}"
     dest: "{{ pp_datadir }}/postgresql.conf"
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
@@ -126,20 +126,24 @@
 
 - name: Set permissions on PPAS directory
   file:
-    dest: "{{ pp_prefix }}9.4AS"
+    dest: "{{ pp_prefix }}{{ pp_install_path }}"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
   when: install_ppas
 
 - name: Copy the environment file
-  shell: "cat {{ pp_prefix }}9.4AS/pgplus_env.sh >> {{ pp_prefix }}9.4AS/.bash_profile"
+  shell: "cat {{ pp_prefix }}{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
   args:
+<<<<<<< HEAD
     creates: "{{ pp_prefix }}9.4AS/.bash_profile"
   when: install_ppas
+=======
+    creates: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+>>>>>>> 58037dc... Added variables for setting PPAS version correctly.
 
 - name: Set ownership of environment file
   file:
-    dest: "{{ pp_prefix }}9.4AS/.bash_profile"
+    dest: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0600
