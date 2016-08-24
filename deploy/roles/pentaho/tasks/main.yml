@@ -9,11 +9,19 @@
     name: unzip
     state: present
 
+- name: Download Pentaho
+  unarchive:
+    src: "{{ pentaho_url }}"
+    dest: /opt/
+    creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+  when: pentaho_zip_path is not defined
+
 - name: Extract Pentaho
   unarchive:
     src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"
     dest: /opt/
     creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+  when: pentaho_zip_path is defined
 
 - name: Create desktop shortcut for Pentaho
   template:
