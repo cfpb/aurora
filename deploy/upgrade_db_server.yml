@@ -1,0 +1,93 @@
+---
+# First shutdown the existing cluster.  This assumes that the Ansible variables
+# have all been updated to the new version, and old_ppas_service_name points
+# to the old running version.
+- hosts: db_server
+  become: yes
+  become_method: sudo
+  tasks:
+    - name: First ensure that the database processes are stopped
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - "{{ ppas_old_service_name }}"
+        - pgbouncer
+
+- hosts: db_server
+  become: yes
+  become_method: sudo
+  roles:
+    - role: postgresql-server
+  tasks:
+    - name: Ensure that the new database process is started
+      service:
+        name: "{{ pp_servicename }}"
+        state: started
+
+    - name: Pause for the DB to go up
+      pause:
+        minutes: 1
+
+    - name: Drop the "edb" database
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "DROP DATABASE IF EXISTS edb;"
+        port: "{{ pp_serverport }}"
+        autocommit: yes
+
+    - name: Create the "edb" database
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "CREATE DATABASE edb;"
+        port: "{{ pp_serverport }}"
+        autocommit: yes
+
+    - name: Ensure that the new database process is stopped
+      service:
+        name: "{{ pp_servicename }}"
+        state: stopped
+
+    - name: Run pg_upgrade consistency check
+      become: yes
+      become_method: sudo
+      become_user: "{{ pp_serviceaccount }}"
+      command: >
+               {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+                  --old-datadir {{ pp_old_datadir }}
+                  --new-datadir {{ pp_datadir }}
+                  --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+                  --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+                  --link
+                  -U {{ pp_serviceaccount }}
+                  --check
+      environment:
+        - PGPASSWORD: "{{ pp_superpassword }}"
+
+    - name: Run pg_upgrade
+      become: yes
+      become_method: sudo
+      become_user: "{{ pp_serviceaccount }}"
+      command: >
+               {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+                  --old-datadir {{ pp_old_datadir }}
+                  --new-datadir {{ pp_datadir }}
+                  --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+                  --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+                  --link
+                  -U {{ pp_serviceaccount }}
+      environment:
+        - PGPASSWORD: "{{ pp_superpassword }}"
+
+- hosts: db_server
+  become: yes
+  become_method: sudo
+  roles:
+    - role: postgresql-server
+    - role: postgresql-server-config

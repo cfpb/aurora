@@ -25,6 +25,7 @@
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
     mode: 0777
+  when: install_ppas
 
 - name: Create configuration file
   template:
@@ -32,14 +33,24 @@
     dest: "{{ pp_temp_dir }}/config_param"
     mode: 0600
 
-- name: Run PostgresPlus install script
-  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
-  args:
-    chdir: "{{ pp_temp_dir }}"
-    creates: "{{ pp_prefix }}"
-  notify:
-    - restart postgres
+- name: Ensure the install directory exists
+  file:
+    path: "{{ pp_prefix }}/{{ pp_install_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0777
   when: install_ppas
+
+- name: Ensure the log directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0777
 
 - name: Ensure the data directory exists
   file:
@@ -49,6 +60,15 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
+  when: install_ppas
+
+- name: Run PostgresPlus install script
+  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
+  args:
+    chdir: "{{ pp_temp_dir }}"
+    creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
+  notify:
+    - restart postgres
   when: install_ppas
 
 - name: Ensure the log directory exists
@@ -126,24 +146,20 @@
 
 - name: Set permissions on PPAS directory
   file:
-    dest: "{{ pp_prefix }}{{ pp_install_path }}"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}"
+    recurse: yes
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
   when: install_ppas
 
 - name: Copy the environment file
-  shell: "cat {{ pp_prefix }}{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+  shell: "cat {{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
   args:
-<<<<<<< HEAD
-    creates: "{{ pp_prefix }}9.4AS/.bash_profile"
-  when: install_ppas
-=======
-    creates: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
->>>>>>> 58037dc... Added variables for setting PPAS version correctly.
+    creates: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
 
 - name: Set ownership of environment file
   file:
-    dest: "{{ pp_prefix }}{{ pp_install_path }}/.bash_profile"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0600

@@ -52,6 +52,11 @@ options:
       - A SQL script to execute
     required: false
     default: null
+  autocommit:
+    description:
+      - Turns on autocommit, required for some operations
+    required: false
+    default: false
 notes:
    - The default authentication assumes that you are either logging in as or
      sudo'ing to the postgres account on the host.
@@ -78,6 +83,8 @@ except ImportError:
 else:
     postgresqldb_found = True
 
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
+
 # ================================
 # Module execution.
 #
@@ -92,7 +99,8 @@ def main():
             db                  = dict(required=True),
             port                = dict(default='5432'),
             script_file         = dict(default=None),
-            script              = dict(default=None)
+            script              = dict(default=None),
+            autocommit          = dict(default=False)
         ),
         supports_check_mode = True
     )
@@ -137,21 +145,25 @@ def main():
 
     try:
         db_connection = psycopg2.connect(**kw)
+        if module.params["autocommit"]:
+            db_connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = db_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
     except Exception, e:
         module.fail_json(msg="unable to connect to database: %s" % e)
 
     kw = dict(script=script)
 
-    if module.params["script"]:
-        cursor.execute(script)
-    elif module.params["script_file"]:
-        cursor.execute(open(script, "r").read())
+    if not (module.check_mode and module.params["autocommit"]):
+        if module.params["script"]:
+            cursor.execute(script)
+        elif module.params["script_file"]:
+            cursor.execute(open(script, "r").read())
 
-    if module.check_mode:
-        db_connection.rollback()
-    else:
-        db_connection.commit()
+    if not module.params["autocommit"]:
+        if module.check_mode:
+            db_connection.rollback()
+        else:
+            db_connection.commit()
 
     kw['changed'] = True
     kw['status'] = cursor.statusmessage

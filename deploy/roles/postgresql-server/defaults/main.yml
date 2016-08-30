@@ -3,10 +3,10 @@
 install_ppas: True
 
 # Installer URL and executable
-pp_installer_version: 9.4.1.3
-pp_repository: "http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-3.noarch.rpm"
-pp_install_path: 9.4AS
-pp_config_template: "postgresql.conf.94.j2"
+pp_installer_version: 9.5.0.5
+pp_repository: "https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
+pp_install_path: 9.5AS
+pp_config_template: "postgresql.conf.95.j2"
 pp_bin_path: .
 
 # Directory to install from
@@ -30,14 +30,14 @@ pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
 # Core server config
-pp_datadir: /opt/PostgresPlus/data
-pp_prefix: /opt/PostgresPlus/
+pp_datadir: /opt/PostgresPlus/9.5AS/data
+pp_prefix: /opt/PostgresPlus
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: ppas-9.4
+pp_servicename: ppas-9.5
 pp_serviceaccount: postgres
 pp_workload_profile: oltp
-pp_xlogdir: /opt/PostgresPlus/
+pp_xlogdir: /opt/PostgresPlus/9.5AS
 
 ## PostgreSQL Configuration Settings
 
