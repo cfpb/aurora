@@ -88,7 +88,6 @@
         name: "{{ item }}"
         state: stopped
       with_items: "{{ pp_support_services }}"
-<<<<<<< HEAD
       when: install_edb
 
     # Only needed for local testing
@@ -157,8 +156,6 @@
         line: 'local\1md5'
       notify: restart postgres
     - role: postgresql-server
-=======
->>>>>>> 62663fb... Use variables for old and new ppas services.
 
     - name: Ensure that the new database process is started
       become: yes
@@ -268,3 +265,4 @@
   roles:
     - role: postgresql-server
     - role: postgresql-server-config
+
