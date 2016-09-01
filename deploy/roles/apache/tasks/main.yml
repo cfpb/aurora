@@ -5,7 +5,7 @@
     url: "{{ apache_24_repo }}"
     dest: /etc/yum.repos.d
     mode: 644
-  when: apache_24_repo is defined and not 'production' in group_names
+  when: apache_24_repo and not 'production' in group_names
 
 - name: Install Apache
   yum:
