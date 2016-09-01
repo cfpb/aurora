@@ -17,7 +17,7 @@
         version: "{{ git_environment }}"
       when: enclave_proxy_repo is defined
       notify:
-        - restart apache graceful
+        - graceful apache
 
     - name: Ensure permissions are correct
       file:
