@@ -2,7 +2,7 @@
 - hosts: proxy_server
   sudo: yes
   handlers:
-    - include: roles/apache/handlers/main.yml
+    - include: roles/shared/handlers/main.yml
   tasks:
     - name: Install git
       yum:
@@ -17,7 +17,7 @@
         version: "{{ git_environment }}"
       when: enclave_proxy_repo is defined
       notify:
-        - restart apache
+        - restart apache graceful
 
     - name: Ensure permissions are correct
       file:

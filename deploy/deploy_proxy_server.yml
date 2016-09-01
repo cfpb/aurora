@@ -63,7 +63,7 @@
 
     - name: Configure Apache as a proxy
       template:
-        dest: "/etc/httpd/conf.d/enclave_proxy.conf"
+        dest: "{{ apache_config_dir }}/enclave_proxy.conf"
         src: templates/enclave_proxy.conf
         owner: apache
         group: apache
