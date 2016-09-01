@@ -34,5 +34,5 @@
     name: "{{ pp_servicename }}"
     state: restarted
 
-- name: graceful apache
+- name: restart apache
   shell: "service {{ apache_service }} graceful"
