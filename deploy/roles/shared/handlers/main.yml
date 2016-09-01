@@ -35,5 +35,4 @@
     state: restarted
 
 - name: graceful apache
-  command:
-    name: "service {{ httpd_service }} graceful"
+  command: "service {{ httpd_service }} graceful"
