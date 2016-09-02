@@ -35,4 +35,4 @@
     state: restarted
 
 - name: restart apache
-  shell: "service {{ apache_service }} restart"
+  shell: "service httpd24-httpd restart"
