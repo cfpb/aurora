@@ -70,6 +70,8 @@ marathon_mesos_user: "mesagent"
 # Framework authentication credentials
 marathon_mesos_principal: "username"
 marathon_mesos_secret: "password"
+marathon_role: "marathon"
+marathon_webui_url: "https://marathon.test.dev"
 marathon_secret_file: "/etc/marathon_secret"
 
 # Artifact store
