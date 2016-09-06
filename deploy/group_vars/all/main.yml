@@ -114,6 +114,8 @@ ssl_cert_file: /etc/httpd/ssl/apache.crt
 ssl_key_file: /etc/httpd/ssl/apache.key
 ssl_chain_file: /etc/httpd/ssl/apache.crt
 
+apache_service: httpd24-httpd
+
 nginx_ssl_cert_file: /etc/nginx/ssl/nginx.crt
 nginx_ssl_key_file: /etc/nginx/ssl/nginx.key
 nginx_ssl_protocols: "TLSv1.2 TLSv1.1"

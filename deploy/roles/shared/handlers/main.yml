@@ -33,3 +33,6 @@
   service:
     name: "{{ pp_servicename }}"
     state: restarted
+
+- name: restart apache
+  shell: "service httpd24-httpd restart"
