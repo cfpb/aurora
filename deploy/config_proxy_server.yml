@@ -3,6 +3,7 @@
   sudo: yes
   handlers:
     - include: roles/shared/handlers/main.yml
+      static: yes
   tasks:
     - name: Install git
       yum:
