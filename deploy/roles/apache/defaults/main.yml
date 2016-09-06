@@ -1,0 +1,40 @@
+---
+apache_24_repo: "http://repos.fedorapeople.org/repos/jkaluza/httpd24/epel-httpd24.repo"
+apache_packages:
+  - httpd24-httpd
+  - httpd24-httpd-devel
+  - httpd24-mod_ssl
+  - httpd24-mod_ldap
+  - http://cbs.centos.org/kojifiles/packages/httpd24-mod_auth_kerb/5.4/30.el6/x86_64/httpd24-mod_auth_kerb-5.4-30.el6.x86_64.rpm
+  - openssh
+  - php
+  - php-common
+  - php-ldap
+
+apache_disabled_services:
+  - httpd
+
+apache_config_path: /opt/rh/httpd24/root/etc/httpd
+apache_config_dir: /opt/rh/httpd24/root/etc/httpd/conf.d
+
+# Apache configuration
+apache_server_tokens: "Full"
+apache_default_listen: 80
+apache_timeout: 60
+apache_server_root: "/opt/rh/httpd24/root/etc/httpd"
+apache_keepalive: On
+apache_max_keepalive_requests: 100
+apache_keepalive_timeout: 5
+apache_server_name: "{{ ansible_hostname }}:80"
+apache_document_root: "/opt/rh/httpd24/root/var/www/html"
+apache_document_parent: "/opt/rh/httpd24/root/var/www"
+apache_default_document_root: "/opt/rh/httpd24/root/var/html"
+apache_log_formats:
+  - LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined
+  - LogFormat "%h %l %u %t \"%r\" %>s %b" common
+apache_custom_logs:
+  - CustomLog "logs/access_log" combined
+apache_trace_enable: On
+apache_log_level:  warn
+
+apache_error_log: logs/error_log

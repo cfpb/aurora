@@ -22,7 +22,7 @@
     - redis
     - maven
     - {role: intellij, when: "not 'production' in group_names"}
-    #- julia
+    # - julia
 
 # Install development packages
 - hosts: analytics_terminal

@@ -1,17 +1,32 @@
 # main.yml - Apache installation and setup
 ---
+- name: Add Apache 2.4 Repository
+  get_url:
+    url: "{{ apache_24_repo }}"
+    dest: /etc/yum.repos.d
+    mode: 644
+  when: not custom_repo
+
 - name: Install Apache
   yum:
     name: "{{ item }}"
     state: present
-  with_items:
-    - httpd
-    - httpd-devel
-    - mod_ssl
-    - openssh
-    - php
-    - php-common
-    - php-ldap
+  with_items: apache_packages
+
+- name: Configure global Apache settings
+  template:
+    src: httpd.conf.j2
+    dest: "{{ apache_config_path }}"
+    mode: 644
+    owner: apache
+    group: apache
+
+- name: Ensure other processes are not running
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items: "{{ apache_disabled_services }}"
 
 # We ignore errors here, since the actual host configuration
 # will happen elsewhere in the playbook, so error states should
@@ -19,7 +34,7 @@
 # error if things still aren't correct.
 - name: Ensure Apache is started and enabled on boot.
   service:
-    name: httpd
+    name: "{{ apache_service }}"
     state: started
     enabled: yes
   failed_when: False
