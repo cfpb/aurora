@@ -14,6 +14,9 @@
   file: 
     state: directory
     path: "{{ neo4j_dir }}"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
+    recurse: yes
     mode: 0755
   tags:
   - neo4j
@@ -32,7 +35,17 @@
     copy: no
   tags:
   - neo4j
-  
+
+- name: Change neo4j direcotory permissions
+  file:
+    state: directory
+    path: "{{ neo4j_dir }}"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
+    recurse: yes 
+  tags:
+  - neo4j
+
 - name: Open port for neo4j in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ neo4j_port }} -j ACCEPT"
   when: iptables_config
@@ -45,11 +58,25 @@
   tags:
   - neo4j 
 
-
 - name: Ensure neo4j environment is set
   template:
     src: neo4j-env.sh.j2
     dest: /etc/profile.d/neo4j.sh
+  tags:
+  - neo4j
+
+- name: Set neo4j configuration file
+  template:
+    src: neo4j.conf.j2
+    dest: "{{ neo4j_conf_dir }}/neo4j.conf"
+  tags:
+  - neo4j
+
+- name: Ensure neo4j path
+  lineinfile:
+    dest: /etc/rsyslog.conf 
+    line: neo4j.*                                                 /var/log/neo4j
+    insertafter: local7.*                                       /var/log/boot.log 
   tags:
   - neo4j
 
