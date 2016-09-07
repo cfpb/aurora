@@ -4,7 +4,7 @@ go_server_port: 8153
 gocd_agent_package_url: https://download.go.cd/binaries/16.9.0-4001/rpm/go-agent-16.9.0-4001.noarch.rpm
 gocd_agent_package_name: go-agent-16.9.0-4001.noarch.rpm
 gocd_agent_package_path: /tmp
-gocd_agent_checksum: "b010587fa78ffa8fee31a53af7d58c2c3fdb7a01"
+gocd_agent_checksum: "7ab77bb44193868f98bec664e6110bb2ac801487"
 gocd_agent_work_dir: /var/lib/go-agent
 gocd_agent_mem: "128m"
 gocd_agent_max_mem: "256m"

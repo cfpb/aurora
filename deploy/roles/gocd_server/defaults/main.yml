@@ -2,7 +2,7 @@
 gocd_server_package_url: https://download.go.cd/binaries/16.9.0-4001/rpm/go-server-16.9.0-4001.noarch.rpm
 gocd_server_package_path: /tmp
 gocd_server_package_name: go-server-16.9.0-4001.noarch.rpm
-gocd_server_checksum: "d7c5172b5b149d8b01c983bc8f64677779158449"
+gocd_server_checksum: "e804cc851e90144835ac715c0b41174c011f4d79"
 gocd_server_work_dir: /var/lib/go-server
 gocd_server_port: 8153
 gocd_server_ssl_port: 8154
