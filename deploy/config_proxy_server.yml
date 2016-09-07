@@ -18,8 +18,7 @@
         force: yes
         version: "{{ git_environment }}"
       when: enclave_proxy_repo is defined
-      notify:
-        - graceful restart apache
+      register: gitresult
 
     - name: Ensure permissions are correct
       file:
@@ -29,3 +28,20 @@
         mode: 0600
         recurse: yes
         state: directory
+
+    - name: Test configuration
+      command: "service httpd24-httpd configtest"
+      register: apache_result
+      ignore_errors: yes
+
+    - name: Reset git commit if the test failed
+      git:
+        repo: "{{ enclave_proxy_repo }}"
+        dest: "/srv/www/enclave_proxy/repo/"
+        force: yes
+        version: "{{ gitresult.before }}"
+      when: enclave_proxy_repo is defined and apache_result.rc != 0
+
+    - name: Gracefully restart apache
+      command: "service httpd24-httpd graceful"
+      when: apache_result.rc == 0
