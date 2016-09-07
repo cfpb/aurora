@@ -29,10 +29,9 @@
         state: directory
 
     - name: Test configuration
-      command: httpd24-httpd -t
+      command: "service httpd24-httpd configtest"
       register: apache_result
 
     - name: Gracefully restart apache
       command: "service httpd24-httpd graceful"
       when: apache_result.rc == 0
-  
