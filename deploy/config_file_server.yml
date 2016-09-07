@@ -4,7 +4,8 @@
 # without extensive modification.
 ---
 - hosts: file_server_2
-  sudo: yes
+  become: yes
+  become_method: sudo
 
   tasks:
     - name: Probe for other file server

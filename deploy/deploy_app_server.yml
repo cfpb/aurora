@@ -1,6 +1,7 @@
 ---
 - hosts: app_server
   become: yes
+  become_method: sudo
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
@@ -24,6 +25,7 @@
 # Install development packages
 - hosts: app_server
   become: yes
+  become_method: sudo
   tasks:
     - name: Install development packages
       yum:
@@ -72,6 +74,7 @@
 
 - hosts: app_server
   become: yes
+  become_method: sudo
   roles:
     - jdk
     - revolution-r
@@ -82,6 +85,7 @@
 
 - hosts: app_server
   become: yes
+  become_method: sudo
   tasks:
     - name: Open port range for app services
       command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 30000:31000 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
