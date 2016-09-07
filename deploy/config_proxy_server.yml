@@ -32,6 +32,7 @@
     - name: Test configuration
       command: "service httpd24-httpd configtest"
       register: apache_result
+      ignore_errors: yes
 
     - name: Reset git commit if the test failed
       git:
