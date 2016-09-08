@@ -36,7 +36,7 @@
   tags:
   - neo4j
 
-- name: Change neo4j direcotory permissions
+- name: Change neo4j directory permissions
   file:
     state: directory
     path: "{{ neo4j_dir }}"
@@ -62,6 +62,7 @@
   template:
     src: neo4j-env.sh.j2
     dest: /etc/profile.d/neo4j.sh
+    mode: 0644
   tags:
   - neo4j
 
@@ -69,6 +70,9 @@
   template:
     src: neo4j.conf.j2
     dest: "{{ neo4j_conf_dir }}/neo4j.conf"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
+    mode: 0640
   tags:
   - neo4j
 

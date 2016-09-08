@@ -4,7 +4,7 @@ neo4j_port:                                             7474
 neo4j_http_port:                                        7473
 neo4j_user:                                             neo4j
 neo4j_user_shell:                                       "/bin/false"
-neo4j_user_groups:                                      []
+neo4j_user_groups:                                      certificates
 neo4j_url:                                              http://dist.neo4j.org/neo4j-community-{{ neo4j_version }}-unix.tar.gz
 neo4j_tarball:                                          neo4j-community-{{ neo4j_version }}-unix.tar.gz
 neo4j_dir:                                              /opt/neo4j
@@ -14,18 +14,23 @@ neo4j_nofile_value:                                     40000
 neo4j_update_limits:                                    true
 neo4j_log_dir:                                          /var/log/neo4j
 
+neo4j_dbms_connector_http_type:                         HTTP
+neo4j_dbms_connector_http_enabled:                      true
+neo4j_dbms_connector_http_address:                      localhost:7473
+
 neo4j_bolt_connector:                                   Required
 neo4j_dbms_connector_https_encryption:                  TLS
 neo4j_dbms_connector_https_type:                        HTTP
-neo4j_dbms_connector_https_enabled:                     true
+neo4j_dbms_connector_https_enabled:                     false
 neo4j_dbms_connector_https_address:                     localhost:7473
 neo4j_dbms_directories_certificates:                    []
 neo4j_dbms_security_auth_enabled:                       true 
 neo4j_dbms_security_allow_csv_import_from_file_urls:    true 
 neo4j_dbms_directories_import:                          import
-neo4j_dbms_logs_http_enabled:                           true 
+neo4j_dbms_logs_http_enabled:                           false
 neo4j_dbms_shell_enabled:                               false
+neo4j_dbms_transaction_timeout:                         60000
 
 neo4j_browser_allow_outgoing_connections:               true 
-neo4j_browser_credential_timeout:                       30m
-neo4j_browser_retain_connection_credentials:            false
+neo4j_browser_credential_timeout:                       0m
+neo4j_browser_retain_connection_credentials:            true
