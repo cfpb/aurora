@@ -29,6 +29,9 @@ elk ansible_ssh_host=10.0.1.16 es_http_enabled=True
 [app_server]
 app ansible_ssh_host=10.0.1.17
 
+[neo4j_server]
+neo4j1 ansible_ssh_host=10.0.1.37
+
 ; Research Component
 
 [research_ancillary_services]

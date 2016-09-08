@@ -517,7 +517,7 @@ Vagrant.configure(2) do |config|
   end
 
   # Neo4J Server
-  config.vm.define :neo4j_server do |neo4j_config|
+  config.vm.define :neo4j1 do |neo4j_config|
     neo4j_config.vm.box = "bento/centos-6.7"
     neo4j_config.vm.host_name = "neo4j.test.dev"
 
