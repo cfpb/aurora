@@ -55,6 +55,7 @@ auth_passwd_file /etc/shiny-server/passwd;
 # Define a default admin interface to be run on port 4151. {.pro}
 admin 4151 {
   # Only permit the user named `admin` to access the admin interface.
+  required_user {{ shiny_required_users }};
   required_group {{ restricted_group_name }};
 }
 {% endif %}
