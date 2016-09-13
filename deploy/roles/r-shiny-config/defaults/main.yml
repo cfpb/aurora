@@ -2,3 +2,5 @@
 r_shiny_pro: False
 shiny_http_headers: "X-EXAMPLE"
 shiny_required_users: "admin"
+shiny_auth_proxy: False
+shiny_auth_proxy_header: ""
