@@ -22,7 +22,7 @@
     - redis
     - maven
     - scala
-    - {role: intellij, when: "not 'production' in group_names"}
+    - intellij
     # - julia
 
 # Install development packages
