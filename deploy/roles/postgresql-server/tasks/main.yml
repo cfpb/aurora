@@ -73,6 +73,15 @@
   tags:
     - postgresql-server
 
+- name: Ensure the install directory exists
+  file:
+    path: "{{ pp_prefix }}/{{ pp_install_path }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0777
+
 - name: Ensure the data directory exists
   file:
     path: "{{ pp_datadir }}"
