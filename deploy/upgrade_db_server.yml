@@ -122,6 +122,9 @@
         that: '"Clusters are compatible" in check_result.stdout'
 
     - name: Run pg_upgrade
+      become: yes
+      become_method: sudo
+      become_user: "{{ pp_serviceaccount }}"
       command: >
           sudo su - {{ pp_serviceaccount }} -c
           "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
