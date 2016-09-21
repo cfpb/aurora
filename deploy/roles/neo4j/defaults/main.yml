@@ -3,16 +3,16 @@ neo4j_version:                                          3.0.4
 neo4j_port:                                             7474
 neo4j_http_port:                                        7473
 neo4j_user:                                             neo4j
-neo4j_user_shell:                                       "/bin/false"
-neo4j_user_groups:                                      []
+neo4j_user_shell:                                       "/bin/bash"
+neo4j_user_groups:                                      neo4j
 neo4j_url:                                              http://dist.neo4j.org/neo4j-community-{{ neo4j_version }}-unix.tar.gz
 neo4j_tarball:                                          neo4j-community-{{ neo4j_version }}-unix.tar.gz
 neo4j_dir:                                              /opt/neo4j
+neo4j_home_dir:                                         /opt/neo4j/neo4j-community-3.0.4
 neo4j_main_dir:                                         /opt/neo4j/neo4j-community-3.0.4/bin
 neo4j_conf_dir:                                         /opt/neo4j/neo4j-community-3.0.4/conf
 neo4j_nofile_value:                                     40000
 neo4j_update_limits:                                    true
-neo4j_log_dir:                                          /var/log/neo4j
 
 neo4j_dbms_connector_http_type:                         HTTP
 neo4j_dbms_connector_http_enabled:                      true
@@ -34,3 +34,9 @@ neo4j_dbms_transaction_timeout:                         60000
 neo4j_browser_allow_outgoing_connections:               true 
 neo4j_browser_credential_timeout:                       0m
 neo4j_browser_retain_connection_credentials:            true
+
+
+neo4j_pid_dir:                                          /opt/neo4j/neo4j-community-3.0.4/bin/run
+neo4j_log_dir:                                          /opt/neo4j/neo4j-community-3.0.4/bin/logs
+neo4j_bin_dir:                                          /usr/bin/neo4j
+
