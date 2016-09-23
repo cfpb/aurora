@@ -99,6 +99,15 @@
     group: "{{ pp_serviceaccount }}"
     mode: 0777
 
+- name: Ensure the log directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
+    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+
 - name: Ensure the data directory exists
   file:
     path: "{{ pp_datadir }}"

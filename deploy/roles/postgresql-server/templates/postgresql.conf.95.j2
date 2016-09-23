@@ -81,7 +81,6 @@ ssl = {{ pp_ssl_enable }}				# (change requires restart)
 ssl_ciphers = '{{ pp_ssl_ciphers }}' # allowed SSL ciphers (change requires restart)
 ssl_prefer_server_ciphers = {{ pp_prefer_server_cyphers }}		# (change requires restart)
 ssl_ecdh_curve = '{{ pp_ssl_ecdh_curve }}'		# (change requires restart)
-ssl_renegotiation_limit = {{ pp_ssl_renegotiation_limit }}	# amount of data between renegotiations
 ssl_cert_file = '{{ pp_ssl_cert_file }}'		# (change requires restart)
 ssl_key_file = '{{ pp_ssl_key_file }}'		# (change requires restart)
 ssl_ca_file = '{{ pp_ssl_ca_file }}'			# (change requires restart)
