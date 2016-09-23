@@ -76,21 +76,19 @@
 - name: Ensure the install directory exists
   file:
     path: "{{ pp_prefix }}/{{ pp_install_path }}"
-    recurse: yes
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
-    mode: 0777
+    mode: 0755
   when: install_ppas
 
 - name: Ensure the log directory exists
   file:
     path: "{{ pp_xlogdir }}"
-    recurse: yes
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
-    mode: 0777
+    mode: 0755
 
 - name: Ensure the data directory exists
   file:
