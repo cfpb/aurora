@@ -10,9 +10,7 @@
       service:
         name: "{{ item }}"
         state: stopped
-      with_items:
-        - "{{ ppas_old_service_name }}"
-        - pgbouncer
+      with_items: "{{ pp_old_services }}"
 
 - hosts: db_server
   become: yes
@@ -24,9 +22,7 @@
       service:
         name: "{{ item }}"
         state: stopped
-      with_items:
-        - ppas-agent-9.5
-        - pgbouncer-1.6
+      with_items: "{{ pp_support_services }}"
 
     - name: Ensure that the new database process is started
       service:
