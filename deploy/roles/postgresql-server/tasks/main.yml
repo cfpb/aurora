@@ -81,6 +81,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0777
+  when: install_ppas
 
 - name: Ensure the data directory exists
   file:
