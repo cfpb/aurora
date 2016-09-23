@@ -106,7 +106,7 @@
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
-    mode: 0700
+    mode: 0777
 
 - name: Ensure the data directory exists
   file:
