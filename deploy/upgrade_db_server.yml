@@ -155,6 +155,7 @@
         backrefs: yes
         line: 'local\1md5'
       notify: restart postgres
+    - role: postgresql-server
 
     - name: Ensure that the new database process is started
       become: yes
