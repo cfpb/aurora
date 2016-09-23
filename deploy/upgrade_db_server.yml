@@ -20,6 +20,14 @@
   roles:
     - role: postgresql-server
   tasks:
+    - name: Ensure that auxillary services are stopped
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items:
+        - ppas-agent-9.5
+        - pgbouncer-1.6
+
     - name: Ensure that the new database process is started
       service:
         name: "{{ pp_servicename }}"
