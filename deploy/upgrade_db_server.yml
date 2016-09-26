@@ -15,9 +15,11 @@
 - hosts: db_server
   become: yes
   become_method: sudo
+  vars:
+    pp_upgrade: True
   roles:
     - role: postgresql-server
-  tasks:
+  post_tasks:
     - name: Ensure that auxillary services are stopped
       service:
         name: "{{ item }}"
@@ -59,9 +61,9 @@
         state: stopped
 
     - name: Run pg_upgrade consistency check
-      become: yes
-      become_method: sudo
-      become_user: "{{ pp_serviceaccount }}"
+      #become: yes
+      #become_method: sudo
+      #become_user: "{{ pp_serviceaccount }}"
       command: >
                {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
                   --old-datadir {{ pp_old_datadir }}
@@ -75,9 +77,9 @@
         - PGPASSWORD: "{{ pp_superpassword }}"
 
     - name: Run pg_upgrade
-      become: yes
-      become_method: sudo
-      become_user: "{{ pp_serviceaccount }}"
+      #become: yes
+      #become_method: sudo
+      #become_user: "{{ pp_serviceaccount }}"
       command: >
                {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
                   --old-datadir {{ pp_old_datadir }}
@@ -93,5 +95,4 @@
   become: yes
   become_method: sudo
   roles:
-    - role: postgresql-server
     - role: postgresql-server-config

@@ -70,7 +70,7 @@
     creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
   notify:
     - restart postgres
-    when: pp_install or pp_upgrade
+  when: pp_install or pp_upgrade
   tags:
     - postgresql-server
 
@@ -165,9 +165,15 @@
   become: yes
   become_method: sudo
   become_user: "{{ pp_serviceaccount }}"
-  shell: "cat {{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
-  args:
-    creates: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+  copy:
+    src: "{{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+    remote_src: yes
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+  #shell: "cat {{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+  #args:
+  #  creates: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
 
 - name: Set ownership of environment file
   file:
@@ -183,41 +189,21 @@
   yum:
     name: "{{ item }}"
     state: present
-  with_items: pp_extensions
+  with_items: "{{ pp_extensions }}"
   when: install_ppas
   tags:
     - postgresql-server
 
-- name: Create postgres cluster
-  become: yes
-  become_method: sudo
-  become_user: "{{ pp_serviceaccount }}"
-  shell: initdb --pgdata "{{ pp_datadir }}"
-  when: pp_install or pp_upgrade
-  tags:
-    - postgresql-server
-
-- name: Ensure new PPAS is stopoped
-  service:
-    name: "{{ pp_servicename }}"
-    state: stopped
-  when: pp_upgrade
-  tags:
-    - postgresql-server
-
-- name: Ensure old PPAS is stopped
-  service:
-    name: "{{ pp_old_servicename }}"
-    state: stopped
-  when: pp_upgrade
-  tags:
-    - postgresql-server
-
-- name: Run pg_upgrade
-  shell: "pg_upgrade --old-datadir {{ pp_old_datadir }} --new-datadir {{ pp_datadir }} --user {{ pp_serviceaccount }} --old-bindir {{ pp_bin_path }} --new-bindir {{ pp_old_bin_path }} --old-port {{ pp_old_serverport }} --new-port {{ pp_serverport }}"
-  when: pp_upgrade
-  tags:
-    - postgresql-server
+#- name: Create postgres cluster
+  #become: yes
+  #become_method: sudo
+  #become_user: "{{ pp_serviceaccount }}"
+#  sudo: yes
+#  remote_user: "{{ pp_serviceaccount }}"
+#  shell: "initdb --pgdata {{ pp_datadir }}"
+#  when: pp_install or pp_upgrade
+#  tags:
+#    - postgresql-server
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
