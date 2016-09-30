@@ -28,6 +28,12 @@
     dest: "{{stata_install_directory}}/install_stata.exp"
     mode: 0755
 
+- name: Copy the Stata config file
+  template:
+    src: sysprofile.do.j2 
+    dest: "{{ stata_profile_dir }}/sysprofile.do"
+    mode: 0755 
+
 - name: Run stata install expect script
   shell: "./install_stata.exp"
   args:
