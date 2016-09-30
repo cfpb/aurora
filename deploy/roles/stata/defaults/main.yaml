@@ -20,4 +20,3 @@ stata_printer:
     - 806_Sharp5001 ps "lpr -P 806_Sharp5001 @"
     - 831_back_Lexmark410 ps "lpr -P 831_back_Lexmark410 @"
     - 848_Konica754 ps "lpr -P 848_Konica754 @"
-

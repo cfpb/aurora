@@ -32,7 +32,7 @@
   template:
     src: sysprofile.do.j2 
     dest: "{{ stata_profile_dir }}/sysprofile.do"
-    mode: 0755 
+    mode: 0644
 
 - name: Run stata install expect script
   shell: "./install_stata.exp"
