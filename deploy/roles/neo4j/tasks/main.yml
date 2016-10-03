@@ -149,6 +149,14 @@
   tags:
   - neo4j
 
+- name: copy neo4j upstart script to /etc/init/neo4j.conf 
+  template: 
+    src: neo4j.upstart.j2 
+    dest: /etc/init/neo4j.conf 
+    mode: 0755
+  tags:
+  - neo4j 
+
 - name: set open fd soft and hard limit for Neo4j
   sudo: yes
   lineinfile: 

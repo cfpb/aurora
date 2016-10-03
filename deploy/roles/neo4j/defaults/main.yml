@@ -18,7 +18,7 @@ neo4j_dbms_connector_http_type:                         HTTP
 neo4j_dbms_connector_http_enabled:                      true
 neo4j_dbms_connector_http_address:                      localhost:7473
 
-neo4j_bolt_connector:                                   Required
+neo4j_bolt_connector_tls_level:                         REQUIRED
 neo4j_dbms_connector_https_encryption:                  TLS
 neo4j_dbms_connector_https_type:                        HTTP
 neo4j_dbms_connector_https_enabled:                     false
@@ -36,7 +36,7 @@ neo4j_browser_credential_timeout:                       0m
 neo4j_browser_retain_connection_credentials:            true
 
 
-neo4j_pid_dir:                                          /opt/neo4j/neo4j-community-3.0.4/bin/run
-neo4j_log_dir:                                          /opt/neo4j/neo4j-community-3.0.4/bin/logs
+neo4j_pid_dir:                                          /opt/neo4j/neo4j-community-3.0.4/run
+neo4j_log_dir:                                          /opt/neo4j/neo4j-community-3.0.4/logs
 neo4j_bin_dir:                                          /usr/bin/neo4j
 
