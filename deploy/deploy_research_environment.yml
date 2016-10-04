@@ -4,6 +4,7 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - stattransfer
 
 - hosts: research_ancillary_services
   sudo: yes
@@ -35,12 +36,14 @@
     - gauss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_stata
   sudo: yes
   roles:
     - stata
     - odbc
+    - stattransfer
 
 - hosts: research_python
   sudo: yes
@@ -59,6 +62,7 @@
     - pycharm
     - odbc
     - gocd
+    - stattransfer
   tasks:
     - name: Install Python RPM dependencies
       yum:
@@ -87,6 +91,7 @@
     # - sas
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_spss
   sudo: yes
@@ -94,6 +99,7 @@
     # - spss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_matlab
   sudo: yes
@@ -101,3 +107,4 @@
     # - matlab
     - odbc
     - gocd
+    - stattransfer
