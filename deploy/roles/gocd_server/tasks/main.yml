@@ -33,6 +33,13 @@
   yum:
     name: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
     state: present
+  when: not gocd_upgrade
+  notify:
+    - restart go-server
+
+- name: Upgrade GoCD Server
+  command: "rpm -U {{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+  when: gocd_upgrade
   notify:
     - restart go-server
 
