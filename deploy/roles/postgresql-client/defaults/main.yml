@@ -1,8 +1,10 @@
 ---
-postgres_install_dir: /usr/pgsql-9.4
+postgres_repository_url: "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
+postgres_repository_name: pgdg95
+postgres_install_dir: /usr/pgsql-9.5
 
 postgres_packages:
-  - postgresql94
-  - postgresql94-devel
+  - postgresql95
+  - postgresql95-devel
 
 clean_postgresql: False
