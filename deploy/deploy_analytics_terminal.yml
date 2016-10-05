@@ -1,6 +1,7 @@
 ---
 - hosts: analytics_terminal
   become: yes
+  become_method: sudo
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
@@ -27,6 +28,7 @@
 # Install development packages
 - hosts: analytics_terminal
   become: yes
+  become_method: sudo
   tasks:
     - name: Install packages development packages
       yum:
@@ -75,6 +77,7 @@
 
 - hosts: analytics_terminal
   become: yes
+  become_method: sudo
   roles:
     - eod
     - r
@@ -89,6 +92,7 @@
 
 - hosts: analytics_terminal
   become: yes
+  become_method: sudo
   tasks:
     - name: Open port range for app prototyping
       command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 8000:8100 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"

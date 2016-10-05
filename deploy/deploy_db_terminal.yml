@@ -1,7 +1,8 @@
 # deploy_admin_terminal.yml
 ---
 - hosts: db_terminal
-  sudo: yes
+  become: yes
+  become_method: sudo
 
   roles:
     - umask

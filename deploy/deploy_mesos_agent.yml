@@ -3,6 +3,7 @@
 ---
 - hosts: mesos_agent
   become: yes
+  become_method: sudo
   roles:
     - common
     - {role: iptables, when: "iptables_config"}
@@ -17,6 +18,7 @@
 
 - hosts: mesos_agent
   become: yes
+  become_method: sudo
   tasks:
     - name: Activate Julia repo
       get_url:
@@ -36,6 +38,7 @@
 
 - hosts: mesos_agent
   become: yes
+  become_method: sudo
   roles:
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
@@ -51,6 +54,7 @@
 
 - hosts: mesos_agent
   become: yes
+  become_method: sudo
   tasks:
     - name: Turn off Shiny Server
       service:
