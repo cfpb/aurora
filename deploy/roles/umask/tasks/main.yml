@@ -1,3 +1,8 @@
+- name: Install libselinux-python for Ansible
+  yum:
+    name: libselinux-python
+    state: present
+
 - name: Ensure umask is correct
   become: no
   lineinfile:

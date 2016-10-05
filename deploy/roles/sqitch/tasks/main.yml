@@ -8,6 +8,8 @@
     - perl-CPAN
     #- perl-DBD-Pg
     - "@Development Tools"
+  tags:
+    - sqitch
 
 - name: Ensure umask is correct
   sudo: no
@@ -16,16 +18,22 @@
     line: umask 0022
     regexp: ^(.*)umask(.*)$
     state: present
+  tags:
+    - sqitch
 
 - name: Get CPAN Minus itself
   get_url:
     url: http://cpanmin.us
     dest: /tmp/cpanminus.pl
+  tags:
+    - sqitch
 
 - name: Run with perl
   shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
   args:
     creates: /usr/local/bin/cpanm
+  tags:
+    - sqitch
 
 - name: Get sqitch
   shell: cpanm --notest --sudo App::Sqitch
@@ -33,10 +41,15 @@
     creates: /usr/local/bin/sqitch
   environment:
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+  tags:
+    - sqitch
 
 - name: Get pg engine
   shell: cpanm --notest --sudo DBD::Pg
   register: pg_engine
   changed_when: '"is up to date" not in pg_engine.stdout'
   environment:
-    PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+    PATH: "{{ postgres_install_dir }}/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+  when: postgres_install_dir is defined
+  tags:
+    - sqitch
