@@ -2,7 +2,8 @@
 # that allows external access to the data enclave.
 ---
 - hosts: nginx_server
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
