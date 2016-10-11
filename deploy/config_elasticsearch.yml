@@ -1,18 +1,21 @@
 ---
 - hosts: elasticsearch
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - elasticsearch-config
 
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - elasticsearch-config
     - logstash-config
     - kibana-config
 
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   handlers:
     - include: roles/shared/handlers/main.yml
   tasks:

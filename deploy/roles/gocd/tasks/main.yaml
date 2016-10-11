@@ -17,7 +17,7 @@
 #    checksum: "sha1:{{ gocd_agent_checksum }}"
 #    validate_certs: False
 
-- name: Download GoCD Server RPM
+- name: Download GoCD Agent RPM
   shell: "curl -o {{ gocd_agent_package_path }}/{{ gocd_agent_package_name }} {{ gocd_agent_package_url }}"
   args:
     creates: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"

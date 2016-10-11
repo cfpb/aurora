@@ -1,12 +1,14 @@
 ---
 - hosts: research_environment
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
 
 - hosts: research_ancillary_services
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - devtools
     - emacs
@@ -25,25 +27,30 @@
       when: custom_repo
 
 - hosts: research_eod
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
-    - eod
 
 - hosts: research_gauss
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - gauss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_stata
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - stata
     - odbc
+    - stattransfer
 
 - hosts: research_python
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - devtools
     - {role: python, when: "custom_repo"}
@@ -59,6 +66,7 @@
     - pycharm
     - odbc
     - gocd
+    - stattransfer
   tasks:
     - name: Install Python RPM dependencies
       yum:
@@ -82,22 +90,28 @@
       with_items: python3_packages
 
 - hosts: research_sas
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     # - sas
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_spss
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     # - spss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_matlab
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     # - matlab
     - odbc
     - gocd
+    - stattransfer

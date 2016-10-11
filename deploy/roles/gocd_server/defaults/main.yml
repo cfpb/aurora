@@ -1,8 +1,8 @@
 ---
-gocd_server_package_url: https://download.go.cd/binaries/16.3.0-3183/rpm/go-server-16.3.0-3183.noarch.rpm
+gocd_server_package_url: https://download.go.cd/binaries/16.10.0-4131/rpm/go-server-16.10.0-4131.noarch.rpm
 gocd_server_package_path: /tmp
-gocd_server_package_name: go-server-16.3.0-3183.noarch.rpm
-gocd_server_checksum: "d7c5172b5b149d8b01c983bc8f64677779158449"
+gocd_server_package_name: go-server-16.10.0-4131.noarch.rpm
+gocd_server_checksum: "a65e350ae8a30e86a5371b38af60874e307062d1"
 gocd_server_work_dir: /var/lib/go-server
 gocd_server_port: 8153
 gocd_server_ssl_port: 8154
@@ -11,3 +11,4 @@ gocd_server_max_mem: "512m"
 gocd_server_min_perm_gen: "128m"
 gocd_server_max_perm_gen: "256m"
 gocd_admin_password: W6ph5Mm5Pz8GgiULbPgzG37mj9g= # "password"
+gocd_upgrade: False

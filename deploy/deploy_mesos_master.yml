@@ -1,7 +1,8 @@
 # deploy_mesos_master.yml
 ---
 - hosts: mesos_master
-  sudo: yes
+  become: yes
+  become_method: sudo
   serial: 1
   max_fail_percentage: 30
   roles:

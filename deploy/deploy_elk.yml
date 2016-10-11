@@ -1,6 +1,7 @@
 ---
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}
@@ -10,7 +11,8 @@
     - elasticsearch
 
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   handlers:
     - include: roles/shared/handlers/main.yml
   pre_tasks:

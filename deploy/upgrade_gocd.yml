@@ -1,0 +1,16 @@
+---
+- hosts: ci_server
+  become: yes
+  become_method: sudo
+  pre_tasks:
+  - name: Download GoCD Server RPM
+    shell: "curl -o {{ gocd_server_package_path }}/{{ gocd_server_package_name }} {{ gocd_server_package_url }}"
+    args:
+      creates: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+  - name: Verify RPM checksum
+    stat:
+      path: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
+      get_md5: False
+    register: gocd_rpm
+    - name: Upgrade GoCD
+      command: "rpm -U {{ gocd_server_package_path }}/{{ gocd_server_package_name }}"

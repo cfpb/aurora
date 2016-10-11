@@ -18,7 +18,7 @@
     dest: "{{ pp_temp_dir }}/"
     owner: "{{ ansible_ssh_user }}"
     group: "{{ ansible_ssh_user }}"
-    mode: 0700
+    mode: 0777
     copy: no
 
 - name: Create configuration file

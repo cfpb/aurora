@@ -7,6 +7,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd_server
+    - gocd
 
 - hosts: ci_agent
   become: yes
@@ -26,6 +27,7 @@
     - ruby
     - sqitch
     - nodejs
+    - maven
     #- julia
 
 - hosts: ci_agent
