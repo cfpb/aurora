@@ -30,7 +30,6 @@
   become: yes
   become_method: sudo
   roles:
-    - eod
 
 - hosts: research_gauss
   become: yes
@@ -39,6 +38,7 @@
     - gauss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_stata
   become: yes
@@ -46,6 +46,7 @@
   roles:
     - stata
     - odbc
+    - stattransfer
 
 - hosts: research_python
   become: yes
@@ -65,6 +66,7 @@
     - pycharm
     - odbc
     - gocd
+    - stattransfer
   tasks:
     - name: Install Python RPM dependencies
       yum:
@@ -94,6 +96,7 @@
     # - sas
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_spss
   become: yes
@@ -102,6 +105,7 @@
     # - spss
     - odbc
     - gocd
+    - stattransfer
 
 - hosts: research_matlab
   become: yes
@@ -110,3 +114,4 @@
     # - matlab
     - odbc
     - gocd
+    - stattransfer
