@@ -4,3 +4,4 @@ shiny_http_headers: "X-EXAMPLE"
 shiny_required_users: "admin"
 shiny_auth_proxy: False
 shiny_auth_proxy_header: ""
+shiny_admin_port: 4151
