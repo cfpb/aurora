@@ -11,10 +11,10 @@ stata_line_two:                     Line 2
 stata_odbc_mgr:                     unixodbc
 stata_processor:                    4
 stata_site:                         "/usr/share/shared_ado"
-stata_profile_dir:                 /usr/local/stata14
+stata_profile_dir:                  /usr/local/stata14
 
 
-stata_printer:  
+stata_printers:  
     - 1019A_HP ps "lpr -P 1019A_HP3015P @"
     - 1006_Konica ps "lpr -P 1006_Konica754 @"
     - 806_Sharp5001 ps "lpr -P 806_Sharp5001 @"
