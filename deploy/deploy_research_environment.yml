@@ -5,7 +5,6 @@
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
 
-
 - hosts: research_ancillary_services
   sudo: yes
   roles:
