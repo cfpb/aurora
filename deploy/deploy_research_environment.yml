@@ -4,7 +4,6 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
-    - stattransfer
 
 
 - hosts: research_ancillary_services
@@ -29,7 +28,6 @@
 - hosts: research_eod
   sudo: yes
   roles:
-    - eod
 
 - hosts: research_gauss
   sudo: yes
