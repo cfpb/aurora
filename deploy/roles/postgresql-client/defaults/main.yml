@@ -1,5 +1,6 @@
 ---
 postgres_repository_url: "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
+postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-95"
 postgres_repository_name: pgdg95
 postgres_install_dir: /usr/pgsql-9.5
 

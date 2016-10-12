@@ -5,6 +5,11 @@
     state: present
   when: not 'production' in group_names
 
+- name: Install postgres repository key
+  rpm_key:
+    key: "{{ postgres_repository_key_url }}"
+    state: present
+
 - name: Ensure older versions are removed
   yum:
     name: postgresql
@@ -17,7 +22,6 @@
   yum:
     name: "{{ item }}"
     state: present
-    disable_gpg_check: yes
   with_items: "{{ postgres_packages }}"
 
 - name: Ensure other libraries can see header files
