@@ -194,3 +194,7 @@
     state: present
     insertafter: EOF
 
+- name: start neo4j 
+  shell: "start neo4j"
+  tags:
+  - neo4j
