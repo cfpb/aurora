@@ -149,10 +149,10 @@
   tags:
   - neo4j
 
-- name: copy neo4j upstart script to /etc/init/neo4j.conf 
+- name: copy neo4j upstart script to /etc/init/neo4j.conf
   template: 
     src: neo4j.upstart.j2 
-    dest: /etc/init/neo4j.conf 
+    dest: /etc/init/neo4j.conf
     mode: 0644
   tags:
   - neo4j 
