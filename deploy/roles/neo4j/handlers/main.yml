@@ -1,0 +1,5 @@
+# main.yml
+---
+- name: restart neo4j
+  command: restart neo4j
+
