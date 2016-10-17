@@ -13,10 +13,11 @@
 
 - name: Ensure older versions are removed
   yum:
-    name: postgresql
+    name: "{{ item }}"
     state: absent
     disablerepo: "{{ postgres_respository_name }}"
   ignore_errors: yes
+  with_items: "{{ postgres_old_packages }}"
   when: clean_postgresql
 
 - name: Install postgres packages

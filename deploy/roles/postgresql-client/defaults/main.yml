@@ -9,4 +9,7 @@ postgres_packages:
   - postgresql95
   - postgresql95-devel
 
+postgres_old_packages:
+  - postgresql
+
 clean_postgresql: False
