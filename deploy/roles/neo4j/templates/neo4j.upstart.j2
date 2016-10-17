@@ -1,0 +1,10 @@
+# Located in /etc/init/neo4j.conf
+# Neo4J upstart script
+start on runlevel [2345]
+stop on runlevel [016]
+
+console output
+
+respawn
+
+exec su -s /bin/sh -c 'exec "$0" "$@"' neo4j -- /opt/neo4j/neo4j-community-3.0.4/bin/neo4j start

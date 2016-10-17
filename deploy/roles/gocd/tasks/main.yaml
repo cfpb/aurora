@@ -36,6 +36,13 @@
   yum:
     name: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
     state: present
+  when: not gocd_upgrade
+  notify:
+    - restart go-agent
+
+- name: Upgrade GoCD Agent
+  command: rpm -U "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+  when: gocd_upgrade
   notify:
     - restart go-agent
 
