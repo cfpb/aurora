@@ -15,7 +15,7 @@
   yum:
     name: "{{ item }}"
     state: absent
-    disablerepo: "{{ postgres_respository_name }}"
+    disablerepo: "{{ postgres_repository_name }}"
   ignore_errors: yes
   with_items: "{{ postgres_old_packages }}"
   when: clean_postgresql
