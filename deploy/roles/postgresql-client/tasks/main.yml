@@ -3,12 +3,13 @@
   yum:
     name: "{{ postgres_repository_url }}"
     state: present
-  when: not 'production' in group_names
+  when: postgres_install_repository
 
 - name: Install postgres repository key
   rpm_key:
     key: "{{ postgres_repository_key_url }}"
     state: present
+  when: postgres_install_repository
 
 - name: Ensure older versions are removed
   yum:
