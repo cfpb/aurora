@@ -30,6 +30,7 @@
   become: yes
   become_method: sudo
   roles:
+    - eod
 
 - hosts: research_gauss
   become: yes
