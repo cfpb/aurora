@@ -2,22 +2,26 @@
 #==================#
 ### EoD SETTINGS ###
 #==================#
-eod_binary: ecs-13.8.5-linux-x64.bin
-eod_install_directory: '/usr/local/eod'
-eod_local_bin_directory: '/artifacts'
-eod_bin_directory: '/tmp'
+eod_binary:                 ecs-13.8.5-linux-x64.bin
+eod_install_directory:      '/usr/local/eod'
+eod_local_bin_directory:    '/artifacts'
+eod_bin_directory:          '/tmp'
 eod_client_ports:
   - 5500
   - 8406
   - 8407
-eod_cm_password: PASSWORD
-eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
-cluster_name: "{{ ansible_ssh_host }}"
+  - 6000:6025
+eod_client_ports_udp:
+  - 177
+eod_cm_password:            PASSWORD
+eod_cm_preferred_pcm:       "{{ ansible_ssh_host }}"
+cluster_name:               "{{ ansible_ssh_host }}"
 
-xdmc_query_host: "{{ ansible_ssh_host }}"
-eod_use_license_server: 0
+xdmc_query_host:            "{{ ansible_ssh_host }}"
+eod_use_license_server:     0
 eod_license_server_host:
-eod_license_server_cache: cache.text.dev
+eod_license_server_cache:   cache.text.dev
+
 # TODO: you can put all the keys you want to here
 eod_license_keys:
   - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
@@ -29,3 +33,5 @@ gconf_settings:
     setting: "/apps/gdm/simple-greeter/disable_user_list"
     type: "bool"
     value: "true"
+
+eod_DisplaysPerHost:        100
