@@ -283,20 +283,74 @@
   tags:
     - eod 
 
-- name: Find all the .conf files and store them in register 
-  raw: find /usr/local/eod/conf/admin/Xconfig -type f -name "*.conf"
-  register: item 
+- name: Add XkbExtension to Passive.cfg file 
+  lineinfile: 
+    dest: /usr/local/eod/conf/admin/Xconfig/Passive.cfg 
+    line: XkbExtension=1
+    insertafter: [Protocol]
+    state: present
   tags:
     - eod 
 
-- name: Add XkbExtension configuration in Xconfig files
-  lineinfile: 
-    dest: "{{ item }}"
-    regexp: "{{ item.regexp }}
-    line: item.line 
+- name: Add XkbExtension to Passive_WithShadowSetting.cfg file 
+  lineinfile:
+    dest: /usr/local/eod/conf/admin/Passive_WithShadowSetting.cfg 
+    line: XkbExtension=1
     insertafter: [Protocol]
-  with_items:
-    - { regexp: '^XkbExtension', line: 'XkbExtension=1' }
-    - { regexp: '^Composite', line: 'Composite=1' }
+    state: present 
   tags:
+    - eod 
+
+- name: Add XkbExtension to XDMCP_Broadcast.cfg file 
+  lineinfile:
+    dest: /usr/local/eod/conf/admin/XDMCP_Broadcast.cfg
+    line: XkbExtension=1
+    insertafter: [Protocol]
+    state: present       
+  tags:                  
+    - eod  
+
+- name: Add XkbExtension to XDMCP_Query.cfg file 
+  lineinfile:
+    dest: /usr/local/eod/conf/admin/XDMCP_Query.cfg
+    line: XkbExtension=1
+    insertafter: [Protocol]
+    state: present       
+  tags:                  
+    - eod  
+
+- name: Add Composite to Passive.cfg file 
+  lineinfile:
+    dest: /usr/local/eod/conf/admin/Passive.cfg
+    line: Composite=1
+    insertafter: XkbExtension=1
+    state: present       
+  tags:                  
+    - eod  
+
+- name: Add Composite to Passive_WithShadowSetting.cfg file 
+  lineinfile:
+    dest: /usr/local/eod/conf/admin/Passive_WithShadowSetting.cfg
+    line: Composite=1
+    insertafter: XkbExtension=1
+    state: present                   
+  tags:                              
     - eod
+
+- name: Add Composite to XDMCP_Broadcast.cfg file 
+  lineinfile:                             
+    dest: /usr/local/eod/conf/admin/XDMCP_Broadcast.cfg
+    line: Composite=1                     
+    insertafter: XkbExtension=1               
+    state: present                        
+  tags:                                   
+    - eod
+
+- name: Add Composite to XDMCP_Query.cfg file 
+  lineinfile:                           
+    dest: /usr/local/eod/conf/admin/XDMCP_Query.cfg
+    line: Composite=1                       
+    insertafter: XkbExtension=1                 
+    state: present                          
+  tags:                                     
+    - eod      
