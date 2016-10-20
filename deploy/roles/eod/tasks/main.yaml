@@ -272,7 +272,7 @@
     - pixmap-fixed-fonts
     - abyssinica
     - tree 
-  when: custom_repo
+  when: custom_repo                             ####  ??????
   tags:
     - eod 
 
@@ -283,8 +283,20 @@
   tags:
     - eod 
 
-#- name: Remove gpk-update-icon from /etc/xdg/autostart directory 
-#  shell: /bin/rm -rf /etc/xdg/autostart/gpk-update-icon 
-#  tags:
-#    - eod 
+- name: Find all the .conf files and store them in register 
+  raw: find /usr/local/eod/conf/admin/Xconfig -type f -name "*.conf"
+  register: item 
+  tags:
+    - eod 
 
+- name: Add XkbExtension configuration in Xconfig files
+  lineinfile: 
+    dest: "{{ item }}"
+    regexp: "{{ item.regexp }}
+    line: item.line 
+    insertafter: [Protocol]
+  with_items:
+    - { regexp: '^XkbExtension', line: 'XkbExtension=1' }
+    - { regexp: '^Composite', line: 'Composite=1' }
+  tags:
+    - eod
