@@ -5,19 +5,27 @@ sudo: required
 env:
  global:
   - container_id=$(mktemp)
+# - fast_finish: true
  matrix:
+  # proxy server
+  - >
+    HOST_GROUP=proxy_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
+
  # admin terminal  
   - >
     HOST_GROUP=admin_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
-    INSTALL_GLUSTERFS=false
+
  # analytics terminal
   - >
     HOST_GROUP=analytics_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_analytics_terminal.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false}'
-    INSTALL_GLUSTERFS=false
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false, install_logstash}'
+
+# elastic search
 
 services:
   - docker
@@ -46,45 +54,33 @@ script:
 # Syntax check
   - >
     sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
-# -e '{"install_glusterfs": "${INSTALL_GLUSTERFS}"}'
-# --extra-vars "${EXTRA_VAR_DEF}"
+
 # Test role
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" &
+   sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
-    minutes=0;
-    limit=90;
-
-    while true; do
-
-      echo -n -e " \b"; 
-
-      if [ $minutes == $limit ]; then
-        break;
-      fi
-
-      minutes=$((minutes+1));
-
-      sleep 60;
-    done
-
+#travis_wait 20 
 
 #    while kill -0 $! >/dev/null 2>&1; do
 # sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" &
-#   minutes=0
-#   limit=30
-#   while kill -0 $! >/dev/null 2>&1; do
-#     echo -n -e " \b" 
 
-#     if [ $minutes == $limit ]; then
-#       break;
-#     fi
+# minutes=0;
+# limit=20;
 
-#     minutes=$((minutes+1))
+# while true; do
+#   echo -n -e " \b"; 
 
-#     sleep 60
-#   done
+#   if [ $minutes == $limit ]; then
+#     break;
+#   fi
 
+#   minutes=$((minutes+1));
+
+#   sleep 60;
+# done
+# While loop source
+# https://github.com/lancelet/docker/commit/3ab8515725e59d020728deebf4b97809a1cf9068
+#
 # --extra-vars "${EXTRA_VAR_DEF}"
 # Idempotence test
 # - >
