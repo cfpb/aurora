@@ -253,6 +253,14 @@
   tags:
     - eod
 
+- name: Create Xconfig directory 
+  file: 
+    path: "{{ eod_Xconfig_directory }}"
+    state: directory
+    mode: 0755
+  tags: 
+    - eod 
+
 - name: Set /etc/gdm/gdm.schema file
   template:
     src: gdm.schemas.j2
@@ -283,12 +291,22 @@
   tags:
     - eod 
 
+- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register 
+  shell: ls -l /usr/local/eod/conf/admin/Xconfig 
+  register: cfg_files 
+  tags:
+    - eod 
+
+- debug: 
+    var: cfg_files
+
 - name: Add XkbExtension to Passive.cfg file 
   lineinfile: 
     dest: /usr/local/eod/conf/admin/Xconfig/Passive.cfg 
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present
+  when: cfg_files.stdout == "0"
   tags:
     - eod 
 
@@ -298,6 +316,7 @@
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present 
+  when: cfg_files.stdout == "0"
   tags:
     - eod 
 
@@ -307,6 +326,7 @@
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present       
+  when: cfg_files.stdout == "0"
   tags:                  
     - eod  
 
@@ -316,6 +336,7 @@
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present       
+  when: cfg_files.stdout == "0"
   tags:                  
     - eod  
 
@@ -325,6 +346,7 @@
     line: Composite=1
     insertafter: XkbExtension=1
     state: present       
+  when: cfg_files.stdout == "0"
   tags:                  
     - eod  
 
@@ -334,6 +356,7 @@
     line: Composite=1
     insertafter: XkbExtension=1
     state: present                   
+  when: cfg_files.stdout == "0"
   tags:                              
     - eod
 
@@ -343,6 +366,7 @@
     line: Composite=1                     
     insertafter: XkbExtension=1               
     state: present                        
+  when: cfg_files.stdout == "0"
   tags:                                   
     - eod
 
@@ -352,5 +376,6 @@
     line: Composite=1                       
     insertafter: XkbExtension=1                 
     state: present                          
+  when: cfg_files.stdout == "0"
   tags:                                     
     - eod      

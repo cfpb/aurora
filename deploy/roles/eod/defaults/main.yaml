@@ -35,3 +35,4 @@ gconf_settings:
     value: "true"
 
 eod_DisplaysPerHost:        100
+eod_Xconfig_directory:      /usr/local/eod/conf/admin/Xconfig
