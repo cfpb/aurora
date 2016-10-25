@@ -10,6 +10,14 @@
         name: git
         state: present
 
+    - name: Ensure configuration directory exists
+      file:
+        dest: /srv/www/proxy/repo
+        owner: nginx
+        group: nginx
+        mode: 0600
+        state: directory
+
     - name: Pull down custom proxy configs
       git:
         repo: "{{ nginx_proxy_repo }}"
@@ -20,7 +28,15 @@
       notify:
         - restart apache
 
-    - name: Ensure permissions are correct
+    - name: Copy over configuration files if not using repo
+      copy:
+        src: "{{ nginx_proxy_conf_src_dir }}/"
+        dest: "/srv/www/proxy/repo/"
+      when: nginx_proxy_conf_dir is defined and not nginx_proxy_repo is defined
+      notify:
+        - restart apache
+
+    - name: Ensure permissions are correct on all config files
       file:
         dest: /srv/www/proxy/repo
         owner: nginx
