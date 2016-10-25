@@ -32,7 +32,7 @@
       copy:
         src: "{{ nginx_proxy_conf_src_dir }}/"
         dest: "/srv/www/proxy/repo/"
-      when: nginx_proxy_conf_dir is defined and not nginx_proxy_repo is defined
+      when: nginx_proxy_conf_src_dir is defined and not nginx_proxy_repo is defined
       notify:
         - restart apache
 
