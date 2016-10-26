@@ -233,3 +233,12 @@ pp_custom_test_scripts:
   -
     script: "SELECT 1;"
     assertion: "test_output['results'][0]['query_result'] == [[1]]"
+
+# Eod links 
+eod_usr_share_applications:             /usr/share/applications
+eod_usr_share_desktop_directores:       /usr/share/desktop-directories
+eod_etc_gdm_custom_conf:                /etc/gdm/custom.conf 
+
+eod_gnome_menus_applications:           /home/shared/shared_config/gnome_menus/applications
+eod_gnome_menus_desktop_directories:    /home/shared/shared_config/gnome_menus/desktop-directories
+eod_gnome_menus_menus:                  /home/shared/shared_config/gnome_menus/menus

@@ -379,3 +379,36 @@
   when: cfg_files.stdout == "0"
   tags:                                     
     - eod      
+
+- name: Register symlink1
+  stat: path="{{ eod_gnome_menus_applications }}"
+  register: applic
+
+- name: Eod link1
+  file:
+    src: "{{ eod_gnome_menus_applications }}"
+    dest: "{{ eod_usr_share_applications }}"
+    state: link
+  when: applic.stat.exists == True
+
+- name: Register symlink2
+  stat: path="{{ eod_gnome_menus_desktop_directories }}"
+  register: applic2
+
+- name: Eod link2 
+  file:
+    src: "{{ eod_gnome_menus_desktop_directories }}"
+    dest: "{{ eod_gnome_menus_desktop_directories }}"
+    state: link 
+  when: applic2.stat.exists == True
+
+- name: Register symlink3
+  stat: path="{{ eod_gnome_menus_menus }}"
+  register: applic3
+
+- name: Eod link3
+  file:
+    src: "{{ eod_gnome_menus_menus }}"
+    dest: "{{ eod_etc_gdm_custom_conf }}"
+    state: link 
+  when: applic3.stat.exists == True
