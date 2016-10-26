@@ -36,3 +36,8 @@
 
 - name: restart apache
   shell: "service httpd24-httpd restart"
+
+- name: restart nginx
+  service:
+    name: nginx
+    state: restarted
