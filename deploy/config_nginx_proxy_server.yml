@@ -27,7 +27,7 @@
         version: "{{ git_environment }}"
       when: nginx_proxy_repo is defined
       notify:
-        - restart apache
+        - restart nginx
 
     - name: Copy over configuration files if not using repo
       copy:
@@ -35,7 +35,7 @@
         dest: "/srv/www/proxy/repo/"
       when: nginx_proxy_conf_src_dir is defined and not nginx_proxy_repo is defined
       notify:
-        - restart apache
+        - restart nginx
 
     - name: Ensure permissions are correct on all config files
       file:
