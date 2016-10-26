@@ -4,6 +4,7 @@
   become_method: sudo
   handlers:
     - include: roles/shared/handlers/main.yml
+      static: yes
   tasks:
     - name: Install git
       yum:
