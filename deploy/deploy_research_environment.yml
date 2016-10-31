@@ -5,6 +5,20 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+  tasks:
+    - name: Install libselinux-python package 
+      yum:
+        name: libselinux-python 
+        state: present 
+      when: not custom_repo  
+
+    - name: Ensure X11 Forwarding is present
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: '^X11Forwarding=no', line: 'X11Forwarding=yes' }
 
 - hosts: research_ancillary_services
   become: yes
