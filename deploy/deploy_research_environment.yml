@@ -4,7 +4,7 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+#    - {role: common, when: "install_glusterfs"}
   tasks:
     - name: Install libselinux-python package 
       yum:
@@ -19,6 +19,14 @@
         line: "{{ item.line }}"
       with_items:
         - { regexp: '^X11Forwarding=no', line: 'X11Forwarding=yes' }
+
+    - name: Ensure ClientAliveCountMax is set to correct value
+      lineinfile:
+        dest: /etc/ssh/sshd_config 
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+      with_items:
+        - { regexp: 'ClientAliveCountMax' , line: 'ClientAliveCountMax=384' }
 
 - hosts: research_ancillary_services
   become: yes
