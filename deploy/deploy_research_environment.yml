@@ -9,8 +9,8 @@
     - name: Install libselinux-python package 
       yum:
         name: libselinux-python 
-        state: present 
-      when: not custom_repo  
+        state: latest
+        disable_gpg_check: yes
 
     - name: Ensure X11 Forwarding is present
       lineinfile:
