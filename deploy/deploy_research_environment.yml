@@ -5,6 +5,13 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+  tasks:
+    - name: research eod symlinks
+      file:
+         src: "{{ item.src }}"
+         dest: "{{ item.dest }}"
+         state: link
+      with_items: eod_symlinks 
 
 - hosts: research_ancillary_services
   become: yes
