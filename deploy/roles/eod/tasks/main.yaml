@@ -280,7 +280,6 @@
     - pixmap-fixed-fonts
     - abyssinica
     - tree 
-  when: custom_repo                             ####  ??????
   tags:
     - eod 
 
@@ -302,7 +301,7 @@
 
 - name: Add XkbExtension to Passive.cfg file 
   lineinfile: 
-    dest: /usr/local/eod/conf/admin/Xconfig/Passive.cfg 
+    dest: "{{ eod_Xconfig_directory }}/Passive.cfg"
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present
@@ -312,7 +311,7 @@
 
 - name: Add XkbExtension to Passive_WithShadowSetting.cfg file 
   lineinfile:
-    dest: /usr/local/eod/conf/admin/Passive_WithShadowSetting.cfg 
+    dest: "{{ eod_Xconfig_directory }}/Passive_WithShadowSetting.cfg" 
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present 
@@ -322,7 +321,7 @@
 
 - name: Add XkbExtension to XDMCP_Broadcast.cfg file 
   lineinfile:
-    dest: /usr/local/eod/conf/admin/XDMCP_Broadcast.cfg
+    dest: "{{ eod_Xconfig_directory }}/XDMCP_Broadcast.cfg"
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present       
@@ -332,7 +331,7 @@
 
 - name: Add XkbExtension to XDMCP_Query.cfg file 
   lineinfile:
-    dest: /usr/local/eod/conf/admin/XDMCP_Query.cfg
+    dest: "{{ eod_Xconfig_directory }}/XDMCP_Query.cfg"
     line: XkbExtension=1
     insertafter: [Protocol]
     state: present       
@@ -342,7 +341,7 @@
 
 - name: Add Composite to Passive.cfg file 
   lineinfile:
-    dest: /usr/local/eod/conf/admin/Passive.cfg
+    dest: "{{ eod_Xconfig_directory }}/Passive.cfg"
     line: Composite=1
     insertafter: XkbExtension=1
     state: present       
@@ -352,7 +351,7 @@
 
 - name: Add Composite to Passive_WithShadowSetting.cfg file 
   lineinfile:
-    dest: /usr/local/eod/conf/admin/Passive_WithShadowSetting.cfg
+    dest: "{{ eod_Xconfig_directory }}/Passive_WithShadowSetting.cfg"
     line: Composite=1
     insertafter: XkbExtension=1
     state: present                   
@@ -362,7 +361,7 @@
 
 - name: Add Composite to XDMCP_Broadcast.cfg file 
   lineinfile:                             
-    dest: /usr/local/eod/conf/admin/XDMCP_Broadcast.cfg
+    dest: "{{ eod_Xconfig_directory }}/XDMCP_Broadcast.cfg"
     line: Composite=1                     
     insertafter: XkbExtension=1               
     state: present                        
@@ -372,7 +371,7 @@
 
 - name: Add Composite to XDMCP_Query.cfg file 
   lineinfile:                           
-    dest: /usr/local/eod/conf/admin/XDMCP_Query.cfg
+    dest: "{{ eod_Xconfig_directory }}/XDMCP_Query.cfg"
     line: Composite=1                       
     insertafter: XkbExtension=1                 
     state: present                          
