@@ -4,13 +4,16 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+#    - {role: common, when: "install_glusterfs"}
   tasks:
-    - name: Install libselinux-python package 
+    - name: Install libselinux-python and libicu package 
       yum:
-        name: libselinux-python 
-        state: latest
+        name: "{{ item }}"
+        state: present
         disable_gpg_check: yes
+      with_items: 
+        - libicu 
+        - libselinux-python
 
     - name: Ensure X11 Forwarding is present
       lineinfile:
