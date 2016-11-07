@@ -4,17 +4,9 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-#    - {role: common, when: "install_glusterfs"}
-  tasks:
-    - name: Install libselinux-python and libicu package 
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: 
-        - libicu 
-        - libselinux-python
+    - {role: common, when: "install_glusterfs"}
 
+  tasks:
     - name: Ensure X11 Forwarding is present
       lineinfile:
         dest: /etc/ssh/sshd_config
@@ -137,3 +129,12 @@
     - odbc
     - gocd
     - stattransfer
+  tasks:
+  - name: Install libselinux-python and libicu package 
+    yum:
+      name: "{{ item }}" 
+      state: present
+      disable_gpg_check: yes 
+    with_items: 
+      - libicu 
+      - libselinux-python
