@@ -2,10 +2,10 @@
 #==================#
 ### EoD SETTINGS ###
 #==================#
-eod_binary:                 ecs-13.8.5-linux-x64.bin
-eod_install_directory:      '/usr/local/eod'
-eod_local_bin_directory:    '/artifacts'
-eod_bin_directory:          '/tmp'
+eod_binary: ecs-13.8.5-linux-x64.bin
+eod_install_directory: '/usr/local/eod'
+eod_local_bin_directory: '/artifacts'
+eod_bin_directory: '/tmp'
 eod_client_ports:
   - 5500
   - 8406
@@ -14,11 +14,11 @@ eod_client_ports:
 eod_client_ports_udp:
   - 177
 eod_cm_password:            PASSWORD
-eod_cm_preferred_pcm:       "{{ ansible_ssh_host }}"
-cluster_name:               "{{ ansible_ssh_host }}"
+eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
+cluster_name: "{{ ansible_ssh_host }}"
 
-xdmc_query_host:            "{{ ansible_ssh_host }}"
-eod_use_license_server:     0
+xdmc_query_host:  "{{ ansible_ssh_host }}"
+eod_use_license_server: 0
 eod_license_server_host:
 eod_license_server_cache:   cache.text.dev
 
