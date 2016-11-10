@@ -35,3 +35,4 @@ gconf_settings:
     value: "true"
 
 eod_Xconfig_directory:      /usr/local/eod/conf/admin/Xconfig
+eod_entry:                  false
