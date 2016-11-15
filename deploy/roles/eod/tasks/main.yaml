@@ -291,8 +291,7 @@
     - eod 
 
 - name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register 
-  #shell: find /usr/local/eod/conf/admin/Xconfig/* -printf "%f\n"
-  shell: ls -l /usr/local/eod/conf/admin/Xconfig/*.cfg
+  shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
   register: cfg_files 
   ignore_errors: yes
   tags:
