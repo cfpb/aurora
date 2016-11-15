@@ -3,6 +3,7 @@
 ---
 - hosts: mesos_agent
   become: yes
+  serial: 1
   pre_tasks:
     - name: Activate Julia repo
       get_url:
@@ -41,7 +42,6 @@
     # - r
     - r-shiny
     - nodejs
-
   post_tasks:
     - name: Turn off Shiny Server
       service:
