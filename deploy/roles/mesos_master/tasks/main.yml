@@ -321,7 +321,19 @@
 - name: Configure Mesos Framework Authentication
   copy:
     dest: /etc/marathon/conf/mesos_authentication
-    content: "{{ mesos_authenticate_frameworks }}"
+    content: ""
+  when: mesos_authenticate_frameworks
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Disable Mesos Framework Authentication
+  file:
+    dest: /etc/marathon/conf/mesos_authentication
+    state: absent
+  when: not mesos_authenticate_frameworks
   notify:
     - restart marathon
   tags:
