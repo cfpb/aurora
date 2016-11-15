@@ -26,6 +26,10 @@ env:
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false, install_logstash}'
 
 # elastic search
+  - >
+    HOST_GROUP=elasticsearch
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "system_key.stat.exists": false}'
 
 services:
   - docker
@@ -50,7 +54,7 @@ script:
     sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
 # Parameterize docker temp file build
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_connection=local\" > /etc/ansible/hosts"
+    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
 # Syntax check
   - >
     sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
