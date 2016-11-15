@@ -291,91 +291,29 @@
     - eod 
 
 - name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register 
-  #shell: ls -l /usr/local/eod/conf/admin/Xconfig 
-  shell: find /usr/local/eod/conf/admin/Xconfig/ -printf "%f\n"
+  shell: find /usr/local/eod/conf/admin/Xconfig/* -printf "%f\n"
   register: cfg_files 
+  ignore_errors: yes
   tags:
     - eod 
 
 - debug: 
     var: cfg_files
 
-- name: Add XkbExtension to Passive.cfg file 
+- name: Add XkbExtension to four files
   lineinfile: 
-    dest: "{{ eod_Xconfig_directory }}/Passive.cfg"
+    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
+    regexp: XkbExtension
     line: XkbExtension=1
-    insertafter: [Protocol]
-    state: present
-  when: cfg_files.stdout == "0"
+  with_items: cfg_files.stdout_lines
   tags:
     - eod 
 
-- name: Add XkbExtension to Passive_WithShadowSetting.cfg file 
+- name: Add Composite to four files
   lineinfile:
-    dest: "{{ eod_Xconfig_directory }}/Passive_WithShadowSetting.cfg" 
-    line: XkbExtension=1
-    insertafter: [Protocol]
-    state: present 
-  when: cfg_files.stdout == "0"
-  tags:
-    - eod 
-
-- name: Add XkbExtension to XDMCP_Broadcast.cfg file 
-  lineinfile:
-    dest: "{{ eod_Xconfig_directory }}/XDMCP_Broadcast.cfg"
-    line: XkbExtension=1
-    insertafter: [Protocol]
-    state: present       
-  when: cfg_files.stdout == "0"
-  tags:                  
-    - eod  
-
-- name: Add XkbExtension to XDMCP_Query.cfg file 
-  lineinfile:
-    dest: "{{ eod_Xconfig_directory }}/XDMCP_Query.cfg"
-    line: XkbExtension=1
-    insertafter: [Protocol]
-    state: present       
-  when: cfg_files.stdout == "0"
-  tags:                  
-    - eod  
-
-- name: Add Composite to Passive.cfg file 
-  lineinfile:
-    dest: "{{ eod_Xconfig_directory }}/Passive.cfg"
+    dest: "{{ eod_Xconfig_directory }}{{ item }}"
+    regexp: Composite
     line: Composite=1
-    insertafter: XkbExtension=1
-    state: present       
-  when: cfg_files.stdout == "0"
+  with_items: cfg_files.stdout_lines
   tags:                  
     - eod  
-
-- name: Add Composite to Passive_WithShadowSetting.cfg file 
-  lineinfile:
-    dest: "{{ eod_Xconfig_directory }}/Passive_WithShadowSetting.cfg"
-    line: Composite=1
-    insertafter: XkbExtension=1
-    state: present                   
-  when: cfg_files.stdout == "0"
-  tags:                              
-    - eod
-
-- name: Add Composite to XDMCP_Broadcast.cfg file 
-  lineinfile:                             
-    dest: "{{ eod_Xconfig_directory }}/XDMCP_Broadcast.cfg"
-    line: Composite=1                     
-    insertafter: XkbExtension=1               
-    state: present                        
-  when: cfg_files.stdout == "0"
-  tags:                                   
-    - eod
-
-- name: Add Composite to XDMCP_Query.cfg file 
-  lineinfile:                           
-    dest: "{{ eod_Xconfig_directory }}/XDMCP_Query.cfg"
-    line: Composite=1                       
-    insertafter: XkbExtension=1                 
-    state: present                          
-  when: cfg_files.stdout == "0"
-  tags:                                     
-    - eod      
