@@ -318,6 +318,16 @@
     - mesos
     - mesos-master
 
+- name: Configure Mesos Framework Authentication
+  copy:
+    dest: /etc/marathon/conf/mesos_authentication
+    content: "{{ mesos_authenticate_frameworks }}"
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
 - name: Configure Marathon secret file path
   copy:
     dest: /etc/marathon/conf/mesos_authentication_secret_file
