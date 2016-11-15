@@ -18,7 +18,7 @@
 
 - name: Install elasticsearch
   yum:
-    name: elasticsearch
+    name: elasticsearch-{{ es_full_version }}
     state: latest
 
 - name: Create elasticsearch data directory
