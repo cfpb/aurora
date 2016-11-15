@@ -320,7 +320,7 @@
 
 - name: Configure Mesos Framework Authentication
   copy:
-    dest: /etc/marathon/conf/mesos_authentication
+    dest: /etc/marathon/conf/?mesos_authentication
     content: ""
   when: mesos_authenticate_frameworks
   notify:
@@ -331,7 +331,7 @@
 
 - name: Disable Mesos Framework Authentication
   file:
-    dest: /etc/marathon/conf/mesos_authentication
+    dest: /etc/marathon/conf/?mesos_authentication
     state: absent
   when: not mesos_authenticate_frameworks
   notify:
