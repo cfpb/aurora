@@ -311,7 +311,7 @@
 
 - name: Add Composite to four files
   lineinfile:
-    dest: "{{ eod_Xconfig_directory }}{{ item }}"
+    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
     regexp: Composite
     line: Composite=1
   with_items: cfg_files.stdout_lines
