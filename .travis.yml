@@ -1,6 +1,6 @@
 # .travis.yml
 ---
-sudo: required
+sudo: false
 
 env:
  global:
@@ -20,22 +20,34 @@ env:
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
 
  # analytics terminal
+  # - >
+  #   HOST_GROUP=analytics_terminal
+  #   PLAYBOOK_LOCATION=/aurora/deploy/deploy_analytics_terminal.yml 
+  #   EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false, install_logstash}'
+
+# development_terminal
   - >
     HOST_GROUP=analytics_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_analytics_terminal.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false, install_logstash}'
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "iptables_config": false}'
 
+# r_terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
+    EXTRA_VAR_DEF='{"install_r_updates": false, "iptables_config": false}'
+    
 # elastic search
   - >
     HOST_GROUP=elasticsearch
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "system_key.stat.exists": false}'
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
 
 # elk 
   - >
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "create_key.changed": false}'
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
 
 services:
   - docker
@@ -44,30 +56,33 @@ language:
   - python
 
 before_install:
-  - sudo apt-get update
+  #- sudo apt-get update
   # Pull container
-  - sudo docker pull centos:6
+  - docker pull centos:6
   # Customize container
-  - sudo docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
+  - docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
 
 script:
 # Run container in detached state
   - >
-    sudo docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
+    docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
 # Parameterize docker temp file build
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
 # Syntax check
   - >
-    sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
 # Test role
   - >
-   sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+#travis_wait built in
+#travis_wait sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
 #travis_wait 20 
 
@@ -100,4 +115,4 @@ script:
 #   || (echo 'Idempotence test: fail' && exit 1)
 
 # Clean up
-  - sudo docker stop "$(cat ${container_id})"
+  - docker stop "$(cat ${container_id})"
