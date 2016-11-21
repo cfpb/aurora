@@ -297,9 +297,6 @@
   tags:
     - eod 
 
-- debug: 
-    var: cfg_files
-
 - name: Add XkbExtension to four files
   lineinfile: 
     dest: "{{ eod_Xconfig_directory }}/{{ item }}"
