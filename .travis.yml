@@ -31,6 +31,12 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "system_key.stat.exists": false}'
 
+# elk 
+  - >
+    HOST_GROUP=elk
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "create_key.changed": false}'
+
 services:
   - docker
 
