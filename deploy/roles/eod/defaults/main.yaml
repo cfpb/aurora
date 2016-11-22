@@ -10,14 +10,18 @@ eod_client_ports:
   - 5500
   - 8406
   - 8407
+  - 6000:6025
+eod_client_ports_udp:
+  - 177
 eod_cm_password: PASSWORD
 eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
 cluster_name: "{{ ansible_ssh_host }}"
 
-xdmc_query_host: "{{ ansible_ssh_host }}"
+xdmc_query_host:  "{{ ansible_ssh_host }}"
 eod_use_license_server: 0
 eod_license_server_host:
 eod_license_server_cache: cache.text.dev
+
 # TODO: you can put all the keys you want to here
 eod_license_keys:
   - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
@@ -29,3 +33,6 @@ gconf_settings:
     setting: "/apps/gdm/simple-greeter/disable_user_list"
     type: "bool"
     value: "true"
+
+eod_Xconfig_directory: /usr/local/eod/conf/admin/Xconfig
+eod_greeter_include: false
