@@ -44,6 +44,11 @@
         state: present
         disable_gpg_check: yes
       when: custom_repo
+ 
+    - name: Install texlive
+      yum:
+        name: texlive
+        state: present
 
 - hosts: research_eod
   become: yes
