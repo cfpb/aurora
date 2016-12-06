@@ -101,9 +101,9 @@ db_terminal
 ; Container Component
 
 [mesos_master]
-mesos_master_1 ansible_ssh_host=10.0.1.31
-mesos_master_2 ansible_ssh_host=10.0.1.32
-mesos_master_3 ansible_ssh_host=10.0.1.33
+mesos_master_1 ansible_ssh_host=10.0.1.31 zookeeper_id=1
+mesos_master_2 ansible_ssh_host=10.0.1.32 zookeeper_id=2
+mesos_master_3 ansible_ssh_host=10.0.1.33 zookeeper_id=3
 
 [mesos_agent]
 mesos_agent_1 ansible_ssh_host=10.0.1.34
