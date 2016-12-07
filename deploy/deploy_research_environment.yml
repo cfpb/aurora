@@ -25,6 +25,71 @@
         regexp: ClientAliveCountMax
         line: ClientAliveCountMax=384
 
+    - name: additional symlinks for odbc.ini, odbcinst.ini, freetds, cups to shared env
+      file:
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items: "{{ additional_symlinks }}"
+
+    - name: Add additional software to all Research servers
+      yum:
+         name: "{{ item }}" 
+         state: present
+      with_items:
+         - htop
+         - cups
+         - hplip
+         - gutenprint
+         - foomatic
+         - udev
+         - firefox
+         - system-config-printer
+         - postgresql-odbc
+ 
+    - name: Add Postgresl repository on all Research servers
+      yum: 
+        name: "{{ eod_postgres_repository_url }}" 
+ 
+    - name: Install postgres repository key
+      rpm_key:
+        key: "{{ eod_postgres_repository_key_url }}"
+        state: present
+ 
+    - name: Ensure older versions of postgres is removed
+      yum:
+        name: "{{ item }}"
+        state: absent
+        disablerepo: "{{ eod_postgres_repository_name }}"
+      ignore_errors: yes
+      with_items: "{{ eod_postgres_old_packages }}"
+      when: eod_clean_postgresql
+ 
+    - name: Install the required latest postgres packages
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ eod_postgres_packages }}"
+
+    - name: Add psql bin directory to path
+      lineinfile:
+        dest: /etc/profile.d/postgres.sh
+        create: yes
+        line: export PATH={{ eod_postgres_install_dir }}/bin:$PATH
+        mode: 0644
+ 
+    - name: Add /etc/devfs.rules file to research env servers
+      template:
+        src: devfs.rules
+        dest: /etc/devfs.rules
+        mode: 0644
+
+    - name: Add rc.conf file to all research env servers
+      template:
+        src: rc.conf    
+        dest: /etc/rc.conf 
+        mode: 0644
+
 - hosts: research_ancillary_services
   become: yes
   become_method: sudo
@@ -37,6 +102,7 @@
     - odbc
     - sublime
     - jdk
+
   tasks:
     - name: Install Ultra Edit
       yum:
