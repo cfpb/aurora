@@ -189,6 +189,12 @@
     - gocd
     - stattransfer
 
+  tasks:
+    - name: install libXp
+      yum:
+        name: libXp
+        state: present
+
 - hosts: research_spss
   become: yes
   become_method: sudo
