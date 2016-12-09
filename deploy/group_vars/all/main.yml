@@ -18,14 +18,11 @@ default_admin_terminal: admin_terminal
 # file server based on these settings, and GlusterFS volumes will be created and
 # mounted on client servers.
 shared_folders:
-  -
-    name: data
+  - name: data
     state: mounted
-  -
-    name: work
+  - name: work
     state: mounted
-  -
-    name: testorg
+  - name: testorg
     state: mounted
 
 # Allows servers to use one of the GlusterFS volumes as a shared home directory
@@ -234,6 +231,5 @@ pp_custom_test_scripts:
     script: "SELECT 1;"
     assertion: "test_output['results'][0]['query_result'] == [[1]]"
 
-# Eod symlinks 
+# Eod symlinks
 eod_symlinks: []
-
