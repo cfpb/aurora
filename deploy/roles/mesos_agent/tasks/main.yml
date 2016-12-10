@@ -268,7 +268,7 @@
     content: "{{ mesos_docker_store_dir }}"
   when: mesos_docker_enable
   notify:
-    - restart mesos-agent
+    - restart mesos_agent
   tags:
     - mesos
     - mesos-agent
