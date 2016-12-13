@@ -268,7 +268,7 @@
     content: "{{ mesos_docker_store_dir }}"
   when: mesos_docker_enable
   notify:
-    - restart mesos_agent
+    - restart mesos-agent
   tags:
     - mesos
     - mesos-agent
@@ -279,7 +279,19 @@
     content: "{{ mesos_docker_registry }}"
   when: mesos_docker_enable
   notify:
-    - restart mesos_agent
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Create Docker registery directory, if needed
+  file:
+    dest: "{{ mesos_docker_registry }}"
+    state: directory
+    mode: 0755
+  when: mesos_docker_enable and not mesos_docker_registry[:8] == "https://"
+  notify:
+    - restart mesos-agent
   tags:
     - mesos
     - mesos-agent
