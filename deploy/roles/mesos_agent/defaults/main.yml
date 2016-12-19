@@ -21,6 +21,8 @@ mesos_containerizers: "mesos"
 mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
 
+mesos_executor_registration_timeout: 5mins
+
 # File uri is not working, perhaps a bug in Mesos
 mesos_appc_enable: yes
 #mesos_appc_simple_discovery_uri_prefix: file:///home/work/appc/

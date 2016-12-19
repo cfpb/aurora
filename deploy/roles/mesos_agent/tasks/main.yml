@@ -276,6 +276,16 @@
     - mesos
     - mesos-agent
 
+- name: Configure executor registration timeout
+  copy:
+    dest: /etc/mesos-slave/executor_registration_timeout
+    content: "{{ mesos_executor_registration_timeout }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
 ### SETUP IP TABLES AND START MESOS AGENT
 
 - name: Open required ports
