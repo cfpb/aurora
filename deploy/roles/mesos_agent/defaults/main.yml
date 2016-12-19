@@ -13,6 +13,8 @@ mesos_agent_credential: "/etc/mesos_agent_credential"
 mesos_agent_principal: "username"
 mesos_agent_secret: "password"
 
+mesos_agent_fix_link: True
+
 # User to run processes in Mesos as
 marathon_mesos_user: "mesagent"
 
