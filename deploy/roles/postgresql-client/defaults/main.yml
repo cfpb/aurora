@@ -8,6 +8,16 @@ postgres_install_repository: False
 postgres_packages:
   - postgresql95
   - postgresql95-devel
+  - htop
+  - cups
+  - hplip
+  - gutenprint
+  - foomatic
+  - udev
+  - firefox
+  - system-config-printer
+  - postgresql-odbc
+  - postgresql95-odbc
 
 postgres_old_packages:
   - postgresql
