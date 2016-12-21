@@ -63,6 +63,7 @@ mesos_acls: >
 
 ### MARATHON SETTINGS
 marathon_http_port: 8080
+marathon_scheduler_port: 31000
 
 # User to run processes in Mesos as
 marathon_mesos_user: "mesagent"

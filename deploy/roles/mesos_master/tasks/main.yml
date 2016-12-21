@@ -382,6 +382,16 @@
     - mesos
     - mesos-master
 
+- name: Set Marathon Scheduler port number
+  template:
+    src: marathon.j2
+    dest: /etc/default/marathon
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
 # Ansible "service" command doesn't work with upstart jobs on Centos, so
@@ -438,8 +448,9 @@
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
     - 2181
-    - 5050
-    - 8080
+    - "{{ mesos_master_port }}"
+    - "{{ marathon_http_port }}"
+    - "{{ marathon_scheduler_port }}"
     - 2888
     - 3888
   when: iptables_config
