@@ -3,23 +3,7 @@
 ---
 - hosts: mesos_agent
   become: yes
-  become_method: sudo
-  roles:
-    - common
-    - {role: iptables, when: "iptables_config"}
-    # - devtools
-    - mesos_agent
-    - {role: epel, when: "use_epel"}
-    - jdk
-    - postgresql-client
-    - pentaho
-    - gocd
-    - nginx
-
-- hosts: mesos_agent
-  become: yes
-  become_method: sudo
-  tasks:
+  pre_tasks:
     - name: Activate Julia repo
       get_url:
         url: https://copr.fedoraproject.org/coprs/nalimilan/julia/repo/epel-6/nalimilan-julia-epel-6.repo
@@ -35,11 +19,17 @@
         - screen
         - p7zip
         #- julia
-
-- hosts: mesos_agent
-  become: yes
-  become_method: sudo
   roles:
+    - common
+    - {role: iptables, when: "iptables_config"}
+    # - devtools
+    - mesos_agent
+    - {role: epel, when: "use_epel"}
+    - jdk
+    - postgresql-client
+    - pentaho
+    - gocd
+    - nginx
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
@@ -52,10 +42,7 @@
     - r-shiny
     - nodejs
 
-- hosts: mesos_agent
-  become: yes
-  become_method: sudo
-  tasks:
+  post_tasks:
     - name: Turn off Shiny Server
       service:
         name: shiny-server
