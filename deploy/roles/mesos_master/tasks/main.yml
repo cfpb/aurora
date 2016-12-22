@@ -55,9 +55,6 @@
   register: mesos_is_link
   when: mesos_master_fix_link
 
-- debug:
-    var: mesos_is_link
-
 - name: Fix the "slave" to "agent" link if needed
   file:
     dest: /usr/include/mesos/slave
