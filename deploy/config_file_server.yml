@@ -13,7 +13,7 @@
 
     - name: Create volume
       command: "gluster volume create {{ item.name }} replica 2 transport tcp 10.0.1.4:/data/{{ item.name }} 10.0.1.5:/data/{{ item.name }}"
-      with_items: shared_folders
+      with_items: "{{ shared_folders }}"
       register: gluster_create
       failed_when: gluster_create.rc != 0 and "already exists" not in gluster_create.stderr
       changed_when: gluster_create.rc == 0
@@ -34,7 +34,7 @@
       gluster_volume:
         name: "{{ item.name }}"
         state: started
-      with_items: shared_folders
+      with_items: "{{ shared_folders }}"
       when: item.state == "mounted"
 
 #    - name: Start the volume

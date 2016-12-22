@@ -39,14 +39,19 @@
     - jdbc
     - ruby
     - sqitch
-    # - r
+    - r
     - r-shiny
     - nodejs
   post_tasks:
-    - name: Turn off Shiny Server
+    - name: Stop Shiny Server
       service:
         name: shiny-server
         state: stopped
+      ignore_errors: yes
+
+    - name: Turn off Shiny Server
+      service:
+        name: shiny-server
         enabled: no
       ignore_errors: yes
 

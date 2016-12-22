@@ -15,6 +15,8 @@ mesos_cluster_name: "Test Cluster"
 mesos_master_port: 5050
 mesos_master_logging_level: "INFO"
 
+mesos_master_fix_link: True
+
 mesos_credentials:
   -
     principal: "username"

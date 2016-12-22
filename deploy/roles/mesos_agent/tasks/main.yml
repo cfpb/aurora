@@ -12,6 +12,18 @@
     - mesos
     - mesos-agent
 
+- name: Check if /usr/include/mesos/slave is a link
+  stat:
+    path: /usr/include/mesos/slave
+  register: mesos_is_link
+  when: mesos_agent_fix_link
+
+- name: Fix the "slave" to "agent" link if needed
+  file:
+    dest: /usr/include/mesos/slave
+    state: absent
+  when: mesos_agent_fix_link and mesos_is_link.stat.islnk is defined and not mesos_is_link.stat.islnk
+
 - name: Install mesos package
   yum:
     name: "{{ item }}"
@@ -279,7 +291,19 @@
     content: "{{ mesos_docker_registry }}"
   when: mesos_docker_enable
   notify:
-    - restart mesos_agent
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Create Docker registery directory, if needed
+  file:
+    dest: "{{ mesos_docker_registry }}"
+    state: directory
+    mode: 0755
+  when: mesos_docker_enable and not mesos_docker_registry[:8] == "https://"
+  notify:
+    - restart mesos-agent
   tags:
     - mesos
     - mesos-agent

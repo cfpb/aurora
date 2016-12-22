@@ -13,6 +13,8 @@ mesos_agent_credential: "/etc/mesos_agent_credential"
 mesos_agent_principal: "username"
 mesos_agent_secret: "password"
 
+mesos_agent_fix_link: True
+
 # User to run processes in Mesos as
 marathon_mesos_user: "mesagent"
 
@@ -31,4 +33,4 @@ mesos_appc_store_dir: "/tmp/mesos/store/appc"
 
 mesos_docker_enable: yes
 mesos_docker_store_dir: "/tmp/mesos/store/docker"
-mesos_docker_registry: "https://hub.docker.com/"
+mesos_docker_registry: "/home/work/mesos/docker/images"
