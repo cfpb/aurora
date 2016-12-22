@@ -237,3 +237,24 @@ pp_custom_test_scripts:
 # Eod symlinks 
 eod_symlinks: []
 
+# PostgreSQL for eod research environment
+eod_postgres_repository_url: "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
+eod_postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-95"
+eod_postgres_repository_name: pgdg95
+eod_postgres_install_dir: /usr/pgsql-9.5
+eod_postgres_install_repository: False
+
+eod_postgres_packages:
+  - postgresql95
+  - postgresql95-devel
+  - postgresql95-odbc
+  - postgresql-odbc 
+
+eod_postgres_old_packages:
+  - postgresql
+
+eod_clean_postgresql: False
+
+# additional symlinks odbc, cups
+additional_symlinks: []
+
