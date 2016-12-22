@@ -36,7 +36,8 @@ neo4j_browser_allow_outgoing_connections:               true
 neo4j_browser_credential_timeout:                       0m
 neo4j_browser_retain_connection_credentials:            true
 
-
 neo4j_pid_dir:                                          /opt/neo4j/neo4j-community-3.0.4/run
 neo4j_log_dir:                                          /opt/neo4j/neo4j-community-3.0.4/logs
 neo4j_bin_dir:                                          /usr/bin/neo4j
+
+neo4j_use_ldap:                                         False

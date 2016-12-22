@@ -61,25 +61,12 @@ browser.retain_connection_credentials={{ neo4j_browser_retain_connection_credent
 # CFPB BASELINE FOR BOLT CONNECTOR
 
 dbms.connector.bolt.tls_level={{ neo4j_bolt_connector_tls_level }}
-
-########################################################################################
-#dbms.connector.bolt.tls_level=OPTIONAL
 # To have Bolt accept non-local connections, uncomment this line
 # dbms.connector.bolt.address=0.0.0.0:7687
 
-# HTTP Connector
-dbms.connector.http.type=HTTP
-dbms.connector.http.enabled=true
-# To accept non-local HTTP connections, uncomment this line
-#dbms.connector.http.address=0.0.0.0:7474
-
-# HTTPS Connector
-#dbms.connector.https.type=HTTP
-#dbms.connector.https.enabled=true
-#dbms.connector.https.encryption=TLS
-# To accept non-local HTTPS connection, change 'localhost' to '0.0.0.0'
-#dbms.connector.https.address=localhost:7473
-#
+dbms.connector.http.type={{ neo4j_dbms_connector_http_type }}
+dbms.connector.http.enabled={{ neo4j_dbms_connector_http_enabled }}
+dbms.connector.http.address={{ neo4j_dbms_connector_http_address }}
 
 ########################################################################################
 # CFPB BASELINE FOR HTTPS CONNECTOR
@@ -171,3 +158,18 @@ dbms.shell.enabled={{ neo4j_dbms_shell_enabled }}
 # neo4j-server-examples under /examples/unmanaged, resulting in a final URL of
 # http://localhost:7474/examples/unmanaged/helloworld/{nodeId}
 #dbms.unmanaged_extension_classes=org.neo4j.examples.server.unmanaged=/examples/unmanaged
+
+{% if neo4j_use_ldap %}
+########################################################################################
+# LDAP Configuration
+
+dbms.security.auth_provider=ldap
+dmbs.security.ldap.host={{ neo4j_ldap_host }}
+dbms.security.ldap.authentication.user_dn_template={{ neo4j_ldap_user_dn_template }}
+dbms.security.ldap.authorization.user_search_base={{ neo4j_ldap_user_search_base }}
+dbms.security.ldap.authorization.user_search_filter={{ neo4j_ldap_user_search_filter }}
+dbms.security.ldap.authorization.group_membership_attributes={{ neo4j_ldap_member_attributes }}
+dbms.security.ldap.authorization.group_to_role_mapping={{ neo4j_group_to_role_mapping }}
+dbms.security.ldap.authentication.cache_enabled={{ neo4j_ldap_cache_enabled }}
+dbms.security.auth_cache_ttl={{ neo4j_auth_cache_ttl }}
+{% endif %}
