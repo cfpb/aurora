@@ -48,6 +48,7 @@
         name: shiny-server
         state: stopped
         enabled: no
+      ignore_errors: yes
 
     - name: Turn off GoCD Agent
       service:
