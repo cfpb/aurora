@@ -1,4 +1,4 @@
 # main.yml
 ---
 - name: restart neo4j
-  command: stop neo4j && start neo4j
+  shell: stop neo4j && start neo4j
