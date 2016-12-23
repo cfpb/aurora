@@ -54,12 +54,18 @@
     path: /usr/include/mesos/slave
   register: mesos_is_link
   when: mesos_master_fix_link
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Fix the "slave" to "agent" link if needed
   file:
     dest: /usr/include/mesos/slave
     state: absent
   when: mesos_master_fix_link and mesos_is_link.stat.islnk is defined and not mesos_is_link.stat.islnk
+  tags:
+    - mesos
+    - mesos-master
 
 - name: Install mesos and supporting packages
   yum:

@@ -17,12 +17,18 @@
     path: /usr/include/mesos/slave
   register: mesos_is_link
   when: mesos_agent_fix_link
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Fix the "slave" to "agent" link if needed
   file:
     dest: /usr/include/mesos/slave
     state: absent
   when: mesos_agent_fix_link and mesos_is_link.stat.islnk is defined and not mesos_is_link.stat.islnk
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Install mesos package
   yum:
@@ -44,6 +50,9 @@
   with_fileglob:
     - /etc/mesos-slave/*.rpmnew
     - /etc/mesos/*.rpmnew
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Stop the Mesos master process
   command: "stop mesos-master"
@@ -325,6 +334,9 @@
   with_items:
     - '5051'
     - '31000:32000'
+  tags:
+    - mesos
+    - mesos-agent
 
   when: iptables_config
   tags:
