@@ -197,6 +197,6 @@
     insertafter: EOF
 
 - name: start neo4j
-  shell: "start neo4j"
+  shell: "{{ neo4j_bin_dir}}/neo4j start"
   tags:
   - neo4j
