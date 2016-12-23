@@ -4,32 +4,24 @@
   file:
     state: directory
     path: "{{ neo4j_dir }}"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
     mode: 0775
   tags:
   - neo4j
 
 - name: Add neo4j user
   user:
-    name: "{{ neo4j_user }}" 
-    system: yes 
-    home: "{{ neo4j_home_dir }}" 
-    shell: "{{ neo4j_user_shell }}" 
+    name: "{{ neo4j_user }}"
+    system: yes
+    home: "{{ neo4j_home_dir }}"
+    shell: "{{ neo4j_user_shell }}"
     state: present
   tags:
   - neo4j
 
-- name: Set neo4j directory ownership
-  file: 
-    state: directory
-    path: "{{ neo4j_dir }}"
-    owner: "{{ neo4j_user }}" 
-    group: "{{ neo4j_user }}"
-    mode: 0775
-  tags:
-  - neo4j 
-
 - name: Download neo4j
-  get_url: 
+  get_url:
     url: "{{ neo4j_url }}"
     dest: "/tmp/neo4j-{{ neo4j_version }}"
   tags:
@@ -43,7 +35,7 @@
   tags:
   - neo4j
 
-- name: Permissions for neo4j home directory 
+- name: Permissions for neo4j home directory
   file:
     state: directory
     mode: 0775
@@ -64,15 +56,15 @@
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ neo4j_http_port }} -j ACCEPT"
   when: iptables_config
   tags:
-  - neo4j 
+  - neo4j
 
 - name: Set neo4j configuration file
   sudo: yes
   template:
     src: neo4j.conf.j2
     dest: "{{ neo4j_conf_dir }}/neo4j.conf"
-    owner: "{{ neo4j_user }}" 
-    group: "{{ neo4j_user }}" 
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
   notify:
     - restart neo4j
   tags:
@@ -85,20 +77,20 @@
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_user }}"
     recurse: yes
-    mode: 0777
+    mode: 0775
   tags:
   - neo4j
 
-- name: Copy neo4j.pid 
+- name: Copy neo4j.pid
   template:
-    src: neo4j.pid.j2 
+    src: neo4j.pid.j2
     dest: "{{ neo4j_pid_dir }}/neo4j.pid"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_user }}"
-    mode: 0777
+    mode: 0775
   tags:
   - neo4j
- 
+
 - name: Create neo4j log directory
   file:
     state: directory
@@ -106,19 +98,29 @@
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_user }}"
     recurse: yes
-    mode: 0777
+    mode: 0775
   tags:
   - neo4j
 
-- name: Copy neo4j.log 
+- name: Copy neo4j.log
   template:
     src: neo4j.log.j2
-    dest: "{{ neo4j_pid_dir }}/neo4j.log"
+    dest: "{{ neo4j_log_dir }}/neo4j.log"
     owner: "{{ neo4j_user }}"
     group: "{{ neo4j_user }}"
-    mode: 0777
+    mode: 0775
   tags:
-  - neo4j 
+  - neo4j
+
+- name: Create neo4j data directory
+  file:
+    state: directory
+    path: "{{ neo4j_data_dir }}"
+    owner: "{{ neo4j_user }}"
+    group: "{{ neo4j_user }}"
+    mode: 0775
+  tags:
+  - neo4j
 
 - name: Neo4j symlinks
   file:
@@ -142,59 +144,59 @@
 
 - name: Ensure neo4j path
   lineinfile:
-    dest: /etc/rsyslog.conf 
-    line: neo4j.*                                                 /opt/neo4j/neo4j-community-3.0.4/bin/logs
-    insertafter: local7.*                                       /var/log/boot.log 
+    dest: /etc/rsyslog.conf
+    line: neo4j.*                                                 {{ neo4j_log_dir }}
+    insertafter: local7.*                                       /var/log/boot.log
     state: present
   tags:
   - neo4j
 
 - name: copy neo4j upstart script to /etc/init/neo4j.conf
-  template: 
-    src: neo4j.upstart.j2 
+  template:
+    src: neo4j.upstart.j2
     dest: /etc/init/neo4j.conf
     mode: 0644
   tags:
-  - neo4j 
+  - neo4j
 
 - name: set open fd soft and hard limit for Neo4j
   sudo: yes
-  lineinfile: 
-    dest=/etc/security/limits.conf 
-    regexp="{{ item.regexp }}"  
-    line="{{ item.line }}" 
-    insertbefore="# End of file" 
+  lineinfile:
+    dest=/etc/security/limits.conf
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    insertbefore="# End of file"
     state=present
   with_items:
     - { regexp: '^neo4j\s+soft', line: 'neo4j   soft    nofile  {{ neo4j_nofile_value }}' }
     - { regexp: '^neo4j\s+hard', line: 'neo4j   hard    nofile  {{ neo4j_nofile_value }}' }
-  when: neo4j_update_limits 
+  when: neo4j_update_limits
   tags:
   - neo4j
 
 - name: set open fd soft and hard limit for root
   sudo: yes
-  lineinfile:                              
-    dest=/etc/security/limits.conf         
-    regexp="{{ item.regexp }}"             
-    line="{{ item.line }}"                 
-    insertbefore="# End of file"           
-    state=present                          
-  with_items:                              
+  lineinfile:
+    dest=/etc/security/limits.conf
+    regexp="{{ item.regexp }}"
+    line="{{ item.line }}"
+    insertbefore="# End of file"
+    state=present
+  with_items:
     - { regexp: '^neo4j\s+soft', line: 'root soft    nofile  {{ neo4j_nofile_value }}' }
     - { regexp: '^neo4j\s+hard', line: 'root hard    nofile  {{ neo4j_nofile_value }}' }
-  when: neo4j_update_limits                
-  tags:                                    
+  when: neo4j_update_limits
+  tags:
   - neo4j
 
-- name: add limits.so 
+- name: add limits.so
   lineinfile:
-    dest: /etc/pam.d/su 
+    dest: /etc/pam.d/su
     line: session         required        pam_limits.so
     state: present
     insertafter: EOF
 
-- name: start neo4j 
+- name: start neo4j
   shell: "start neo4j"
   tags:
   - neo4j
