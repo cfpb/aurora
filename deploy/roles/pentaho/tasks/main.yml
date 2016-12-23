@@ -13,6 +13,7 @@
   unarchive:
     src: "{{ pentaho_url }}"
     dest: /opt/
+    remote_src: yes
     creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
   when: pentaho_zip_path is not defined
 

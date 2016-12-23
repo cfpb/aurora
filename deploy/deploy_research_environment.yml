@@ -5,6 +5,25 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+  tasks:
+    - name: research eod symlinks
+      file:
+         src: "{{ item.src }}"
+         dest: "{{ item.dest }}"
+      with_items: eod_symlinks 
+
+  tasks:
+    - name: Ensure X11 Forwarding is present
+      lineinfile:
+        dest: /etc/ssh/sshd_config
+        regexp: ^\s*X11Forwarding=no
+        line: X11Forwarding=yes
+
+    - name: Ensure ClientAliveCountMax is set to correct value
+      lineinfile:
+        dest: /etc/ssh/sshd_config 
+        regexp: ClientAliveCountMax
+        line: ClientAliveCountMax=384
 
 - hosts: research_ancillary_services
   become: yes
@@ -25,6 +44,11 @@
         state: present
         disable_gpg_check: yes
       when: custom_repo
+ 
+    - name: Install texlive
+      yum:
+        name: texlive
+        state: present
 
 - hosts: research_eod
   become: yes
@@ -116,3 +140,12 @@
     - odbc
     - gocd
     - stattransfer
+  tasks:
+  - name: Install libselinux-python and libicu package 
+    yum:
+      name: "{{ item }}" 
+      state: present
+      disable_gpg_check: yes 
+    with_items: 
+      - libicu 
+      - libselinux-python

@@ -49,6 +49,18 @@
 #    - mesos
 #    - mesos-master
 
+- name: Check if /usr/include/mesos/slave is a link
+  stat:
+    path: /usr/include/mesos/slave
+  register: mesos_is_link
+  when: mesos_master_fix_link
+
+- name: Fix the "slave" to "agent" link if needed
+  file:
+    dest: /usr/include/mesos/slave
+    state: absent
+  when: mesos_master_fix_link and mesos_is_link.stat.islnk is defined and not mesos_is_link.stat.islnk
+
 - name: Install mesos and supporting packages
   yum:
     name: "{{ item }}"
@@ -59,6 +71,15 @@
   tags:
     - mesos
     - mesos-master
+
+- name: Clean up RPM generated files in the config directory
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_fileglob:
+    - /etc/mesos/*.rpmnew
+    - /etc/mesos-master/*.rpmnew
+    - /etc/marathon/conf/*.rpmnew
 
 ### CONFIGURE ZOOKEEPER
 - name: Configure zookeeper with the IP's of all masters
@@ -318,6 +339,28 @@
     - mesos
     - mesos-master
 
+- name: Configure Mesos Framework Authentication
+  copy:
+    dest: /etc/marathon/conf/?mesos_authentication
+    content: ""
+  when: mesos_authenticate_frameworks
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Disable Mesos Framework Authentication
+  file:
+    dest: /etc/marathon/conf/?mesos_authentication
+    state: absent
+  when: not mesos_authenticate_frameworks
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
 - name: Configure Marathon secret file path
   copy:
     dest: /etc/marathon/conf/mesos_authentication_secret_file
@@ -382,6 +425,16 @@
     - mesos
     - mesos-master
 
+- name: Set Marathon Scheduler port number
+  template:
+    src: marathon.j2
+    dest: /etc/default/marathon
+  notify:
+    - restart marathon
+  tags:
+    - mesos
+    - mesos-master
+
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
 # Ansible "service" command doesn't work with upstart jobs on Centos, so
@@ -438,8 +491,9 @@
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
     - 2181
-    - 5050
-    - 8080
+    - "{{ mesos_master_port }}"
+    - "{{ marathon_http_port }}"
+    - "{{ marathon_scheduler_port }}"
     - 2888
     - 3888
   when: iptables_config

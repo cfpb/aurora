@@ -210,6 +210,13 @@
   tags:
     - eod
 
+- name: open up udp port in ipconfig
+  command: "iptables -I {{ iptables_chain }} 3 -p udp -m udp --dport {{ item }} -j ACCEPT"
+  with_items: "{{ eod_client_ports_udp }}"
+  when: iptables_config
+  tags:
+    - eod
+
 - name: save the new ipconfig
   command: "/sbin/service iptables save"
   when: iptables_config
@@ -245,3 +252,65 @@
   when: custom_repo
   tags:
     - eod
+
+- name: Create Xconfig directory 
+  file: 
+    path: "{{ eod_Xconfig_directory }}"
+    state: directory
+    mode: 0755
+  tags: 
+    - eod 
+
+- name: Set /etc/gdm/gdm.schema file
+  template:
+    src: gdm.schemas.j2
+    dest: /etc/gdm/gdm.schemas
+    mode: 0644
+  notify:
+    - restart eod 
+  tags:
+  - eod
+
+- name: Install yum packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+#    - pixmap-miscfixed-font
+#    - pixmap-fixed-fonts
+#    - abyssinica
+    - tree 
+  tags:
+    - eod 
+
+- name: Remove gpk-update-icon file from /etc/xdg/autostart directory 
+  file:
+    path: /etc/xdg/autostart/gpk-update-icon.desktop
+    state: absent 
+  tags:
+    - eod 
+
+- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register 
+  shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
+  register: cfg_files 
+  ignore_errors: yes
+  tags:
+    - eod 
+
+- name: Add XkbExtension to four files
+  lineinfile: 
+    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
+    regexp: XkbExtension
+    line: XkbExtension=1
+  with_items: cfg_files.stdout_lines
+  tags:
+    - eod 
+
+- name: Add Composite to four files
+  lineinfile:
+    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
+    regexp: Composite
+    line: Composite=1
+  with_items: cfg_files.stdout_lines
+  tags:                  
+    - eod  
