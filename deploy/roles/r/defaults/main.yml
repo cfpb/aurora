@@ -1,5 +1,6 @@
 ---
 install_r_updates: true
+install_r_packages: true
 
 r_dependencies:
   - QuantLib

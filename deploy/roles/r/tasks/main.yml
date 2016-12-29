@@ -67,6 +67,7 @@
   environment: "{{ r_env_vars }}"
   tags:
     - r
+  when: install_r_packages
 
 - name: Install R packages from Github
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
@@ -77,6 +78,7 @@
   environment: "{{ r_env_vars }}"
   tags:
     - r
+  when: install_r_packages
 
 - name: Re-ensure that R is executable
   file:
@@ -87,3 +89,4 @@
     - Makeconf
   tags:
     - r
+  when: install_r_packages

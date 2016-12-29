@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd_server
@@ -15,16 +15,16 @@
   serial: 1
   max_fail_percentage: 10
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
     - pentaho
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    - {role: python, when: "install_python and custom_repo"}
+    - {role: python-build, when: "install_python and not custom_repo"}
     - odbc
-    - ruby
+    - {role: ruby, when: "install_ruby"}
     - sqitch
     - nodejs
     - maven
@@ -77,7 +77,7 @@
   become: yes
   become_method: sudo
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
@@ -90,7 +90,7 @@
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - r
-    - ruby
+    - {role: ruby, when: "install_ruby"}
     - pycharm
     - r-studio-desktop
     - clouseau

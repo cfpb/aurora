@@ -1,5 +1,5 @@
 ---
-- hosts: analytics_terminals
+- hosts: analytics_terminal
   become: yes
   become_method: sudo
 
@@ -12,7 +12,7 @@
     - deploy_development_terminal.yml
     - deploy_r_terminal.yml
 
-- hosts: analytics_terminals
+- hosts: analytics_terminal
   become: yes
   become_method: sudo
   roles:

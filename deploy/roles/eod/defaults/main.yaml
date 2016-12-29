@@ -2,7 +2,7 @@
 #==================#
 ### EoD SETTINGS ###
 #==================#
-install_desktop: true
+install_desktop: False
 
 eod_binary: ecs-13.8.5-linux-x64.bin
 eod_install_directory: '/usr/local/eod'

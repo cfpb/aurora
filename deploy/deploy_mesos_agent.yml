@@ -21,7 +21,7 @@
         - p7zip
         #- julia
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: iptables, when: "iptables_config"}
     # - devtools
     - mesos_agent
@@ -31,18 +31,20 @@
     - pentaho
     - gocd
     - nginx
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    - {role: python, when: "install_python and custom_repo"}
+    - {role: python-build, when: "install_python and not custom_repo"}
+    - {role: python3, when: "install_python and custom_repo"}
+    - {role: python3-build, when: "install_python and not custom_repo"}
     - odbc
     - jdbc
-    - ruby
+    - {role: ruby, when: "install_ruby"}
     - sqitch
     - r
     - r-shiny
     - nodejs
+
   post_tasks:
+
     - name: Stop Shiny Server
       service:
         name: shiny-server
@@ -102,6 +104,7 @@
         state: present
         disable_gpg_check: yes
       with_items: "{{ python_dep_packages }}"
+      when: "install_python"
 
     - name: Install Python packages for 2.7
       pip:
@@ -109,6 +112,7 @@
         state: present
         executable: /usr/local/bin/pip2.7
       with_items: "{{ python_packages }}"
+      when: "install_python"
 
     - name: Install Python packages for 3.4
       pip:
@@ -116,3 +120,4 @@
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: "{{ python3_packages }}"
+      when: "install_python"

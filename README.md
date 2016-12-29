@@ -33,6 +33,48 @@ server is for and how it is meant to be used.
 
 ## How to test the software
 
+### Running Docker on a Macbook
+
+1. brew cask install docker-toolbox
+1. docker-machine start default
+1. docker-machine create --driver "virtualbox" default
+1. eval "$(docker-machine env default)"
+1. docker ps (to validate it works)
+
+If docker starts running out of disk space, connect to the boot2docker VM (or Mac terminal) and run this:
+
+docker ps -a -q | xargs -n 1 -I {} docker rm {}
+
+Command to make sure the exited containers are deleted:
+
+docker rm -v $(docker ps -a -q -f status=exited)
+
+### Setting up Test Environment
+
+When developing the Travis CI file, it can be helpful to test in travis's environment as described
+here: https://docs.travis-ci.com/user/common-build-problems/#Build-times-out-because-no-output-was-received
+* Note: you'll need to install the travis image with --privileged
+  * docker run --privileged -it quay.io/travisci/travis-ruby /bin/bash
+
+To do this, follow the steps above up to actually running your commands.  Before doing so, Docker must
+be installed in the Travis CI image, like so:
+
+1. sudo apt-get install apt-transport-https ca-certificates
+1. sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+1. echo "deb https://apt.dockerproject.org/repo ubuntu-precise main" | sudo tee /etc/apt/sources.list.d/docker.list
+1. sudo apt-get update
+1. apt-cache policy docker-engine
+1. sudo apt-get install docker-engine (May neeed --force-yes)
+<!-- 1. sudo dpkg-divert --local --rename --add /sbin/initctl
+1. sudo ln -s /bin/true /sbin/initctl
+1. sudo service docker start ->>
+1. docker daemon -H unix:///var/run/docker.sock&>/var/log/docker.log &
+1. git clone https://github.com/[githubfork]/aurora /aurora
+1. cd /aurora
+1. git checkout travis
+1. Run commands in travis.yml file
+
+
 TBD
 
 ## Known issues

@@ -5,9 +5,9 @@ sudo: false
 env:
  global:
   - container_id=$(mktemp)
-# - fast_finish: true
+
  matrix:
-  # proxy server
+#  proxy server
   - >
     HOST_GROUP=proxy_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
@@ -19,12 +19,6 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
 
- # analytics terminal
-  # - >
-  #   HOST_GROUP=analytics_terminal
-  #   PLAYBOOK_LOCATION=/aurora/deploy/deploy_analytics_terminal.yml 
-  #   EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_desktop": false, install_logstash}'
-
 # development_terminal
   - >
     HOST_GROUP=analytics_terminal
@@ -35,7 +29,7 @@ env:
   - >
     HOST_GROUP=analytics_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
-    EXTRA_VAR_DEF='{"install_r_updates": false, "iptables_config": false}'
+    EXTRA_VAR_DEF='{"install_r_updates": false, "iptables_config": false, "install_r_packages": false, "ip_whitelist": []}'
     
 # elastic search
   - >
@@ -47,7 +41,31 @@ env:
   - >
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "iptables_config": false}'
+
+# mesos 
+  - >
+    HOST_GROUP=mesos_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false}'
+
+# gocd  ci_server
+  - >
+    HOST_GROUP=ci_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "iptables_config": false, "install_python": false, "restart_gocd_server": false}'
+
+# gocd ci_agent
+  - >
+    HOST_GROUP=ci_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false}'
+
+# gocd ci_terminal
+  - >
+    HOST_GROUP=ci_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false, "install_talend": false}'
 
 services:
   - docker
@@ -56,12 +74,13 @@ language:
   - python
 
 before_install:
-  #- sudo apt-get update
+  - sudo apt-get update
   # Pull container
   - docker pull centos:6
   # Customize container
   - docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
 
+#May need to clean up, killed docker instances: docker rm -v $(docker ps -a -q -f status=exited)
 script:
 # Run container in detached state
   - >
@@ -80,6 +99,10 @@ script:
 # Test role
   - >
     docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+#extra log info
+#- >
+#    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
 #travis_wait built in
 #travis_wait sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
