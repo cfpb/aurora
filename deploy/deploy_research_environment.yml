@@ -4,7 +4,7 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+#    - {role: common, when: "install_glusterfs"}
   tasks:
     - name: research eod symlinks
       file:
@@ -24,6 +24,12 @@
         dest: /etc/ssh/sshd_config 
         regexp: ClientAliveCountMax
         line: ClientAliveCountMax=384
+   
+    - name: Ensure run level 5
+      lineinfile:
+        dest: /etc/inittab
+        regexp: initdefault
+        line: "id:5:initdefault:"
 
 - hosts: research_ancillary_services
   become: yes
