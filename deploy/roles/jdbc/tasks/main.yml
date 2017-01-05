@@ -4,7 +4,8 @@
   yum: 
     name: ca-certificates
     state: latest
-  sudo: yes
+  become: yes
+  become_method: sudo
 
 - name: Get JDBC driver JAR file for postgresql
   get_url:
