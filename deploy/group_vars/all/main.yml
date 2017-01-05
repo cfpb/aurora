@@ -233,3 +233,9 @@ pp_custom_test_scripts:
 
 # Eod symlinks
 eod_symlinks: []
+
+# Research environment printers symlinks
+printers_symlinks: []
+
+
+
