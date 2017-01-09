@@ -26,6 +26,19 @@
         dest: /etc/ssh/sshd_config 
         regexp: ClientAliveCountMax
         line: ClientAliveCountMax=384
+   
+    - name: Ensure run level 5
+      lineinfile:
+        dest: /etc/inittab
+        regexp: initdefault
+        line: "id:5:initdefault:"
+
+    - name: research printers symlinks
+      file: 
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items: "{{ printers_symlinks }}"
 
     - name: additional symlinks for odbc.ini, odbcinst.ini, freetds, cups to shared env
       file:

@@ -1,5 +1,5 @@
 ---
-mesos_package: mesos-0:0.28.0-2.0.16.centos65.x86_64
+mesos_package: mesos-0:1.1.0-2.0.107.centos65.x86_64
 mesos_agent_port: 5051
 mesos_agent_logging_level: "INFO"
 
@@ -13,6 +13,8 @@ mesos_agent_credential: "/etc/mesos_agent_credential"
 mesos_agent_principal: "username"
 mesos_agent_secret: "password"
 
+mesos_agent_fix_link: True
+
 # User to run processes in Mesos as
 marathon_mesos_user: "mesagent"
 
@@ -20,6 +22,8 @@ marathon_mesos_user: "mesagent"
 mesos_containerizers: "mesos"
 mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
+
+mesos_executor_registration_timeout: 5mins
 
 # File uri is not working, perhaps a bug in Mesos
 mesos_appc_enable: yes
@@ -29,4 +33,4 @@ mesos_appc_store_dir: "/tmp/mesos/store/appc"
 
 mesos_docker_enable: yes
 mesos_docker_store_dir: "/tmp/mesos/store/docker"
-mesos_docker_registry: "https://hub.docker.com/"
+mesos_docker_registry: "/home/work/mesos/docker/images"
