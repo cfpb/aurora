@@ -28,4 +28,7 @@ spark_libprocess_port:     8100
 spark_driver_port:         8099
 spark_blockManager_port:   32000
 
+spark_master:              mesos://zk://10.0.1.31:2181,10.0.1.32:2181,10.0.1.33:2181/mesos
+spark_mesos_principal:     "username"
+spark_mesos_secret:        "password"
 mesos_native_lib_path:     /usr/lib/mesos/libmesos.so
