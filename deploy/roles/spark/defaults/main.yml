@@ -4,7 +4,7 @@ spark_mirror:               "http://mirror.cc.columbia.edu/pub/software/apache/s
 spark_src_dir:              "/usr/local/src"
 spark_conf_dir:             "/etc/spark"
 # Spark extraction folder
-spark_usr_parent_dir:       "/usr/lib"                                                                  
+spark_usr_parent_dir:       "/usr/lib"
 spark_main_dir:             "/usr/lib/spark-1.5.2-bin-hadoop2.6"
 
 spark_lib_dir:              "/var/lib/spark"
@@ -22,3 +22,13 @@ spark_bin_dir:              "/usr/bin"
 spark_secret:               "test"
 spark_auth:                 "TRUE"
 spark_num_cores:            4
+spark_executor_uri:        "http://mirror.cc.columbia.edu/pub/software/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz"
+spark_user:                "mesagent"
+spark_libprocess_port:     8100
+spark_driver_port:         8099
+spark_blockManager_port:   32000
+
+spark_master:              mesos://zk://10.0.1.31:2181,10.0.1.32:2181,10.0.1.33:2181/mesos
+spark_mesos_principal:     "username"
+spark_mesos_secret:        "password"
+mesos_native_lib_path:     /usr/lib/mesos/libmesos.so
