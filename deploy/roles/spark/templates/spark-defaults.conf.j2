@@ -32,3 +32,10 @@ spark.eventLog.enabled          true
 spark.eventLog.dir              file://{{ spark_log_dir }}
 spark.authenticate              {{ spark_auth }}
 spark.authenticate.secret       {{ spark_secret }}
+
+spark.master                    {{ spark_master }}
+spark.executor.uri              {{ spark_executor_uri }}
+spark.mesos.principal           {{ spark_mesos_principal }}
+spark.mesos.secret              {{ spark_mesos_secret }}
+spark.driver.port               {{ spark_driver_port }}
+spark.blockManager.port         {{ spark_blockManager_port }}
