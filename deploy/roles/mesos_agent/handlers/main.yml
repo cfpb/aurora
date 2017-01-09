@@ -1,3 +1,6 @@
 ---
 - name: restart mesos-agent
   command: restart mesos-slave
+  tags:
+    - mesos
+    - mesos-agent

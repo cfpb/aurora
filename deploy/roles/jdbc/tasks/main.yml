@@ -1,4 +1,12 @@
 ---
+#Required for computer to make an ssl connection for postgres (since they sign their cert with letsencrypt)
+- name: Install cert utilities
+  yum: 
+    name: ca-certificates
+    state: latest
+  become: yes
+  become_method: sudo
+
 - name: Get JDBC driver JAR file for postgresql
   get_url:
     url: "{{ jdbc_postgres_url }}"
