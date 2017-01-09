@@ -23,7 +23,7 @@ spark_secret:               "test"
 spark_auth:                 "TRUE"
 spark_num_cores:            4
 spark_executor_uri:        "http://mirror.cc.columbia.edu/pub/software/apache/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz"
-spark_user:                "mesagent"
+spark_execute_user:        "mesagent"
 spark_libprocess_port:     8100
 spark_driver_port:         8099
 spark_blockManager_port:   32000
