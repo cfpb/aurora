@@ -46,6 +46,24 @@
         dest: /etc/rc.conf 
         mode: 0644
 
+    - name: Install postgresq packages in research environment
+      yum:
+        name: Install postgresql packages 
+        state: present  
+        disable_gpg_check: yes 
+      with_items:
+        - postgresql95
+        - postgresql95-devel
+        - htop
+        - cups
+        - hplip
+        - gutenprint
+        - foomatic
+        - udev
+        - firefox
+        - system-config-printer
+        
+
 - hosts: research_ancillary_services
   become: yes
   become_method: sudo
