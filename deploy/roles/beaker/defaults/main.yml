@@ -1,0 +1,7 @@
+---
+beaker_mirror:              "http://d299yghl10frh5.cloudfront.net/beaker-notebook-1.7.1-0-g6dac09a-ubuntu.zip"
+beaker_src_dir:             "/usr/local/src"
+beaker_parent_dir:          "/usr/lib"
+beaker_zip_file:            "/usr/local/src/beaker-notebook-1.7.1-0-g6dac09a-ubuntu.zip"
+beaker_main_dir:            "/usr/lib/beaker-notebook-1.7.1-0-g6dac09a-ubuntu"
+
