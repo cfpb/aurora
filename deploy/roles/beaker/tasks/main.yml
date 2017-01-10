@@ -1,0 +1,35 @@
+# main.yml - Beaker installation
+---
+- name: Ensure beaker directory is available
+  file:
+    path: "{{ beaker_src_dir }}"
+    state: directory
+    mode: 0755
+  tags:
+    - beaker
+
+- name: Download Beaker
+  get_url:
+    url: "{{ beaker_mirror }}"
+    dest: "{{ beaker_src_dir }}"
+  tags:
+    - beaker
+
+- name: Unarchive zipped beaker file
+  unarchive:
+    src: "{{ beaker_zip_file }}"
+    dest: "{{ beaker_parent_dir }}"
+    copy: no
+  tags: 
+    - beaker
+
+- name: Set up beaker environmental variables
+  template:
+    src: beaker-env.sh.j2
+    dest: "/etc/profile.d"
+    mode: 0644
+  tags:
+    - beaker
+
+
+
