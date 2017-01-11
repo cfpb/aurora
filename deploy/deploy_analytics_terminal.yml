@@ -24,6 +24,7 @@
     - maven
     - scala
     - intellij
+    - zeppelin
     # - julia
 
 # Install development packages

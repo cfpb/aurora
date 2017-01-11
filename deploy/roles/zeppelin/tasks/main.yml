@@ -1,0 +1,40 @@
+# main.yml - Zeppelin installation
+---
+- name: Ensure Zeppelin source directory exists
+  file:
+    path: "{{ zeppelin_src_dir }}"
+    state: directory
+    mode: 0755
+  tags:
+    - zepplin 
+
+- name: Download zeppelin binary
+  get_url:
+    url: "{{ zeppelin_url }}"
+    dest: "{{ zeppelin_src_dir }}"
+  tags:
+    - zeppelin 
+
+- name: Extract zepplin 
+  unarchive:
+    src: "{{ zeppelin_gz_file }}"
+    dest: "{{ zeppelin_parent_dir }}"
+    copy: no 
+  tags:
+    - zeppelin 
+
+- name: Ensure Zeppelin env file 
+  template:
+    src: zeppelin-env.sh.j2
+    dest: "{{ zeppelin_home_dir }}/conf/zeppelin-env.sh"
+    mode: 0644
+  tags:
+    - zeppelin 
+
+- name: Ensure Zeppelin site.xml file present 
+  template:
+    src: zepplin-site.xml.j2 
+    dest: "{{ zeppelin_home_dir }}/conf/zeppelin-site.xml"
+    mode: 0644
+  tags:
+    - zeppelin 
