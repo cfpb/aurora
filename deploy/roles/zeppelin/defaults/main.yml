@@ -1,0 +1,6 @@
+---
+zeppelin_url:           "http://apache.claz.org/zeppelin/zeppelin-0.6.2/zeppelin-0.6.2-bin-all.tgz"
+zeppelin_src_dir:       "/usr/local/src"
+zeppelin_parent_dir:    "/usr/lib/"
+zeppelin_gz_file:       "/usr/local/src/zeppelin-0.6.2-bin-all.tgz"
+zeppelin_home_dir:      "/usr/lib/zeppelin-0.6.2-bin-all"
