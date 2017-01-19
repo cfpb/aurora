@@ -38,6 +38,8 @@
 
 - name: Install RVM and stable Ruby
   command: "/tmp/rvm-installer.sh stable --ruby"
+  register: install_rvm_ruby
+  changed_when: "Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout
   tags:
     - ruby
 
