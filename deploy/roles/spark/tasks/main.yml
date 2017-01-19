@@ -38,7 +38,7 @@
 
 - name: Extract Spark
   unarchive:
-     src: "{{ spark_mirrr }}"
+     src: "{{ spark_mirror }}"
      dest: "{{ spark_usr_parent_dir }}"
      remote_src: yes
 
