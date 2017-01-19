@@ -18,7 +18,7 @@
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
   register: import_key
-  changed_when: "not changed" not in import_key.stderr
+  changed_when: '"not changed" not in import_key.stderr'
   tags:
     - ruby
 
@@ -39,7 +39,7 @@
 - name: Install RVM and stable Ruby
   command: "/tmp/rvm-installer.sh stable --ruby"
   register: install_rvm_ruby
-  changed_when: "Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout
+  changed_when: '"Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout'
   tags:
     - ruby
 
