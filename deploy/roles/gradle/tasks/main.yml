@@ -1,0 +1,24 @@
+# main.yml - Gradle installation
+
+- name: Download Gradle 
+  unarchive:
+    src: "{{ gradle_url }}"
+    dest: "{{ gradle_main_dir }}"
+    copy: no 
+  tags:
+    - gradle 
+
+- name: Ensure Gradle link is set up 
+  file:
+    src: "{{ gradle_download_dir}}"
+    dest: "{{ gradle_parent_dir }}"
+    state: link
+  tags:
+    - gradle
+
+- name: Set up gradle environmental variables
+  template:
+    src: gradle-env.sh
+    dest: /etc/profile.d/
+  tags:
+    - gradle

@@ -1,4 +1,5 @@
 ---
+<<<<<<< HEAD
 spark_tar_file:             "spark-1.5.2-bin-hadoop2.6.tgz"
 spark_mirror:               "http://archive.apache.org/dist/spark/spark-1.5.2/spark-1.5.2-bin-hadoop2.6.tgz"
 spark_src_dir:              "/usr/local/src"
@@ -6,6 +7,15 @@ spark_conf_dir:             "/etc/spark"
 # Spark extraction folder
 spark_usr_parent_dir:       "/usr/lib"
 spark_main_dir:             "/usr/lib/spark-1.5.2-bin-hadoop2.6"
+=======
+spark_tar_file:             "spark-1.6.2-bin-hadoop2.3.tgz"
+spark_mirror:               "http://mirror.cc.columbia.edu/pub/software/apache/spark/spark-1.6.2/spark-1.6.2-bin-hadoop2.3.tgz"
+spark_src_dir:              "/usr/local/src"
+spark_conf_dir:             "/etc/spark"
+# Spark extraction folder
+spark_usr_parent_dir:       "/usr/lib"                                                                  
+spark_main_dir:             "/usr/lib/spark-1.6.2-bin-hadoop2.3"
+>>>>>>> b63c4ac... beaker role with gradle,python and other dependencies
 
 spark_lib_dir:              "/var/lib/spark"
 spark_log_dir:              "/var/log/spark"
