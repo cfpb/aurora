@@ -1,0 +1,66 @@
+# main.yml - Beaker installation
+---
+- name: Ensure beaker parent directory is available
+  file:
+    path: "{{ beaker_parent_dir }}"
+    state: directory
+    mode: 0755
+  tags:
+    - beaker
+
+- name: Unarchive zipped beaker file
+  unarchive:
+    src: http://d299yghl10frh5.cloudfront.net/beaker-notebook-1.7.1-0-g6dac09a-ubuntu.zip
+    dest: "{{ beaker_parent_dir }}"
+    copy: no
+  tags: 
+    - beaker
+
+- name: Set up beaker environmental variables
+  template:
+    src: beaker-env.sh.j2
+    dest: "/etc/profile.d"
+    mode: 0644
+  tags:
+    - beaker
+
+- name: Install clang for CPP
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: 
+    - clang
+  tags:
+    - beaker
+
+- name: Install ZeroMQ
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes 
+  with_items:
+    - zeromq3
+    - zeromq3-devel
+  tags:
+    - beaker 
+   
+- name: Install python dependencies for to install pip packages
+  yum:
+    name: "{{ item }}"
+    state: present 
+    disable_gpg_check: yes 
+  with_items: 
+    - python-devel 
+    - python-pip
+    - python-yaml
+    - python-matplotlib 
+    - scipy
+  tags:
+    - beaker 
+
+- name: Pip installation 
+  command: pip install ipython jinja2 tornado pyzmq jsonschema jupyter
+  tags:
+    - beaker
+

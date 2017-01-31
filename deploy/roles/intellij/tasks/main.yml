@@ -34,7 +34,7 @@
 
 - name: Create symlink for idea.sh
   file:
-    src: "{{ intellij_install_dir }}/idea-IC-145.1617.8/bin/idea.sh"
+    src: "{{ intellij_install_dir }}/{{ intellij_idea_dir }}/bin/idea.sh"
     dest: "{{ intellij_main_dir }}/bin/idea.sh"
     state: link
   when: not custom_repo

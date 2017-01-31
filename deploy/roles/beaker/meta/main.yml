@@ -1,0 +1,11 @@
+# main.yml
+---
+dependencies:
+- role: gradle
+- role: jdk 
+#- role: julia
+- role: nodejs
+- role: python3
+- role: python3-build
+- role: r
+- role: ruby

@@ -1,0 +1,7 @@
+---
+#gradle_url:         https://services.gradle.org/distributions/gradle-3.3-all.zip
+gradle_url:             https://services.gradle.org/distributions/gradle-3.2-all.zip
+gradle_parent_dir:      /opt/gradle
+gradle_main_dir:        /opt
+gradle_download_dir:    /opt/gradle-3.2
+
