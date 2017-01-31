@@ -40,7 +40,8 @@
     state: present
     disable_gpg_check: yes 
   with_items:
-    - zeromq.x86_64
+    - zeromq3
+    - zeromq3-devel
   tags:
     - beaker 
    
