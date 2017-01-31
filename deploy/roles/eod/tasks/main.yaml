@@ -302,7 +302,7 @@
     dest: "{{ eod_Xconfig_directory }}/{{ item }}"
     regexp: XkbExtension
     line: XkbExtension=1
-  with_items: cfg_files.stdout_lines
+  with_items: "{{ cfg_files.stdout_lines }}"
   tags:
     - eod 
 
@@ -311,6 +311,6 @@
     dest: "{{ eod_Xconfig_directory }}/{{ item }}"
     regexp: Composite
     line: Composite=1
-  with_items: cfg_files.stdout_lines
+  with_items: "{{ cfg_files.stdout_lines }}"
   tags:                  
     - eod  
