@@ -253,13 +253,13 @@
   tags:
     - eod
 
-- name: Create Xconfig directory 
-  file: 
+- name: Create Xconfig directory
+  file:
     path: "{{ eod_Xconfig_directory }}"
     state: directory
     mode: 0755
-  tags: 
-    - eod 
+  tags:
+    - eod
 
 - name: Set /etc/gdm/gdm.schema file
   template:
@@ -267,7 +267,7 @@
     dest: /etc/gdm/gdm.schemas
     mode: 0644
   notify:
-    - restart eod 
+    - restart eod
   tags:
   - eod
 
@@ -279,38 +279,40 @@
 #    - pixmap-miscfixed-font
 #    - pixmap-fixed-fonts
 #    - abyssinica
-    - tree 
+    - tree
   tags:
-    - eod 
+    - eod
 
-- name: Remove gpk-update-icon file from /etc/xdg/autostart directory 
+- name: Remove gpk-update-icon file from /etc/xdg/autostart directory
   file:
     path: /etc/xdg/autostart/gpk-update-icon.desktop
-    state: absent 
+    state: absent
   tags:
-    - eod 
+    - eod
 
-- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register 
+- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register
   shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
-  register: cfg_files 
+  register: cfg_files
   ignore_errors: yes
   tags:
-    - eod 
+    - eod
 
 - name: Add XkbExtension to four files
-  lineinfile: 
+  lineinfile:
     dest: "{{ eod_Xconfig_directory }}/{{ item }}"
     regexp: XkbExtension
     line: XkbExtension=1
-  with_items: cfg_files.stdout_lines
+  with_items: "{{ cfg_files.stdout_lines }}"
+  when: custom_repo
   tags:
-    - eod 
+    - eod
 
 - name: Add Composite to four files
   lineinfile:
     dest: "{{ eod_Xconfig_directory }}/{{ item }}"
     regexp: Composite
     line: Composite=1
-  with_items: cfg_files.stdout_lines
-  tags:                  
-    - eod  
+  with_items: "{{ cfg_files.stdout_lines }}"
+  when: custom_repo
+  tags:
+    - eod
