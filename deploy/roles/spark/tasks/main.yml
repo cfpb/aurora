@@ -1,6 +1,6 @@
 ---
 - name: Create service account for Spark
-  user: 
+  user:
     name: "{{ spark_user }}"
     system: yes
     home: "{{ spark_lib_dir }}"
@@ -10,14 +10,14 @@
     comment: "Spark-User"
 
 - name: Make sure Spark configuration directory exists
-  file: 
+  file:
     path: "{{ spark_conf_dir }}"
     state: directory
     mode: 0755
 
 - name: Make sure Spark directories exists
-  file: 
-    path: "{{ item }}" 
+  file:
+    path: "{{ item }}"
     owner: "{{ spark_user }}"
     group: "{{ spark_user }}"
     mode: 0755
@@ -27,8 +27,8 @@
     - "{{ spark_main_dir }}"
 
 - name: Ensure Spark log directory with appropriate permissions
-  file: 
-    path: "{{ item }}" 
+  file:
+    path: "{{ item }}"
     owner: "{{ spark_user }}"
     group: "{{ spark_user }}"
     mode: 1755
@@ -36,20 +36,14 @@
   with_items:
     - "{{ spark_log_dir }}"
 
-- name: Download Spark
-  get_url: 
-    url: "{{ spark_mirror }}"                                                             
-    dest: "{{ spark_src_dir }}"
-#    validate_certs: no
-
 - name: Extract Spark
-  unarchive: 
-     src: "{{ spark_src_dir }}/{{ spark_tar_file }}"                                                          
-     dest: "{{ spark_usr_parent_dir }}"                                                       
-     copy: no
+  unarchive:
+     src: "{{ spark_mirror }}"
+     dest: "{{ spark_usr_parent_dir }}"
+     remote_src: yes
 
 - name: Spark symlinks
-  file: 
+  file:
      src: "{{ item.src }}"
      dest: "{{ item.dest }}"
      state: link
@@ -57,7 +51,7 @@
     - { src: "{{ spark_main_dir }}/conf", dest: "{{ spark_conf_dir }}/conf" }
 
 - name: Spark binaries set up
-  template: 
+  template:
     src: spark-bin.j2
     dest: "/usr/bin/{{ item }}"
     mode: 0755
@@ -68,19 +62,19 @@
     - spark-submit
 
 - name: Set up SPARK_HOME environment variables
-  template: 
+  template:
     src: "spark-env.sh.j2"
     dest: "{{ spark_main_dir }}/conf/spark-env.sh"
     mode: 0644
 
 - name: Set up spark defaults config file
-  template: 
+  template:
     src: spark-defaults.conf.j2
     dest: "{{ spark_main_dir }}/conf/spark-defaults.conf"
     mode: 0644
 
 - name: Set up spark log4j config
-  template: 
+  template:
     src: log4j.properties
     dest: "{{ spark_main_dir }}/conf/spark.properties"
     mode: 0644
@@ -90,5 +84,3 @@
     src: spark-env.sh.j2
     dest: /etc/profile.d/spark.sh
     mode: 0644
-
-
