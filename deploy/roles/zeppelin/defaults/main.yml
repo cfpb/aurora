@@ -2,6 +2,8 @@
 zeppelin_url:                   http://apache.claz.org/zeppelin/zeppelin-0.6.2/zeppelin-0.6.2-bin-all.tgz
 zeppelin_parent_dir:            "/opt"
 zeppelin_home_dir:              "/opt/zeppelin-0.6.2-bin-all"
+zeppelin_log_dir:               "/opt/zeppelin-0.6.2-bin-all/logs"
+zeppelin_pid_dir:               "/opt/zeppelin-0.6.2-bin-all/run"
 
 zeppelin_master:                []
 zeppelin_java_opts:             []
