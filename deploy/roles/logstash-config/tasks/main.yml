@@ -14,10 +14,10 @@
   notify:
     - restart logstash
 
-- name: Setup Elasticsearch filter
-  template:
-    src: 20-elasticsearch-input.conf.j2
-    dest: /etc/logstash/conf.d/20-elasticsearch-input.conf
+#- name: Setup Elasticsearch filter
+#  template:
+#    src: 20-elasticsearch-input.conf.j2
+#    dest: /etc/logstash/conf.d/20-elasticsearch-input.conf
 
 - name: Setup elasticsearch output
   template:
