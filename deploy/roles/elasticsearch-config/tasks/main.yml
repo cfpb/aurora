@@ -43,6 +43,17 @@
   notify:
     - restart elasticsearch
 
+- name: Uninstall all existing plugins
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_uninstall_cmd }} {{ es_shield_version }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items:
+    - "{{ es_plugins }}"
+    - kopf
+    - shield
+  notify:
+    - restart elasticsearch
+
 - name: Install the Shield plugin
   command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_install_cmd }} {{ es_shield_version }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
   register: shield_result
