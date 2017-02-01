@@ -1,0 +1,41 @@
+# main.yml - Zeppelin installation
+---
+- name: Ensure Zeppelin log directory is present
+  file:
+    path: "{{ zeppelin_log_dir }}"
+    state: directory
+    mode: 0755
+  tags:
+    - zeppelin 
+
+- name: Ensure Zeppelin pid directory is present 
+  file:
+    path: "{{ zeppelin_pid_dir }}"
+    state: directory 
+    mode: 0755
+  tags:
+    zeppelin
+
+- name: Unarchive and install Zeppelin
+  unarchive:
+    src: "{{ zeppelin_url }}"
+    dest: "{{ zeppelin_parent_dir }}"
+    copy: no
+  tags:
+    - zeppelin 
+
+- name: Ensure Zeppelin env file 
+  template:
+    src: zeppelin-env.sh.j2
+    dest: "{{ zeppelin_home_dir }}/conf/zeppelin-env.sh"
+    mode: 0644
+  tags:
+    - zeppelin 
+
+- name: Ensure Zeppelin site.xml file present 
+  template:
+    src: zeppelin-site.xml.j2 
+    dest: "{{ zeppelin_home_dir }}/conf/zeppelin-site.xml"
+    mode: 0644
+  tags:
+    - zeppelin 
