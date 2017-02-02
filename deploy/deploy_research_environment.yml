@@ -103,7 +103,7 @@
     - r-studio-server
     - pycharm
     - odbc
-    - gocd
+#    - gocd
     - stattransfer
   tasks:
     - name: Install Python RPM dependencies
@@ -111,21 +111,30 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: python_dep_packages
+      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 27
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: python_packages
+      with_items: "{{ python_packages }}"
 
     - name: Install Python packages for 34
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python3_packages
+      with_items: "{{ python3_packages }}"
+    
+    - name: Install Gnome-Terminal packages 
+      yum:
+        name: "{{ item }}"
+        state: present 
+        disable_gpg_check: yes 
+      with_items:
+        - "@X Window System"
+        - "@Desktop"
 
 - hosts: research_sas
   become: yes
