@@ -93,6 +93,7 @@
   tags:
     - mesos
     - mesos-agent
+  when: mesos_master
 
 - name: Add the ip address to the Mesos agent config folder
   copy:

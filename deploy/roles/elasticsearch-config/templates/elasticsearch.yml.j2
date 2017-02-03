@@ -102,7 +102,7 @@ discovery.zen.minimum_master_nodes: {{ es_majority_num }}
 #
 
 discovery.zen.ping.multicast.enabled: false
-discovery.zen.ping.unicast.hosts: [{% for host in groups["elasticsearch"] %}"{{ hostvars[host]['ansible_ssh_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]
+discovery.zen.ping.unicast.hosts: {% if "elasticsearch" in groups %}[{% for host in groups["elasticsearch"] %}"{{ hostvars[host]['ansible_ssh_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]{% else %}[127.0.0.1]{% endif %}
 
 # ---------------------------------- Various -----------------------------------
 #

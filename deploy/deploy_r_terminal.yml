@@ -1,0 +1,12 @@
+---
+- hosts: analytics_terminal
+  become: yes
+  become_method: sudo
+  roles:
+    - r
+    - revolution-r
+    - r-shiny
+    - r-shiny-config
+    - r-studio-server
+    - r-studio-server-config
+    - r-studio-desktop

@@ -36,6 +36,7 @@
     disable_gpg_check: yes
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Create symlink for Revolution R
   file:
@@ -44,6 +45,7 @@
     dest: "/usr/local/bin/RevoR"
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Create symlink for Revolution R Script command
   file:
@@ -52,6 +54,7 @@
     dest: "/usr/local/bin/RevoRscript"
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Ensure that R is executable
   file:
@@ -62,6 +65,7 @@
     - Makeconf
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Override errant R_ARCH variable
   template:
@@ -75,6 +79,7 @@
   shell: "/usr/local/bin/RevoR CMD javareconf"
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Install packages required by R packages
   yum:
@@ -84,6 +89,7 @@
   with_items: "{{ revolution_r_dependencies }}"
   tags:
     - revolution_r
+  when: install_r_packages
 
 # Don't update packages for now, as devtools must be at a fixed version
 #- name: Update existing R packages
@@ -104,6 +110,7 @@
   environment: "{{ revolution_r_env_vars }}"
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Install R packages
   command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
@@ -114,6 +121,7 @@
   environment: "{{ revolution_r_env_vars }}"
   tags:
     - revolution_r
+  when: install_r_packages
 
 - name: Install R packages from Github
   command: /usr/local/bin/RevoRscript --slave --no-save --no-restore-history -e "library(devtools); options(download.file.method='wget'); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
@@ -124,6 +132,7 @@
   environment: "{{ revolution_r_env_vars }}"
   tags:
     - revolution_r
+  when: install_r_packages
 
 ### MKL Package
 
@@ -167,3 +176,4 @@
   environment: "{{ revolution_r_env_vars }}"
   tags:
     - revolution_r
+  when: install_r_packages

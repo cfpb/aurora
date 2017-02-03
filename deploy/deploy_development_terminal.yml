@@ -1,0 +1,77 @@
+---
+- hosts: analytics_terminal
+  become: yes
+  become_method: sudo
+
+  roles:
+      - {role: epel, when: "use_epel and not 'production' in group_names"}
+      - {role: python, when: "install_python and custom_repo"}
+      - {role: python-build, when: "install_python and not custom_repo"}
+      - {role: python3, when: "install_python and custom_repo"}
+      - {role: python3-build, when: "install_python and not custom_repo"}
+      - devtools
+      - ruby
+      - jdk
+      - pycharm
+      - postgresql-client
+      - nginx
+      - spark
+      - sublime
+      - nodejs
+      - redis
+      - maven
+      - {role: intellij, when: "not 'production' in group_names"}
+      - clouseau
+      # - julia
+
+# Install development packages
+- hosts: analytics_terminal
+  become: yes
+  tasks:
+    - name: Install development packages
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - "@development"
+        - gcc-gfortran
+        - python-devel
+        - pgadmin3_95
+
+    - name: Install custom RPMs
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items:
+        - xsv
+        - gnucobol
+        - htop
+        - p7zip
+        - rhobot
+      when: custom_repo
+
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: python_dep_packages
+      when: install_python
+
+    - name: Install Python packages for 27
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: python_packages
+      when: install_python
+
+    - name: Install Python packages for 34
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: python3_packages
+      when: install_python

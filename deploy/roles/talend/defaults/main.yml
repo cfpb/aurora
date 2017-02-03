@@ -9,3 +9,4 @@ talend_heap_max: 768m
 talend_max_perm_size: 256m
 talend_java_version: java-1.7.0-openjdk
 talend_java_path: /usr/lib/jvm/jre-1.7.0/bin
+install_talend: true
