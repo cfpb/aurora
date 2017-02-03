@@ -441,6 +441,8 @@
     - mesos
     - mesos-master
 
+- name: Set task failure timeout
+
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
 # Ansible "service" command doesn't work with upstart jobs on Centos, so
