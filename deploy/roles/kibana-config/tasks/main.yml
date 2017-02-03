@@ -9,5 +9,5 @@
 - name: Start Kibana
   command: start kibana
   register: kibana_start
-  failed_when: kibana_start.rc != 0 and "Job is already running" not in kibana_start.stderr
-  changed_when: "Job is already running" not in kibana_start.stderr
+  failed_when: 'kibana_start.rc != 0 and "Job is already running" not in kibana_start.stderr'
+  changed_when: '"Job is already running" not in kibana_start.stderr'

@@ -18,8 +18,7 @@
 - name: Import key
   command: "gpg --import /tmp/mpapis.asc"
   register: import_key
-  failed_when: import_key.rc != 0 and "not changeds" not in import_key.stderr
-  changed_when: import_key.rc == 0
+  changed_when: '"not changed" not in import_key.stderr'
   tags:
     - ruby
 
@@ -37,15 +36,10 @@
   tags:
     - ruby
 
-#- name: Import GPG Keys
-#  command: 'gpg --keyserver hkp://keys.gnupg.net:80 --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3'
-#  changed_when: false
-#  ignore_errors: yes
-#  tags:
-#    - ruby
-
 - name: Install RVM and stable Ruby
   command: "/tmp/rvm-installer.sh stable --ruby"
+  register: install_rvm_ruby
+  changed_when: '"Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout'
   tags:
     - ruby
 
