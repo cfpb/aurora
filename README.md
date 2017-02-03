@@ -65,7 +65,6 @@ be installed in the Travis CI image, like so:
 1. sudo apt-get update
 1. apt-cache policy docker-engine
 1. sudo apt-get install docker-engine (May neeed --force-yes)
-<!-- 1. sudo dpkg-divert --local --rename --add /sbin/initctl
 1. sudo ln -s /bin/true /sbin/initctl
 1. sudo service docker start ->>
 1. docker daemon -H unix:///var/run/docker.sock&>/var/log/docker.log &

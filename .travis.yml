@@ -104,6 +104,8 @@ script:
 #- >
 #    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
+#The below comments are different attempts to resolve a timeout issue associated with running ansible deployments on Travis. When the anisible playbooks
+#complete, travis does not receive an (apparently) expected notificiation, and then times out after 10 mins of no output. 
 #travis_wait built in
 #travis_wait sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 

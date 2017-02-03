@@ -317,4 +317,4 @@
   with_items: "{{ cfg_files.stdout_lines }}"
   when: custom_repo
   tags:
-    - eoded mesos to travis tests and instructions to run travis locally
+    - eod 
