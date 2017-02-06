@@ -30,6 +30,7 @@
         state: present
         disable_gpg_check: yes
       with_items: python_dep_packages
+      when: install_python
 
     - name: Install Python packages for 27
       pip:
@@ -37,6 +38,7 @@
         state: present
         executable: /usr/local/bin/pip2.7
       with_items: python_packages
+      when: install_python
 
     - name: Install Python packages for 34
       pip:
@@ -44,6 +46,7 @@
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: python3_packages
+      when: install_python
 
     - name: Install needed packages
       yum:

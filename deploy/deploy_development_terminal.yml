@@ -37,7 +37,7 @@
         - "@development"
         - gcc-gfortran
         - python-devel
-        - pgadmin3_95
+        - pgadmin3_96
 
     - name: Install custom RPMs
       yum:

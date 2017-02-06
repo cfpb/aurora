@@ -13,6 +13,7 @@
     dest: /etc/rstudio/ip-rules
   notify:
     - restart rstudio-server
+  with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
 
@@ -52,13 +53,13 @@
 
 - name: Open R Studio Server port in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ rstudio_port }} -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
 
 - name: Save rules
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - rstudio-server

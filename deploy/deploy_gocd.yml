@@ -21,8 +21,8 @@
     - {role: iptables, when: "iptables_config"}
     - gocd
     - pentaho
-    - {role: python, when: "install_python and custom_repo"}
-    - {role: python-build, when: "install_python and not custom_repo"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
     - odbc
     - {role: ruby, when: "install_ruby"}
     - sqitch

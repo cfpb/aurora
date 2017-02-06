@@ -38,3 +38,4 @@ gconf_settings:
 
 eod_Xconfig_directory: /usr/local/eod/conf/admin/Xconfig
 eod_greeter_include: false
+

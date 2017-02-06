@@ -1,7 +1,7 @@
 ---
 - name: Install postgres repository
   yum:
-    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-9.4-1.noarch.rpm
+    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-{{ pp_rpm_version }}.noarch.rpm
     state: present
   when: not 'production' in group_names
   always_run: true
@@ -34,6 +34,7 @@
     creates: "{{ pp_prefix }}"
   notify:
     - restart postgres
+  when: install_ppas
 
 - name: Ensure the data directory exists
   file:
@@ -43,6 +44,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
+  when: install_ppas
 
 - name: Ensure the log directory exists
   file:
@@ -52,6 +54,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
+  when: install_ppas
 
 - name: Configure postgres connection options
   template:
@@ -62,6 +65,7 @@
     mode: 0600
   notify:
     - restart postgres
+  when: install_ppas
 
 - name: Configure PPAS server
   template:
@@ -72,6 +76,7 @@
     mode: 0600
   notify:
     - restart postgres
+  when: install_ppas
 
 # IF SSL is enabled, generate the cert and key
 - name: Create SSL certificate request
@@ -112,17 +117,20 @@
     dest: "{{ pp_datadir }}/server.key"
     mode: "og-rwx"
   when: pp_ssl_enable == 'on'
+  when: install_ppas
 
 - name: Set permissions on PPAS directory
   file:
     dest: "{{ pp_prefix }}9.4AS"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
+  when: install_ppas
 
 - name: Copy the environment file
   shell: "cat {{ pp_prefix }}9.4AS/pgplus_env.sh >> {{ pp_prefix }}9.4AS/.bash_profile"
   args:
     creates: "{{ pp_prefix }}9.4AS/.bash_profile"
+  when: install_ppas
 
 - name: Set ownership of environment file
   file:
@@ -130,14 +138,15 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0600
+  when: install_ppas
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
 
 - name: Save rules
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
 
 - name: Remove the temporary folder
   file:
