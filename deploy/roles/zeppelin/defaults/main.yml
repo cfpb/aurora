@@ -7,9 +7,10 @@ zeppelin_pid_dir:               "/opt/zeppelin-0.7.0-bin-all/run"
 
 zeppelin_master:                []
 zeppelin_java_opts:             []
-zeppelin_mem:                   []
-zeppelin_intp_mem:              []
-zeppelin_spark_home:            []
-zeppelin_spark_submit_options:  []
-zeppelin_pyspark_python:        []
-zeppelin_port:                  8080
+
+ZEPPELIN_MEM:                   []
+ZEPPELIN_INTP_MEM:              []
+ZEPPELIN_SPARK_HOME:            []
+ZEPPELIN_SPARK_SUBMIT_OPTIONS:  []
+ZEPPELIN_PYSPARK_PYTHON:        []
+ZEPPELIN_PORT:                  8080
