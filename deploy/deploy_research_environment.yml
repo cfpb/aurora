@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   roles:
-    - {role: iptables, when: "iptables_config"}
+    - iptables
     - {role: common, when: "install_glusterfs"}
   tasks:
     - name: research eod symlinks
@@ -111,21 +111,23 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: python_dep_packages
+      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 27
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: python_packages
+      with_items: "{{ python_packages }}"
+      when: install_python
 
     - name: Install Python packages for 34
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python3_packages
+      with_items: "{{ python3_packages }}"
+      when: install_python
 
 - hosts: research_sas
   become: yes
