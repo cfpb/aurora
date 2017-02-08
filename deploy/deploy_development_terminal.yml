@@ -20,7 +20,7 @@
       - nodejs
       - redis
       - maven
-      - {role: intellij, when: "not 'production' in group_names"}
+      - intellij
       - clouseau
       # - julia
 
