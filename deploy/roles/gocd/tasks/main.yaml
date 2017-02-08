@@ -42,7 +42,9 @@
 
 - name: Upgrade GoCD Agent
   command: rpm -U "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+  register: gocd_upgrade_result
   when: gocd_upgrade
+  failed_when: gocd_upgrade_result.rc != 0 and "is already installed" not in gocd_upgrade_result.stderr
   notify:
     - restart go-agent
 
