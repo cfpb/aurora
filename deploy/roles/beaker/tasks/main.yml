@@ -19,7 +19,7 @@
 - name: Set up beaker environmental variables
   template:
     src: beaker-env.sh.j2
-    dest: "/etc/profile.d"
+    dest: "/etc/profile.d/beaker-env.sh"
     mode: 0644
   tags:
     - beaker
