@@ -1,6 +1,6 @@
 ---
 intellij_version:        "2016.1.4"
-intellij_url:            "http://download.jetbrains.com/idea/ideaIC-{{intellij_version}}.tar.gz"
+intellij_url:            "http://download.jetbrains.com/idea/ideaIC-2016.1.4.tar.gz"
 intellij_install_dir:    "/opt/idea"
 intellij_main_dir:       "/usr/local"
 intellij_desktop_dir:    "/usr/share/applications"
