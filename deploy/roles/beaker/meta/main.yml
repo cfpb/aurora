@@ -1,6 +1,7 @@
 # main.yml
 ---
 dependencies:
+- nginx
 - role: gradle
 - role: jdk 
 #- role: julia

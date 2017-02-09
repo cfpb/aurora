@@ -7,7 +7,7 @@
     disable_gpg_check: yes
   with_items:
     - libselinux-python
-    - nginx
+    - nginx-{{ nginx_version }}
   tags:
     - nginx
 

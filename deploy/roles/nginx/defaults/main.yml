@@ -8,6 +8,8 @@ nginx_listen: 80
 
 nginx_user: nginx_user
 
+nginx_version: 1.10.2
+
 nginx_dir: "/etc/nginx"
 nginx_log_dir: "/var/log/nginx"
 nginx_error_log: "/var/log/nginx/error.log"
