@@ -20,6 +20,7 @@ Vagrant.configure(2) do |config|
   if ENV['EXTRA_VARS']
     ansible_extra_vars = eval(ENV['EXTRA_VARS'])
   end
+  ansible_limit = ENV['LIMIT']
 
   ########################
   ### SHARED COMPONENT ###
@@ -53,6 +54,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     fs_config.vm.network :private_network, ip: "10.0.1.4"
@@ -86,6 +88,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     fs_config.vm.provision 'ansible' do |ansible|
@@ -93,6 +96,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     fs_config.vm.network :private_network, ip: "10.0.1.5"
@@ -114,6 +118,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     adterm_config.vm.network :private_network, ip: "10.0.1.2"
@@ -137,6 +142,7 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     kerberos_config.vm.network :private_network, ip: "10.0.1.127"
@@ -173,6 +179,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     proxy_config.vm.provision "ansible" do |ansible|
@@ -181,6 +188,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     proxy_config.vm.network :private_network, ip: "10.0.1.3"
@@ -207,6 +215,7 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     proxy_config.vm.provision "ansible" do |ansible|
@@ -214,6 +223,7 @@ Vagrant.configure(2) do |config|
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     proxy_config.vm.network :private_network, ip: "10.0.1.128"
@@ -244,6 +254,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     analytics_config.vm.network :private_network, ip: "10.0.1.12"
@@ -264,6 +275,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     elk_config.vm.network :private_network, ip: "10.0.1.16"
@@ -285,6 +297,7 @@ Vagrant.configure(2) do |config|
         ansible.tags = ansible_tags
         ansible.verbose = ansible_verbosity
         ansible.extra_vars = ansible_extra_vars
+        ansible.limit = ansible_limit
       end
 
       es_config.vm.network :private_network, ip: "10.0.1.#{i+12}"
@@ -309,6 +322,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     app_config.vm.network :private_network, ip: "10.0.1.17"
@@ -331,6 +345,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.18"
@@ -349,6 +364,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.19"
@@ -367,6 +383,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.20"
@@ -385,6 +402,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.21"
@@ -403,6 +421,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.22"
@@ -421,6 +440,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.23"
@@ -439,6 +459,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.24"
@@ -457,6 +478,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.25"
@@ -478,6 +500,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.26"
@@ -495,6 +518,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.27"
@@ -512,6 +536,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.28"
@@ -553,6 +578,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.29"
@@ -571,6 +597,7 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.30"
@@ -585,17 +612,18 @@ Vagrant.configure(2) do |config|
 
     neo4j_config.vm.provider "virtualbox" do |v|
      v.memory = 1024
-     v.cpus = 1 
+     v.cpus = 1
     end
 
-    neo4j_config.vm.provision "ansible" do |ansible| 
-     ansible.playbook = "deploy_neo4j_server.yml"                                      
-     ansible.inventory_path = "vagrant_hosts"                                   
-     ansible.tags = ansible_tags 
+    neo4j_config.vm.provision "ansible" do |ansible|
+     ansible.playbook = "deploy_neo4j_server.yml"
+     ansible.inventory_path = "vagrant_hosts"
+     ansible.tags = ansible_tags
      ansible.verbose = ansible_verbosity
+     ansible.limit = ansible_limit
     end
 
-    neo4j_config.vm.network :private_network, ip: "10.0.1.37"                 
+    neo4j_config.vm.network :private_network, ip: "10.0.1.37"
   end
 
 
@@ -625,6 +653,7 @@ Vagrant.configure(2) do |config|
         ansible.tags = ansible_tags
         ansible.verbose = ansible_verbosity
         ansible.extra_vars = ansible_extra_vars
+        ansible.limit = ansible_limit
       end
     end
   end
@@ -651,6 +680,7 @@ Vagrant.configure(2) do |config|
         ansible.tags = ansible_tags
         ansible.verbose = ansible_verbosity
         ansible.extra_vars = ansible_extra_vars
+        ansible.limit = ansible_limit
       end
     end
   end

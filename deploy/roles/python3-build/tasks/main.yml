@@ -7,51 +7,53 @@
   changed_when: no
 
 - name: Make sure rpmbuild is empty
-  sudo: no
+  become: no
   file:
     path: "~/rpmbuild"
     state: absent
   when: "'is not installed' in python34_check.stdout"
 
 - name: Make sure git is installed
-  sudo: yes
+  become: yes
+  become_method: sudo
   yum:
     name: git
     state: latest
   when: "'is not installed' in python34_check.stdout"
 
 - name: Clone git repo
-  sudo: no
+  become: no
   git:
     dest: "~/python34"
     repo: https://github.com/cfpb/python34-for-el6.git
   when: "'is not installed' in python34_check.stdout"
 
 - name: Run bootstrap script
-  sudo: no
+  become: no
   command: "sh ./bootstrap.sh"
   args:
     chdir: "~/python34"
   when: "'is not installed' in python34_check.stdout"
 
 - name: Build python RPM
-  sudo: no
+  become: no
   command: "rpmbuild -ba SPECS/python34-alt.spec"
   args:
     chdir: "~/rpmbuild"
     creates: "~/rpmbuild/RPMS/x86_64/python34-3.4.3-2.el6.x86_64.rpm"
-  when: "'is not installed' in python34_check.stdout"
+  when: "install_python and 'is not installed' in python34_check.stdout"
 
 - name: Copy RPM to /tmp so it is accessible by root
-  sudo: no
+  become: no
   command: "cp ~/rpmbuild/RPMS/x86_64/python34-3.4.3-2.el6.x86_64.rpm /tmp/python34-3.4.3-2.el6.x86_64.rpm"
   args:
     creates: "/tmp/python34-3.4.3-2.el6.x86_64.rpm"
-  when: "'is not installed' in python34_check.stdout"
+  when: "install_python and 'is not installed' in python34_check.stdout"
 
 - name: Install python
-  sudo: yes
+  become: yes
+  become_method: sudo
   yum:
     name: "/tmp/python34-3.4.3-2.el6.x86_64.rpm"
     state: present
-  when: "'is not installed' in python34_check.stdout"
+  when: "install_python and 'is not installed' in python34_check.stdout"

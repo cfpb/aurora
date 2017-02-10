@@ -62,6 +62,9 @@ mount_glusterfs: True
 # for this reason
 install_eod: False
 
+# Allow disabling of Python building when needed
+install_python: True
+
 # Proxy settings
 proxy_host:
 proxy_port:

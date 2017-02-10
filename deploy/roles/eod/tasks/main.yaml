@@ -295,7 +295,8 @@
   register: cfg_files
   ignore_errors: yes
   tags:
-    - eod
+    - eod 
+  when: custom_repo
 
 - name: Add XkbExtension to four files
   lineinfile:
@@ -305,7 +306,8 @@
   with_items: "{{ cfg_files.stdout_lines }}"
   when: custom_repo
   tags:
-    - eod
+    - eod 
+  when: custom_repo
 
 - name: Add Composite to four files
   lineinfile:
@@ -315,4 +317,4 @@
   with_items: "{{ cfg_files.stdout_lines }}"
   when: custom_repo
   tags:
-    - eod
+    - eod 

@@ -93,6 +93,7 @@
   tags:
     - mesos
     - mesos-agent
+  when: '"mesos_master" in groups'
 
 - name: Add the ip address to the Mesos agent config folder
   copy:
@@ -337,11 +338,7 @@
   tags:
     - mesos
     - mesos-agent
-
   when: iptables_config
-  tags:
-    - mesos
-    - mesos-agent
 
 - name: Save iptables
   command: "/sbin/service iptables save"

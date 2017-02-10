@@ -1,0 +1,143 @@
+# .travis.yml
+---
+sudo: false
+
+env:
+ global:
+  - container_id=$(mktemp)
+
+ matrix:
+#  proxy server
+  - >
+    HOST_GROUP=proxy_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
+
+ # admin terminal  
+  - >
+    HOST_GROUP=admin_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
+
+# development_terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "iptables_config": false}'
+
+# r_terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
+    EXTRA_VAR_DEF='{"install_r_updates": false, "iptables_config": false, "install_r_packages": false, "ip_whitelist": []}'
+    
+# elastic search
+  - >
+    HOST_GROUP=elasticsearch
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
+
+# elk 
+  - >
+    HOST_GROUP=elk
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "iptables_config": false}'
+
+# mesos 
+  - >
+    HOST_GROUP=mesos_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false}'
+
+# gocd  ci_server
+  - >
+    HOST_GROUP=ci_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "iptables_config": false, "install_python": false, "restart_gocd_server": false}'
+
+# gocd ci_agent
+  - >
+    HOST_GROUP=ci_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false}'
+
+# gocd ci_terminal
+  - >
+    HOST_GROUP=ci_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "iptables_config": false, "install_talend": false}'
+
+services:
+  - docker
+
+language: 
+  - python
+
+before_install:
+  - sudo apt-get update
+  # Pull container
+  - docker pull centos:6
+  # Customize container
+  - docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
+
+#May need to clean up, killed docker instances: docker rm -v $(docker ps -a -q -f status=exited)
+script:
+# Run container in detached state
+  - >
+    docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
+# Parameterize docker temp file build
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
+# Syntax check
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+# Test role
+  - >
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+#extra log info
+#- >
+#    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+#The below comments are different attempts to resolve a timeout issue associated with running ansible deployments on Travis. When the anisible playbooks
+#complete, travis does not receive an (apparently) expected notificiation, and then times out after 10 mins of no output. 
+#travis_wait built in
+#travis_wait sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+
+#travis_wait 20 
+
+#    while kill -0 $! >/dev/null 2>&1; do
+# sudo docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" &
+
+# minutes=0;
+# limit=20;
+
+# while true; do
+#   echo -n -e " \b"; 
+
+#   if [ $minutes == $limit ]; then
+#     break;
+#   fi
+
+#   minutes=$((minutes+1));
+
+#   sleep 60;
+# done
+# While loop source
+# https://github.com/lancelet/docker/commit/3ab8515725e59d020728deebf4b97809a1cf9068
+#
+# --extra-vars "${EXTRA_VAR_DEF}"
+# Idempotence test
+# - >
+#   sudo docker exec "$(cat ${container_id})" ansible-playbook /aurora/deploy/deploy_admin_terminal.yml --extra-vars "{"install_glusterfs": false, "install_python": false, "install_logstash": false}"
+#   | grep -q 'changed=0.*failed=0'
+#   && (echo 'Idempotence test: pass' && exit 0)
+#   || (echo 'Idempotence test: fail' && exit 1)
+
+# Clean up
+  - docker stop "$(cat ${container_id})"

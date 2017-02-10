@@ -9,7 +9,7 @@
     - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    - {role: python-build, when: "install_python and not custom_repo" }
     - {role: log-courier, when: "install_logstash"}
     - eod
 
@@ -27,3 +27,4 @@
         name: ansible
         state: present
       sudo: no
+      when: "install_python"

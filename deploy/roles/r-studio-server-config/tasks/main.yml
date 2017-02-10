@@ -53,7 +53,7 @@
 - name: Open R Studio Server port in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ rstudio_port }} -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
   when: iptables_config
-  with_items: "{{ groups['proxy_server'] }}"
+  with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
 

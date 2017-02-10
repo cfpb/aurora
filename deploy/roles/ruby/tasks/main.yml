@@ -40,6 +40,7 @@
   command: "/tmp/rvm-installer.sh stable --ruby"
   register: install_rvm_ruby
   changed_when: '"Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout'
+  when: install_ruby
   tags:
     - ruby
 
@@ -47,6 +48,7 @@
   file:
     dest: /etc/rvmrc
     mode: 0664
+  when: install_ruby
   tags:
     - ruby
 
@@ -57,6 +59,7 @@
   with_items:
     - /usr/bin/ruby
     - /usr/bin/gem
+  when: install_ruby
   tags:
     - ruby
 
@@ -65,7 +68,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/ruby
     dest: /usr/bin/ruby
-  when: not stat_result.results[0].stat.exists or stat_result.results[0].stat.islnk
+  when: install_ruby and (not stat_result.results[0].stat.exists or stat_result.results[0].stat.islnk)
   tags:
     - ruby
 
@@ -74,7 +77,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/ruby
     dest: /usr/local/bin/ruby
-  when: stat_result.results[0].stat.exists and not stat_result.results[0].stat.islnk
+  when: install_ruby and (stat_result.results[0].stat.exists and not stat_result.results[0].stat.islnk)
   tags:
     - ruby
 
@@ -83,7 +86,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/gem
     dest: /usr/bin/gem
-  when: not stat_result.results[1].stat.exists or stat_result.results[1].stat.islnk
+  when: install_ruby and not (stat_result.results[1].stat.exists or stat_result.results[1].stat.islnk)
   tags:
     - ruby
 
@@ -92,7 +95,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/gem
     dest: /usr/local/bin/gem
-  when: stat_result.results[1].stat.exists and not stat_result.results[1].stat.islnk
+  when: install_ruby and (stat_result.results[1].stat.exists and not stat_result.results[1].stat.islnk)
   tags:
     - ruby
 
@@ -101,6 +104,7 @@
     name: bundler
     state: present
     user_install: no
+  when: install_ruby
   tags:
     - ruby
 
@@ -109,6 +113,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/bundle
     dest: /usr/bin/bundle
+  when: install_ruby
   tags:
     - ruby
 
@@ -117,5 +122,6 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/ruby_executable_hooks
     dest: /usr/bin/ruby_executable_hooks
+  when: install_ruby
   tags:
     - ruby

@@ -1,3 +1,3 @@
 ---
 jdbc_postgres_url: https://jdbc.postgresql.org/download/postgresql-9.4-1206-jdbc42.jar
-jdbc_sql_url: https://download.microsoft.com/download/0/2/A/02AAE597-3865-456C-AE7F-613F99F850A8/sqljdbc_4.2.6420.100_enu.tar.gz
+jdbc_sql_url: https://download.microsoft.com/download/0/2/A/02AAE597-3865-456C-AE7F-613F99F850A8/enu/sqljdbc_6.0.8112.100_enu.tar.gz

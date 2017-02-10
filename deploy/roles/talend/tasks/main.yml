@@ -14,19 +14,23 @@
       src: "{{ talend_zip_path }}/{{ talend_zip_name }}.zip"
       dest: /opt/
       creates: /opt/{{ talend_zip_name }}
+    when: install_talend
 
   - name: Configure Talend
     template:
       src: TOS_DI-linux-gtk-x86.ini.j2
       dest: /opt/{{ talend_zip_name }}/TOS_DI-linux-gtk-x86.ini
+    when: install_talend
 
   - name: Ensure talend is executable
     file:
       dest: /opt/{{ talend_zip_name }}/TOS_DI-linux-gtk-x86.sh
       mode: 0755
+    when: install_talend
 
   - name: Create talend shortcut
     template:
       src: talend.desktop.j2
       dest: /usr/share/applications/talend.desktop
       mode: 0644
+    when: install_talend
