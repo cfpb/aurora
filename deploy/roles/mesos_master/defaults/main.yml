@@ -76,6 +76,7 @@ marathon_mesos_secret: "password"
 marathon_role: "marathon"
 marathon_webui_url: "https://marathon.test.dev"
 marathon_secret_file: "/etc/marathon_secret"
+marathon_task_expunge_timeout: 75000
 
 # Artifact store
 marathon_artifact_store: "file:///home/work/marathon/store"
