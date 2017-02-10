@@ -42,6 +42,7 @@
     - r
     - r-shiny
     - nodejs
+    - redis
 
   post_tasks:
 
