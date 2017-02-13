@@ -1,7 +1,7 @@
 ---
 #pentaho_zip_path: .
 #pentaho_zip_file: pdi-ce-6.0.1.0-386.zip
-pentaho_url: https://downloads.sourceforge.net/project/pentaho/Data%20Integration/6.0/pdi-ce-6.0.1.0-386.zip?r=&ts=1487017242&use_mirror=svwh
+pentaho_url: https://downloads.sourceforge.net/project/pentaho/Data%20Integration/7.0/pdi-ce-7.0.0.0-25.zip?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fpentaho%2F%3Fsource%3Dtyp_redirect&ts=1487108218&use_mirror=superb-dca2
 pentaho_version: 6.0.1.0-386
 pentaho_heap_size: "512m"
 pentaho_perm_size: "256m"

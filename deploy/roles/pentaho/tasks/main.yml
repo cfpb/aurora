@@ -10,11 +10,12 @@
     state: present
 
 - name: Download Pentaho
-  unarchive:
-    src: "{{ pentaho_url }}"
+  get_url:
+    url: "{{ pentaho_url }}"
     dest: /opt/
-    remote_src: yes
-    creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+    #remote_src: yes
+    #creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+    timeout: 10
   when: pentaho_zip_path is not defined
 
 - name: Extract Pentaho

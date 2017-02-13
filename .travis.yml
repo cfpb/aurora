@@ -7,11 +7,11 @@ env:
   - container_id=$(mktemp)
 
  matrix:
-#  proxy server
-  - >
-    HOST_GROUP=proxy_server
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
+# #  proxy server
+#   - >
+#     HOST_GROUP=proxy_server
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
+#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
 
 #  # admin terminal  
 #   - >
@@ -49,11 +49,11 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
 #     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
-# # gocd  ci_server
-#   - >
-#     HOST_GROUP=ci_server
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
+# gocd  ci_server
+  - >
+    HOST_GROUP=ci_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
 # # gocd ci_agent
 #   - >
@@ -61,11 +61,11 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
 #     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
-# gocd ci_terminal
-  - >
-    HOST_GROUP=ci_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
+# # gocd ci_terminal
+#   - >
+#     HOST_GROUP=ci_terminal
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
 
 # # Research Server research_environment
 #   - >
@@ -121,11 +121,11 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
 #     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# # Research Server research_matlab
-#   - >
-#     HOST_GROUP=research_matlab
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+# Data warehouse db_terminal
+  - >
+    HOST_GROUP=db_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false}'
 
 services:
   - docker
@@ -154,7 +154,7 @@ script:
     docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
 # Syntax check
   - >
-    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ansible --version --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
 # Test role
   - >
