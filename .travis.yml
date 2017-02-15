@@ -17,7 +17,7 @@ env:
 #   - >
 #     HOST_GROUP=admin_terminal
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false}'
+#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false}'
 
 # # development_terminal
 #   - >
@@ -43,17 +43,17 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
 #     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
 
-# # mesos 
-#   - >
-#     HOST_GROUP=mesos_agent
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
-
-# gocd  ci_server
+# mesos 
   - >
-    HOST_GROUP=ci_server
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
+    HOST_GROUP=mesos_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+
+# # gocd  ci_server
+#   - >
+#     HOST_GROUP=ci_server
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+#     EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
 # # gocd ci_agent
 #   - >
@@ -121,11 +121,18 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
 #     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# Data warehouse db_terminal
-  - >
-    HOST_GROUP=db_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
-    EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false}'
+# # Data warehouse db_terminal db_server
+#   - >
+#     HOST_GROUP=db_terminal
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
+#     EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false}'
+
+# # Data warehouse db_server
+#   - >
+#     HOST_GROUP=db_server
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml 
+#     EXTRA_VAR_DEF='{"deploy_iptables": false, "install_ppas": false}'
+
 
 services:
   - docker

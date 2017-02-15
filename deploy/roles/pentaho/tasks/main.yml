@@ -18,6 +18,23 @@
     timeout: 10
   when: pentaho_zip_path is not defined
 
+- name: Test
+  shell: "ls -lA /opt"
+  register: result
+  
+- name: Debug
+  debug: 
+    var: result
+
+- name: Extract Pentaho from url
+  unarchive:
+    remote_src: yes
+    # src: "/opt/pdi-ce-6.0.1.0-386.zip"
+    src: /opt/pdi-ce-{{ pentaho_version }}.zip
+    dest: /opt/
+    creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
+  when: pentaho_zip_path is not defined
+
 - name: Extract Pentaho
   unarchive:
     src: "{{ pentaho_zip_path }}/{{ pentaho_zip_file }}"
