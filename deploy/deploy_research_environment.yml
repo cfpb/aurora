@@ -103,7 +103,7 @@
     - r-studio-server
     - pycharm
     - odbc
-#    - gocd
+    - gocd
     - stattransfer
   tasks:
     - name: Install Python RPM dependencies
