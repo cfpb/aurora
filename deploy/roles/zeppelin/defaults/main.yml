@@ -10,7 +10,6 @@ zeppelin_java_opts:             "-Dspark.executor.memory=2g -Dspark.cores.max=4"
 
 zeppelin_mem:                   "-Xmx1024m"
 zeppelin_intp_mem:              "-Xms1024m"
-#zeppelin_spark_home:            "/usr/lib/spark-1.6.2-bin-hadoop2.6"
 zeppelin_spark_home:            "spark_main_dir"
 zeppelin_spark_submit_options:  "driver-memory 512M --executor-memory 1G"
 zeppelin_pyspark_python:        "/usr/local/bin/python2.7"
