@@ -6,11 +6,12 @@ zeppelin_log_dir:               "/opt/zeppelin-0.7.0-bin-all/logs"
 zeppelin_pid_dir:               "/opt/zeppelin-0.7.0-bin-all/run"
 
 zeppelin_master:                []
-zeppelin_java_opts:             []
+zeppelin_java_opts:             "-Dspark.executor.memory=2g -Dspark.cores.max=4"
 
-ZEPPELIN_MEM:                   []
-ZEPPELIN_INTP_MEM:              []
-ZEPPELIN_SPARK_HOME:            []
-ZEPPELIN_SPARK_SUBMIT_OPTIONS:  []
-ZEPPELIN_PYSPARK_PYTHON:        []
-ZEPPELIN_PORT:                  8080
+zeppelin_mem:                   "-Xmx1024m"
+zeppelin_intp_mem:              "-Xms1024m"
+#zeppelin_spark_home:            "/usr/lib/spark-1.6.2-bin-hadoop2.6"
+zeppelin_spark_home:            "spark_main_dir"
+zeppelin_spark_submit_options:  "driver-memory 512M --executor-memory 1G"
+zeppelin_pyspark_python:        "/usr/local/bin/python2.7"
+zeppelin_port:                  8080
