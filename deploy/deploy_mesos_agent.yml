@@ -21,7 +21,6 @@
         - p7zip
         #- julia
   roles:
-    - pentaho
     - {role: common, when: "install_glusterfs"}
     - {role: iptables, when: "iptables_config"}
     # - devtools
@@ -29,7 +28,7 @@
     - {role: epel, when: "use_epel"}
     - jdk
     - postgresql-client
-    # - pentaho
+    - pentaho
     - gocd
     - nginx
     - {role: python, when: "custom_repo"}
