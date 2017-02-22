@@ -7,17 +7,17 @@ env:
   - container_id=$(mktemp)
 
  matrix:
-# #  proxy server
-#   - >
-#     HOST_GROUP=proxy_server
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
+#  proxy server
+  - >
+    HOST_GROUP=proxy_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
 
-#  # admin terminal  
-#   - >
-#     HOST_GROUP=admin_terminal
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false}'
+ # admin terminal  
+  - >
+    HOST_GROUP=admin_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false}'
 
 # development_terminal
   - >
@@ -25,113 +25,113 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
     EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "deploy_iptables": false}'
 
-# # r_terminal
-#   - >
-#     HOST_GROUP=analytics_terminal
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
-#     EXTRA_VAR_DEF='{"install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
+# r_terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
+    EXTRA_VAR_DEF='{"install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
 
-# # elastic search
-#   - >
-#     HOST_GROUP=elasticsearch
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
+# elastic search
+  - >
+    HOST_GROUP=elasticsearch
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
 
-# # elk 
-#   - >
-#     HOST_GROUP=elk
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
+# elk 
+  - >
+    HOST_GROUP=elk
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
 
-# # mesos 
-#   - >
-#     HOST_GROUP=mesos_agent
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+# mesos 
+  - >
+    HOST_GROUP=mesos_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
-# # gocd  ci_server
-#   - >
-#     HOST_GROUP=ci_server
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
+# gocd  ci_server
+  - >
+    HOST_GROUP=ci_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
-# # gocd ci_agent
-#   - >
-#     HOST_GROUP=ci_agent
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+# gocd ci_agent
+  - >
+    HOST_GROUP=ci_agent
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
-# # gocd ci_terminal
-#   - >
-#     HOST_GROUP=ci_terminal
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
+# gocd ci_terminal
+  - >
+    HOST_GROUP=ci_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
 
-# # Research Server research_environment
-#   - >
-#     HOST_GROUP=research_environment
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false}'
+# Research Server research_environment
+  - >
+    HOST_GROUP=research_environment
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false}'
 
-# # Research Server research_ancillary_services
-#   - >
-#     HOST_GROUP=research_ancillary_services
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_glusterfs": false}'
+# Research Server research_ancillary_services
+  - >
+    HOST_GROUP=research_ancillary_services
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false}'
 
-# # Research Server research_eod
-#   - >
-#     HOST_GROUP=research_eod
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"deploy_iptables": false}'
+# Research Server research_eod
+  - >
+    HOST_GROUP=research_eod
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"deploy_iptables": false}'
 
-# # Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
-#   - >
-#     HOST_GROUP=research_gauss
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+# Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
+  - >
+    HOST_GROUP=research_gauss
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# # Research Server research_stata 
-#   - >
-#     HOST_GROUP=research_stata
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{}'
+# Research Server research_stata 
+  - >
+    HOST_GROUP=research_stata
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{}'
 
-# # Research Server research_python 
-#   - >
-#     HOST_GROUP=research_python
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "install_r_packages": false, "install_r_updates": false}'
+# Research Server research_python 
+  - >
+    HOST_GROUP=research_python
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "install_r_packages": false, "install_r_updates": false}'
 
-# # Research Server research_sas
-#   - >
-#     HOST_GROUP=research_sas
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+# Research Server research_sas
+  - >
+    HOST_GROUP=research_sas
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# # Research Server research_spss
-#   - >
-#     HOST_GROUP=research_spss
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+# Research Server research_spss
+  - >
+    HOST_GROUP=research_spss
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# # Research Server research_matlab
-#   - >
-#     HOST_GROUP=research_matlab
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+# Research Server research_matlab
+  - >
+    HOST_GROUP=research_matlab
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
 
-# # Data warehouse db_terminal db_server
-#   - >
-#     HOST_GROUP=db_terminal
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false}'
+# Data warehouse db_terminal db_server
+  - >
+    HOST_GROUP=db_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false}'
 
-# # Data warehouse db_server
-#   - >
-#     HOST_GROUP=db_server
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml 
-#     EXTRA_VAR_DEF='{"deploy_iptables": false, "install_ppas": false}'
+# Data warehouse db_server
+  - >
+    HOST_GROUP=db_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml 
+    EXTRA_VAR_DEF='{"deploy_iptables": false, "install_ppas": false}'
 
 
 services:
