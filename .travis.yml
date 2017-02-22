@@ -19,11 +19,11 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
 #     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false}'
 
-# # development_terminal
-#   - >
-#     HOST_GROUP=analytics_terminal
-#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
-#     EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "deploy_iptables": false}'
+# development_terminal
+  - >
+    HOST_GROUP=analytics_terminal
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
+    EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "deploy_iptables": false}'
 
 # # r_terminal
 #   - >
