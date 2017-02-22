@@ -37,11 +37,11 @@ env:
 #     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
 #     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
 
-# elk 
-  - >
-    HOST_GROUP=elk
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
+# # elk 
+#   - >
+#     HOST_GROUP=elk
+#     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
+#     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
 
 # # mesos 
 #   - >

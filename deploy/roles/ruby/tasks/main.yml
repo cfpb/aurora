@@ -40,7 +40,7 @@
   command: "/tmp/rvm-installer.sh stable --ruby"
   register: install_rvm_ruby
   changed_when: '"Already installed" not in install_rvm_ruby.stderr or "Upgrading" in install_rvm_ruby.stdout'
-  when: install_ruby
+  # when: install_ruby
   tags:
     - ruby
 
@@ -48,7 +48,7 @@
   file:
     dest: /etc/rvmrc
     mode: 0664
-  when: install_ruby
+  # when: install_ruby
   tags:
     - ruby
 
@@ -59,7 +59,7 @@
   with_items:
     - /usr/bin/ruby
     - /usr/bin/gem
-  when: install_ruby
+  # when: install_ruby
   tags:
     - ruby
 
