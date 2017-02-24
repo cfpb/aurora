@@ -85,6 +85,7 @@ artifacts_dir: .
 
 # Enable or disable the configuration of iptables rules
 iptables_config: True
+deploy_iptables: True
 
 # Allow custom iptables chain to be used, if needed
 iptables_chain: TEST-INPUT

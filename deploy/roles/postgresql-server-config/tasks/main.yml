@@ -16,12 +16,14 @@
     name: "{{ item }}"
     state: present
   with_items: pp_extensions
+  when: install_ppas
 
 - name: Ensure PPAS is started
   service:
     name: "{{ pp_servicename }}"
     state: restarted
     enabled: yes
+  when: install_ppas
 
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
@@ -35,6 +37,7 @@
     script: "{{ item.script }}"
   with_items: pp_pre_scripts
   always_run: true
+  when: install_ppas
 
 - name: Execute configuration scripts
   postgresql_exec:
@@ -45,6 +48,7 @@
     script: "{{ item.script }}"
   with_items: pp_setup_scripts
   always_run: "{{ item.always_run }}"
+  when: install_ppas
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -59,6 +63,7 @@
     role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
     state: present
   always_run: yes
+  when: install_ppas
 
 - name: Create Operational DBA schema
   postgresql_exec:
@@ -71,6 +76,7 @@
   with_items:
     - postgres
     - template1
+  when: install_ppas
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
@@ -86,6 +92,7 @@
   with_items:
     - postgres
     - template1
+  when: install_ppas
 
 - name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
@@ -96,6 +103,7 @@
     script: "{{ item.script }}"
   with_items: pp_dba_scripts
   always_run: yes
+  when: install_ppas
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
@@ -106,6 +114,7 @@
     script: "{{ item.script }}"
   with_items: pp_dba_scripts
   always_run: yes
+  when: install_ppas
 
 - name: Retrieve list of databases
   postgresql_exec:
@@ -115,6 +124,7 @@
     db: postgres
     script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
   register: database_list
+  when: install_ppas
 
 - debug:
     var: database_list
@@ -135,6 +145,7 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: pp_dba_scripts
+  when: install_ppas
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
   postgresql_privs:
@@ -149,6 +160,7 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: pp_dba_scripts
+  when: install_ppas
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
@@ -164,6 +176,7 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: pp_privs
+  when: install_ppas
 
 # Any post-configuration scripts that need to be executed go here
 - name: Execute post-configuration scripts
@@ -175,6 +188,7 @@
     script: "{{ item.script }}"
   with_items: pp_post_scripts
   always_run: true
+  when: install_ppas
 
 ### Step 3: Create default service account using operational_dba role
 
@@ -189,6 +203,7 @@
     password: "{{ pp_dba_password }}"
     state: present
   always_run: true
+  when: install_ppas
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
@@ -201,3 +216,4 @@
     type: group
     state: present
     admin_option: no
+  when: install_ppas

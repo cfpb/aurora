@@ -206,20 +206,20 @@
 - name: open up ports in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports }}"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - eod
 
 - name: open up udp port in ipconfig
   command: "iptables -I {{ iptables_chain }} 3 -p udp -m udp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports_udp }}"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - eod
 
 - name: save the new ipconfig
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - eod
 

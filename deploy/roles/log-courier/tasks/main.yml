@@ -18,11 +18,13 @@
     - zeromq3
     - zeromq3-devel
     - log-courier
+  when: '"elk" in groups'
 
 - name: Install configuration template
   template:
     src: log-courier.conf.j2
     dest: /etc/log-courier/log-courier.conf
+  when: '"elk" in groups'
 
 - name: Make log directory
   file:
@@ -34,3 +36,4 @@
     name: log-courier
     state: started
     enabled: yes
+  when: '"elk" in groups'

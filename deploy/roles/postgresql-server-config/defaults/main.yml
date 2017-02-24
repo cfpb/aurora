@@ -1,4 +1,6 @@
 ---
+#Environment Variable for running role on travis-CI
+install_ppas: True
 
 # Extensions to install
 pp_extensions:
