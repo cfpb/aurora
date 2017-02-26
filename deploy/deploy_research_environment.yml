@@ -40,7 +40,7 @@
         dest: "{{ item.dest }}"
       with_items: "{{ printers_symlinks }}"
 
-    - name: additional symlinks for odbc.ini, odbcinst.ini, freetds, cups to shared env
+    - name: Packages for printing and internet browsingpPackages for printing oand internet browsing
       file:
         state: link
         src: "{{ item.src }}"
@@ -65,8 +65,6 @@
         state: present  
         disable_gpg_check: yes 
       with_items:
-        - postgresql95
-        - postgresql95-devel
         - htop
         - cups
         - hplip

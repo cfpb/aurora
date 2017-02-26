@@ -7,6 +7,8 @@ postgres_install_repository: True
 
 postgres_packages:
   - postgresql95-odbc
+  - postgresql95
+  - postgresql95-devel
 
 postgres_old_packages:
   - postgresql
