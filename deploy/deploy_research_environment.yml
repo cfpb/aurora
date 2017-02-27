@@ -5,6 +5,8 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - emacs
+    - jdk
   tasks:
     - name: research eod symlinks
       file:
@@ -38,6 +40,11 @@
         dest: "{{ item.dest }}"
       with_items: "{{ printers_symlinks }}"
 
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
 - hosts: research_ancillary_services
   become: yes
   become_method: sudo
@@ -63,11 +70,23 @@
         name: texlive
         state: present
 
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
 - hosts: research_eod
   become: yes
   become_method: sudo
   roles:
     - eod
+    - emacs
+    - jdk
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_gauss
   become: yes
@@ -77,6 +96,13 @@
     - odbc
     - gocd
     - stattransfer
+    - emacs
+    - jdk
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_stata
   become: yes
@@ -85,6 +111,13 @@
     - stata
     - odbc
     - stattransfer
+    - emacs
+    - jdk
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_python
   become: yes
@@ -106,6 +139,7 @@
     - odbc
     - gocd
     - stattransfer
+    - emacs
   tasks:
     - name: Install Python RPM dependencies
       yum:
@@ -128,6 +162,11 @@
         executable: /usr/local/bin/pip3.4
       with_items: python3_packages
 
+    - name: Install git
+      yum:
+        name: git
+        state: present
+
 - hosts: research_sas
   become: yes
   become_method: sudo
@@ -136,6 +175,13 @@
     - odbc
     - gocd
     - stattransfer
+    - jdk
+    - emacs
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_spss
   become: yes
@@ -145,6 +191,13 @@
     - odbc
     - gocd
     - stattransfer
+    - jdk
+    - emacs
+  tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_matlab
   become: yes
@@ -154,6 +207,8 @@
     - odbc
     - gocd
     - stattransfer
+    - jdk
+    - emacs
   tasks:
   - name: Install libselinux-python and libicu package 
     yum:
@@ -163,3 +218,8 @@
     with_items: 
       - libicu 
       - libselinux-python
+
+  - name: Install git
+    yum:
+      name: git
+      state: present
