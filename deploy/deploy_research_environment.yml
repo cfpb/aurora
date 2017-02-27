@@ -127,14 +127,13 @@
         executable: /usr/local/bin/pip3.4
       with_items: "{{ python3_packages }}"
     
-    - name: Install Gnome-Terminal packages 
+    - name: Install Gnome-Terminal package
       yum:
         name: "{{ item }}"
         state: present 
         disable_gpg_check: yes 
       with_items:
-        - "@X Window System"
-        - "@Desktop"
+        - gnome-terminal
 
 - hosts: research_sas
   become: yes
