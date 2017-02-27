@@ -12,7 +12,7 @@
       file:
          src: "{{ item.src }}"
          dest: "{{ item.dest }}"
-      with_items: eod_symlinks 
+      with_items: "{{ eod_symlinks }}"
 
   tasks:
     - name: Ensure X11 Forwarding is present
@@ -146,21 +146,21 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: python_dep_packages
+      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 27
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: python_packages
+      with_items: "{{ python_packages }}"
 
     - name: Install Python packages for 34
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python3_packages
+      with_items: "{{ python3_packages }}"
 
     - name: Install git
       yum:
@@ -216,8 +216,8 @@
       state: present
       disable_gpg_check: yes 
     with_items: 
-      - libicu 
-      - libselinux-python
+      - "{{ libicu }}"
+      - "{{ libselinux-python }}"
 
   - name: Install git
     yum:
