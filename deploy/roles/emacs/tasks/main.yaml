@@ -6,6 +6,7 @@
     disable_gpg_check: yes
   with_items:
     - emacs
+    - libotf
 
 - name: Install Emacs Speaks Statisitcs
   yum:
