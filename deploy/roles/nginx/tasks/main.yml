@@ -57,7 +57,6 @@
     state: directory
     owner: "{{ nginx_user }}"
     group: "{{ nginx_user }}"
-    state: directory
   tags:
     - nginx
 

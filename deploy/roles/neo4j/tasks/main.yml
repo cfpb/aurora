@@ -59,7 +59,8 @@
   - neo4j
 
 - name: Set neo4j configuration file
-  sudo: yes
+  become: yes
+  become_method: sudo
   template:
     src: neo4j.conf.j2
     dest: "{{ neo4j_conf_dir }}/neo4j.conf"
@@ -160,7 +161,8 @@
   - neo4j
 
 - name: set open fd soft and hard limit for Neo4j
-  sudo: yes
+  become: yes
+  become_method: sudo
   lineinfile:
     dest=/etc/security/limits.conf
     regexp="{{ item.regexp }}"
@@ -175,7 +177,8 @@
   - neo4j
 
 - name: set open fd soft and hard limit for root
-  sudo: yes
+  become: yes
+  become_method: sudo
   lineinfile:
     dest=/etc/security/limits.conf
     regexp="{{ item.regexp }}"
