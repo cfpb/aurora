@@ -5,6 +5,8 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - postgresql-client
+
   tasks:
     - name: research eod symlinks
       file:
@@ -38,6 +40,41 @@
         dest: "{{ item.dest }}"
       with_items: "{{ printers_symlinks }}"
 
+    - name: Packages for printing and internet browsingpPackages for printing oand internet browsing
+      file:
+        state: link
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+      with_items: "{{ research_environment_links }}"
+
+    - name: Add /etc/devfs.rules file to research env servers
+      template:
+        src: devfs.rules
+        dest: /etc/devfs.rules
+        mode: 0644
+
+    - name: Add rc.conf file to all research env servers
+      template:
+        src: rc.conf    
+        dest: /etc/rc.conf 
+        mode: 0644
+
+    - name: Install postgresq packages in research environment
+      yum:
+        name: Install postgresql packages 
+        state: present  
+        disable_gpg_check: yes 
+      with_items:
+        - htop
+        - cups
+        - hplip
+        - gutenprint
+        - foomatic
+        - udev
+        - firefox
+        - system-config-printer
+        
+
 - hosts: research_ancillary_services
   become: yes
   become_method: sudo
@@ -50,6 +87,7 @@
     - odbc
     - sublime
     - jdk
+
   tasks:
     - name: Install Ultra Edit
       yum:
@@ -144,6 +182,12 @@
     - odbc
     - gocd
     - stattransfer
+
+  tasks:
+    - name: install libXp
+      yum:
+        name: libXp
+        state: present
 
 - hosts: research_spss
   become: yes

@@ -237,8 +237,8 @@ pp_custom_test_scripts:
 # Eod symlinks
 eod_symlinks: []
 
+# additional symlinks odbc, cups for research environment
+research_environment_links: []
+
 # Research environment printers symlinks
 printers_symlinks: []
-
-
-

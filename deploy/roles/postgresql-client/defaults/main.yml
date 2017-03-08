@@ -6,6 +6,7 @@ postgres_install_dir: /usr/pgsql-9.5
 postgres_install_repository: True
 
 postgres_packages:
+  - postgresql95-odbc
   - postgresql95
   - postgresql95-devel
 
