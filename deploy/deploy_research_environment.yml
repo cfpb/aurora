@@ -112,21 +112,29 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: python_dep_packages
+      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 27
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: python_packages
+      with_items: "{{ python_packages }}"
 
     - name: Install Python packages for 34
       pip:
         name: "{{ item }}"
         state: present
         executable: /usr/local/bin/pip3.4
-      with_items: python3_packages
+      with_items: "{{ python3_packages }}"
+    
+    - name: Install Gnome-Terminal package
+      yum:
+        name: "{{ item }}"
+        state: present 
+        disable_gpg_check: yes 
+      with_items:
+        - gnome-terminal
 
 - hosts: research_sas
   become: yes
