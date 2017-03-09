@@ -49,6 +49,12 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
     EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
+# gocd  ci_server
+  - >
+    HOST_GROUP=ci_server
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
+
 # gocd ci_agent
   - >
     HOST_GROUP=ci_agent

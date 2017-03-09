@@ -6,9 +6,9 @@
   roles:
       - {role: epel, when: "use_epel and not 'production' in group_names"}
       - {role: python, when: "install_python and custom_repo"}
-      - {role: python-build, when: "install_python and not custom_repo"}
+      - {role: python-build, when: "not custom_repo"}
       - {role: python3, when: "install_python and custom_repo"}
-      - {role: python3-build, when: "install_python and not custom_repo"}
+      - {role: python3-build, when: "not custom_repo"}
       - devtools
       - ruby
       - jdk
