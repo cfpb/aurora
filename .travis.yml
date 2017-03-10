@@ -161,7 +161,7 @@ script:
     docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
 # Syntax check
   - >
-    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook ansible --version --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec --tty "$(cat ${container_id})" env TERM=xterm ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
 
 # Test role
   - >
