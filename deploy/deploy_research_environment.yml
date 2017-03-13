@@ -127,7 +127,7 @@
         state: present
         executable: /usr/local/bin/pip3.4
       with_items: "{{ python3_packages }}"
-    
+
     - name: Install Gnome-Terminal package
       yum:
         name: "{{ item }}"
