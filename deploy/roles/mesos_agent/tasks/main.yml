@@ -58,6 +58,7 @@
   command: "stop mesos-master"
   register: mesos_master_stop
   failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
+  changed_when: "'Unknown instance' not in mesos_master_stop.stderr"
   tags:
     - mesos
     - mesos-agent
@@ -93,7 +94,7 @@
   tags:
     - mesos
     - mesos-agent
-  when: mesos_master
+  when: '"mesos_master" in groups'
 
 - name: Add the ip address to the Mesos agent config folder
   copy:

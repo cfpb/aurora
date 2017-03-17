@@ -20,6 +20,8 @@
         - screen
         - p7zip
         #- julia
+
+  ## Temporarily remove devtools and r due to limited repositories on agents
   roles:
     - {role: common, when: "install_glusterfs"}
     - {role: iptables, when: "iptables_config"}
@@ -39,9 +41,10 @@
     - jdbc
     - {role: ruby, when: "install_ruby"}
     - sqitch
-    - r
+    #- r
     - r-shiny
     - nodejs
+    - redis
 
   post_tasks:
 
@@ -95,7 +98,7 @@
         name: "{{ item }}"
         state: present
         disable_gpg_check: yes
-      with_items: db_automation_custom_packages
+      with_items: "{{ db_automation_custom_packages }}"
       when: db_automation_custom_packages is defined
 
     - name: Install Python RPM dependencies

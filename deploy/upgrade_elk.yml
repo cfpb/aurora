@@ -1,6 +1,7 @@
 ---
 - hosts: admin_terminal
-  sudo: yes
+  become: yes
+  become_method: sudo
   tasks:
     - name: install requirement for uri task
       yum:
@@ -26,7 +27,8 @@
 
 # Ensure key exists
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   tasks:
     - name: Create key for message authentication
       shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
@@ -56,7 +58,8 @@
 # Perform serial upgrade
 - hosts: elasticsearch:elk
   serial: 1
-  sudo: yes
+  become: yes
+  become_method: sudo
   pre_tasks:
     - name: Turn off node
       uri:
@@ -96,7 +99,8 @@
     - elasticsearch-config
 
 - hosts: elk
-  sudo: yes
+  become: yes
+  become_method: sudo
   tasks:
     - name: Setup elasticsearch as a client node
       lineinfile:
@@ -111,7 +115,8 @@
         - restart elasticsearch
 
 - hosts: admin_terminal
-  sudo: yes
+  become: yes
+  become_method: sudo
   tasks:
     - name: Enable shard allocation
       uri:
