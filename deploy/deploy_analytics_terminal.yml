@@ -8,9 +8,8 @@
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
 
-- include:
-    - deploy_development_terminal.yml
-    - deploy_r_terminal.yml
+- include: deploy_development_terminal.yml
+- include: deploy_r_terminal.yml
 
 - hosts: analytics_terminal
   become: yes
