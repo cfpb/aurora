@@ -4,6 +4,7 @@
     src: "{{ artifacts_dir }}/{{ pem_installer_bin }}"
     dest: /tmp/
     mode: a+x
+  when: install_pem
 
 - name: Ensure umask is correct
   sudo: no
@@ -17,3 +18,4 @@
   shell: "/tmp/{{ pem_installer_bin }} --prefix {{ pem_install_dir }} --mode unattended"
   args:
     creates: "{{ pem_install_dir }}/client-v5"
+  when: install_pem
