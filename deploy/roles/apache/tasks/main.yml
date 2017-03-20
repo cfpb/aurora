@@ -5,6 +5,7 @@
     url: "{{ apache_24_repo }}"
     dest: /etc/yum.repos.d
     mode: 644
+    validate_certs: False
   when: not custom_repo
 
 - name: Install Apache

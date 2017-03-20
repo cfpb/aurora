@@ -1,13 +1,13 @@
 ---
-postgres_repository_url: "http://yum.postgresql.org/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
-postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-95"
-postgres_repository_name: pgdg95
-postgres_install_dir: /usr/pgsql-9.5
+postgres_repository_url: "https://yum.postgresql.org/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
+postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-96"
+postgres_repository_name: pgdg96
+postgres_install_dir: /usr/pgsql-9.6
 postgres_install_repository: True
 
 postgres_packages:
-  - postgresql95
-  - postgresql95-devel
+  - postgresql96
+  - postgresql96-devel
 
 postgres_old_packages:
   - postgresql

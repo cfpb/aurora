@@ -154,6 +154,7 @@
         state: present
         executable: /usr/local/bin/pip2.7
       with_items: "{{ python_packages }}"
+      when: install_python
 
     - name: Install Python packages for 34
       pip:
@@ -174,6 +175,7 @@
         disable_gpg_check: yes 
       with_items:
         - gnome-terminal
+      when: install_python
 
 - hosts: research_sas
   become: yes
