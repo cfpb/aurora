@@ -6,10 +6,38 @@
   tags:
     - rstudio-server
 
+- name: Take server offline
+  command: "rstudio-server offline"
+  when: update_rstudio
+  ignore_errors: yes
+  tags:
+    - rstudio-server
+
+- name: Suspend user sessions
+  command: "rstudio-server force-suspend-all"
+  when: update_rstudio
+  ignore_errors: yes
+  tags:
+    - rstudio-server
+
 - name: Install R Studio Server
   yum:
     name: "{{ rstudio_server_package_name }}"
     state: "{{ rstudio_server_package_state }}"
     disable_gpg_check: yes
+    update_cache: yes
+  when: update_rstudio
+  tags:
+    - rstudio-server
+
+- name: Verify install
+  command: "rstudio-server verify-installation"
+  when: update_rstudio
+  tags:
+    - rstudio-server
+
+- name: Take server online
+  command: "rstudio-server online"
+  when: update_rstudio
   tags:
     - rstudio-server

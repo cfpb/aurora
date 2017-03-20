@@ -43,11 +43,28 @@
   tags:
     - rstudio-server
 
+- name: Add rsession config file
+  template:
+    src: rsession.conf.j2
+    dest: /etc/rstudio/rsession.conf
+  notify:
+    - restart rstudio-server
+  tags:
+    - rstudio-server
+
 - name: Add required user settings
   template:
     src: rstudio_server.sh.j2
     dest: /etc/profile.d/rstudio_server.sh
     mode: 0644
+  tags:
+    - rstudio-server
+
+- name: Add secure-proxy-user-header
+  template:
+    src: secure-proxy-user-header.j2
+    dest: /etc/rstudio/secure-proxy-user-header
+    mode: 0600
   tags:
     - rstudio-server
 
@@ -61,5 +78,13 @@
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config and deploy_iptables
+  tags:
+    - rstudio-server
+
+- name: Add login html
+  template:
+    src: login.html.j2
+    dest: /etc/rstudio/login.html
+    mode: 0644
   tags:
     - rstudio-server
