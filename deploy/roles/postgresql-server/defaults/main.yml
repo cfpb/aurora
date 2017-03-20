@@ -1,7 +1,9 @@
 ---
 ## PostgresPlus Advanced Server default variables
+install_ppas: True
 
 # Installer URL and executable
+pp_rpm_version: 9.4-3
 pp_installer_version: 9.4.1.3
 pp_bin_path: .
 

@@ -5,13 +5,14 @@
     url: "{{ apache_24_repo }}"
     dest: /etc/yum.repos.d
     mode: 644
+    validate_certs: False
   when: not custom_repo
 
 - name: Install Apache
   yum:
     name: "{{ item }}"
     state: present
-  with_items: apache_packages
+  with_items: "{{ apache_packages }}"
 
 - name: Configure global Apache settings
   template:

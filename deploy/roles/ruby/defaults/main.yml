@@ -1,0 +1,5 @@
+---
+# Allows us to parameterize rpm install on travis
+rpm_options: "--ruby"
+# Allows bypassing of ruby install when needed
+install_ruby: True

@@ -43,6 +43,7 @@
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
   tags:
     - sqitch
+  when: install_sqitch
 
 - name: Get pg engine
   shell: cpanm --notest --sudo DBD::Pg

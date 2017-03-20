@@ -10,10 +10,17 @@
     state: present
 
 - name: Download Pentaho
-  unarchive:
-    src: "{{ pentaho_url }}"
+  get_url:
+    url: "{{ pentaho_url }}"
     dest: /opt/
+    timeout: 10
+  when: pentaho_zip_path is not defined
+
+- name: Extract Pentaho from url
+  unarchive:
     remote_src: yes
+    src: /opt/pdi-ce-{{ pentaho_version }}.zip
+    dest: /opt/
     creates: /opt/data-integration/lib/kettle-core-{{ pentaho_version }}.jar
   when: pentaho_zip_path is not defined
 
@@ -38,7 +45,7 @@
 
 - name: Move the JAR file to the right location
   copy:
-    src: "/tmp/sqljdbc_4.2/enu/sqljdbc42.jar"
+    src: "/tmp/sqljdbc_6.0/enu/jre8/sqljdbc42.jar"
     dest: "/opt/data-integration/lib/"
     remote_src: yes
     mode: 0644

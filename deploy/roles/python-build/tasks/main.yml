@@ -40,18 +40,18 @@
   args:
     chdir: "~/rpmbuild"
     creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm"
-  when: "'is not installed' in python27_check.stdout"
+  when: "install_python and 'is not installed' in python27_check.stdout"
 
 - name: Copy RPM to /tmp so it is accessible by root
   become: no
   command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm /tmp/python27-2.7.6-2.el6.x86_64.rpm"
   args:
     creates: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
-  when: "'is not installed' in python27_check.stdout"
+  when: "install_python and 'is not installed' in python27_check.stdout"
 
 - name: Install python
   become: yes
   yum:
     name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
     state: present
-  when: "'is not installed' in python27_check.stdout"
+  when: "install_python and 'is not installed' in python27_check.stdout"

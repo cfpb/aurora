@@ -87,3 +87,4 @@
     name: go-server
     state: started
     enabled: yes
+  when: iptables_config and deploy_iptables

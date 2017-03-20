@@ -57,7 +57,6 @@
     state: directory
     owner: "{{ nginx_user }}"
     group: "{{ nginx_user }}"
-    state: directory
   tags:
     - nginx
 
@@ -78,18 +77,18 @@
 
 - name: Open port 80 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - nginx
 
 - name: Open port 443 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 443 -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - nginx
 
 - name: Save rules
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config and deploy_iptables
   tags:
     - nginx

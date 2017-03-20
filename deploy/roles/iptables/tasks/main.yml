@@ -54,13 +54,14 @@
 
 - name: Allow ssh access from "Terminals"
   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 22 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
-  with_items:
-    - "{{ groups['terminals'] }}"
+  with_items: "{{ groups['terminals']|default(omit) }}"
+  when: '"terminals" in groups'
 
 - name: Allow SSH access from internal subnet
   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 22 -s {{ subnet }} -j ACCEPT"
-  sudo: yes
-  when: iptables_config and is_terminal
+  become: yes
+  become_method: sudo
+  when: iptables_config and is_terminal and deploy_iptables
 
 - name: LOGDROP all others
   command: "iptables -A {{ iptables_chain }} -p all -j LOGDROP"

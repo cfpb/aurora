@@ -18,3 +18,4 @@
   pip:
     executable: /usr/local/bin/pip2.7
     name: /opt/clouseau
+  when: install_python

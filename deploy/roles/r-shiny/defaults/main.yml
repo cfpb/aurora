@@ -1,3 +1,5 @@
 ---
+install_r_packages: true
+
 r_shiny_server_package: "http://download3.rstudio.org/centos5.9/x86_64/shiny-server-1.4.2.786-rh5-x86_64.rpm"
 r_shiny_server_package_state: "present"

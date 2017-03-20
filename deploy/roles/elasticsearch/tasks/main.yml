@@ -75,7 +75,7 @@
 
 - name: Open ports 9200:9299 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 9200:9299 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and proxy_server in groups
 
 - name: Save rules
   command: "/sbin/service iptables save"
