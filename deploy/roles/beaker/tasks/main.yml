@@ -60,7 +60,7 @@
     - beaker 
 
 - name: Pip installation 
-  command: pip install ipython jinja2 tornado pyzmq jsonschema jupyter
+  command: /usr/local/bin/pip2.7 install ipython jinja2 tornado pyzmq jsonschema jupyter
   tags:
     - beaker
 
