@@ -32,6 +32,14 @@
   tags:
     - zeppelin 
 
+- name: Ensure Zeppelin shiro file is present 
+  template:
+    src: shiro.ini.j2
+    dest: "{{ zeppelin_home_dir }}/conf/shiro.ini"
+    mode: 0644
+  tags:
+    - zeppelin 
+
 - name: Ensure Zeppelin site.xml file present 
   template:
     src: zeppelin-site.xml.j2 
@@ -39,3 +47,16 @@
     mode: 0644
   tags:
     - zeppelin 
+
+- name: Copy Zeppelin upstart file 
+  template:
+    src: zeppelin.conf.j2
+    dest: "{{ zeppelin_init_dir }}/zeppelin.conf"
+    mode: 0644
+  tags:
+    - zeppelin
+
+- name: Ensure Zeppelin is started
+  command: start zeppelin 
+  tags: 
+    - zeppelin

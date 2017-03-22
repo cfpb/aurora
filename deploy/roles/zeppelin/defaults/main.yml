@@ -4,6 +4,7 @@ zeppelin_parent_dir:            "/opt"
 zeppelin_home_dir:              "/opt/zeppelin-0.7.0-bin-all"
 zeppelin_log_dir:               "/opt/zeppelin-0.7.0-bin-all/logs"
 zeppelin_pid_dir:               "/opt/zeppelin-0.7.0-bin-all/run"
+zeppelin_init_dir:              "/etc/init"
 
 zeppelin_master:                []
 zeppelin_java_opts:             "-Dspark.executor.memory=2g -Dspark.cores.max=4"
@@ -14,3 +15,4 @@ zeppelin_spark_home:            "spark_main_dir"
 zeppelin_spark_submit_options:  "driver-memory 512M --executor-memory 1G"
 zeppelin_pyspark_python:        "/usr/local/bin/python2.7"
 zeppelin_port:                  8080
+zeppelin_anonymous:             false
