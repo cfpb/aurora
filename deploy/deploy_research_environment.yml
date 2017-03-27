@@ -92,7 +92,7 @@
   become: yes
   become_method: sudo
   roles:
-    - gauss
+    # - gauss
     - odbc
     - gocd
     - stattransfer
