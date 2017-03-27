@@ -7,4 +7,5 @@ LICENSE-TYPE={{stattransfer_license_type}}
 EXPIRATION-DATE={{stattransfer_expiration_date}}
 REG-CODE={{stattransfer_reg_code}}
 AUTH-CODE={{stattransfer_auth_code}}
+SET-CODE={{stattransfer_set_code}}
 SIGN-CODE={{stattransfer_sign_code}}
