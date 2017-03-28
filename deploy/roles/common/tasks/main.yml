@@ -7,6 +7,7 @@
   modprobe:
     name: fuse
     state: present
+  when: not skip_glusterfs
 
 - name: Install common packages
   yum:
@@ -17,6 +18,7 @@
     - glusterfs
     - glusterfs-fuse
     - libselinux-python
+  when: not skip_glusterfs
 
 - name: Make needed folders
   file:
@@ -24,7 +26,7 @@
     dest: "/home/{{ item.name }}"
     mode: 0777
   with_items: "{{ shared_folders }}"
-  when: mount_glusterfs and item.state == 'mounted'
+  when: mount_glusterfs and item.state == 'mounted' and not skip_glusterfs
 
 # Temporary work around, since GlusterFS FUSE does
 # not support '-o remount'
@@ -41,7 +43,7 @@
     src: "{{ default_file_server }}:/{{ item.name }}"
     state: unmounted
   with_items: "{{ shared_folders }}"
-  when: mount_glusterfs and item.state == 'mounted'
+  when: mount_glusterfs and item.state == 'mounted' and not skip_glusterfs
 
 - name: Mount shared drives and add to fstab
   mount:
@@ -51,14 +53,14 @@
     state: "{{ item.state }}"
     opts: "{{ gluster_mount_options }}"
   with_items: "{{ shared_folders }}"
-  when: mount_glusterfs
+  when: mount_glusterfs and not skip_glusterfs
 
 - name: Remove unneeded folders
   file:
     state: absent
     dest: "/home/{{ item.name }}"
   with_items: "{{ shared_folders }}"
-  when: mount_glusterfs and item.state == 'unmounted'
+  when: mount_glusterfs and item.state == 'unmounted' and not skip_glusterfs
 
 - name: Create any needed symlinks
   file:
@@ -66,10 +68,15 @@
     src: "{{ item.target }}"
     path: "{{ item.path }}"
   with_items: "{{ shared_links }}"
-  when: mount_glusterfs
+  when: mount_glusterfs and not skip_glusterfs
 
 # Non-gluster stuff
 - name: Common user modules
   yum:
     name: screen
+    state: present
+
+- name: Create admin group
+  group:
+    name: "{{ restricted_group_name }}"
     state: present

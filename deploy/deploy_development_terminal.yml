@@ -10,6 +10,7 @@
       - {role: python3, when: "install_python and custom_repo"}
       - {role: python3-build, when: "not custom_repo"}
       - devtools
+      - devtools6
       - ruby
       - jdk
       - pycharm
@@ -22,6 +23,8 @@
       - maven
       - intellij
       - clouseau
+      - odbc
+      - python-libs
       # - julia
 
 # Install development packages
@@ -51,27 +54,3 @@
         - p7zip
         - rhobot
       when: custom_repo
-
-    - name: Install Python RPM dependencies
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: "{{ python_dep_packages }}"
-      when: install_python
-
-    - name: Install Python packages for 27
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /usr/local/bin/pip2.7
-      with_items: "{{ python_packages }}"
-      when: install_python
-
-    - name: Install Python packages for 34
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /usr/local/bin/pip3.4
-      with_items: "{{ python3_packages }}"
-      when: install_python

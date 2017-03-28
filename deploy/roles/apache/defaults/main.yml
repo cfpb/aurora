@@ -38,3 +38,5 @@ apache_trace_enable: On
 apache_log_level:  warn
 
 apache_error_log: logs/error_log
+
+apache_log_folder: /var/log/httpd24/

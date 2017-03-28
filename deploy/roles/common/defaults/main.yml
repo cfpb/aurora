@@ -2,3 +2,5 @@
 #gluster_mount_options: "defaults,resolve-gids,acl,_netdev"
 gluster_mount_options: "defaults,acl,_netdev"
 shared_links: []
+
+skip_glusterfs: false

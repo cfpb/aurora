@@ -15,7 +15,7 @@
     - {role: epel, when: "use_epel and install_logstash and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
     - {role: python, when: "custom_repo and install_python"}
-    - {role: python-build, when: "install_python and not custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
 
   tasks:
     - name: Create apache directories

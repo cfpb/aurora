@@ -11,13 +11,13 @@ env:
   - >
     HOST_GROUP=proxy_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "kerberos_enabled": false,"install_logstash": false}'   
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'   
 
  # admin terminal  
   - >
     HOST_GROUP=admin_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 
 # development_terminal
   - >
@@ -35,49 +35,49 @@ env:
   - >
     HOST_GROUP=elasticsearch
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false}'
 
 # elk 
   - >
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "install_logstash": false, "es_message_auth": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "deploy_iptables": false}'
 
 # mesos 
   - >
     HOST_GROUP=mesos_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
 # gocd  ci_server
   - >
     HOST_GROUP=ci_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
 # gocd ci_agent
   - >
     HOST_GROUP=ci_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
 # gocd ci_terminal
   - >
     HOST_GROUP=ci_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
 
 # Research Server research_environment
   - >
     HOST_GROUP=research_environment
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_ancillary_services
   - >
     HOST_GROUP=research_ancillary_services
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-    EXTRA_VAR_DEF='{"install_glusterfs": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true}'
 
 # Research Server research_eod
   - >

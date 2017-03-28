@@ -68,7 +68,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/ruby
     dest: /usr/bin/ruby
-  when: install_ruby and (not stat_result.results[0].stat.exists or stat_result.results[0].stat.islnk)
+  when: install_ruby and (not stat_result.results[0].stat.exists)
   tags:
     - ruby
 
@@ -77,7 +77,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/ruby
     dest: /usr/local/bin/ruby
-  when: install_ruby and (stat_result.results[0].stat.exists and not stat_result.results[0].stat.islnk)
+  when: install_ruby and (not stat_result.results[0].stat.exists)
   tags:
     - ruby
 
@@ -86,7 +86,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/gem
     dest: /usr/bin/gem
-  when: install_ruby and not (stat_result.results[1].stat.exists or stat_result.results[1].stat.islnk)
+  when: install_ruby and (not stat_result.results[1].stat.exists)
   tags:
     - ruby
 
@@ -95,7 +95,7 @@
     state: link
     src: /usr/local/rvm/rubies/default/bin/gem
     dest: /usr/local/bin/gem
-  when: install_ruby and (stat_result.results[1].stat.exists and not stat_result.results[1].stat.islnk)
+  when: install_ruby and (stat_result.results[1].stat.exists)
   tags:
     - ruby
 

@@ -1,0 +1,13 @@
+python_dep_packages:
+  - libxml2
+
+python_packages:
+  - requests
+  - cookiecutter
+
+python3_packages:
+  - requests
+  - cookiecutter
+
+python_pip_bin: /usr/local/bin/pip2.7
+python3_pip_bin: /usr/local/bin/pip3.4
