@@ -7,7 +7,7 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-#    - {role: common, when: "install_glusterfs"}
+    - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - umask
     - {role: log-courier, when: "install_logstash"}
@@ -22,6 +22,7 @@
     - sqitch
     - {role: pem-client, tags: pem-client}
     - sublime
+    - odbc
 
   tasks:
     - name: Install RPM dependencies for python packages
