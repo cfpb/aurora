@@ -252,9 +252,9 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - pixmap-miscfixed-font
-    - pixmap-fixed-fonts
-    - abyssinica
+    # - pixmap-miscfixed-font
+    # - pixmap-fixed-fonts
+    - abyssinica-fonts
     - tree
   tags:
     - eod
