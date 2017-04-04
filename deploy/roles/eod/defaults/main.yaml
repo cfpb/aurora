@@ -3,6 +3,7 @@
 ### EoD SETTINGS ###
 #==================#
 install_desktop: False
+eod_restart: False
 
 eod_binary: ecs-13.8.5-linux-x64.bin
 eod_install_directory: '/usr/local/eod'
@@ -38,4 +39,3 @@ gconf_settings:
 
 eod_Xconfig_directory: /usr/local/eod/conf/admin/Xconfig
 eod_greeter_include: false
-
