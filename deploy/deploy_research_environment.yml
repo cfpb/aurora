@@ -100,6 +100,7 @@
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
+    - {role: python-libs}
     - {role: epel, when: "use_epel"}
     - postgresql-client
     - r
@@ -109,30 +110,7 @@
     - pycharm
     - gocd
     - stattransfer
-
-  tasks:
-    - name: Install Python RPM dependencies
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: "{{ python_dep_packages }}"
-
-    - name: Install Python packages for 27
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /usr/local/bin/pip2.7
-      with_items: "{{ python_packages }}"
-      when: install_python
-
-    - name: Install Python packages for 34
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /usr/local/bin/pip3.4
-      with_items: "{{ python3_packages }}"
-
+  post_tasks:
     - name: Install Gnome-Terminal package
       yum:
         name: "{{ item }}"
@@ -140,7 +118,6 @@
         disable_gpg_check: yes
       with_items:
         - gnome-terminal
-      when: install_python
 
 - hosts: research_sas
   become: yes
@@ -172,5 +149,5 @@
       state: present
       disable_gpg_check: yes
     with_items:
-      - "{{ libicu }}"
-      - "{{ libselinux-python }}"
+      - libicu
+      - libselinux-python
