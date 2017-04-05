@@ -1,0 +1,29 @@
+---
+- name: Install Python RPM dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ python_dep_packages }}"
+  tags:
+    - python-libs
+
+- name: Install Python packages for 27
+  pip:
+    name: "{{ item }}"
+    state: present
+    executable: "{{ python_pip_bin }}"
+  with_items: "{{ python_packages }}"
+  when: install_python
+  tags:
+    - python-libs
+
+- name: Install Python packages for 35
+  pip:
+    name: "{{ item }}"
+    state: present
+    executable: "{{ python3_pip_bin }}"
+  with_items: "{{ python3_packages }}"
+  when: install_python
+  tags:
+    - python-libs

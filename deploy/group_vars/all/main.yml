@@ -181,20 +181,6 @@ restricted_group_name: admin
 # Research Environment
 install_odbc: True
 
-#======================#
-### PACKAGE SETTINGS ###
-#======================#
-python_dep_packages:
-  - libxml2
-
-python_packages:
-  - requests
-  - cookiecutter
-
-python3_packages:
-  - requests
-  - cookiecutter
-
 #============================#
 ### ELASTICSEARCH SETTINGS ###
 #============================#
@@ -240,6 +226,3 @@ eod_symlinks: []
 
 # Research environment printers symlinks
 printers_symlinks: []
-
-
-
