@@ -12,6 +12,8 @@
     copy: no
     src: "http://c758482.r82.cf2.rackcdn.com/Sublime%20Text%202.0.2.tar.bz2"
     dest: "{{ sublime_install_directory }}"
+    owner: root
+    group: root
     mode: a+r
   when: not custom_repo
   tags:
@@ -22,7 +24,9 @@
     copy: yes
     src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}/"
-    mode: 0644
+    owner: root
+    group: root
+    mode: a+r
   when: custom_repo
   tags:
     - sublime

@@ -5,12 +5,14 @@
 
 - name: restart eod
   command: "{{ eod_install_directory }}/bin/otecs restart"
-  when: install_eod
+  when: install_eod and eod_restart
 
 - name: restart gdm
   shell: killall gdm-binary
   ignore_errors: yes
+  when: eod_restart
 
 - name: restart prefdm
   shell: restart prefdm
   ignore_errors: yes
+  when: eod_restart

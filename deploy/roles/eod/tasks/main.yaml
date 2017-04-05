@@ -18,7 +18,7 @@
   tags:
     - eod
 
-- name: chmod eod bin
+- name: Chmod EOD binary
   file:
     path: "{{ eod_bin_directory }}/{{ eod_binary }}"
     mode: a+x
@@ -149,7 +149,6 @@
   tags:
     - eod
 
-# TODO: ensure video driver?
 - name: configure xorg.conf
   template:
     src: xorg.conf
@@ -157,8 +156,6 @@
   notify:
     - restart gdm
     - restart prefdm
-  # notify:
-  #   - ensure video driver
   tags:
     - eod
 
@@ -171,27 +168,6 @@
     - restart eod
   tags:
     - eod
-
-#- name: configure system-auth-ac
-#  template:
-#    src: system-auth-ac
-#    dest: /etc/pam.d/system-auth-ac
-#  notify:
-#    - restart eod
-
-#- name: Update authconfig
-#  command: authconfig --enablewinbind --update
-
-#- name: validate password-auth-ac
-#  shell: cat /etc/pam.d/password-auth-ac
-#  register: password_result
-#  notify:
-#    - restart eod
-
-#- assert:
-#    that:
-#      - "'krb5' in password_result.stdout"
-#      - "'winbind' in password_result.stdout"
 
 - name: configure package update proxy
   template:
@@ -276,9 +252,9 @@
     name: "{{ item }}"
     state: present
   with_items:
-#    - pixmap-miscfixed-font
-#    - pixmap-fixed-fonts
-#    - abyssinica
+    # - pixmap-miscfixed-font
+    # - pixmap-fixed-fonts
+    - abyssinica-fonts
     - tree
   tags:
     - eod
@@ -295,7 +271,7 @@
   register: cfg_files
   ignore_errors: yes
   tags:
-    - eod 
+    - eod
   when: custom_repo
 
 - name: Add XkbExtension to four files
@@ -306,7 +282,7 @@
   with_items: "{{ cfg_files.stdout_lines }}"
   when: custom_repo
   tags:
-    - eod 
+    - eod
   when: custom_repo
 
 - name: Add Composite to four files
@@ -317,4 +293,4 @@
   with_items: "{{ cfg_files.stdout_lines }}"
   when: custom_repo
   tags:
-    - eod 
+    - eod
