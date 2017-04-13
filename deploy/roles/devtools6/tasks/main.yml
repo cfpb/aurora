@@ -28,6 +28,5 @@
     - devtoolset-6-gcc-c++
     - devtoolset-6-gcc-gfortran
     - devtoolset-6-gdb
-    # - devtoolset-6-git
   tags:
     - devtools
