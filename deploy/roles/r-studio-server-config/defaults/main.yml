@@ -12,3 +12,4 @@ rstudio_manager_group: managers
 ip_whitelist:
   - "{{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }}"
 update_rstudio: False
+rstudio_secret_header: X-RStudio-Username
