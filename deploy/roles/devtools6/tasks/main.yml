@@ -13,7 +13,6 @@
     src: devtools-6.sh.j2
     dest: /opt/devtools-6.sh
     mode: 0755
-  when: not custom_repo
   tags:
     - devtools
 
