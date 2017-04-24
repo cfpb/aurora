@@ -31,6 +31,12 @@
   tags:
     - sublime
 
+- name: Ensure directory is readable
+  file:
+    path: "{{ sublime_install_directory }}"
+    state: directory
+    mode: 0755
+
 - name: Ensure sublime_text is executable
   file:
     path: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
