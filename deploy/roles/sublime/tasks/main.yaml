@@ -31,11 +31,12 @@
   tags:
     - sublime
 
-- name: Ensure directory is readable
+- name: Ensure directories are readable
   file:
     path: "{{ sublime_install_directory }}/Sublime Text 2"
     state: directory
     mode: 0755
+    recurse: yes
 
 - name: Ensure sublime_text is executable
   file:
