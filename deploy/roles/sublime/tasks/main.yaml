@@ -33,7 +33,7 @@
 
 - name: Ensure directory is readable
   file:
-    path: "{{ sublime_install_directory }}"
+    path: "{{ sublime_install_directory }}/Sublime Text 2"
     state: directory
     mode: 0755
 
