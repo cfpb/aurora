@@ -10,6 +10,7 @@
       - {role: python3, when: "install_python and custom_repo"}
       - {role: python3-build, when: "not custom_repo"}
       - devtools
+      - devtools6
       - ruby
       - jdk
       - pycharm

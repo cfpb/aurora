@@ -96,6 +96,7 @@
   become_method: sudo
   roles:
     - devtools
+    - devtools6
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
@@ -118,6 +119,11 @@
         disable_gpg_check: yes
       with_items:
         - gnome-terminal
+
+    - name: Install texlive
+      yum:
+        name: texlive
+        state: present
 
 - hosts: research_sas
   become: yes

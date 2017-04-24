@@ -1,0 +1,31 @@
+---
+- name: Install devtools repo
+  template:
+    src: devtools-6.repo.j2
+    dest: /etc/yum.repos.d/devtools-6.repo
+    mode: 0644
+  when: not custom_repo
+  tags:
+    - devtools
+
+- name: Copy devtools shell script
+  template:
+    src: devtools-6.sh.j2
+    dest: /opt/devtools-6.sh
+    mode: 0755
+  tags:
+    - devtools
+
+- name: Install updated devtools
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - devtoolset-6-binutils
+    - devtoolset-6-build
+    - devtoolset-6-gcc
+    - devtoolset-6-gcc-c++
+    - devtoolset-6-gcc-gfortran
+    - devtoolset-6-gdb
+  tags:
+    - devtools
