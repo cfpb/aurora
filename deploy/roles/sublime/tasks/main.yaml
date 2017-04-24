@@ -39,7 +39,11 @@
   with_items:
     - "Sublime Text 2"
     - "Sublime Text 2/Icon"
-    - "Sublime Text 2/Icon/*"
+    - "Sublime Text 2/Icon/128x128"
+    - "Sublime Text 2/Icon/16x16"
+    - "Sublime Text 2/Icon/256x256"
+    - "Sublime Text 2/Icon/32x32"
+    - "Sublime Text 2/Icon/48x48"
     - "Sublime Text 2/lib"
     - "Sublime Text 2/Pristine Packages"
 
