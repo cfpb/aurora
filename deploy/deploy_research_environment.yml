@@ -50,6 +50,7 @@
   become: yes
   become_method: sudo
   roles:
+    - umask
     - devtools
     - emacs
     - open_office
