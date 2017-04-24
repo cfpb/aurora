@@ -47,7 +47,6 @@
     - "Sublime Text 2/lib"
     - "Sublime Text 2/Pristine Packages"
 
-
 - name: Ensure sublime_text is executable
   file:
     path: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
