@@ -10,7 +10,6 @@
   yum:
     name: python34-setuptools
     state: present
-    disable_gpg_check: yes
 
 - name: Install pip
   easy_install:
