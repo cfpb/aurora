@@ -98,12 +98,12 @@
   roles:
     - devtools
     - devtools6
+    - {role: epel, when: "use_epel"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - {role: python-libs}
-    - {role: epel, when: "use_epel"}
     - postgresql-client
     - r
     - r-studio-desktop
