@@ -4,7 +4,6 @@
   yum:
     name: python34
     state: present
-    disable_gpg_check: yes
 
 - name: Install setup tools
   yum:
