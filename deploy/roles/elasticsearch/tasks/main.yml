@@ -7,19 +7,19 @@
 
 - name: Install elasticsearch GPG key
   rpm_key:
-    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    key: https://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
 
 - name: Setup elasticsearch repo
   template:
     src: elasticsearch.repo
     dest: /etc/yum.repos.d/elasticsearch.repo
-  #when: not "production" in group_names
+  when: not "production" in group_names
 
 - name: Install elasticsearch
   yum:
-    name: elasticsearch
-    state: latest
+    name: elasticsearch-{{ es_full_version }}
+    state: present
 
 - name: Create elasticsearch data directory
   file:
@@ -33,58 +33,27 @@
     dest: /etc/profile.d/elasticsearch.sh
     content: 'export ES_JAVA_OPTS="-Des.path.conf=/etc/elasticsearch"'
 
-- name: Install the license plugin
-  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/license/latest{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
-  args:
-    creates: /usr/share/elasticsearch/plugins/license
-  environment:
-    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  notify:
-    - restart elasticsearch
-
-# Necessary because there is no way to upgrade a plugin directly
-#- name: Remove old Shield plugin
-#  command: /usr/share/elasticsearch/bin/plugin -r shield
-#  environment:
-#    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+#- name: Make sure shield directory has proper permissions
+#  shell: "chmod 755 /etc/elasticsearch/shield"
 #  notify:
 #    - restart elasticsearch
 
-- name: Install the Shield plugin
-  command: /usr/share/elasticsearch/bin/plugin -i elasticsearch/shield/1.3.0{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
-  args:
-    creates: /usr/share/elasticsearch/plugins/shield
-  environment:
-    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  notify:
-    - restart elasticsearch
+#- name: Make sure shield files have the proper permissions
+#  shell: "chmod 644 /etc/elasticsearch/shield/*"
+#  notify:
+#    - restart elasticsearch
 
-- name: Make sure shield directory has proper permissions
-  shell: "chmod 755 /etc/elasticsearch/shield"
-  notify:
-    - restart elasticsearch
-
-- name: Make sure shield files have the proper permissions
-  shell: "chmod 644 /etc/elasticsearch/shield/*"
-  notify:
-    - restart elasticsearch
-
-- name: Open ports 9300:9400 in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 9300:9400 -j ACCEPT"
+- name: Open ports for Elasticsearch transport communication
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ es_transport_ports }} -j ACCEPT"
   when: iptables_config
 
-- name: Open ports 9200:9299 in iptables
-  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 9200:9299 -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config and proxy_server in groups
+- name: Open ports for Elasticsearch http communication
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ es_http_ports }} -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
+  when: iptables_config
 
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config
-
-- name: Install kopf
-  command: /usr/share/elasticsearch/bin/plugin -install lmenezes/elasticsearch-kopf{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
-  args:
-    creates: /usr/share/elasticsearch/plugins/kopf/_site/index.html
 
 # Install license key manually for now
 #- name: Install the license key

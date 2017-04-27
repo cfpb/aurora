@@ -80,6 +80,7 @@ local_settings.yml
 # extra variable files
 .vagrant*
 
+
 # Ansible #
 ###########
 *.retry
@@ -87,5 +88,7 @@ local_settings.yml
 # Ansible Vault password file
 .vault_password
 
-# ES Message Auth Key
+# Local project files #
+#######################
+local_settings.yml
 system_key

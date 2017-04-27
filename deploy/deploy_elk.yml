@@ -21,7 +21,7 @@
       args:
         creates: /etc/elasticsearch/shield/system_key
       register: create_key
-      when: es_message_auth
+      when: es_message_auth_enabled
       environment:
         ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
 
@@ -31,7 +31,7 @@
         owner: "{{ es_user }}"
         group: "{{ es_user }}"
         mode: 0600
-      when: es_message_auth
+      when: es_message_auth_enabled
 
     - name: Fetch the key
       fetch:
@@ -39,7 +39,7 @@
         dest: ./
         fail_on_missing: yes
         flat: yes
-      when: es_message_auth and create_key.changed
+      when: es_message_auth_enabled and create_key.changed
 
   roles:
     - elasticsearch-config
@@ -48,15 +48,3 @@
     - kibana
     - kibana-config
     - {role: log-courier, when: "install_logstash"}
-  tasks:
-    - name: Setup elasticsearch as a client node
-      lineinfile:
-        dest: /etc/elasticsearch/elasticsearch.yml
-        regexp: '^(#)?\s+"{{ item }}":'
-        line: "{{ item }}: false"
-        state: present
-      with_items:
-        - "node.master"
-        - "node.data"
-      notify:
-        - restart elasticsearch

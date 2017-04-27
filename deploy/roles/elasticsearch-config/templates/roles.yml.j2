@@ -2,94 +2,104 @@
 
 ### DEFAULT ROLES ###
 
-# Defines the required permissions for trasport clients
+# Defines the required permissions for transport clients
 transport_client:
   cluster:
     - cluster:monitor/nodes/info
     #uncomment the following for sniffing
     #- cluster:monitor/state
 
-# The required role for kibana 3 users
-kibana3:
-  cluster: cluster:monitor/nodes/info
-  indices:
-    '*': indices:data/read/search, indices:data/read/get, indices:admin/get
-    'kibana-int': indices:data/read/search, indices:data/read/get, indices:data/write/delete, indices:data/write/index, create_index
-
 # The required permissions for kibana 4 users.
 kibana4:
-  cluster: 
-      - cluster:monitor/nodes/info
-      - cluster:monitor/health 
-  indices:
-    '*':
-      - indices:admin/mappings/fields/get
-      - indices:admin/validate/query
-      - indices:data/read/search
-      - indices:data/read/msearch
-      - indices:admin/get 
-    '.kibana':
-      - indices:admin/exists
-      - indices:admin/mapping/put
-      - indices:admin/mappings/fields/get
-      - indices:admin/refresh
-      - indices:admin/validate/query
-      - indices:data/read/get
-      - indices:data/read/mget
-      - indices:data/read/search
-      - indices:data/write/delete
-      - indices:data/write/index
-      - indices:data/write/update
-      - indices:admin/create
-
-# The required permissions for the kibana 4 server
-kibana4_server:
   cluster:
       - cluster:monitor/nodes/info
       - cluster:monitor/health
   indices:
-    '.kibana':
-      - indices:admin/exists
-      - indices:admin/mapping/put
-      - indices:admin/mappings/fields/get
-      - indices:admin/refresh
-      - indices:admin/validate/query
-      - indices:data/read/get
-      - indices:data/read/mget
-      - indices:data/read/search
-      - indices:data/write/delete
-      - indices:data/write/index
-      - indices:data/write/update
+      - names: '*'
+        privileges:
+          - indices:admin/mappings/fields/get
+          - indices:admin/validate/query
+          - indices:data/read/search
+          - indices:data/read/msearch
+          - indices:admin/get
+      - names: '.kibana'
+        privileges:
+          - indices:admin/exists
+          - indices:admin/mapping/put
+          - indices:admin/mappings/fields/get
+          - indices:admin/refresh
+          - indices:admin/validate/query
+          - indices:data/read/get
+          - indices:data/read/mget
+          - indices:data/read/search
+          - indices:data/write/delete
+          - indices:data/write/index
+          - indices:data/write/update
+          - indices:admin/create
+
+# The required permissions for the kibana 4 server
+kibana4_server:
+  cluster:
+      - monitor
+  indices:
+    - names: '.kibana'
+      privileges:
+        - all
 
 # The required role for logstash users
 logstash:
-  cluster: indices:admin/template/get, indices:admin/template/put
+  cluster:
+    - indices:admin/template/get
+    - indices:admin/template/put
   indices:
-    'logstash-*': indices:data/write/bulk, indices:data/write/delete, indices:data/write/update, indices:data/read/search, indices:data/read/scroll, create_index
+    - names: 'logstash-*'
+      privileges:
+        - indices:data/write/bulk
+        - indices:data/write/delete
+        - indices:data/write/update
+        - indices:data/read/search
+        - indices:data/read/scroll
+        - create_index
 
 # Marvel role, allowing all operations
 # on the marvel indices
 marvel_user:
-  cluster: cluster:monitor/nodes/info, cluster:admin/plugin/license/get
+  cluster:
+    - monitor/nodes/info
+    - admin/plugin/license/get
   indices:
-    '.marvel-*': all
+    - names: '.marvel-*'
+      privileges:
+        - all
 
 # Marvel Agent users
 marvel_agent:
-  cluster: indices:admin/template/get, indices:admin/template/put
+  cluster:
+    - indices:admin/template/get
+    - indices:admin/template/put
   indices:
-    '.marvel-*': indices:data/write/bulk, create_index
+    - names: '.marvel-*'
+      privileges:
+        - indices:data/write/bulk
+        - create_index
 
 ### USER DEFINED ROLES ###
 
 {% for role in es_roles %}
 #{{ role.description }}
 {{ role.name }}:
-  {% if 'cluster_priv' in role %}
-  cluster: {{ role.cluster_priv }}
-  {% endif %}
+{% if 'cluster_privs' in role %}
+  cluster:
+{% for priv in role.cluster_privs %}
+    - {{ priv }}
+{% endfor %}
+{% endif %}
   indices:
-    {% for index in role.indices %}
-      '{{ index.name }}': {{ index.role }}
-    {% endfor %}
+{% for index in role.indices %}
+    - names: '{{ index.name }}'
+      privileges:
+{% for priv in index.privs %}
+        - {{ priv }}
+{% endfor %}
+{% endfor %}
 {% endfor %}

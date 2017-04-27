@@ -1,3 +1,10 @@
+# The install command for plugins switched from "-i" to "install"
+es_plugin_install_cmd: "install"
+es_plugin_uninstall_cmd: "remove"
+es_set_conf_file: False
+es_master_node: "true"
+es_data_node: "true"
+
 # Logging options
 es_log_level: INFO
 es_logging_file_size: "50MB"
@@ -7,30 +14,47 @@ es_logging_max_files: 20
 es_heap_size: "128M"
 es_heap_newsize: "32M"
 
+# Ansible settings
+es_ansible_group: "elasticsearch"
+
 # Operational configuration options
+es_transport_port: 9300
 es_scripts_path: /etc/elasticsearch/scripts
-es_mlockall: True
-es_http_enabled: False
+es_mlockall: "true"
+es_http_enabled: "false"
+es_disable_dynamic_scripts: "true"
+es_allow_explicit_index: "false"
+es_jsonp_enable: "false"
+es_majority_num: 2
+es_cors_allow_origin: /https?:\/\/localhost(:[0-9]+)?/
+es_fielddata_cache_size: "30%"
+es_fielddata_cache_expire: "5m"
+
+# Shield settings
+es_license_version: license
+es_shield_version: shield
+es_shield_enabled: True
+es_message_auth_enabled: True
+es_shield_audit: "true"
+es_shield_roles_file: roles.yml.j2
+
+# Default users
 es_admin_user: "admin"
 es_admin_group_name: "admin"
 es_user_group_name: "user"
-es_majority_num: 2
 es_admin_role: &es_admin_role "admin"
 es_admin_password: &es_admin_password "password"
 
+# Marvel settings
 marvel_user: "marvel"
 marvel_password: "password"
 es_marvel_hostname_verification: "true"
 es_marvel_timeout: "60s"
 
-es_shield_enabled: true
-es_shield_audit: true
-es_message_auth: true
-
 # You can add additional plugins needed for elasticsearch here
 es_plugins:
   -
-    plugin_name: elasticsearch/elasticsearch-lang-python/2.5.0
+    plugin_name: lang-python
     plugin_path: /usr/share/elasticsearch/plugins/lang-python
 
 # Used when esusers is the authentication scheme
@@ -52,19 +76,21 @@ es_roles:
   -
     description: "Admin role, with all privileges"
     name: *es_admin_role
-    cluster_priv: "all"
+    cluster_privs:
+      - "all"
     indices:
       -
         name: '*'
-        role: "all"
-
+        privs:
+          - "all"
   -
     description: "User role, with read only privileges"
     name: "user"
     indices:
       -
         name: '*'
-        role: "read"
+        privs:
+          - "read"
 
 es_role_mappings:
   -

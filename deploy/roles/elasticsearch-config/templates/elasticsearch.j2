@@ -11,7 +11,9 @@ ES_HOME=/usr/share/elasticsearch
 CONF_DIR=/etc/elasticsearch
 
 # Elasticsearch configuration file
+{% if es_set_conf_file %}
 CONF_FILE=$CONF_DIR/elasticsearch.yml
+{% endif %}
 
 # Elasticsearch data directory
 DATA_DIR=/var/lib/elasticsearch

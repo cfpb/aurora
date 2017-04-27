@@ -19,7 +19,9 @@
     state: restarted
 
 - name: restart kibana
-  command: restart kibana
+  service:
+    name: kibana
+    state: restarted
 
 - name: restart logstash
   service:

@@ -30,6 +30,8 @@ cluster.name: {{ es_cluster }}
 # node.rack: r1
 #
 node.name: {{ inventory_hostname }}
+node.master: {{ es_master_node }}
+node.data: {{ es_data_node }}
 
 # ----------------------------------- Paths ------------------------------------
 #
@@ -102,7 +104,7 @@ discovery.zen.minimum_master_nodes: {{ es_majority_num }}
 #
 
 discovery.zen.ping.multicast.enabled: false
-discovery.zen.ping.unicast.hosts: {% if "elasticsearch" in groups %}[{% for host in groups["elasticsearch"] %}"{{ hostvars[host]['ansible_ssh_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]{% else %}[127.0.0.1]{% endif %}
+discovery.zen.ping.unicast.hosts: {% if es_ansible_group in groups %}[{% for host in groups[es_ansible_group] %}"{{ hostvars[host]['ansible_ssh_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]{% else %}[127.0.0.1]{% endif %}
 
 # ---------------------------------- Various -----------------------------------
 #
@@ -115,7 +117,7 @@ discovery.zen.ping.unicast.hosts: {% if "elasticsearch" in groups %}[{% for host
 # action.destructive_requires_name: true
 
 ### Transport Settings
-transport.tcp.port: 9300
+transport.tcp.port: {{ es_transport_port }}
 
 ### HTTP Settings
 {% if not es_http_enabled %}
@@ -123,19 +125,19 @@ http.enabled: false
 {% endif %}
 
 ### Security Settings
-disable_dynamic_scripts: true
-allow_explicit_index: false
-http.jsonp.enable: false
-http.cors.allow-origin: /https?:\/\/localhost(:[0-9]+)?/
+disable_dynamic_scripts: {{ es_disable_dynamic_scripts }}
+allow_explicit_index: {{ es_allow_explicit_index }}
+http.jsonp.enable: {{ es_jsonp_enable }}
+http.cors.allow-origin: {{ es_cors_allow_origin }}
 
 ### Index Settings
-indices.fielddata.cache.size: "30%"
-indices.fielddata.cache.expire: "5m"
+indices.fielddata.cache.size: "{{ es_fielddata_cache_size }}"
+indices.fielddata.cache.expire: "{{ es_fielddata_cache_expire }}"
 
 ### Shield Settings
 {% if es_shield_enabled %}
 shield:
-{% if es_message_auth %}
+{% if es_message_auth_enabled %}
   system_key:
     file: /etc/elasticsearch/shield/system_key
 {% endif %}
@@ -154,19 +156,15 @@ shield:
         order: 0
     {% endif %}
 
-{% if es_shield_audit %}
-shield.audit.enabled: true
-{% else %}
-shield.audit.enabled: false
-{% endif %}
-
+shield.audit.enabled: {{ es_shield_audit }}
 {% else %}
 shield.enabled: false
 {% endif %}
 
 ### Marvel Settings
-marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ es_hostname }}"]
-marvel.agent.exporter.es.timeout: {{ es_marvel_timeout }}
-marvel.agent.exporter.es.ssl.hostname_verification: {{ es_marvel_hostname_verification }}
-marvel.agent.exporter.es.ssl.truststore.path: {{ java_home_path }}/lib/security/cacerts
-marvel.agent.exporter.es.ssl.truststore.password: {{ java_keystore_password }}
+## Settings from older version of Marvel
+# marvel.agent.exporter.es.hosts: ["{{ es_protocol }}{{ es_hostname }}"]
+# marvel.agent.exporter.es.timeout: {{ es_marvel_timeout }}
+# marvel.agent.exporter.es.ssl.hostname_verification: {{ es_marvel_hostname_verification }}
+# marvel.agent.exporter.es.ssl.truststore.path: {{ java_home_path }}/lib/security/cacerts
+# marvel.agent.exporter.es.ssl.truststore.password: {{ java_keystore_password }}

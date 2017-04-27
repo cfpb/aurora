@@ -14,10 +14,15 @@
   notify:
     - restart logstash
 
+#- name: Setup Elasticsearch filter
+#  template:
+#    src: 20-elasticsearch-input.conf.j2
+#    dest: /etc/logstash/conf.d/20-elasticsearch-input.conf
+
 - name: Setup elasticsearch output
   template:
-    src: 30-lumberjack-output.conf
-    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+    src: "{{ logstash_es_output_file }}"
+    dest: /etc/logstash/conf.d/30-elasticsearch-output.conf
   notify:
     - restart logstash
 
@@ -32,6 +37,10 @@
   shell: "chmod 644 /etc/logstash/conf.d/*"
   notify:
     - restart logstash
+
+- name: Test Logstash configuration
+  shell: /opt/logstash/bin/logstash --configtest
+  register: logstash_configtest
 
 - name: Ensure logstash is started
   service:

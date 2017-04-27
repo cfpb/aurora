@@ -1,0 +1,57 @@
+# Kibana is served by a back end server. This controls which port to use.
+server.port: 5601
+
+# The host to bind the server to.
+server.host: "0.0.0.0"
+
+# SSL for outgoing requests from the Kibana Server (PEM formatted)
+server.ssl.key: {{ kibana_ssl_key_file }}
+server.ssl.cert: {{ kibana_ssl_cert_file }}
+
+# Set the path to where you would like the process id file to be created.
+# pid.file: /var/run/kibana.pid
+
+# Kibana uses an index in Elasticsearch to store saved searches, visualizations
+# and dashboards. It will create a new index if it doesn't already exist.
+kibana.index: ".kibana"
+
+# The default application to load.
+kibana.defaultAppId: "discover"
+
+# The Elasticsearch instance to use for all your queries.
+# This assumes that the ES instance is running as a client
+# node on the same server as Kibana
+elasticsearch.url: "http://{{ ansible_ssh_host }}:9200"
+
+# preserve_elasticsearch_host true will send the hostname specified in `elasticsearch`. If you set it to false,
+# then the host you use to connect to *this* Kibana instance will be sent.
+elasticsearch.preserveHost: true
+
+# If your Elasticsearch requires client certificate and key
+# elasticsearch.ssl.cert: /path/to/your/client.crt
+# elasticsearch.ssl.key: /path/to/your/client.key
+
+# If you need to provide a CA certificate for your Elasticsarech instance, put
+# the path of the pem file here.
+# elasticsearch.ssl.ca: /path/to/your/CA.pem
+
+# Time in milliseconds to wait for responses from the back end or elasticsearch.
+# This must be > 0
+elasticsearch.requestTimeout: 30000
+
+# Time in milliseconds for Elasticsearch to wait for responses from shards.
+# Set to 0 to disable.
+elasticsearch.shardTimeout: 0
+
+# Set to false to have a complete disregard for the validity of the SSL
+# certificate.
+elasticsearch.ssl.verify: true
+
+# If your Elasticsearch is protected with basic auth, this is the user credentials
+# used by the Kibana server to perform maintence on the kibana_index at statup. Your Kibana
+# users will still need to authenticate with Elasticsearch (which is proxied thorugh
+# the Kibana server)
+elasticsearch.username: "{{ kibana_user }}"
+elasticsearch.password: "{{ kibana_password }}"
+
+shield.encryptionKey: "{{ kibana_encryption_key }}"
