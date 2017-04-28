@@ -98,12 +98,12 @@
   roles:
     - devtools
     - devtools6
-    - {role: epel, when: "use_epel"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - {role: python-libs}
+    - {role: epel, when: "use_epel"}
     - postgresql-client
     - r
     - r-studio-desktop
@@ -112,6 +112,10 @@
     - pycharm
     - gocd
     - stattransfer
+
+  tasks:
+    - name: Install Python RPM dependencies
+
   post_tasks:
     - name: Install Gnome-Terminal package
       yum:
@@ -151,6 +155,15 @@
     - stattransfer
   tasks:
   - name: Install libselinux-python and libicu package
+    yum:
+      name: "{{ item }}"
+      state: present
+      disable_gpg_check: yes
+    with_items:
+      - "{{ libicu }}"
+      - "{{ libselinux-python }}"
+
+  - name: Install git
     yum:
       name: "{{ item }}"
       state: present

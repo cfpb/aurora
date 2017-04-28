@@ -1,11 +1,9 @@
 # main.yml - Apache installation and setup
 ---
-- name: Add Apache 2.4 Repository
-  get_url:
-    url: "{{ apache_24_repo }}"
-    dest: /etc/yum.repos.d
-    mode: 644
-    validate_certs: False
+- name: Add Apache repo
+  yum: 
+    name: centos-release-scl
+    state: present
   when: not custom_repo
 
 - name: Install Apache
@@ -51,3 +49,27 @@
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config
+
+- name: create certs for apache localhost
+  command: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=US/ST=CFPB/L=Washington/O=Dis/CN=www.cf.gov" -keyout /etc/pki/tls/private/localhost.key -out /etc/pki/tls/certs/localhost.crt
+  args:
+    creates: /etc/pki/tls/certs/localhost.crt
+  when: not custom_repo
+
+- name: Set recursive admin permissions on log folders
+  acl:
+    path: "{{ apache_log_folder }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ apache_log_folder }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
