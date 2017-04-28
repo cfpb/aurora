@@ -1,7 +1,24 @@
 ---
+logstash_es_output_file: 30-elasticsearch-output.conf.j2
 logstash_user: logstash
 logstash_password: password
 logstash_filters:
+  -
+    name: 01-input.conf
+    content: >
+      input {
+        tcp {
+          port => 5043
+          codec => multiline {
+            pattern => "^[\s|java\.|com\.|Caused by:]"
+            what => "previous"
+          }
+        }
+        tcp {
+          port => 5044
+          codec => json
+        }
+      }
   -
     name: 12-example-filter.conf
     content: >

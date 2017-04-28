@@ -1,3 +1,12 @@
 ---
+kibana_config_path: /opt/kibana/config
+kibana_config_file: kibana.yml.j2
 kibana_user: kibana4-user
 kibana_password: password
+kibana_plugins:
+  - kibana/shield/2.3.4
+  - elasticsearch/marvel/2.3.4
+kibana_encryption_key: "secret_key"
+kibana_generate_certs: True
+kibana_ssl_key_file: /opt/kibana/ssl/kibana.key
+kibana_ssl_cert_file: /opt/kibana/ssl/kibana.crt

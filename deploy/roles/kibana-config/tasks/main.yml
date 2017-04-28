@@ -1,13 +1,33 @@
 ---
 - name: Setup configuration
   template:
-    src: kibana.yml
-    dest: /opt/kibana/config/kibana.yml
+    src: "{{ kibana_config_file }}"
+    dest: "{{ kibana_config_path }}/kibana.yml"
+  notify:
+    - restart kibana
+
+- name: Create SSL folder
+  file:
+    dest: /opt/kibana/ssl
+    state: directory
+  when: kibana_generate_certs
+
+- name: Generate SSL Certs if requested
+  command: "openssl req -new -nodes -x509 -subj '/C={{ country }}/ST={{ state }}/L={{ city }}/O={{ organization_name }}/CN={{ ansible_hostname }}.{{ domain_name }}' -days 3650 -keyout {{ kibana_ssl_key_file }} -out {{ kibana_ssl_cert_file }} -extensions v3_ca"
+  when: kibana_generate_certs
+  args:
+    creates: "{{ kibana_ssl_cert_file }}"
+
+- name: Install kibana plugins
+  command: /opt/kibana/bin/kibana plugin --install {{ item }}
+  with_items: "{{ kibana_plugins }}"
+  register: kibana_result
+  failed_when: kibana_result.rc != 0 and "already exists" not in kibana_result.stderr
+  changed_when: '"already exists" not in kibana_result.stderr'
   notify:
     - restart kibana
 
 - name: Start Kibana
-  command: start kibana
-  register: kibana_start
-  failed_when: 'kibana_start.rc != 0 and "Job is already running" not in kibana_start.stderr'
-  changed_when: '"Job is already running" not in kibana_start.stderr'
+  service:
+    name: kibana
+    state: started

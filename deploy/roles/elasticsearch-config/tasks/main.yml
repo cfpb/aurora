@@ -28,9 +28,83 @@
   notify:
     - restart elasticsearch
 
+# Install Plugins
+- name: Updating the nss package may be required
+  yum:
+    name: nss
+    state: latest
+
+- name: Uninstall all existing plugins
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_uninstall_cmd }} {{ item.plugin_name }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items: "{{ es_plugins }}"
+  notify:
+    - restart elasticsearch
+
+- name: Uninstall all existing plugins
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_uninstall_cmd }} {{ item }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  with_items:
+    - kopf
+    - shield
+    - license
+  notify:
+    - restart elasticsearch
+
+- name: Install the license plugin
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_install_cmd }} {{ es_license_version }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  register: license_result
+  failed_when: license_result.rc != 0 and "already exists" not in license_result.stdout
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
+- name: Install the Shield plugin
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_install_cmd }} {{ es_shield_version }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  register: shield_result
+  failed_when: shield_result.rc != 0 and "already exists" not in shield_result.stdout
+  environment:
+    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
+  notify:
+    - restart elasticsearch
+
+- name: Install kopf
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_install_cmd }} lmenezes/elasticsearch-kopf{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: /usr/share/elasticsearch/plugins/kopf/_site/index.html
+
+- name: Install the additional ES plugins
+  command: /usr/share/elasticsearch/bin/plugin {{ es_plugin_install_cmd }} {{ item.plugin_name }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
+  args:
+    creates: "{{ item.plugin_path }}"
+  with_items: "{{ es_plugins }}"
+  notify:
+    - restart elasticsearch
+
+- name: Ensure file permissions for ES plugins are correct
+  shell: "chmod a+r {{ item.plugin_path }} -R"
+  with_items: "{{ es_plugins }}"
+  notify:
+    - restart elasticsearch
+
+- name: Ensure directory permissions for ES plugins are correct
+  file:
+    path: "{{ item.plugin_path }}"
+    mode: a+x
+    recurse: yes
+    state: directory
+  with_items: "{{ es_plugins }}"
+  notify:
+    - restart elasticsearch
+
+# Configure Shield
+
 - name: Generate the roles file
   template:
-    src: roles.yml.j2
+    src: "{{ es_shield_roles_file }}"
     dest: /etc/elasticsearch/shield/roles.yml
   notify:
     - restart elasticsearch
@@ -57,37 +131,13 @@
   notify:
     - restart elasticsearch
 
-- name: Install the additional ES plugins
-  command: /usr/share/elasticsearch/bin/plugin --install {{ item.plugin_name }}{% if proxy_host %} -DproxyHost={{ proxy_host }}{% endif %}{% if proxy_port %} -DproxyPort={{ proxy_port }}{% endif %}
-  args:
-    creates: "{{ item.plugin_path }}"
-  environment:
-    ES_JAVA_OPTS: "-Des.path.conf=/etc/elasticsearch"
-  with_items: "{{ es_plugins }}"
-  notify:
-    - restart elasticsearch
-
-- name: Ensure file permissions for ES plugins are correct
-  shell: "chmod a+r {{ item.plugin_path }} -R"
-  with_items: "{{ es_plugins }}"
-  notify:
-    - restart elasticsearch
-
-- name: Ensure directory permissions for ES plugins are correct
-  file:
-    path: "{{ item.plugin_path }}"
-    mode: a+x
-    recurse: yes
-    state: directory
-  with_items: "{{ es_plugins }}"
-  notify:
-    - restart elasticsearch
+# Message Authentication Settings
 
 - name: Stat key file
   stat:
     path: /etc/elasticsearch/shield/system_key
   register: system_key
-  when: es_message_auth
+  when: es_message_auth_enabled
 
 - name: Copy key to each node
   copy:
@@ -96,7 +146,7 @@
     owner: elasticsearch
     group: elasticsearch
     mode: 0600
-  when: es_message_auth and not system_key.stat.exists
+  when: es_message_auth_enabled and not system_key.stat.exists
 
 - name: Start elasticsearch
   service:

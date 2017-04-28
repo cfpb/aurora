@@ -115,12 +115,6 @@
 
   tasks:
     - name: Install Python RPM dependencies
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items:
-        - gnome-terminal
 
   post_tasks:
     - name: Install Gnome-Terminal package

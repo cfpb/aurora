@@ -1,0 +1,9 @@
+output {
+  elasticsearch {
+    hosts => "{{ ansible_ssh_host }}:9200"
+    index => "logstash-%{+YYYY.MM.dd}"
+    user => "{{ logstash_user }}"
+    password => "{{ logstash_password }}"
+  }
+  stdout { codec => rubydebug }
+}

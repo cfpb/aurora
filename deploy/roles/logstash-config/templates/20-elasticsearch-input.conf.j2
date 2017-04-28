@@ -1,0 +1,30 @@
+filter {
+  if [type] == "elasticsearch" {
+    grok {
+      match => [ "message", "\[%{TIMESTAMP_ISO8601:timestamp}\]\[%{DATA:level}%{SPACE}\]\[%{DATA:source}%{SPACE}\]%{SPACE}(?<message>(.|\r|\n)*)" ]"]
+      overwrite => [ "message" ]
+    }
+    if "_grokparsefailure" not in [tags] {
+      grok { # regular logs
+        match => [
+            "message", "^\[%{DATA:node}\] %{SPACE}\[%{DATA:index}\]%{SPACE}(?<short_message>(.|\r|\n)*)",
+            "message", "^\[%{DATA:node}\]%{SPACE}(?<short_message>(.|\r|\n)*)"
+          ]
+          tag_on_failure => []
+        }
+      }
+      grok { # slow logs
+        match => [ "message", "took\[%{DATA:took}\], took_millis\[%{NUMBER:took_millis}\], types\[%{DATA:types}\], stats\[%{DATA:stats}\], search_type\[%{DATA:search_type}\], total_shards\[%{NUMBER:total_shards}\], source\[%{DATA:source_query}\], extra_source\[%{DATA:extra_source}\]," ]
+        tag_on_failure => []
+        add_tag => [ "elasticsearch-slowlog" ]
+      }
+    }
+    date {
+      "match" => ["timestamp", "YYYY-MM-dd HH:mm:ss,SSS"]
+      target => "@timestamp"
+    }
+    mutate {
+      remove_field => ["timestamp"]
+    }
+  }
+}
