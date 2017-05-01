@@ -549,15 +549,6 @@
     - mesos
     - mesos-master
 
-- name: Create empty log files if they don't exist
-  file:
-    path: "{{ item }}"
-    state: touch
-    owner: root
-    group: root
-    mode: 0640
-  with_items: "{{ log_file_locations }}"
-
 - name: Set recursive admin permissions on log folders
   acl:
     path: "{{ item }}"
@@ -566,7 +557,7 @@
     permissions: rX
     recursive: yes
     state: present
-  with_items: "{{ log_file_locations }}"
+  with_items: "{{ mesos_master_log_file_locations }}"
 
 - name: Set default admin permissions on log folders
   acl:
@@ -576,4 +567,4 @@
     permissions: rX
     default: yes
     state: present
-  with_items: "{{ log_file_locations }}"
+  with_items: "{{ mesos_master_log_file_locations }}"

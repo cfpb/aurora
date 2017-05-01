@@ -50,7 +50,7 @@
     owner: root
     group: root
     mode: 0640
-  with_items: "{{ log_file_locations }}"
+  with_items: "{{ logcourier_log_file_locations }}"
 
 - name: Allow admins to read logs
   acl:
@@ -60,5 +60,5 @@
     permissions: rX
     recursive: yes
     state: present
-  with_items: "{{ log_file_locations }}"
+  with_items: "{{ logcourier_log_file_locations }}"
 

@@ -78,7 +78,7 @@ TBD
 
 ## Known issues
 
-None at this time.
+- Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
 
 ## Getting help
 

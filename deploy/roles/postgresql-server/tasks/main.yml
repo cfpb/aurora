@@ -12,14 +12,19 @@
     recurse: yes
     state: directory
 
+# - name: get the username running the deploy
+#   local_action: command whoami
+#   register: ansible_ssh_user
+
+# - debug: var=ansible_ssh_user
+
 - name: Download and extract PostgresPlus Advanced Server installer
-  unarchive:
-    src: "http://get.enterprisedb.com/ga/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+  get_url:
+    url: "http://get.enterprisedb.com/ga/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
     dest: "{{ pp_temp_dir }}/"
-    owner: "{{ ansible_ssh_user }}"
-    group: "{{ ansible_ssh_user }}"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
     mode: 0777
-    copy: no
 
 - name: Create configuration file
   template:

@@ -81,7 +81,7 @@
     name: "{{ restricted_group_name }}"
     state: present
     
-- name: Create empty log files if they don't exist
+- name: Create empty log file if they don't exist
   file:
     path: "{{ item }}"
     state: touch
