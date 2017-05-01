@@ -117,10 +117,6 @@
     - gocd
     - stattransfer
     - odbc
-
-  tasks:
-    - name: Install Python RPM dependencies
-
   post_tasks:
     - name: Install Gnome-Terminal package
       yum:
