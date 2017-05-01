@@ -249,6 +249,16 @@
     - mesos
     - mesos-agent
 
+- name: Configure image backends
+  copy:
+    dest: /etc/mesos-slave/mage_provisioner_backend
+    content: "{{ mesos_agent_image_backend }}"
+  notify:
+    - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
 ### AppC Container Images
 
 - name: Configure AppC URI

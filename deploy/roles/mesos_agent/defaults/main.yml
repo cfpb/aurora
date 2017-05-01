@@ -24,6 +24,7 @@ marathon_mesos_user: "mesagent"
 mesos_containerizers: "mesos"
 mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
+mesos_agent_image_backend: "copy"
 
 mesos_executor_registration_timeout: 5mins
 
