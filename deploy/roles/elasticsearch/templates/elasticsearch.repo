@@ -1,6 +1,8 @@
 [elasticsearch-{{ es_version }}]
 name=Elasticsearch repository for {{ es_version }}.x packages
-baseurl=https://packages.elasticsearch.org/elasticsearch/{{ es_version }}/centos
+baseurl=http://packages.elastic.co/elasticsearch/{{ es_version }}/centos
 gpgcheck=1
-gpgkey=https://packages.elasticsearch.org/GPG-KEY-elasticsearch
+gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
+autorefresh=1
+type=rpm-md

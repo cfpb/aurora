@@ -35,19 +35,19 @@ env:
   - >
     HOST_GROUP=elasticsearch
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 
 # elk 
   - >
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "deploy_iptables": false}'
 
 # mesos 
   - >
     HOST_GROUP=mesos_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
 # gocd  ci_server
   - >
@@ -59,13 +59,13 @@ env:
   - >
     HOST_GROUP=ci_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
 # gocd ci_terminal
   - >
     HOST_GROUP=ci_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "es_message_auth": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false}'
 
 # Research Server research_environment
   - >
