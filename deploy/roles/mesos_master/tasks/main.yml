@@ -3,6 +3,18 @@
 
 ### SETUP REPOSITORIES
 
+- name: Shutdown all but one of the Mesos Master instances
+  service:
+    name: mesos-master
+    state: stopped
+  when: mesos_upgrade and inventory_hostname != groups['mesos_master'][0]
+
+- name: Shutdown all but one of the Marathon instances
+  service:
+    name: marathon
+    state: stopped
+  when: marathon_upgrade and inventory_hostname != groups['mesos_master'][0]
+
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:

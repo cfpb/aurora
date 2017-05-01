@@ -251,7 +251,7 @@
 
 - name: Configure image backends
   copy:
-    dest: /etc/mesos-slave/mage_provisioner_backend
+    dest: /etc/mesos-slave/image_provisioner_backend
     content: "{{ mesos_agent_image_backend }}"
   notify:
     - restart mesos-agent
