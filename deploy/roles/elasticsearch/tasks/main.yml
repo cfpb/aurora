@@ -45,17 +45,15 @@
 
 - name: Open ports for Elasticsearch transport communication
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ es_transport_ports }} -j ACCEPT"
-  when: iptables_config
-  with_items: "{{ groups['proxy_server']|default(omit) }}"
+  when: iptables_config and proxy_server_deployed
 
 - name: Open ports for Elasticsearch http communication
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ es_http_ports }} -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config
-  with_items: "{{ groups['proxy_server']|default(omit) }}"
+  when: iptables_config and proxy_server_deployed
 
 - name: Save rules
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config and proxy_server_deployed
 
 # Install license key manually for now
 #- name: Install the license key

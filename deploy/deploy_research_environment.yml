@@ -111,8 +111,8 @@
     - postgresql-client
     - r
     - r-studio-desktop
-    - r-studio-server-config
     - r-studio-server
+    - r-studio-server-config
     - pycharm
     - gocd
     - stattransfer
