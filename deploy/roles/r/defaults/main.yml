@@ -25,6 +25,7 @@ r_env_vars:
   CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
 
 r_packages_with_opts:
+<<<<<<< HEAD
   - name: udunits2
     include: /usr/include/udunits2
     lib: /usr/lib64

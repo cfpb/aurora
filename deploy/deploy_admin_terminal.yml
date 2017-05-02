@@ -12,6 +12,7 @@
     - {role: python-build, when: "install_python and not custom_repo" }
     - {role: log-courier, when: "install_logstash"}
     - eod
+    - odbc
 
   tasks:
     - name: Install development tools
