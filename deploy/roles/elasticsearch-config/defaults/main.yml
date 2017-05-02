@@ -34,7 +34,7 @@ es_fielddata_cache_expire: "5m"
 es_license_version: license
 es_shield_version: shield
 es_shield_enabled: True
-es_message_auth_enabled: True
+es_message_auth_enabled: False
 es_shield_audit: "true"
 es_shield_roles_file: roles.yml.j2
 

@@ -153,3 +153,13 @@
     name: elasticsearch
     state: started
     enabled: yes
+
+- name: Allow admins to read logs
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rx
+    state: present
+  with_items:
+    - /var/log/elasticsearch

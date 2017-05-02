@@ -50,8 +50,7 @@
     owner: root
     group: root
     mode: 0640
-  with_items:
-    - "{{ log_file_locations }}"
+  with_items: "{{ log_file_locations }}"
 
 - name: Allow admins to read logs
   acl:

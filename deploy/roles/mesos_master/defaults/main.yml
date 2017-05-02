@@ -4,6 +4,10 @@
 # Number of log files to keep at a time
 zookeeper_maxbackupindex: 20
 
+log_file_locations:
+  - /var/log/mesos/
+  - /var/log/zookeeper/
+
 ### MESOS SETTINGS
 mesos_server_packages:
   - libselinux-python

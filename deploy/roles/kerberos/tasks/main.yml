@@ -51,3 +51,4 @@
     recursive: yes
     state: present
   with_items: "{{ log_file_locations }}"
+
