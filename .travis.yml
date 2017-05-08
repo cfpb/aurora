@@ -107,7 +107,7 @@ env:
   - >
     HOST_GROUP=research_sas
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
-    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false}'
+    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "install_sas": false}'
 
 # Research Server research_spss
   - >

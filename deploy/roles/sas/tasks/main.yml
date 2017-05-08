@@ -1,0 +1,52 @@
+---
+- name: Install yum dependencies
+  yum:
+    name: libXext.i686
+    state: present
+  tags:
+    - sas
+
+#- name: Stop SAS Servers
+
+#- name: Backup files
+
+- name: Copy the response file
+  template:
+    src: sas_template.txt.j2 
+    dest: "{{ sas_response_file_path }}"
+  tags:
+    - sas
+
+- name: Run the installer in quiet mode
+  # we use yes for accepting default values
+  shell: "yes '' 2>/dev/null | {{ sas_installer }} -console -quiet -nomsupdate -responsefile {{ sas_response_file_path }}"
+  register: installer_cmd
+  failed_when: installer_cmd.stderr != ""
+  when: install_sas
+  tags:
+    - sas
+
+- name: change the java heap size
+  lineinfile:
+    dest: "{{ sas_config_home }}/appserver/studio/bin/setenv.sh"
+    regexp: 'JVM_OPTS='
+    line: 'JVM_OPTS="{{ java_heap_size }}"'
+    backup: yes
+  when: install_sas
+  tags:
+    - sas
+
+#- name: Restore backup
+
+- name: Copy over pam.d config from login (usually works)
+  shell: cp -f /etc/pam.d/login /etc/pam.d/sasauth
+  tags:
+    - sas
+
+- name: Add rta init.d daemon script
+  template:
+    src: sas_init.d_template.j2
+    dest: /etc/init.d/sas-studio
+    mode: 0751
+  tags:
+    - sas

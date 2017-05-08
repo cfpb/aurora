@@ -1,0 +1,10 @@
+---
+install_sas: false
+sas_installer: /opt/sas/SASInstall/setup.sh
+sas_response_file_path: /opt/sas/SASInstall/deploy_plan.txt
+sas_sid_file: /opt/sas/SASInstall/sid_files/SAS94_9BQWQL_70104781_LINUX_X86-64.txt
+sas_home: /opt/sas/SASHome
+sas_config_home: /opt/sas/studioconfig
+sas_script: /opt/sas/studioconfig/sasstudio.sh
+sas_appserver_pid: /opt/sas/studioconfig/appserver/studio/logs/tcserver.pid
+java_heap_size: '-Xmx4096M -Xms1024M'
