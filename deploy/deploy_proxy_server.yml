@@ -16,6 +16,7 @@
     - {role: log-courier, when: "install_logstash"}
     - {role: python, when: "custom_repo and install_python"}
     - {role: python-build, when: "not custom_repo"}
+    - odbc
 
   tasks:
     - name: Create apache directories

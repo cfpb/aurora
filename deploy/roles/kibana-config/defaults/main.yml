@@ -1,4 +1,5 @@
 ---
+kibana_log_file_locations: /var/log/kibana 
 kibana_config_path: /opt/kibana/config
 kibana_config_file: kibana.yml.j2
 kibana_user: kibana4-user

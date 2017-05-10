@@ -58,6 +58,7 @@
     - stattransfer
     - sublime
     - jdk
+    - odbc
   post_tasks:
     - name: Install Ultra Edit
       yum:
@@ -76,6 +77,7 @@
   become_method: sudo
   roles:
     - eod
+    - odbc
 
 - hosts: research_gauss
   become: yes
@@ -84,6 +86,7 @@
     # - gauss
     - gocd
     - stattransfer
+    - odbc
 
 - hosts: research_stata
   become: yes
@@ -91,6 +94,7 @@
   roles:
     - stata
     - stattransfer
+    - odbc
 
 - hosts: research_python
   become: yes
@@ -107,14 +111,12 @@
     - postgresql-client
     - r
     - r-studio-desktop
-    - r-studio-server-config
     - r-studio-server
+    - r-studio-server-config
     - pycharm
     - gocd
     - stattransfer
-
-  tasks:
-    - name: Install Python RPM dependencies
+    - odbc
 
   post_tasks:
     - name: Install Gnome-Terminal package
@@ -134,9 +136,10 @@
   become: yes
   become_method: sudo
   roles:
-    # - sas
+    - sas
     - gocd
     - stattransfer
+    - odbc
 
 - hosts: research_spss
   become: yes
@@ -145,6 +148,7 @@
     # - spss
     - gocd
     - stattransfer
+    - odbc
 
 - hosts: research_matlab
   become: yes
@@ -153,6 +157,8 @@
     # - matlab
     - gocd
     - stattransfer
+    - odbc
+    
   tasks:
   - name: Install libselinux-python and libicu package
     yum:
@@ -160,8 +166,8 @@
       state: present
       disable_gpg_check: yes
     with_items:
-      - "{{ libicu }}"
-      - "{{ libselinux-python }}"
+      - libicu
+      - libselinux-python
 
   - name: Install git
     yum:

@@ -123,18 +123,6 @@
   tags:
   - neo4j
 
-- name: Neo4j symlinks
-  file:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    state: link
-  with_items:
-    - { src: "{{ neo4j_main_dir }}", dest: "{{ neo4j_bin_dir }}" }
-  notify:
-    - restart neo4j
-  tags:
-  - neo4j
-
 - name: Ensure neo4j environment is set
   template:
     src: neo4j-env.sh.j2
@@ -200,6 +188,6 @@
     insertafter: EOF
 
 - name: start neo4j
-  shell: "{{ neo4j_bin_dir}}/neo4j start"
+  shell: "{{ neo4j_main_dir }}/neo4j start"
   tags:
   - neo4j

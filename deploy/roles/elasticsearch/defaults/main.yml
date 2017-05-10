@@ -1,5 +1,5 @@
 ---
-es_version: 2.3
+es_version: 2.x
 es_full_version: 2.3.4
 es_data_directory: /opt/elasticsearch/data
 es_transport_ports: "9300:9400"

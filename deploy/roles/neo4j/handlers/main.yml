@@ -1,4 +1,4 @@
 # main.yml
 ---
 - name: restart neo4j
-  shell: "{{ neo4j_bin_dir}}/neo4j restart"
+  shell: "{{ neo4j_main_dir}}/neo4j restart"

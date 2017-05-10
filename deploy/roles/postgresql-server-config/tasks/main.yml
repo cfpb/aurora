@@ -131,6 +131,7 @@
 
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
+  when: install_ppas
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
