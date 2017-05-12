@@ -10,6 +10,12 @@
 
 #- name: Backup files
 
+- name: Make sure project directory exists
+  file:
+    path: "{{ sas_install_home }}"
+    state: directory
+    mode: 0755
+
 - name: Copy the response file
   template:
     src: sas_template.txt.j2 
@@ -19,7 +25,7 @@
 
 - name: Run the installer in quiet mode
   # we use yes for accepting default values
-  shell: "yes '' 2>/dev/null | {{ sas_installer }} -console -quiet -nomsupdate -responsefile {{ sas_response_file_path }}"
+  shell: "yes '' 2>/dev/null | {{ sas_install_home }}/setup.sh -console -quiet -nomsupdate -responsefile {{ sas_response_file_path }}"
   register: installer_cmd
   failed_when: installer_cmd.stderr != ""
   when: install_sas

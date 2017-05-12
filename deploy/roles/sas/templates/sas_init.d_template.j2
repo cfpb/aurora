@@ -8,8 +8,8 @@
 # Source function library.
 . /etc/init.d/functions
 
-prog="{{ sas_script }}"
-pidfile="{{ sas_appserver_pid }}"
+prog="{{ sas_config_home }}/sasstudio.sh"
+pidfile="{{ sas_config_home }}/studio/logs/tcserver.pid"
 
 RETVAL=0
 
