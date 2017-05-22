@@ -35,13 +35,13 @@ env:
   - >
     HOST_GROUP=elasticsearch
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "proxy_server_deployed": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 
 # elk 
   - >
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "deploy_iptables": false, "proxy_server_deployed": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "deploy_iptables": false}'
 
 # mesos 
   - >
