@@ -39,6 +39,8 @@
   shell: cpanm --notest --sudo DateTime::TimeZone
   register: timezone
   changed_when: '"is up to date" not in timezone.stdout'
+  environment:
+    PATH: "{{ postgres_install_dir|default('/usr/pgsql-9.4') }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   tags:
     - sqitch
   when: install_sqitch
