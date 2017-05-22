@@ -6,10 +6,6 @@
   tags:
     - sas
 
-#- name: Stop SAS Servers
-
-#- name: Backup files
-
 - name: Make sure project directory exists
   file:
     path: "{{ sas_install_home }}"
@@ -42,14 +38,12 @@
   tags:
     - sas
 
-#- name: Restore backup
-
 - name: Copy over pam.d config from login (usually works)
   shell: cp -f /etc/pam.d/login /etc/pam.d/sasauth
   tags:
     - sas
 
-- name: Add rta init.d daemon script
+- name: Add SAS init.d daemon script
   template:
     src: sas_init.d_template.j2
     dest: /etc/init.d/sas-studio
