@@ -111,12 +111,13 @@
     - postgresql-client
     - r
     - r-studio-desktop
-    - r-studio-server-config
     - r-studio-server
+    - r-studio-server-config
     - pycharm
     - gocd
     - stattransfer
     - odbc
+
   post_tasks:
     - name: Install Gnome-Terminal package
       yum:
@@ -135,7 +136,7 @@
   become: yes
   become_method: sudo
   roles:
-    # - sas
+    - sas
     - gocd
     - stattransfer
     - odbc
@@ -165,8 +166,8 @@
       state: present
       disable_gpg_check: yes
     with_items:
-      - "{{ libicu }}"
-      - "{{ libselinux-python }}"
+      - libicu
+      - libselinux-python
 
   - name: Install git
     yum:

@@ -1,0 +1,93 @@
+# Response file for the SAS Deployment Wizard
+# Created: May 2, 2017 3:57:57 PM
+#
+# Responses with multiple options are separated with / characters.
+
+# Select Deployment Task
+# Select the deployment task you would like to perform.
+#START_TASK=install/depot/manage
+ START_TASK=install
+
+# Specify SAS Home
+# Specify the location where SAS software will be installed on this machine.
+#SAS_HOME=<full path>
+ SAS_HOME={{ sas_home }}
+
+# Select Deployment Type
+# Select the type of deployment you want to perform.
+#DEPLOYMENT_TYPE=planned/nonplanned/additional
+ DEPLOYMENT_TYPE=nonplanned
+#PLANNED_INSTALL=yes/no
+ PLANNED_INSTALL=yes
+#PLANNED_CONFIGURE=yes/no
+ PLANNED_CONFIGURE=yes
+
+# Select Products to Install
+# Select the products you want to install on this machine.
+ PRODUCT_SELECTION1=dproclient
+ PRODUCT_SELECTION2=sasinstall
+ PRODUCT_SELECTION3=grsgdesigner
+
+# Select SAS Foundation Products
+# Further customize the software by selecting the SAS Foundation products to install.
+#SASFOUNDATION_SELECTION=<comma delimited SAS Foundation (MVA) product codes>
+ SASFOUNDATION_SELECTION=hadoopbasics,base,mapsgeo,mapsgfk,hpets,hps,hpstat,spdsclient,accesssample,odbc,pcfile,ets,graph,mapssas,iml,stat
+
+# Specify SAS Installation Data File
+# Specify the full path to your SAS installation data file.
+#SAS_INSTALLATION_DATA=<full path to file>
+ SAS_INSTALLATION_DATA={{ sas_sid_file }}
+
+# Select Language Support
+# Select the languages for your software to support.
+#LANGUAGE_SELECTION=<comma delimited language codes>
+ LANGUAGE_SELECTION=en,u8
+
+# Select Regional Settings
+# Select the appropriate regional settings for your SAS software.
+#REGION_SETTING=<region setting code>
+ REGION_SETTING=en_US
+#UNICODE_SERVER=yes/no
+ UNICODE_SERVER=no
+
+# Select Authentication Type
+# Select the type of authentication for this system.
+#sasinstall.use.pam=yes/no
+ sasinstall.use.pam=yes
+
+# Configure SAS Studio Basic
+# Select this option in order to configure SAS Studio Basic. If you select this option, this page will be followed by more pages used to select specific configuration options.
+#studio.configure=yes/no
+ studio.configure=yes
+
+# SAS Studio Basic Configuration Directory
+# Specify the directory in which to save the SAS Studio Basic configuration information.
+#studio.config.home=<full path>
+ studio.config.home={{ sas_config_home }}
+
+# SAS Studio Basic Ports
+# Specify the ports needed for the SAS Web Application Server and the SAS Object Spawner.
+#studio.webserver.http.port=<port number value>
+ studio.webserver.http.port=38080
+#studio.webserver.jmx.port=<port number value>
+ studio.webserver.jmx.port=36969
+#studio.spawner.objectserver.port=<port number value>
+ studio.spawner.objectserver.port=38591
+
+# SAS Studio Basic Password Option
+# Select this option if you intend to provide a sudo password to allow SAS Studio Basic to be automatically started during this deployment.
+#studio.sudo.prompt.for.password=yes/no
+ studio.sudo.prompt.for.password=no
+
+# SAS Studio Basic E-mail Support
+# Select this option if you intend to configure e-mail support for SAS Studio Basic.
+#studio.mail.prompt.for.hostandport=yes/no
+ studio.mail.prompt.for.hostandport=no
+
+# SAS Studio Basic Deployment Summary
+# A set of instructions has been created for SAS Studio Basic and is stored at the location below. The HTML file includes information about starting the required services if they have not already been started and about connecting to SAS Studio Basic.
+
+# Select Support Option
+# Select the support option you want to use.
+#SEND_SUPPORT_LOG_TO_SAS=yes/no
+ SEND_SUPPORT_LOG_TO_SAS=no

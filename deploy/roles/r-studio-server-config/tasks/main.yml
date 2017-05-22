@@ -16,6 +16,7 @@
   with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
+  when: deploy_iptables
 
 - name: Copy over pam.d config from login (usually works)
   shell: cp -f /etc/pam.d/login /etc/pam.d/rstudio

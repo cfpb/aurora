@@ -10,6 +10,10 @@ es_log_level: INFO
 es_logging_file_size: "50MB"
 es_logging_max_files: 20
 
+# Log File Locations
+es_log_file_locations: 
+ - /var/log/elasticsearch
+
 # Startup configuration options
 es_heap_size: "128M"
 es_heap_newsize: "32M"
