@@ -49,7 +49,7 @@
 
 - name: Open ports for Elasticsearch http communication
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ es_http_ports }} -s {{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config
+  when: iptables_config and 'proxy_server' in groups
 
 - name: Save rules
   command: "/sbin/service iptables save"

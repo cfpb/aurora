@@ -1,2 +1,2 @@
-log_file_locations: 
+logcourier_log_file_locations: 
   - /var/log/log-courier/log-courier.log
