@@ -117,6 +117,7 @@
     - gocd
     - stattransfer
     - odbc
+
   post_tasks:
     - name: Install Gnome-Terminal package
       yum:
@@ -135,7 +136,7 @@
   become: yes
   become_method: sudo
   roles:
-    # - sas
+    - sas
     - gocd
     - stattransfer
     - odbc
