@@ -35,12 +35,20 @@
   tags:
     - sqitch
 
+- name: Get Datetime
+  shell: cpanm --notest --sudo DateTime::TimeZone
+  register: timezone
+  changed_when: '"is up to date" not in timezone.stdout'
+  tags:
+    - sqitch
+  when: install_sqitch
+
 - name: Get sqitch
   shell: cpanm --notest --sudo App::Sqitch
   register: sqitch
   changed_when: '"is up to date" not in sqitch.stdout'
   environment:
-    PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+    PATH: "{{ postgres_install_dir|default('/usr/pgsql-9.4') }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   tags:
     - sqitch
   when: install_sqitch
@@ -50,7 +58,7 @@
   register: pg_engine
   changed_when: '"is up to date" not in pg_engine.stdout'
   environment:
-    PATH: "{{ postgres_install_dir }}/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+    PATH: "{{ postgres_install_dir }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   when: postgres_install_dir is defined
   tags:
     - sqitch
