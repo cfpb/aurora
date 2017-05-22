@@ -37,8 +37,8 @@
 
 - name: Get sqitch
   shell: cpanm --notest --sudo App::Sqitch
-  args:
-    creates: /usr/local/bin/sqitch
+  register: sqitch
+  changed_when: '"is up to date" not in sqitch.stdout'
   environment:
     PATH: /usr/pgsql-9.4/bin/:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
   tags:
