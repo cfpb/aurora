@@ -35,8 +35,7 @@
     - nginx
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    - python3
     - python-libs
     - odbc
     - jdbc
