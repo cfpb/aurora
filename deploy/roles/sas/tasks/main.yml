@@ -51,6 +51,13 @@
   tags:
     - sas
 
+- name: Ensure log directory exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    "{{ sas_log_file_locations }}"
+
 - name: Set recursive admin permissions on log folders
   acl:
     path: "{{ item }}"
