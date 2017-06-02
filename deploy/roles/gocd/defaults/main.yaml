@@ -17,3 +17,6 @@ gocd_rpms:
   - vim
   - emacs
   - "@Development tools"
+
+gocd_log_file_locations:
+  - /var/log
