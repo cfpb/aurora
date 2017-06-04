@@ -53,6 +53,27 @@
   file:
     path: "{{ eod_install_directory }}/log"
     state: directory
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Set recursive admin permissions on log file
+  acl:
+    path: "{{ eod_install_directory }}/log"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+
+- name: Set default admin permissions on log file
+  acl:
+    path: "{{ eod_install_directory }}/log"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
 
 - name: run eod silent install
   shell: "{{ eod_install_directory }}/bin/install -s"
