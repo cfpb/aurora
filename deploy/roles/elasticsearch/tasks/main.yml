@@ -1,4 +1,5 @@
 ---
+# TODO: Move this to /etc/sysctl.d/elasticsearch.conf
 - name: Minimize swapping
   lineinfile:
     name: /etc/sysctl.conf

@@ -562,14 +562,13 @@ Vagrant.configure(2) do |config|
       if ENV['DB_SERVER_EXTRA_VARS']
         ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
       else
-        print "You must set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
+        print "To use the db_server VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
         print "Example:\n"
         print "$ export DB_SERVER_EXTRA_VARS=local_settings.yml\n"
         print "$ cat local_settings.yml\n"
         print "---\n"
         print "pp_web_username: myusername@example.com\n"
         print "pp_web_password: mypassword\n"
-        exit
       end
 
       ansible.playbook = "deploy_db_server.yml"

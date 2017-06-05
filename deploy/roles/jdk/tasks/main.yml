@@ -31,3 +31,8 @@
     name: java
     path: "{{ java_home_path }}/bin/java"
     link: /usr/bin/java
+
+- name: Ensure nss package is the latest
+  yum:
+    name: nss
+    state: latest

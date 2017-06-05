@@ -159,6 +159,8 @@ realms:
 # Whether or not to ask for password when using HTTP auth
 krb_ask_pass: "On"
 
+kerberos_enabled: True
+
 #===================#
 ### LDAP SETTINGS ###
 #===================#
@@ -228,3 +230,12 @@ eod_symlinks: []
 
 # Research environment printers symlinks
 printers_symlinks: []
+
+# User provided packages for database customization
+db_automation_custom_packages: []
+
+#====================#
+### Mesos Settings ###
+#====================#
+mesos_upgrade: False
+marathon_upgrade: False

@@ -30,12 +30,12 @@
     - mesos
     - mesos-agent
 
-- name: Install mesos package
+- name: Install mesos packages
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - "{{ mesos_package }}"
+    - "{{ mesos_agent_package }}"
     - libselinux-python
   notify:
     - restart mesos-agent
@@ -245,6 +245,17 @@
     content: "{{ mesos_image_providers }}"
   notify:
     - restart mesos-agent
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Configure image backends
+  copy:
+    dest: /etc/mesos-slave/image_provisioner_backend
+    content: "{{ mesos_agent_image_backend }}"
+  notify:
+    - restart mesos-agent
+  when: "{{ mesos_agent_version | version_compare('1.2.0', '>=') }}"
   tags:
     - mesos
     - mesos-agent

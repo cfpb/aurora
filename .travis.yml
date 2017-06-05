@@ -11,147 +11,152 @@ env:
   - >
     PARENT_GROUP=all
     HOST_GROUP=proxy_server
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'   
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'
 
- # admin terminal  
+ # admin terminal
   - >
     PARENT_GROUP=all
     HOST_GROUP=admin_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 
 # development_terminal
   - >
     PARENT_GROUP=all
     HOST_GROUP=analytics_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml
     EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "deploy_iptables": false}'
 
 # r_terminal
   - >
     PARENT_GROUP=all
     HOST_GROUP=analytics_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml
     EXTRA_VAR_DEF='{"install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
 
 # elastic search
   - >
     PARENT_GROUP=all
     HOST_GROUP=elasticsearch
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 
-# elk 
+# elk
   - >
     PARENT_GROUP=all
     HOST_GROUP=elk
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "deploy_iptables": false}'
 
-# mesos 
+# mesos
   - >
     PARENT_GROUP=all
     HOST_GROUP=mesos_agent
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml 
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+
+  - >
+    PARENT_GROUP=all
+    HOST_GROUP=mesos_master
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_master.yml
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "zookeeper_id": 1}'
 
 # gocd  ci_server
   - >
     PARENT_GROUP=all
     HOST_GROUP=ci_server
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
 # gocd ci_agent
   - >
     PARENT_GROUP=all
     HOST_GROUP=ci_agent
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
 # gocd ci_terminal
   - >
     PARENT_GROUP=all
     HOST_GROUP=ci_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false, "install_pentaho": false, "ip_whitelist": []}'
 
 # Research Server research_ancillary_services
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_ancillary_services
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_eod
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_eod
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_gauss
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-# Research Server research_stata 
+# Research Server research_stata
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_stata
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 
-# Research Server research_python 
+# Research Server research_python
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_python
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "install_r_packages": false, "install_r_updates": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_sas
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_sas
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_spss
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_spss
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
 # Research Server research_matlab
   - >
     PARENT_GROUP=research_environment
     HOST_GROUP=research_matlab
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
 # Data warehouse db_terminal db_server
   - >
     PARENT_GROUP=all
     HOST_GROUP=db_terminal
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml
     EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false, "skip_glusterfs": true}'
 
 # Data warehouse db_server
   - >
     PARENT_GROUP=all
     HOST_GROUP=db_server
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml 
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml
     EXTRA_VAR_DEF='{"deploy_iptables": false, "install_ppas": false, "skip_glusterfs": true}'
-
 
 services:
   - docker
 
-language: 
+language:
   - python
 
 before_install:
@@ -170,20 +175,22 @@ script:
     docker exec "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
   - >
     docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "cat /tmp/extra_vars.json"
+
 # Parameterize docker temp file build
   - >
     docker exec --tty "$(cat ${container_id})" env TERM=xterm sh -c "echo -e \"[${PARENT_GROUP}:children]\\n${HOST_GROUP}\\n[${HOST_GROUP}]\\nlocalhost ansible_ssh_host=127.0.0.1 ansible_connection=local\" > /etc/ansible/hosts"
+
 # Syntax check
   - >
-    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook --syntax-check "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
 # Test role
   - >
-    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
 #extra log info
 #- >
-#    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json" 
+#    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
 # Clean up
   - docker stop "$(cat ${container_id})"
