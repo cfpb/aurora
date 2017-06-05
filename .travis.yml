@@ -153,7 +153,6 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml
     EXTRA_VAR_DEF='{"deploy_iptables": false, "install_ppas": false, "skip_glusterfs": true}'
 
-
 services:
   - docker
 
