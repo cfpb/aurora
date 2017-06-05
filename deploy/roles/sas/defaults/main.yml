@@ -6,3 +6,7 @@ sas_sid_file: /opt/sas/SASInstall/sid_files/SAS94_9BQWQL_70104781_LINUX_X86-64.t
 sas_home: /opt/sas/SASHome
 sas_config_home: /opt/sas/studioconfig
 java_heap_size: '-Xmx4096M -Xms1024M'
+
+sas_log_file_locations:
+  - /opt/sas/studioconfig/appserver/studio/logs
+  - /opt/sas/studioconfig/spawner/log
