@@ -60,7 +60,7 @@ env:
     PARENT_GROUP=all
     HOST_GROUP=mesos_master
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_master.yml
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "zookeeper_id": 1}'
 
 # gocd  ci_server
   - >
