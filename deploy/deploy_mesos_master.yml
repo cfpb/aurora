@@ -8,13 +8,13 @@
       service:
         name: mesos-master
         state: stopped
-      when: mesos_upgrade and inventory_hostname != groups['mesos_master'][0]
+      when: mesos_upgrade and 'mesos_master' in groups and inventory_hostname != groups['mesos_master'][0]
 
     - name: Shutdown all but one of the Marathon instances
       service:
         name: marathon
         state: stopped
-      when: marathon_upgrade and inventory_hostname != groups['mesos_master'][0]
+      when: marathon_upgrade and 'mesos_master' in groups and inventory_hostname != groups['mesos_master'][0]
 
 - hosts: mesos_master
   become: yes

@@ -233,3 +233,9 @@ printers_symlinks: []
 
 # User provided packages for database customization
 db_automation_custom_packages: []
+
+#====================#
+### Mesos Settings ###
+#====================#
+mesos_upgrade: False
+marathon_upgrade: False
