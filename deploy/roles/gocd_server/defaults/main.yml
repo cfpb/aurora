@@ -15,4 +15,4 @@ gocd_upgrade: False
 restart_gocd_server: True
 
 gocd_server_log_file_locations:
- - /var/log/gocd-server
+ - /var/log/go-server
