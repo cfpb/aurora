@@ -19,4 +19,4 @@ gocd_rpms:
   - "@Development tools"
 
 gocd_log_file_locations:
-  - /var/log
+  - /var/log/go-agent

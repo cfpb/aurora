@@ -13,3 +13,6 @@ gocd_server_max_perm_gen: "256m"
 gocd_admin_password: W6ph5Mm5Pz8GgiULbPgzG37mj9g= # "password"
 gocd_upgrade: False
 restart_gocd_server: True
+
+gocd_server_log_file_locations:
+ - /var/log/gocd_server
