@@ -14,10 +14,15 @@
   notify:
     - restart logstash
 
+#- name: Setup Elasticsearch filter
+#  template:
+#    src: 20-elasticsearch-input.conf.j2
+#    dest: /etc/logstash/conf.d/20-elasticsearch-input.conf
+
 - name: Setup elasticsearch output
   template:
-    src: 30-lumberjack-output.conf
-    dest: /etc/logstash/conf.d/30-lumberjack-output.conf
+    src: "{{ logstash_es_output_file }}"
+    dest: /etc/logstash/conf.d/30-elasticsearch-output.conf
   notify:
     - restart logstash
 
@@ -33,8 +38,32 @@
   notify:
     - restart logstash
 
+- name: Test Logstash configuration
+  shell: /opt/logstash/bin/logstash --configtest
+  register: logstash_configtest
+
 - name: Ensure logstash is started
   service:
     name: logstash
     state: started
     enabled: yes
+
+- name: Set recursive admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+  with_items: "{{ logstash_log_file_locations }}"
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
+  with_items: "{{ logstash_log_file_locations }}"

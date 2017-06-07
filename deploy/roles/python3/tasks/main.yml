@@ -1,7 +1,16 @@
-# main.yml - Install Python 2.7, either from a repo or a built RPM
+# main.yml - Install Python 3.4, either from a repo or a built RPM
 ---
 - name: Install Python34 from repo
   yum:
     name: python34
     state: present
-    disable_gpg_check: yes
+
+- name: Install setup tools
+  yum:
+    name: python34-setuptools
+    state: present
+
+- name: Install pip
+  easy_install:
+    name: pip
+    executable: easy_install-3.4

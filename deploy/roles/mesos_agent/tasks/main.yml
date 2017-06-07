@@ -30,12 +30,12 @@
     - mesos
     - mesos-agent
 
-- name: Install mesos package
+- name: Install mesos packages
   yum:
     name: "{{ item }}"
     state: present
   with_items:
-    - "{{ mesos_package }}"
+    - "{{ mesos_agent_package }}"
     - libselinux-python
   notify:
     - restart mesos-agent
@@ -249,6 +249,17 @@
     - mesos
     - mesos-agent
 
+- name: Configure image backends
+  copy:
+    dest: /etc/mesos-slave/image_provisioner_backend
+    content: "{{ mesos_agent_image_backend }}"
+  notify:
+    - restart mesos-agent
+  when: "{{ mesos_agent_version | version_compare('1.2.0', '>=') }}"
+  tags:
+    - mesos
+    - mesos-agent
+
 ### AppC Container Images
 
 - name: Configure AppC URI
@@ -362,3 +373,23 @@
   tags:
     - mesos
     - mesos-agent
+
+- name: Set recursive admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+  with_items: "{{ mesos_agent_log_file_locations }}"
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
+  with_items: "{{ mesos_agent_log_file_locations }}"

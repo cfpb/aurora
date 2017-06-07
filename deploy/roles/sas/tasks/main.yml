@@ -1,0 +1,79 @@
+---
+- name: Install yum dependencies
+  yum:
+    name: libXext.i686
+    state: present
+  tags:
+    - sas
+
+- name: Make sure project directory exists
+  file:
+    path: "{{ sas_install_home }}"
+    state: directory
+    mode: 0755
+
+- name: Copy the response file
+  template:
+    src: sas_template.txt.j2 
+    dest: "{{ sas_response_file_path }}"
+  tags:
+    - sas
+
+- name: Run the installer in quiet mode
+  # we use yes for accepting default values
+  shell: "yes '' 2>/dev/null | {{ sas_install_home }}/setup.sh -console -quiet -nomsupdate -responsefile {{ sas_response_file_path }}"
+  register: installer_cmd
+  failed_when: installer_cmd.stderr != ""
+  when: install_sas
+  tags:
+    - sas
+
+- name: change the java heap size
+  lineinfile:
+    dest: "{{ sas_config_home }}/appserver/studio/bin/setenv.sh"
+    regexp: 'JVM_OPTS='
+    line: 'JVM_OPTS="{{ java_heap_size }}"'
+    backup: yes
+  when: install_sas
+  tags:
+    - sas
+
+- name: Copy over pam.d config from login (usually works)
+  shell: cp -f /etc/pam.d/login /etc/pam.d/sasauth
+  tags:
+    - sas
+
+- name: Add SAS init.d daemon script
+  template:
+    src: sas_init.d_template.j2
+    dest: /etc/init.d/sas-studio
+    mode: 0751
+  tags:
+    - sas
+
+- name: Ensure log directory exists
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    "{{ sas_log_file_locations }}"
+
+- name: Set recursive admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+  with_items: "{{ sas_log_file_locations }}"
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
+  with_items: "{{ sas_log_file_locations }}"

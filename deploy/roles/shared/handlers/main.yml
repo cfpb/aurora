@@ -19,7 +19,9 @@
     state: restarted
 
 - name: restart kibana
-  command: restart kibana
+  service:
+    name: kibana
+    state: restarted
 
 - name: restart logstash
   service:
@@ -36,3 +38,8 @@
 
 - name: restart apache
   shell: "service httpd24-httpd restart"
+
+- name: restart sas-server
+  service:
+    name: sas_studio
+    state: restarted

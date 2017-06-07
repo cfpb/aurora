@@ -1,0 +1,6 @@
+kerberos_enabled: True
+
+krb_log_file_locations:
+  - /var/log/krb5libs.log
+  - /var/log/krb5kdc.log
+  - /var/log/kadmind.log

@@ -1,7 +1,7 @@
 ---
 - name: Add elasticsearch key
   rpm_key:
-    key: http://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    key: https://packages.elasticsearch.org/GPG-KEY-elasticsearch
     state: present
   when: not "production" in group_names
 
@@ -14,7 +14,7 @@
 - name: Install logstash and other needed packages
   yum:
     name: "{{ item }}"
-    state: present
+    state: latest
   with_items:
     - logstash
 

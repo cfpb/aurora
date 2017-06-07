@@ -1,5 +1,9 @@
 ---
-mesos_package: mesos-0:1.1.0-2.0.107.centos65.x86_64
+mesos_agent_log_file_locations:
+  - /var/log/mesos
+
+mesos_agent_package: mesos-0:1.2.0-2.0.6.x86_64
+mesos_agent_version: 1.2.0
 mesos_agent_port: 5051
 mesos_agent_logging_level: "INFO"
 
@@ -22,13 +26,14 @@ marathon_mesos_user: "mesagent"
 mesos_containerizers: "mesos"
 mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
+mesos_agent_image_backend: "copy"
 
 mesos_executor_registration_timeout: 5mins
 
-# File uri is not working, perhaps a bug in Mesos
 mesos_appc_enable: yes
-#mesos_appc_simple_discovery_uri_prefix: file:///home/work/appc/
 mesos_appc_simple_discovery_uri_prefix: "http://10.0.1.31:8080/v2/artifacts/appc/"
+# File uri is not working, perhaps a bug in Mesos
+#mesos_appc_simple_discovery_uri_prefix: file:///home/work/appc/
 mesos_appc_store_dir: "/tmp/mesos/store/appc"
 
 mesos_docker_enable: yes
