@@ -4,10 +4,12 @@
 #==================#
 install_desktop: False
 eod_restart: False
+eod_install: False
+eod_upgrade: False
 
-eod_binary: ecs-13.8.5-linux-x64.bin
+eod_installer: ecs-13.8.5-linux-x64.bin
 eod_install_directory: '/usr/local/eod'
-eod_local_bin_directory: '/artifacts'
+eod_installer_directory: '/artifacts'
 eod_bin_directory: '/tmp'
 eod_client_ports:
   - 5500
@@ -37,5 +39,4 @@ gconf_settings:
     type: "bool"
     value: "true"
 
-eod_Xconfig_directory: /usr/local/eod/conf/admin/Xconfig
 eod_greeter_include: false
