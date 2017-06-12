@@ -36,10 +36,10 @@
   tags:
     - eod
 
-#- name: run eod silent install
-#  shell: "{{ eod_install_directory }}/bin/install -s"
-#  when: custom_repo
-#  args:
-#    creates: "{{ eod_install_directory }}/bin/otecs"
-#  tags:
-#    - eod
+- name: run eod silent install
+  shell: "{{ eod_install_directory }}/bin/install -s"
+  when: custom_repo
+  args:
+    creates: "{{ eod_install_directory }}/bin/otecs"
+  tags:
+    - eod
