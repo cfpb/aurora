@@ -57,6 +57,14 @@
   tags:
     - eod
 
+- name: Ensure admins can login via Connection Server
+  template:
+    src: admin_settings.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
+  with_items: "{{ eod_admins }}"
+
+# TODO: Add template for node.cfg
+
 ### Install and configure Desktop Environment
 
 - name: install X Window System

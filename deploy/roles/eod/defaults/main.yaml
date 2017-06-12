@@ -11,6 +11,7 @@ eod_installer: ecs-13.8.5-linux-x64.bin
 eod_install_directory: '/usr/local/eod'
 eod_installer_directory: '/artifacts'
 eod_bin_directory: '/tmp'
+
 eod_client_ports:
   - 5500
   - 8406
@@ -18,6 +19,9 @@ eod_client_ports:
   - 6000:6025
 eod_client_ports_udp:
   - 177
+
+eod_admins:
+  - vagrant
 eod_cm_password: PASSWORD
 eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
 cluster_name: "{{ ansible_ssh_host }}"
