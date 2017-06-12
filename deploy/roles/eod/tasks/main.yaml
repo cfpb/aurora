@@ -177,7 +177,7 @@
     - eod
 
 - name: Configure EOD to start on boot
-  shell: "{{ eod_install_directory }}"/bin/otecs bootstart
+  shell: "{{ eod_install_directory }}/bin/otecs bootstart"
   changed_when: eod_bootstatus.stdout == 'off'
   when: custom_repo
   tags:
