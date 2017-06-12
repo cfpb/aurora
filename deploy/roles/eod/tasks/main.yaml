@@ -169,7 +169,7 @@
 ### Ensure EOD starts on boot
 
 - name: Check if EOD is configured to run on boot
-  shell: "{{ eod_install_directory }}"/bin/otecs bootstatus
+  shell: "{{ eod_install_directory }}/bin/otecs bootstatus"
   register: eod_bootstatus
   changed_when: false
   when: custom_repo
