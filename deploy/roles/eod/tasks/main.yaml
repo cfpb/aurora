@@ -183,7 +183,7 @@
   tags:
     - eod
 
-### Allow the admin group to read logs
+### Allow the admin group to read logs and configs
 
 - name: Ensure that EOD log directory exists
   file:
@@ -195,19 +195,19 @@
 
 - name: Set recursive admin permissions on log file
   acl:
-    path: "{{ eod_install_directory }}/log"
+    path: "{{ eod_install_directory }}"
     entity: "{{ restricted_group_name }}"
     etype: group
-    permissions: rX
+    permissions: rwX
     recursive: yes
     state: present
 
 - name: Set default admin permissions on log file
   acl:
-    path: "{{ eod_install_directory }}/log"
+    path: "{{ eod_install_directory }}"
     entity: "{{ restricted_group_name }}"
     etype: group
-    permissions: rX
+    permissions: rwX
     default: yes
     state: present
 
