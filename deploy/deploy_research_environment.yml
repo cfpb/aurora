@@ -77,7 +77,8 @@
   become_method: sudo
   pre_tasks:
     - name: Stop EOD
-      service: otecs_13.8
+      service:
+        name: "otecs_13.8"
         state: stopped
       when: eod_upgrade
   roles:
