@@ -22,7 +22,7 @@
 
 - name: Configure cluster.cfg
   template:
-    src: cluster.cfg
+    src: cluster.cfg.j2
     dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
   when: custom_repo
   notify:
