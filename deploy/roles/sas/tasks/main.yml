@@ -11,10 +11,12 @@
     path: "{{ sas_install_home }}"
     state: directory
     mode: 0755
+  tags:
+    - sas
 
 - name: Copy the response file
   template:
-    src: sas_template.txt.j2 
+    src: sas_template.txt.j2
     dest: "{{ sas_response_file_path }}"
   tags:
     - sas
@@ -57,6 +59,8 @@
     state: directory
   with_items:
     "{{ sas_log_file_locations }}"
+  tags:
+    - sas
 
 - name: Set recursive admin permissions on log folders
   acl:
@@ -67,6 +71,8 @@
     recursive: yes
     state: present
   with_items: "{{ sas_log_file_locations }}"
+  tags:
+    - sas
 
 - name: Set default admin permissions on log folders
   acl:
@@ -77,3 +83,5 @@
     default: yes
     state: present
   with_items: "{{ sas_log_file_locations }}"
+  tags:
+    - sas
