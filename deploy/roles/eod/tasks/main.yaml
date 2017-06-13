@@ -22,6 +22,7 @@
   template:
     src: node.cfg.j2
     dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
+  when: eod_datastore_directory is defined
 
 - name: Configure cluster.cfg
   template:

@@ -24,7 +24,11 @@ eod_admins:
 
 eod_install_directory: '/usr/local/eod'
 eod_cm_password: PASSWORD
-eod_datastore_directory: /home/data/eoddatastore
+
+# Define this variable to setup a cluster with a common datastore
+# The datastore must be a shared volume accessible by all EOD nodes.
+# eod_datastore_directory:
+
 eod_datastore_password: PASSWORD
 eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
 eod_cluster_name: "{{ ansible_ssh_host }}"
