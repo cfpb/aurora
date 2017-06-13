@@ -15,7 +15,12 @@
 - include: install_eod.yaml
   when: eod_install
 
-- name: configure cluster.cfg
+- name: Configure node.cfg
+  template:
+    src: node.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
+
+- name: Configure cluster.cfg
   template:
     src: cluster.cfg
     dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
@@ -25,7 +30,13 @@
   tags:
     - eod
 
-- name: configure xdmcp
+- name: Ensure admins can login via Connection Server
+  template:
+    src: admin_settings.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
+  with_items: "{{ eod_admins }}"
+
+- name: Configure xdmcp
   template:
     src: XDMCP_Query.cfg
     dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
@@ -37,7 +48,7 @@
   tags:
     - eod
 
-- name: configure eod license file
+- name: Configure EOD license file
   template:
     src: akeys
     dest: "{{ eod_install_directory }}/conf/admin/akeys"
@@ -47,7 +58,7 @@
   tags:
     - eod
 
-- name: configure exceed connection server
+- name: Configure PAM authentication
   template:
     src: exceed-connection-server
     dest: /etc/pam.d/exceed-connection-server
@@ -56,12 +67,6 @@
     - restart eod
   tags:
     - eod
-
-- name: Ensure admins can login via Connection Server
-  template:
-    src: admin_settings.cfg.j2
-    dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
-  with_items: "{{ eod_admins }}"
 
 # TODO: Add template for node.cfg
 
