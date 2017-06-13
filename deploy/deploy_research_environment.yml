@@ -80,7 +80,12 @@
       service:
         name: "otecs_13.8"
         state: stopped
-      when: eod_upgrade
+      when: eod_upgrade is defined and eod_upgrade
+
+- hosts: research_eod
+  become: yes
+  become_method: sudo
+  serial: 1
   roles:
     - eod
     - odbc
