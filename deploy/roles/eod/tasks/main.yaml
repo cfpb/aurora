@@ -209,6 +209,8 @@
     owner: root
     group: root
     mode: 0640
+  tags:
+    - eod
 
 - name: Set recursive admin permissions on log file
   acl:
@@ -218,6 +220,8 @@
     permissions: rwX
     recursive: yes
     state: present
+  tags:
+    - eod
 
 - name: Set default admin permissions on log file
   acl:
@@ -227,6 +231,8 @@
     permissions: rwX
     default: yes
     state: present
+  tags:
+    - eod
 
 ### Ensure the needed ports are open
 
