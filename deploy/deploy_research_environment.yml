@@ -78,7 +78,7 @@
   pre_tasks:
     - name: Stop EOD
       service: otecs_13.8
-        status: stopped
+        state: stopped
       when: eod_upgrade
   roles:
     - eod
