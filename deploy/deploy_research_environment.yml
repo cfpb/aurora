@@ -75,6 +75,11 @@
 - hosts: research_eod
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Stop EOD
+      service: otecs_13.8
+      status: stopped
+      when: eod_upgrade
   roles:
     - eod
     - odbc
@@ -158,7 +163,7 @@
     - gocd
     - stattransfer
     - odbc
-    
+
   tasks:
   - name: Install libselinux-python and libicu package
     yum:

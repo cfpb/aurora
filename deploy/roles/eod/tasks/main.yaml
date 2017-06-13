@@ -15,6 +15,9 @@
 - include: install_eod.yaml
   when: eod_install
 
+- include: upgrade_eod.yaml
+  when: eod_upgrade
+
 - name: Configure node.cfg
   template:
     src: node.cfg.j2
