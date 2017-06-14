@@ -3,6 +3,9 @@
   yum:
     name: libXext.i686
     state: present
+  when: install_sas
+  notify:
+    - restart sas-server
   tags:
     - sas
 
@@ -18,6 +21,7 @@
   template:
     src: sas_template.txt.j2
     dest: "{{ sas_response_file_path }}"
+  when: install_sas
   tags:
     - sas
 
@@ -27,6 +31,8 @@
   register: installer_cmd
   failed_when: installer_cmd.stderr != ""
   when: install_sas
+  notify:
+    - restart sas-server
   tags:
     - sas
 
@@ -37,11 +43,16 @@
     line: 'JVM_OPTS="{{ java_heap_size }}"'
     backup: yes
   when: install_sas
+  notify:
+    - restart sas-server
   tags:
     - sas
 
 - name: Copy over pam.d config from login (usually works)
-  shell: cp -f /etc/pam.d/login /etc/pam.d/sasauth
+  copy:
+    src: /etc/pam.d/login
+    dest: /etc/pam.d/sasauth
+    remote_src: True
   tags:
     - sas
 
@@ -50,6 +61,7 @@
     src: sas_init.d_template.j2
     dest: /etc/init.d/sas-studio
     mode: 0751
+  when: install_sas
   tags:
     - sas
 
@@ -85,3 +97,9 @@
   with_items: "{{ sas_log_file_locations }}"
   tags:
     - sas
+
+- name: Enable sas service
+  service:
+    state: started
+    enabled: yes
+  when: install_sas
