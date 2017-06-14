@@ -34,6 +34,15 @@
   tags:
     - eod
 
+- name: Create admin user directories
+  file:
+    state: directory
+    path: "{{ eod_install_directory }}/conf/users/{{ item }}"
+    owner: root
+    group: root
+    mode: 0750
+  with_items: "{{ eod_admins }}"
+
 - name: Ensure admins can login via Connection Server
   template:
     src: admin_settings.cfg.j2
