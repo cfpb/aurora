@@ -4,26 +4,39 @@
 #==================#
 install_desktop: False
 eod_restart: False
+eod_install: False
+eod_upgrade: False
+eod_installer: ecs-13.8.5-linux-x64.bin
+eod_upgrader:
+eod_installer_directory: '/artifacts'
 
-eod_binary: ecs-13.8.5-linux-x64.bin
-eod_install_directory: '/usr/local/eod'
-eod_local_bin_directory: '/artifacts'
-eod_bin_directory: '/tmp'
 eod_client_ports:
   - 5500
   - 8406
   - 8407
   - 6000:6025
+
 eod_client_ports_udp:
   - 177
-eod_cm_password: PASSWORD
-eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
-cluster_name: "{{ ansible_ssh_host }}"
 
+eod_admins:
+  - vagrant
+
+eod_install_directory: '/usr/local/eod'
+eod_cm_password: PASSWORD
+
+# Define this variable to setup a cluster with a common datastore
+# The datastore must be a shared volume accessible by all EOD nodes.
+# eod_datastore_directory:
+
+eod_datastore_password: PASSWORD
+eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
+eod_cluster_name: "{{ ansible_ssh_host }}"
 xdmc_query_host:  "{{ ansible_ssh_host }}"
+
 eod_use_license_server: 0
 eod_license_server_host:
-eod_license_server_cache: cache.text.dev
+eod_license_server_cache:
 
 # TODO: you can put all the keys you want to here
 eod_license_keys:
@@ -37,5 +50,4 @@ gconf_settings:
     type: "bool"
     value: "true"
 
-eod_Xconfig_directory: /usr/local/eod/conf/admin/Xconfig
 eod_greeter_include: false

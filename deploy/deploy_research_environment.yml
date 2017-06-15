@@ -52,13 +52,10 @@
   roles:
     - umask
     - devtools
-    - emacs
     - open_office
     - evince
     - stattransfer
     - sublime
-    - jdk
-    - odbc
   post_tasks:
     - name: Install Ultra Edit
       yum:
@@ -75,9 +72,19 @@
 - hosts: research_eod
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Stop EOD
+      service:
+        name: "otecs_13.8"
+        state: stopped
+      when: eod_upgrade is defined and eod_upgrade
+
+- hosts: research_eod
+  become: yes
+  become_method: sudo
+  serial: 1
   roles:
     - eod
-    - odbc
 
 - hosts: research_gauss
   become: yes
@@ -86,7 +93,6 @@
     # - gauss
     - gocd
     - stattransfer
-    - odbc
 
 - hosts: research_stata
   become: yes
@@ -94,7 +100,6 @@
   roles:
     - stata
     - stattransfer
-    - odbc
 
 - hosts: research_python
   become: yes
@@ -116,7 +121,6 @@
     - pycharm
     - gocd
     - stattransfer
-    - odbc
 
   post_tasks:
     - name: Install Gnome-Terminal package
@@ -139,7 +143,6 @@
     - sas
     - gocd
     - stattransfer
-    - odbc
 
 - hosts: research_spss
   become: yes
@@ -148,7 +151,6 @@
     # - spss
     - gocd
     - stattransfer
-    - odbc
 
 - hosts: research_matlab
   become: yes
@@ -157,8 +159,7 @@
     # - matlab
     - gocd
     - stattransfer
-    - odbc
-    
+
   tasks:
   - name: Install libselinux-python and libicu package
     yum:
