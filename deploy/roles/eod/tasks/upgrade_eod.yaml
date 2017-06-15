@@ -4,8 +4,12 @@
     dest: "{{ eod_install_directory }}/"
     owner: root
     group: root
+  tags:
+    - eod
 
 - name: Run the patch
   shell: "{{ eod_install_directory }}/bin/patch -s"
+  tags:
+    - eod
   notify:
     - restart eod
