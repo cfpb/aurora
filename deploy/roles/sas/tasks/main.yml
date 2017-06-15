@@ -42,7 +42,6 @@
     regexp: 'JVM_OPTS='
     line: 'JVM_OPTS="{{ java_heap_size }}"'
     backup: yes
-  when: install_sas
   notify:
     - restart sas-server
   tags:
@@ -61,7 +60,6 @@
     src: sas_init.d_template.j2
     dest: /etc/init.d/sas-studio
     mode: 0751
-  when: install_sas
   tags:
     - sas
 
@@ -102,4 +100,3 @@
   service:
     state: started
     enabled: yes
-  when: install_sas
