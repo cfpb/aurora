@@ -11,7 +11,7 @@
 - name: Install Python packages for 27
   pip:
     name: "{{ item }}"
-    state: present
+    state: "{{ python_package_mode }}"
     executable: "{{ python_pip_bin }}"
   with_items: "{{ python_packages }}"
   when: install_python
@@ -21,7 +21,7 @@
 - name: Install Python packages for 35
   pip:
     name: "{{ item }}"
-    state: present
+    state: "{{ python_package_mode }}"
     executable: "{{ python3_pip_bin }}"
   with_items: "{{ python3_packages }}"
   when: install_python
