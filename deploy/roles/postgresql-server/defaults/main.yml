@@ -1,6 +1,13 @@
 ---
 ## PostgresPlus Advanced Server default variables
+
+# Whether or not to do anything at all
 install_ppas: True
+
+# When to install, upgrade, and restart PPAS
+pp_install: False
+pp_restart: False
+pp_upgrade: False
 
 # Installer URL and executable
 pp_installer_version: 9.5.0.5
@@ -31,14 +38,23 @@ pp_install_server_monitor: yes
 
 # Core server config
 pp_datadir: /opt/PostgresPlus/9.5AS/data
+pp_old_datadir: /opt/PostgresPlus/9.4AS/data
+pp_bindir: /opt/PostgresPlus/9.5AS/bin
+pp_old_bindir: /opt/PostgresPlus/9.4AS/bin
 pp_prefix: /opt/PostgresPlus
 pp_debuglevel: 2
 pp_server_utilization: 66
 pp_servicename: ppas-9.5
+pp_old_servicename: ppas-9.4
 pp_serviceaccount: postgres
 pp_support_services:
   - ppas-agent-9.5
   - pgbouncer-1.6
+pp_old_support_service:
+  - ppas-agent-9.4
+  - pgbouncer-1.5
+pp_serverport: 5432
+pp_old_serverport: 5433
 pp_workload_profile: oltp
 pp_xlogdir: /opt/PostgresPlus/9.5AS
 
