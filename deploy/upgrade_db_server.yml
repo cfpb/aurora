@@ -5,18 +5,32 @@
 - hosts: db_server
   become: yes
   become_method: sudo
-  tasks:
-    - name: First ensure that the database processes are stopped
-      service:
-        name: "{{ item }}"
-        state: stopped
-      with_items: "{{ pp_old_services }}"
+
 
 - hosts: db_server
   become: yes
   become_method: sudo
   vars:
     pp_upgrade: True
+  pre_tasks:
+    - name: Execute pre-configuration scripts
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        port: "{{ pp_serverport }}"
+        db: "{{ item.db }}"
+        script: "{{ item.script }}"
+      with_items: "{{ pp_pre_scripts }}"
+      always_run: true
+      when: install_ppas and pp_pre_scripts is defined
+
+    # TODO: Use line_in_file to allow trusted local connections
+
+    - name: First ensure that the database processes are stopped
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ pp_old_services }}"
   roles:
     - role: postgresql-server
   post_tasks:
@@ -30,10 +44,12 @@
       service:
         name: "{{ pp_servicename }}"
         state: started
+      register: pg_db_started
 
     - name: Pause for the DB to go up
       pause:
-        minutes: 1
+        minutes: 2
+      when: pg_db_started.changed
 
     - name: Drop the "edb" database
       postgresql_exec:

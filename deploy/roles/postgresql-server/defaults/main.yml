@@ -96,7 +96,7 @@ pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
 # Unix sockets
-pp_unix_socket_dirs: /tmp
+pp_unix_socket_dirs: /var/run/postgresql
 pp_unix_socket_group: ''
 pp_unix_socket_perms: 0777
 
