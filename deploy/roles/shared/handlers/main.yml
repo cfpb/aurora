@@ -41,5 +41,5 @@
 
 - name: restart sas-server
   service:
-    name: sas_studio
+    name: sas-studio
     state: restarted
