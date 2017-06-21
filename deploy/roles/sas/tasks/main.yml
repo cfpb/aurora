@@ -98,5 +98,6 @@
 
 - name: Enable sas service
   service:
+    name: sas-studio
     state: started
     enabled: yes

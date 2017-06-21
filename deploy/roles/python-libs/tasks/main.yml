@@ -10,20 +10,18 @@
 
 - name: Install Python packages for 27
   pip:
-    name: "{{ item }}"
-    state: present
+    name: "{{ python_packages }}"
+    state: "{{ python_package_mode }}"
     executable: "{{ python_pip_bin }}"
-  with_items: "{{ python_packages }}"
   when: install_python
   tags:
     - python-libs
 
 - name: Install Python packages for 35
   pip:
-    name: "{{ item }}"
-    state: present
+    name: "{{ python3_packages }}"
+    state: "{{ python_package_mode }}"
     executable: "{{ python3_pip_bin }}"
-  with_items: "{{ python3_packages }}"
   when: install_python
   tags:
     - python-libs
