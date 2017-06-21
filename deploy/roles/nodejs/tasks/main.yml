@@ -26,6 +26,7 @@
 - name: Install NVM
   git:
     repo: https://github.com/creationix/nvm.git
+    version: v0.33.2
     dest: "{{ nvm_install_path }}"
   tags:
     - nodejs
@@ -41,7 +42,7 @@
     - nodejs
 
 - name: Install latest version of Node
-  shell: source {{ nvm_install_path }}/nvm.sh && nvm install {{ node_version }}
+  shell: "source {{ nvm_install_path }}/nvm.sh && nvm install {{ node_version }}"
   register: nvm_install_status
   changed_when: not 'is already installed' in nvm_install_status.stderr
   tags:
