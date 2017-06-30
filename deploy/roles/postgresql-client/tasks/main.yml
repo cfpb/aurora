@@ -4,12 +4,16 @@
     name: "{{ postgres_repository_url }}"
     state: present
   when: postgres_install_repository
+  tags:
+    - postgres_client
 
 - name: Install postgres repository key
   rpm_key:
     key: "{{ postgres_repository_key_url }}"
     state: present
   when: postgres_install_repository
+  tags:
+    - postgres_client
 
 - name: Ensure older versions are removed
   yum:
@@ -19,24 +23,32 @@
   ignore_errors: yes
   with_items: "{{ postgres_old_packages }}"
   when: clean_postgresql
+  tags:
+    - postgres_client
 
 - name: Install postgres packages
   yum:
     name: "{{ item }}"
     state: present
   with_items: "{{ postgres_packages }}"
+  tags:
+    - postgres_client
 
 - name: Ensure other libraries can see header files
   file:
     src: "{{ postgres_install_dir }}/include/"
     dest: /usr/include/pgsql
     state: link
+  tags:
+    - postgres_client
 
 - name: Ensure other libraries can see library files
   file:
     src: "{{ postgres_install_dir }}/lib"
     dest: /usr/lib/pgsql
     state: link
+  tags:
+    - postgres_client
 
 - name: Add psql bin directory to path
   lineinfile:
@@ -44,3 +56,5 @@
     create: yes
     line: export PATH={{ postgres_install_dir }}/bin:$PATH
     mode: 0644
+  tags:
+    - postgres_client
