@@ -8,5 +8,5 @@ sas_config_home: /opt/sas/studioconfig
 java_heap_size: '-Xmx4096M -Xms1024M'
 
 sas_log_file_locations:
-  - /opt/sas/studioconfig/appserver/studio/logs
+  - /opt/sas/studioconfig/appserver/studio
   - /opt/sas/studioconfig/spawner/log
