@@ -53,6 +53,9 @@ pp_serviceaccount: postgres
 pp_serverport: 5432
 pp_old_serverport: 5433
 pp_support_services:
+  - ppas-agent-9.6
+  - pgbouncer-1.7
+pp_old_support_service:
   - ppas-agent-9.5
   - pgbouncer-1.6
 pp_workload_profile: oltp
