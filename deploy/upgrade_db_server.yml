@@ -80,6 +80,7 @@
       #become: yes
       #become_method: sudo
       #become_user: "{{ pp_serviceaccount }}"
+      remote_user: "{{ pp_serviceaccount }}"
       command: >
                {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
                   --old-datadir {{ pp_old_datadir }}
@@ -96,6 +97,7 @@
       #become: yes
       #become_method: sudo
       #become_user: "{{ pp_serviceaccount }}"
+      remote_user: "{{ pp_serviceaccount }}"
       command: >
                {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
                   --old-datadir {{ pp_old_datadir }}

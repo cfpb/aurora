@@ -10,11 +10,13 @@ pp_restart: False
 pp_upgrade: False
 
 # Installer URL and executable
-pp_installer_version: 9.5.0.5
-pp_repository: "https://download.postgresql.org/pub/repos/yum/9.5/redhat/rhel-6-x86_64/pgdg-redhat95-9.5-3.noarch.rpm"
-pp_install_path: 9.5AS
+pp_installer_version: 9.6.2.7
+pp_download_url: "https://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
+pp_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
+pp_install_path: 9.6AS
 pp_config_template: "postgresql.conf.95.j2"
 pp_bin_path: .
+pp_installer_path: edb-as96-meta-9.6.2.7-2-linux-x64/edb-as96-meta-9.6.2.7-2-linux-x64.run
 
 # Directory to install from
 pp_temp_dir: /tmp
@@ -37,26 +39,26 @@ pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
 # Core server config
-pp_datadir: /opt/PostgresPlus/9.5AS/data
+pp_datadir: /opt/PostgresPlus/9.6AS/data
 pp_old_datadir: /opt/PostgresPlus/9.4AS/data
-pp_bindir: /opt/PostgresPlus/9.5AS/bin
+pp_bindir: /opt/PostgresPlus/9.6AS/bin
 pp_old_bindir: /opt/PostgresPlus/9.4AS/bin
 pp_prefix: /opt/PostgresPlus
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: ppas-9.5
-pp_old_servicename: ppas-9.4
+pp_servicename: ppas-9.6
+pp_old_servicename: ppas-9.5
 pp_serviceaccount: postgres
 pp_support_services:
+  - ppas-agent-9.6
+  - pgbouncer-1.7
+pp_old_support_service:
   - ppas-agent-9.5
   - pgbouncer-1.6
-pp_old_support_service:
-  - ppas-agent-9.4
-  - pgbouncer-1.5
 pp_serverport: 5432
 pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /opt/PostgresPlus/9.5AS
+pp_xlogdir: /opt/PostgresPlus/9.6AS
 
 ## PostgreSQL Configuration Settings
 

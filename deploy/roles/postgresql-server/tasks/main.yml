@@ -17,12 +17,13 @@
     - postgresql-server
 
 - name: Download and extract PostgresPlus Advanced Server installer
-  get_url:
-    url: "http://get.enterprisedb.com/ga/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+  unarchive:
+    src: "{{ pp_download_url }}"
     dest: "{{ pp_temp_dir }}/"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
-    mode: 0777
+    remote_src: yes
+
   when: pp_install or pp_upgrade
   tags:
     - postgresql-server
@@ -78,7 +79,7 @@
     - postgresql-server
 
 - name: Run PostgresPlus install script
-  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
+  shell: "{{ pp_temp_dir }}/{{ pp_installer_path }} --optionfile {{ pp_temp_dir }}/config_param"
   args:
     chdir: "{{ pp_temp_dir }}"
     creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
@@ -208,16 +209,16 @@
   tags:
     - postgresql-server
 
-#- name: Create postgres cluster
-  #become: yes
-  #become_method: sudo
-  #become_user: "{{ pp_serviceaccount }}"
+- name: Create postgres cluster
+#  become: yes
+#  become_method: sudo
+#  become_user: "{{ pp_serviceaccount }}"
 #  sudo: yes
-#  remote_user: "{{ pp_serviceaccount }}"
-#  shell: "initdb --pgdata {{ pp_datadir }}"
-#  when: pp_install or pp_upgrade
-#  tags:
-#    - postgresql-server
+  remote_user: "{{ pp_serviceaccount }}"
+  shell: "initdb --pgdata {{ pp_datadir }}"
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
