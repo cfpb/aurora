@@ -11,7 +11,8 @@ pp_upgrade: False
 
 # Installer URL and executable
 pp_installer_version: 9.6.2.7
-pp_download_url: "https://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
+pp_download_url: "http://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
+# HTTPS runs into issues
 pp_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
 pp_install_path: 9.6AS
 pp_config_template: "postgresql.conf.95.j2"

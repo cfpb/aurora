@@ -22,6 +22,7 @@
     dest: "{{ pp_temp_dir }}/"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
+    validate_certs: no
     remote_src: yes
 
   when: pp_install or pp_upgrade
