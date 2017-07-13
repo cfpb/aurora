@@ -51,8 +51,8 @@ pp_servicename: ppas-9.6
 pp_old_servicename: ppas-9.5
 pp_serviceaccount: postgres
 pp_support_services:
-  - ppas-agent-9.6
-  - pgbouncer-1.7
+  - edb-pgagent-9.6
+  - edb-pgbouncer-1.7
 pp_old_support_service:
   - ppas-agent-9.5
   - pgbouncer-1.6
