@@ -171,7 +171,7 @@
         minutes: 2
       when: pg_db_started.changed
 
-    - name: Drop the "edb" database
+    - name: Drop "edb" database
       postgresql_exec:
         login_user: "{{ pp_superaccount }}"
         login_password: "{{ pp_superpassword }}"
