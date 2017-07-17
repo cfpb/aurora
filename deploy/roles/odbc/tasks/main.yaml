@@ -9,13 +9,6 @@
   tags:
     - odbc
 
-- name: Install unix odbc kde
-  yum:
-    name: unixODBC-kde.x86_64
-    state: present
-  tags:
-    - odbc
-
 - name: Install freetds
   yum:
     name: freetds.x86_64
