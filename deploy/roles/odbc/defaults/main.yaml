@@ -41,3 +41,4 @@ freetds_entries:
     use_ntlmv2: False,
     port: 1533
   }
+odbc_package_mode: present
