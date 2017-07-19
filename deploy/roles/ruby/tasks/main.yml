@@ -24,8 +24,9 @@
 
 - name: Get script file
   get_url:
-    url: https://get.rvm.io/
+    url: https://raw.githubusercontent.com/wayneeseguin/rvm/stable/binscripts/rvm-installer
     dest: /tmp/rvm-installer.sh
+    force: yes
   tags:
     - ruby
 
