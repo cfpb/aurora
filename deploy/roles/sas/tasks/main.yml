@@ -36,12 +36,18 @@
   tags:
     - sas
 
+- name: check setenv script exists
+  stat:
+    path: "{{ sas_config_home }}/appserver/studio/bin/setenv.sh"
+  register: setenv_file
+
 - name: change the java heap size
   lineinfile:
     dest: "{{ sas_config_home }}/appserver/studio/bin/setenv.sh"
     regexp: 'JVM_OPTS='
     line: 'JVM_OPTS="{{ java_heap_size }}"'
     backup: yes
+  when: setenv_file.stat.exists == True
   notify:
     - restart sas-server
   tags:
@@ -96,8 +102,14 @@
   tags:
     - sas
 
+- name: check sasstudio.sh script exists
+  stat:
+    path: "{{ sas_config_home }}/sasstudio.sh"
+  register: sasstudio_file
+
 - name: Enable sas service
   service:
     name: sas-studio
     state: started
     enabled: yes
+  when: sasstudio_file.stat.exists == True
