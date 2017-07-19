@@ -1,0 +1,3 @@
+pdfgrep_install_directory: /usr/bin/pdfgrep
+pdfgrep_local_artifact_directory: /artifacts                    
+pdfgrep_install_package_name: pdfgrep-2.0.1.tar.gz       
