@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-#chkconfig: - 20 80
+# chkconfig: - 20 80
 # Start up script for SAS studio application
 #
 
@@ -9,41 +9,31 @@
 . /etc/init.d/functions
 
 prog="{{ sas_config_home }}/sasstudio.sh"
-pidfile="{{ sas_config_home }}/appserver/studio/logs/tcserver.pid"
 
 RETVAL=0
 
+status() {
+  $prog status
+}
+
 start() {
-  # see if app server is running
-  if [ -f "$pidfile" ] || kill -0 $pidfile 2>/dev/null ; then
-    echo "app server is already running"
-    return 0
-  fi
-
   echo -n "Starting sas studio: "
-
-  daemon $prog start
+  $prog start
   RETVAL=$?
-
   return $RETVAL
 }
 
 stop() {
-  # see if app server is running
-  if [ -f "$pidfile" ] || kill -0 $pidfile 2>/dev/null ; then
-    echo -n "Shutting down sas: "
-    killproc -p $pidfile
-    RETVAL=$?
-
-    return $RETVAL
-  else
-    echo "appserver not running"
-    return 0
-  fi
-
+  echo -n "Shutting down sas: "
+  $prog stop
+  RETVAL=$?
+  return $RETVAL
 }
 
 case "$1" in
+    status)
+        status
+        ;;
     start)
         start
         ;;
@@ -55,7 +45,7 @@ case "$1" in
         start
         ;;
     *)
-        echo "Usage:  {start|stop|restart}"
+        echo "Usage:  {status|start|stop|restart}"
         exit 1
         ;;
 esac
