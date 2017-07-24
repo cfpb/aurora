@@ -25,6 +25,7 @@
     name: "{{ rstudio_server_package_name }}"
     state: "{{ rstudio_server_package_state }}"
     disable_gpg_check: yes
+    validate_certs: no
   tags:
     - rstudio-server
 
