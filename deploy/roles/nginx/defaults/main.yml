@@ -16,6 +16,7 @@ nginx_access_log: "/var/log/nginx/access.log"
 nginx_access_log_format: main
 nginx_pid: "/var/run/nginx.pid"
 nginx_conf_dir: "/etc/nginx/conf.d"
+nginx_certificate_files: {}
 
 # nginx.conf
 nginx_sendfile: "on"
