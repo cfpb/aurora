@@ -73,7 +73,7 @@
 - name: Ensure permissions are correct for Data Admins to view logs
   acl:
     path: "{{ nginx_log_dir }}"
-    etype: g
+    etype: group
     permissions: rX
     entity: "{{ restricted_group_name }}"
     recursive: yes
