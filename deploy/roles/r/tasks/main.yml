@@ -114,3 +114,15 @@
   with_items: "{{ r_system_package_dir }}"
   tags:
     - r
+
+- name: Permissions for R package directory
+  file:
+    state: directory
+    mode: '2755'
+    path: "{{ item }}"
+    owner: root
+    group: root
+    recurse: yes
+  with_items: "{{ r_system_package_dir }}"
+  tags:
+    - r
