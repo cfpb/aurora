@@ -8,6 +8,8 @@
   with_items:
     - libselinux-python
     - nginx
+  notify:
+    - restart nginx
   tags:
     - nginx
 
@@ -27,6 +29,10 @@
     group: "{{ nginx_group }}"
     mode: 0640
   with_items: "{{ nginx_certificate_files }}"
+  notify:
+    - restart nginx
+  tags:
+    - nginx
 
 - name: Configure
   template:
