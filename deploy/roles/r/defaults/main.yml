@@ -28,3 +28,7 @@ r_packages_with_opts:
   - name: udunits2
     include: /usr/include/udunits2
     lib: /usr/lib64
+
+r_system_package_dir:
+  - /usr/lib64/R/library
+  - /usr/share/doc
