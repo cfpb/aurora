@@ -6,13 +6,36 @@
     regexp: (.*)umask(.*)
     state: present
 
+- name: Install R-core
+  yum:
+    name: R-core
+    state: latest
+    disable_gpg_check: yes
+  register: r_core_updated
+  tags:
+    - r
+
+- name: Check if rstudio server is installed
+  yum:
+    list: rstudio-server
+  when: r_core_updated.changed
+  register: rstudio_installed
+  tags:
+    - r
+
+- name: Restart rstudio if R updates and rstudio server is installed
+  command: /bin/true
+  when: (rstudio_installed is defined and rstudio_installed.results|length > 0 and rstudio_installed.results|selectattr('yumstate', 'equalto', 'installed'))
+  notify: restart rstudio-server
+  tags:
+    - r
+
 - name: Install base packages
   yum:
     name: "{{ item }}"
     state: latest
     disable_gpg_check: yes
   with_items:
-    - R-core
     - R-devel
     - blas
     - blas-devel
