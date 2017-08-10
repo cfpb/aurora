@@ -75,7 +75,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-x  tags:
+  tags:
     - postgresql-server
 
 - name: Run PostgresPlus install script
