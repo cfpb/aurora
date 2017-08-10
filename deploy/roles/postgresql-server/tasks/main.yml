@@ -1,65 +1,93 @@
 ---
-- name: Install postgres repository
+- name: Install Postgres repository
   yum:
-    name: http://yum.postgresql.org/9.4/redhat/rhel-6-x86_64/pgdg-redhat94-{{ pp_rpm_version }}.noarch.rpm
+    name: "{{ pp_repository }}"
     state: present
   when: not 'production' in group_names
   always_run: true
+  tags:
+    - postgresql-server
 
 - name: Ensure the temporary directory exists
   file:
     path: "{{ pp_temp_dir }}"
     recurse: yes
     state: directory
-
-# - name: get the username running the deploy
-#   local_action: command whoami
-#   register: ansible_ssh_user
-
-# - debug: var=ansible_ssh_user
+  tags:
+    - postgresql-server
 
 - name: Download and extract PostgresPlus Advanced Server installer
-  get_url:
-    url: "http://get.enterprisedb.com/ga/ppasmeta-{{ pp_installer_version }}-linux-x64.tar.gz"
+  unarchive:
+    src: "{{ pp_download_url }}"
     dest: "{{ pp_temp_dir }}/"
     owner: "{{ ansible_user_id }}"
     group: "{{ ansible_user_id }}"
-    mode: 0777
+    validate_certs: no
+    remote_src: yes
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
 
 - name: Create configuration file
   template:
     src: config_param.j2
     dest: "{{ pp_temp_dir }}/config_param"
     mode: 0600
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
 
-- name: Run PostgresPlus install script
-  shell: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64/ppasmeta-{{ pp_installer_version }}-linux-x64.run --optionfile {{ pp_temp_dir }}/config_param"
-  args:
-    chdir: "{{ pp_temp_dir }}"
-    creates: "{{ pp_prefix }}"
-  notify:
-    - restart postgres
-  when: install_ppas
-
-- name: Ensure the data directory exists
+- name: Ensure the install directory exists
   file:
-    path: "{{ pp_datadir }}"
-    recurse: yes
+    path: "{{ pp_prefix }}/{{ pp_install_path }}"
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: install_ppas
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
 
 - name: Ensure the log directory exists
   file:
     path: "{{ pp_xlogdir }}"
-    recurse: yes
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0755
+  tags:
+    - postgresql-server
+
+- name: Ensure the data directory exists
+  file:
+    path: "{{ pp_datadir }}"
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: install_ppas
+  tags:
+    - postgresql-server
+
+- name: Ensure Unix sockets directory exists
+  file:
+    path: "{{ pp_unix_socket_dirs }}"
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+  tags:
+    - postgresql-server
+
+- name: Run PostgresPlus install script
+  shell: "{{ pp_temp_dir }}/{{ pp_installer_path }} --optionfile {{ pp_temp_dir }}/config_param"
+  args:
+    chdir: "{{ pp_temp_dir }}"
+    creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
+  notify:
+    - restart postgres
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
 
 - name: Configure postgres connection options
   template:
@@ -71,10 +99,12 @@
   notify:
     - restart postgres
   when: install_ppas
+  tags:
+    - postgresql-server
 
 - name: Configure PPAS server
   template:
-    src: postgresql.conf.j2
+    src: "{{ pp_config_template }}"
     dest: "{{ pp_datadir }}/postgresql.conf"
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
@@ -82,6 +112,8 @@
   notify:
     - restart postgres
   when: install_ppas
+  tags:
+    - postgresql-server
 
 # IF SSL is enabled, generate the cert and key
 - name: Create SSL certificate request
@@ -90,6 +122,8 @@
     chdir: "{{ pp_datadir }}"
     creates: "{{ pp_datadir }}/server.req"
   when: pp_ssl_enable == 'on'
+  tags:
+    - postgresql-server
 
 - name: Generate key
   shell: "openssl rsa -in privkey.pem -out server.key"
@@ -97,6 +131,8 @@
     chdir: "{{ pp_datadir }}"
     creates: "{{ pp_datadir }}/server.key"
   when: pp_ssl_enable == 'on'
+  tags:
+    - postgresql-server
 
 - name: Generate cert
   shell: "openssl req -x509 -in server.req -text -key server.key -out server.crt"
@@ -104,6 +140,8 @@
     chdir: "{{ pp_datadir }}"
     creates: "{{ pp_datadir }}/server.crt"
   when: pp_ssl_enable == 'on'
+  tags:
+    - postgresql-server
 
 - name: Ensure permissions are correct
   file:
@@ -116,6 +154,8 @@
     - server.key
     - server.req
   when: pp_ssl_enable == 'on'
+  tags:
+    - postgresql-server
 
 - name: Change permissions on server.key
   file:
@@ -123,37 +163,88 @@
     mode: "og-rwx"
   when: pp_ssl_enable == 'on'
   when: install_ppas
+  tags:
+    - postgresql-server
 
 - name: Set permissions on PPAS directory
   file:
-    dest: "{{ pp_prefix }}9.4AS"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}"
+    recurse: yes
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
   when: install_ppas
+  tags:
+    - postgresql-server
 
 - name: Copy the environment file
-  shell: "cat {{ pp_prefix }}9.4AS/pgplus_env.sh >> {{ pp_prefix }}9.4AS/.bash_profile"
-  args:
-    creates: "{{ pp_prefix }}9.4AS/.bash_profile"
-  when: install_ppas
+  become: yes
+  become_method: sudo
+  become_user: "{{ pp_serviceaccount }}"
+  copy:
+    src: "{{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+    remote_src: yes
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+  #shell: "cat {{ pp_prefix }}/{{ pp_install_path }}/pgplus_env.sh >> {{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+  #args:
+  #  creates: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
 
 - name: Set ownership of environment file
   file:
-    dest: "{{ pp_prefix }}9.4AS/.bash_profile"
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0600
   when: install_ppas
+  tags:
+    - postgresql-server
+
+- name: Install extensions and supplementary packages
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ pp_extensions }}"
+  when: install_ppas
+  tags:
+    - postgresql-server
+
+#- name: Create postgres cluster
+#  become: yes
+#  become_method: sudo
+#  become_user: "{{ pp_serviceaccount }}"
+#  sudo: yes
+#  remote_user: "{{ pp_serviceaccount }}"
+#  shell: "initdb --pgdata {{ pp_datadir }}"
+#  when: pp_install or pp_upgrade
+#  tags:
+#    - postgresql-server
 
 - name: open up ports in iptables
   command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ pp_serverport }} -j ACCEPT"
   when: iptables_config and deploy_iptables
+  tags:
+    - postgresql-server
 
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config and deploy_iptables
+  tags:
+    - postgresql-server
 
 - name: Remove the temporary folder
   file:
     path: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64"
     state: absent
+  tags:
+    - postgresql-server
+
+- name: Ensure PPAS is started
+  service:
+    name: "{{ pp_servicename }}"
+    state: started
+    enabled: yes
+  when: install_ppas
+  tags:
+    - postgresql-server
