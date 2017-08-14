@@ -6,4 +6,4 @@ shiny_auth_proxy: False
 shiny_auth_proxy_header: ""
 shiny_admin_port: 4151
 
-r_shiny_groups: ""
+shiny_groups: ""
