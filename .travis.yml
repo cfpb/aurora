@@ -33,7 +33,7 @@ env:
     PARENT_GROUP=all
     HOST_GROUP=analytics_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml
-    EXTRA_VAR_DEF='{"install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
 
 # elastic search
   - >
