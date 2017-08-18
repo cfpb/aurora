@@ -31,6 +31,9 @@ server {
     run_as :HOME_USER:;
     user_dirs;
 
+    # Restrict to only allow certain groups to host peronal applications.
+    members_of {{ shiny_groups }};
+
     # Define where we should put the log files for this location
     # log_dir /var/log/shiny-server/;
 
