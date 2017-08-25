@@ -73,6 +73,24 @@
   tags:
     - r
 
+- name: Find any locked directories
+  find:
+    paths: "{{ r_system_package_dir }}"
+    pattern: '00LOCK-*'
+    file_type: directory
+  register: locked_dirs
+  tags:
+    - r
+
+- name: Remove locked directories
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items:
+    - "{{ locked_dirs.files }}"
+  tags:
+    - r
+
 - name: Update existing R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
   environment: "{{ r_env_vars }}"
