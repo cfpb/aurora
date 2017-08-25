@@ -1,11 +1,23 @@
 ---
 ## PostgresPlus Advanced Server default variables
+
+# Whether or not to do anything at all
 install_ppas: True
 
+# When to install, upgrade, and restart PPAS
+pp_install: False
+pp_restart: False
+pp_upgrade: False
+
 # Installer URL and executable
-pp_rpm_version: 9.4-3
-pp_installer_version: 9.4.1.3
+pp_installer_version: 9.6.2.7
+pp_download_url: "http://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
+# HTTPS runs into issues
+pp_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
+pp_install_path: as9.6
+pp_config_template: "postgresql.conf.95.j2"
 pp_bin_path: .
+pp_installer_path: edb-as96-meta-9.6.2.7-2-linux-x64/edb-as96-meta-9.6.2.7-2-linux-x64.run
 
 # Directory to install from
 pp_temp_dir: /tmp
@@ -28,14 +40,26 @@ pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
 # Core server config
-pp_datadir: /opt/PostgresPlus/data
-pp_prefix: /opt/PostgresPlus/
+pp_datadir: /opt/PostgresPlus/9.6AS/data
+pp_old_datadir: /opt/PostgresPlus/9.4AS/data
+pp_bindir: /opt/PostgresPlus/9.6AS/bin
+pp_old_bindir: /opt/PostgresPlus/9.4AS/bin
+pp_prefix: /opt/PostgresPlus
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: ppas-9.4
+pp_servicename: ppas-9.6
+pp_old_servicename: ppas-9.5
 pp_serviceaccount: postgres
+pp_support_services:
+  - edb-pgagent-9.6
+  - edb-pgbouncer-1.7
+pp_old_support_service:
+  - ppas-agent-9.5
+  - pgbouncer-1.6
+pp_serverport: 5432
+pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /opt/PostgresPlus/
+pp_xlogdir: /opt/PostgresPlus/9.6AS
 
 ## PostgreSQL Configuration Settings
 
@@ -75,7 +99,7 @@ pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
 # Unix sockets
-pp_unix_socket_dirs: /tmp
+pp_unix_socket_dirs: /var/run/postgresql
 pp_unix_socket_group: ''
 pp_unix_socket_perms: 0777
 

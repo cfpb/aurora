@@ -28,6 +28,9 @@ shared_folders:
 # Allows servers to use one of the GlusterFS volumes as a shared home directory
 home_directory: "/testorg"
 
+# Location for importing data into PPAS
+pp_file_transfer_dir: "/home/work/dw/file_transfers"
+
 # Adds a customizeable masthead to all configuration files deployed by Ansible.
 template_masthead: |
   #=======================================================

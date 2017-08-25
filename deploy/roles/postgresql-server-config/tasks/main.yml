@@ -9,22 +9,6 @@
     - git
   always_run: true
 
-### Step 1: Install extensions and set default privileges
-
-- name: Install extensions and supplementary packages
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items: pp_extensions
-  when: install_ppas
-
-- name: Ensure PPAS is started
-  service:
-    name: "{{ pp_servicename }}"
-    state: restarted
-    enabled: yes
-  when: install_ppas
-
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
 # to properly execute.
@@ -35,7 +19,7 @@
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
-  with_items: pp_pre_scripts
+  with_items: "{{ pp_pre_scripts }}"
   always_run: true
   when: install_ppas
 
@@ -46,7 +30,7 @@
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
-  with_items: pp_setup_scripts
+  with_items: "{{ pp_setup_scripts }}"
   always_run: "{{ item.always_run }}"
   when: install_ppas
 
@@ -101,7 +85,7 @@
     port: "{{ pp_serverport }}"
     db: template1
     script: "{{ item.script }}"
-  with_items: pp_dba_scripts
+  with_items: "{{ pp_dba_scripts }}"
   always_run: yes
   when: install_ppas
 
@@ -112,7 +96,7 @@
     port: "{{ pp_serverport }}"
     db: postgres
     script: "{{ item.script }}"
-  with_items: pp_dba_scripts
+  with_items: "{{ pp_dba_scripts }}"
   always_run: yes
   when: install_ppas
 
@@ -145,7 +129,7 @@
     type: function
     obj: "{{ item.signature }}"
     state: present
-  with_items: pp_dba_scripts
+  with_items: "{{ pp_dba_scripts }}"
   when: install_ppas
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
@@ -160,7 +144,7 @@
     type: function
     obj: "{{ item.signature }}"
     state: present
-  with_items: pp_dba_scripts
+  with_items: "{{ pp_dba_scripts }}"
   when: install_ppas
 
 # Setup default user permissions, etc., for template DB's
@@ -176,7 +160,7 @@
     schema: "{{ item.schema }}"
     type: "{{ item.type }}"
     state: "{{ item.state }}"
-  with_items: pp_privs
+  with_items: "{{ pp_privs }}"
   when: install_ppas
 
 # Any post-configuration scripts that need to be executed go here
@@ -187,7 +171,7 @@
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
-  with_items: pp_post_scripts
+  with_items: "{{ pp_post_scripts }}"
   always_run: true
   when: install_ppas
 
