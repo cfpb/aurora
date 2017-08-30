@@ -94,13 +94,6 @@
   tags:
     - nginx
 
-- name: Allow "deploy" user to restart Nginx
-  template:
-    src: nginx.j2
-    dest: /etc/sudoers.d/nginx
-  tags:
-    - nginx
-
 - name: Open port 80 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
   when: iptables_config and deploy_iptables
