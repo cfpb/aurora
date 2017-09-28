@@ -3,6 +3,8 @@
   yum:
     name: compat-libstdc++-33-3.2.3-69.el6
     state: present
+  tags:
+    - stattransfer
 
 - name: Verify install directory
   file:
@@ -10,18 +12,24 @@
     state: directory
     mode: og+rx
     recurse: yes
+  tags:
+    - stattransfer
 
 - name: Copy over the install bin
   copy:
     src: "{{stattransfer_local_bin_directory}}/stlinux64_install"
     dest: "{{stattransfer_install_directory}}/stlinux64_install"
   when: custom_repo
+  tags:
+    - stattransfer
 
 - name: Set the install bin to be executable
   file:
     path: "{{stattransfer_install_directory}}/stlinux64_install"
     mode: a+x
   when: custom_repo
+  tags:
+    - stattransfer
 
 - name: Run install bin
   shell: ./stlinux64_install --mode silent
@@ -29,13 +37,19 @@
     chdir: "{{ stattransfer_install_directory }}"
     creates: "{{ stattransfer_install_directory }}/stattransfer"
   when: custom_repo
+  tags:
+    - stattransfer
 
 - name: Copy license file over
   template:
     src: license1282.txt
     dest: "{{stattransfer_install_directory}}/st13.lic"
-
+  tags:
+    - stattransfer
+    
 - name: Copy configure_stattransfer to /etc/profile.d
   template:
     src: configure_stattransfer.sh
     dest: /etc/profile.d/configure_stattransfer.sh
+  tags:
+    - stattransfer
