@@ -7,3 +7,6 @@ stattransfer_reg_code: STAT-TRANSFER-REG
 stattransfer_auth_code: STAT-TRANSFER-AUTH
 stattransfer_sign_code: STAT-TRANSFER-SIGN
 stattransfer_major_version: "13"
+stattransfer_name: "STAT-TRANSFER-NAME"
+stattransfer_organization: "STAT-TRANSFER-ORGANIZATION"
+stattransfer_set_code: "STAT-TRANSFER-SET-CODE"
