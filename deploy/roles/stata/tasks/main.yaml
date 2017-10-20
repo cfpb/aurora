@@ -23,6 +23,13 @@
   tags:
     - stata
 
+- name: Install xauth dependency
+  yum:
+    name: xorg-x11-xauth
+    state: present
+  tags:
+    - stata
+
 - name: Install pip
   yum:
     name: python-pip
