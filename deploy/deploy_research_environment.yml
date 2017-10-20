@@ -98,6 +98,7 @@
   become: yes
   become_method: sudo
   roles:
+    - {role: epel, when: "use_epel"}
     - stata
     - stattransfer
 
