@@ -17,6 +17,14 @@
     - stata
     - xstata
     - isstata.150
+    - ado.tar
+    - ado.tar.Z
+    - base.tar
+    - base.tar.Z
+    - bins.tar
+    - bins.tar.Z
+    - docs.tar
+    - docs.tar.Z
   tags:
     - stata
 
