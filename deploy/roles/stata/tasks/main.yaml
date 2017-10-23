@@ -69,6 +69,7 @@
   expect:
     chdir: "{{ stata_install_directory }}"
     command: /bin/bash -c ./install
+    timeout: 60
     responses:
         '.*Do you wish to continue.*': 'y'
         '.*Okay to proceed.*': 'y'
