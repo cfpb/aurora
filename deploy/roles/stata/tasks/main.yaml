@@ -8,6 +8,18 @@
   tags:
     - stata
 
+- name: Ensure no installed files exist
+  file:
+    path: "{{ stata_install_directory }}/{{ item }}"
+    state: absent
+  with_items:
+    - installed.150
+    - stata
+    - xstata
+    - isstata.150
+  tags:
+    - stata
+
 - name: Unarchive the stata tarball
   unarchive:
     copy: yes
