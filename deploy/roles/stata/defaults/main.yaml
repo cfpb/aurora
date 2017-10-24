@@ -12,13 +12,10 @@ stata_line_two:                     Washington, DC
 
 stata_odbc_mgr:                     unixodbc
 stata_processor:                    4
-stata_site:                         "/usr/share/shared_ado"
-stata_profile_dir:                  /usr/local/stata15
+stata_site:                         "/home/work/shared_ado"
+stata_profile_dir:                  /usr/local/stata
 
 
 stata_printers:  
-    - 1019A_HP ps "lpr -P 1019A_HP3015P @"
-    - 1006_Konica ps "lpr -P 1006_Konica754 @"
-    - 806_Sharp5001 ps "lpr -P 806_Sharp5001 @"
-    - 831_back_Lexmark410 ps "lpr -P 831_back_Lexmark410 @"
-    - 848_Konica754 ps "lpr -P 848_Konica754 @"
+    - 2066A_XeroxWC ps "lpr -P 1700G_2066A_XeroxWC_7970 @"
+    - 3066A_XeroxWC ps "lpr -P 1700G_3066A_XeroxWC_7970 @"

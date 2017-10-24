@@ -1,6 +1,6 @@
 
  set         odbcmgr         {{ stata_odbc_mgr }}
- set         processors      {{ stata_processor }}
+ cap set     processors      {{ stata_processor }}
  sysdir      set SITE        {{ stata_site }}
 
  {% for printer in stata_printers %}
