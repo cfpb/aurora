@@ -17,5 +17,5 @@ stata_profile_dir:                  /usr/local/stata
 
 
 stata_printers:  
-    - 2066A_XeroxWC ps "lpr -P 1700G_2066A_XeroxWC_7970 @"
-    - 3066A_XeroxWC ps "lpr -P 1700G_3066A_XeroxWC_7970 @"
+    - 1001_Konica ps "lpr -P 1001_Konica_1234 @"
+    - 1002_Konica ps "lpr -P 1002_Konica_1234 @"
