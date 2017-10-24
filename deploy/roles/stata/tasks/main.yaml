@@ -69,7 +69,7 @@
   expect:
     chdir: "{{ stata_install_directory }}"
     command: /bin/bash -c ./install
-    timeout: 120
+    timeout: 200
     responses:
         '.*Do you wish to continue.*': 'y'
         '.*Okay to proceed.*': 'y'
@@ -111,6 +111,14 @@
   template:
     src: configure_stata.sh
     dest: /etc/profile.d/configure_stata.sh
+  tags:
+    - stata
+
+- name: Copy sysprofile
+  template:
+    src: sysprofile.do.j2
+    dest: "{{ stata_directory }}/sysprofile.do"
+    mode: 0644
   tags:
     - stata
 
