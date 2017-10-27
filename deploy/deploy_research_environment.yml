@@ -14,6 +14,12 @@
          src: "{{ item.src }}"
          dest: "{{ item.dest }}"
       with_items: "{{ eod_symlinks }}"
+
+    - name: Install xauth dependency
+      yum:
+        name: xorg-x11-xauth
+        state: present
+
     - name: Ensure X11 Forwarding is present
       lineinfile:
         dest: /etc/ssh/sshd_config
@@ -91,6 +97,8 @@
   become_method: sudo
   roles:
     # - gauss
+    - {role: epel, when: "use_epel"}
+    - stata
     - gocd
     - stattransfer
 
