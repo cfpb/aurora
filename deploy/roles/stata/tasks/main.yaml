@@ -45,13 +45,6 @@
   tags:
     - stata
 
-- name: Install xauth dependency
-  yum:
-    name: xorg-x11-xauth
-    state: present
-  tags:
-    - stata
-
 - name: Install pip
   yum:
     name: python-pip
@@ -62,6 +55,7 @@
 - name: pip install pexpect
   pip:
     name: pexpect
+    executable: /usr/bin/pip
   tags:
     - stata
 
@@ -114,19 +108,19 @@
   tags:
     - stata
 
-- name: Copy sysprofile
-  template:
-    src: sysprofile.do.j2
-    dest: "{{ stata_directory }}/sysprofile.do"
-    mode: 0644
-  tags:
-    - stata
-
 - name: Create symlink
   file:
     state: link
     src: "{{ stata_install_directory }}"
     dest: "{{ stata_directory }}"
+  tags:
+    - stata
+
+- name: Copy sysprofile
+  template:
+    src: sysprofile.do.j2
+    dest: "{{ stata_directory }}/sysprofile.do"
+    mode: 0644
   tags:
     - stata
 
