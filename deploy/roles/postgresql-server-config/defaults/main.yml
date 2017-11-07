@@ -1,10 +1,10 @@
 ---
 #Environment Variable for running role on travis-CI
-install_ppas: True
+install_postgres: True
 
 # Extensions to install
 pp_extensions:
-  - postgis2_94
+  - postgis2_96
 
 # Example privileges setting, this revokes all privileges from
 # the PUBLIC role on the public schema in template1, and thus

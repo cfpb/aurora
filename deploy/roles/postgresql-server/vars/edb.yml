@@ -1,0 +1,61 @@
+---
+## PPAS default variables
+
+# Installer URL and executable
+pp_installer_version: 9.6.2.7
+pp_download_url: "http://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
+pp_install_path: as9.6
+pp_config_template: "postgresql.conf.95.j2"
+pp_bindir: /opt/PostgresPlus/9.6AS/bin
+pp_old_bindir: /opt/PostgresPlus/9.4AS/bin
+
+pp_installer_path: edb-as96-meta-9.6.2.7-2-linux-x64/edb-as96-meta-9.6.2.7-2-linux-x64.run
+
+# Installation options
+pp_create_samples: yes
+pp_databasemode: oracle
+pp_extract_only: no
+pp_installer_language: en
+
+# EnterpriseDB Web Account (register here: http://www.enterprisedb.com/user-login-registration)
+# Put these settings in your DB_SERVER_EXTRA_VARS file with your username and password.
+pp_web_username: webusername_goes_here
+pp_web_password: webpassword_goes_here
+
+# Core server config
+pp_datadir: /opt/PostgresPlus/9.6AS/data
+pp_old_datadir: /opt/PostgresPlus/9.4AS/data
+pp_prefix: /opt/PostgresPlus
+pp_old_servicename: ppas-9.5
+pp_servicename: ppas-9.6
+
+pp_support_services:
+  - edb-pgagent-9.6
+  - edb-pgbouncer-1.7
+pp_old_support_service:
+  - ppas-agent-9.5
+  - pgbouncer-1.6
+pp_xlogdir: /opt/PostgresPlus/9.6AS
+## PostgreSQL Configuration Settings
+
+pp_shared_preload_libraries: '$libdir/dbms_pipe,$libdir/edb_gen'
+pp_edb_custom_plan_tries: 5
+
+pp_edb_max_resource_groups: 16
+pp_edb_resource_group: ''
+
+# Reporting and Logging
+pp_log_filename: enterprisedb-%Y-%m-%d_%H%M%S.log
+
+# EDB Auditing
+pp_edb_audit: none
+pp_edb_audit_dir: edb_audit
+pp_edb_audit_filename: 'audit-%Y-%m-%d_%H%M%S'
+pp_edb_audit_rotation_day: every
+pp_edb_audit_rotation_size: 0
+pp_edb_audit_rotation_seconds: 0
+pp_edb_audit_connect: failed
+pp_edb_audit_disconnect: none
+pp_edb_audit_statement: 'ddl, error'
+
+pp_initdb: "service ppas-9.6 initdb"

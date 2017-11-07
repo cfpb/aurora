@@ -1,6 +1,6 @@
 {{ template_masthead }}
 # TYPE  DATABASE        USER            ADDRESS                 METHOD
 
-{% for setting in pp_hba_settings %}
+{% for setting in pg_hba_settings %}
 {{ setting.context }}   {{ setting.db }}    {{ setting.user }}    {{ setting.address }} {{ setting.ip_mask }} {{ setting.auth_method }} {{ setting.auth_options }}
 {% endfor %}
