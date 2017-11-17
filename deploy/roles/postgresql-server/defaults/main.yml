@@ -1,9 +1,6 @@
 ---
 ## Postgres default variables
 
-# Whether or not to do anything at all
-install_postgres: True
-
 install_edb: False
 
 # When to install, upgrade, and restart

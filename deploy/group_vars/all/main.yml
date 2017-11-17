@@ -210,6 +210,9 @@ gocd_service_password: password
 ### PostgreSQL Settings ###
 #=========================#
 
+# Whether or not to do anything at all
+install_postgres: True
+
 # Superuser
 pp_superaccount: postgres
 pp_superpassword: password

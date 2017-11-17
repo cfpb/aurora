@@ -11,6 +11,16 @@
     - git
   check_mode: no
 
+- name: Ensure password is correct
+  postgresql_exec:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
+  check_mode: no
+  when: install_postgres
+
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
 # to properly execute.

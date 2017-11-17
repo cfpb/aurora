@@ -1,0 +1,4 @@
+# hostname:port:database:username:password
+{% for worker in groups['citus'] %}
+{{ worker }}:{{ pp_serverport }}:*:{{ pp_superaccount }}:{{ pp_superpassword }}
+{% endfor %}

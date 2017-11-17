@@ -1,0 +1,58 @@
+# deploy_citus_server.yml
+---
+- hosts: citus
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: iptables, when: "iptables_config"}
+    - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - {role: log-courier, when: "install_logstash"}
+    - role: jdk
+    - role: postgresql-server
+  tasks:
+    - name: Ensure file transfer folder exists
+      file:
+        dest: "{{ pp_file_transfer_dir }}"
+        state: directory
+        mode: 0755
+        owner: postgres
+        group: postgres
+
+    - name: Create symlink from PPAS data directory
+      file:
+        dest: "{{ pp_datadir }}/file_transfers"
+        src: "{{ pp_file_transfer_dir }}"
+        state: link
+
+    - name: Setup host file
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '[[0-9+]\.]+\s+{{ item }}'
+        line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
+      with_items: "{{ groups['citus'] }}"
+
+
+- hosts: citus
+  roles:
+    - role: postgresql-server-config
+    - role: citus
+
+  post_tasks:
+    - name: Create Citus extension
+      postgresql_exec:
+        login_host: localhost
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        port: "{{ pp_serverport }}"
+        db: "{{ item }}"
+        script: CREATE EXTENSION IF NOT EXISTS citus
+      check_mode: no
+      with_items:
+        - postgres
+        - template1
+      when: install_postgres
+
+- hosts: citus_coordinator
+  roles:
+    - role: citus_coordinator

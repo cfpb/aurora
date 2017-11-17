@@ -594,6 +594,7 @@ Vagrant.configure(2) do |config|
       v.cpus = 1
     end
 
+    server.ssh.insert_key = false
     server.vm.provision "shell", inline: <<-SHELL
       # bug with vagrant 1.9+ and centos/7
       sudo ifup eth1
@@ -623,6 +624,60 @@ Vagrant.configure(2) do |config|
     end
 
     server.vm.network :private_network, ip: "10.0.1.38"
+  end
+
+  # Citus Coordinator
+  config.vm.define "citus_coordinator" do |cc_config|
+    cc_config.vm.box = "centos/7"
+    cc_config.vm.host_name = "citus-coordinator.test.dev"
+    cc_config.vm.network :private_network, ip: "10.0.1.40"
+
+    cc_config.ssh.forward_agent = true
+    cc_config.ssh.insert_key = false
+    cc_config.vm.provision "shell", inline: <<-SHELL
+      # bug with vagrant 1.9+ and centos/7
+      sudo ifup eth1
+    SHELL
+
+    cc_config.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_citus_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+  end
+
+  # Citus Workers
+  citus_workers = [
+    "10.0.1.41",
+    "10.0.1.42",
+    "10.0.1.43",
+  ]
+
+  citus_workers.each_with_index do |ip, idx|
+    id = idx+1
+    config.vm.define "citus_worker_#{id}" do |cw_config|
+      cw_config.vm.box = "centos/7"
+      cw_config.vm.host_name = "citus-worker-#{id}.test.dev"
+      cw_config.vm.network :private_network, ip: ip
+
+      cw_config.ssh.forward_agent = true
+      cw_config.vm.provision "shell", inline: <<-SHELL
+        # bug with vagrant 1.9+ and centos/7
+        sudo ifup eth1
+      SHELL
+
+      cw_config.vm.provision "ansible" do |ansible|
+        ansible.playbook = "deploy_citus_server.yml"
+        ansible.inventory_path = "vagrant_hosts"
+        ansible.tags = ansible_tags
+        ansible.verbose = ansible_verbosity
+        ansible.extra_vars = ansible_extra_vars
+        ansible.limit = ansible_limit
+      end
+    end
   end
 
   # DB Terminal

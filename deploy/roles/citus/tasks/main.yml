@@ -1,0 +1,48 @@
+---
+- name: Add Citus rpm
+  get_url:
+    url: "{{ rpm_url }}"
+    dest: /tmp/rpm.sh
+    mode: "0755"
+  tags:
+    - citus
+
+- name: Execute rpm script
+  become: yes
+  become_method: sudo
+  shell: ./rpm.sh
+  args:
+    chdir: /tmp/
+  when: not custom_repo
+  tags:
+    - citus
+
+- name: Install Citus
+  become: yes
+  become_method: sudo
+  yum:
+    name: "{{ citus_pkg }}"
+  tags:
+    - citus
+
+- name: Preload citus extension
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ pp_datadir }}/postgresql.conf"
+    regexp: "^shared_preload_libraries*"
+    line: "shared_preload_libraries = '{{ pp_shared_preload_libraries }}'"
+  notify:
+    - restart postgres
+  tags:
+    - citus
+
+- name: Add pgpass file
+  become: yes
+  become_user: "{{ pp_superaccount }}"
+  template:
+    src: pgpass.j2
+    dest: ~/.pgpass
+    mode: "0600"
+  tags:
+    - citus

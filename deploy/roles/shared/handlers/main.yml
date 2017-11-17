@@ -32,6 +32,7 @@
   command: "restart shiny-server"
 
 - name: restart postgres
+  become: yes
   service:
     name: "{{ pp_servicename }}"
     state: restarted

@@ -1,0 +1,25 @@
+---
+- name: Add worker node information
+  postgresql_exec:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "SELECT * from master_add_node('{{ item }}', {{ pp_serverport }})"
+  check_mode: no
+  with_items: "{{ citus_worker_nodes }}"
+  when: install_postgres
+
+- name: Verify installation
+  become: yes
+  become_user: "{{ pp_superaccount }}"
+  postgresql_exec:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "SELECT * from master_get_active_worker_nodes()"
+  check_mode: no
+  when: install_postgres
