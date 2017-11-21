@@ -1,7 +1,4 @@
 ---
-#Environment Variable for running role on travis-CI
-install_postgres: True
-
 # Extensions to install
 pp_extensions:
   - postgis2_96

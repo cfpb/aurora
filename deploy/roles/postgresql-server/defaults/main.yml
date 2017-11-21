@@ -70,7 +70,7 @@ pg_hba_settings:
     user: all
     address: '::1/128'
     ip_mask: ''
-    auth_method: trust
+    auth_method: md5
     auth_options: ''
 
 # Additional postgresql.conf settings
