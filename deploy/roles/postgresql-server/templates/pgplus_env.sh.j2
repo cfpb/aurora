@@ -1,0 +1,31 @@
+# EnterpriseDB shell environment loader
+#
+#  Instructions:
+#   This file contains additions to the user environment
+#  that make accessing Postgres Plus Advanced Server
+#  executables easier.
+#
+#  To load the environment for a single user:
+#     cp pgplus_env.sh /home/<username>
+#     chown <username> /home/<username>/pgplus_env.sh
+#     vi /home/<username>/.bash_profile
+#      At the bottom, add the line:
+#       . /home/<username>/pgplus_env.sh
+#          ( Note the '.' followed by a space )
+
+#  To load the environment for all users:
+#     cp pgplus_env.sh /etc
+#     vi /etc/profile
+#     At the bottom, add the line:
+#       . /etc/pgplus_env.sh
+#        ( Note the '.' followed by a space )
+
+# Environment
+
+export PATH={{ pp_prefix }}/{{ pp_install_path }}/bin:$PATH
+export PGHOME={{ pp_prefix }}/{{ pp_install_path }}
+export PGDATA={{ pp_datadir }}
+export PGDATABASE={{ pp_serviceaccount }}
+# export PGUSER=postgres
+export PGPORT={{ pp_serverport }}
+export PGLOCALEDIR={{ pp_prefix }}/{{ pp_install_path }}/share/locale

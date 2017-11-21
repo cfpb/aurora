@@ -3,36 +3,40 @@
   yum:
     name: "{{ item }}"
     state: present
+  become: yes
+  become_method: sudo
   with_items:
-    - postgresql94-devel
+    - postgresql96-devel
     - python-psycopg2
     - git
-  always_run: true
+  check_mode: no
 
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
 # to properly execute.
 - name: Execute pre-configuration scripts
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: "{{ pp_pre_scripts }}"
-  always_run: true
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 - name: Execute configuration scripts
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: "{{ pp_setup_scripts }}"
-  always_run: "{{ item.always_run }}"
-  when: install_ppas
+  check_mode: "{{ item.check_mode }}"
+  when: install_postgres
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -40,30 +44,33 @@
 
 - name: Create "Operational DBA" role
   postgresql_user:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     name: operational_dba
     role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
     state: present
-  always_run: yes
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 - name: Create Operational DBA schema
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
-  always_run: yes
+  check_mode: no
   with_items:
     - postgres
     - template1
-  when: install_ppas
+  when: install_postgres
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -76,49 +83,53 @@
   with_items:
     - postgres
     - template1
-  when: install_ppas
+  when: install_postgres
 
 - name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: template1
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
-  always_run: yes
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: postgres
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
-  always_run: yes
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 - name: Retrieve list of databases
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: postgres
     script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
   register: database_list
-  when: install_ppas
+  when: install_postgres
 
 - debug:
     var: database_list
 
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
-  when: install_ppas
+  when: install_postgres
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -130,10 +141,11 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
-  when: install_ppas
+  when: install_postgres
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
   postgresql_privs:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -145,11 +157,12 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
-  when: install_ppas
+  when: install_postgres
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
   postgresql_privs:
+    login_host: localhost
     login: "{{ pp_superaccount }}"
     password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -161,24 +174,26 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: "{{ pp_privs }}"
-  when: install_ppas
+  when: install_postgres
 
 # Any post-configuration scripts that need to be executed go here
 - name: Execute post-configuration scripts
   postgresql_exec:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: "{{ item.db }}"
     script: "{{ item.script }}"
   with_items: "{{ pp_post_scripts }}"
-  always_run: true
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 ### Step 3: Create default service account using operational_dba role
 
 - name: Create default service account
   postgresql_user:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -187,11 +202,12 @@
     encrypted: yes
     password: "{{ pp_dba_password }}"
     state: present
-  always_run: true
-  when: install_ppas
+  check_mode: no
+  when: install_postgres
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
+    login_host: localhost
     login_user: "{{ pp_superaccount }}"
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
@@ -201,4 +217,4 @@
     type: group
     state: present
     admin_option: no
-  when: install_ppas
+  when: install_postgres

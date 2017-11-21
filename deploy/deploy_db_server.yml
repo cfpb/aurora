@@ -10,8 +10,6 @@
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
     - role: postgresql-server
-    - role: postgresql-server-config
-
   tasks:
     - name: Ensure file transfer folder exists
       file:
@@ -26,3 +24,7 @@
         dest: "{{ pp_datadir }}/file_transfers"
         src: "{{ pp_file_transfer_dir }}"
         state: link
+
+- hosts: db_server
+  roles:
+    - role: postgresql-server-config

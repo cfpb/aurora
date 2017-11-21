@@ -1,4 +1,9 @@
 ---
+- name: Load variables
+  include_vars:
+    file: rhel_7.yml
+  when: "{{ ansible_distribution_major_version }} == 7"
+
 - name: Install specified JDK version and dependencies
   yum:
     name: "{{ item }}"
