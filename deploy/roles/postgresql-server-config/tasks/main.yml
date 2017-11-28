@@ -20,7 +20,6 @@
     backrefs: yes
     line: '\1::1/128\2trust'
   notify: restart postgres
-  when: install_postgres
 
 - meta: flush_handlers
 
@@ -32,7 +31,6 @@
     db: postgres
     script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
   check_mode: no
-  when: install_postgres
 
 - name: Disallow postgres empty password login
   become: yes
@@ -42,7 +40,6 @@
     regexp: '^(.*)::1/128(.*)trust'
     backrefs: yes
     line: '\1::1/128\2md5'
-  when: install_postgres
   notify: restart postgres
 
 - meta: flush_handlers
@@ -60,7 +57,6 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_pre_scripts }}"
   check_mode: no
-  when: install_postgres
 
 - name: Execute configuration scripts
   postgresql_exec:
@@ -72,7 +68,6 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_setup_scripts }}"
   check_mode: "{{ item.check_mode }}"
-  when: install_postgres
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -88,7 +83,6 @@
     role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
     state: present
   check_mode: no
-  when: install_postgres
 
 - name: Create Operational DBA schema
   postgresql_exec:
@@ -102,7 +96,6 @@
   with_items:
     - postgres
     - template1
-  when: install_postgres
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
@@ -119,7 +112,6 @@
   with_items:
     - postgres
     - template1
-  when: install_postgres
 
 - name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
@@ -131,7 +123,6 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
-  when: install_postgres
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
@@ -143,7 +134,6 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
-  when: install_postgres
 
 - name: Retrieve list of databases
   postgresql_exec:
@@ -154,14 +144,12 @@
     db: postgres
     script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
   register: database_list
-  when: install_postgres
 
 - debug:
     var: database_list
 
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
-  when: install_postgres
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
@@ -177,7 +165,6 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
-  when: install_postgres
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
   postgresql_privs:
@@ -193,7 +180,6 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
-  when: install_postgres
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
@@ -210,7 +196,6 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: "{{ pp_privs }}"
-  when: install_postgres
 
 # Any post-configuration scripts that need to be executed go here
 - name: Execute post-configuration scripts
@@ -223,7 +208,6 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_post_scripts }}"
   check_mode: no
-  when: install_postgres
 
 ### Step 3: Create default service account using operational_dba role
 
@@ -239,7 +223,6 @@
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
-  when: install_postgres
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
@@ -253,4 +236,3 @@
     type: group
     state: present
     admin_option: no
-  when: install_postgres

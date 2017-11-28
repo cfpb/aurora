@@ -29,7 +29,7 @@ shared_folders:
 home_directory: "/testorg"
 
 # Location for importing data into PPAS
-pp_file_transfer_dir: "/home/dtwork/dw/file_transfers"
+pp_file_transfer_dir: "/home/work/dw/file_transfers"
 
 # Adds a customizeable masthead to all configuration files deployed by Ansible.
 template_masthead: |
@@ -209,9 +209,6 @@ gocd_service_password: password
 #=========================#
 ### PostgreSQL Settings ###
 #=========================#
-
-# Whether or not to do anything at all
-install_postgres: True
 
 # Superuser
 pp_superaccount: postgres

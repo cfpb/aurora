@@ -31,6 +31,7 @@
         regexp: '[[0-9+]\.]+\s+{{ item }}'
         line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
       with_items: "{{ groups['citus'] }}"
+      when: not custom_repo
 
 
 - hosts: citus
@@ -51,7 +52,6 @@
       with_items:
         - postgres
         - template1
-      when: install_postgres
 
 - hosts: citus_coordinator
   roles:

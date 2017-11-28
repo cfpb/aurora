@@ -9,7 +9,6 @@
     script: "SELECT * from master_add_node('{{ item }}', {{ pp_serverport }})"
   check_mode: no
   with_items: "{{ citus_worker_nodes }}"
-  when: install_postgres
 
 - name: Verify installation
   become: yes
@@ -22,4 +21,9 @@
     db: postgres
     script: "SELECT * from master_get_active_worker_nodes()"
   check_mode: no
-  when: install_postgres
+  register: worker_nodes
+
+- name: Assert worker nodes
+  assert:
+    that:
+      - "{{ worker_nodes['query_result'] | length }} > 0"

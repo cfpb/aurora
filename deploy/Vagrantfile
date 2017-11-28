@@ -545,10 +545,10 @@ Vagrant.configure(2) do |config|
   ### DATA WAREHOUSE COMPONENT ###
   ################################
 
-  # DB Server
-  config.vm.define :db_server_centos6 do |server|
+  # DB Server (EDB)
+  config.vm.define :db_server_edb do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "db.test.dev"
+    server.vm.host_name = "db-edb.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -560,16 +560,18 @@ Vagrant.configure(2) do |config|
     server.vm.provision "ansible" do |ansible|
       if ENV['DB_SERVER_EXTRA_VARS']
         ansible_extra_vars = ENV['DB_SERVER_EXTRA_VARS']
+        print ansible_extra_vars
       else
-        print "To use the db_server VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
+        print "To use the db_server_edb VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password as well as 'install_edb' flag set to true.\n"
         print "Example:\n"
         print "$ export DB_SERVER_EXTRA_VARS=local_settings.yml\n"
         print "$ cat local_settings.yml\n"
         print "---\n"
         print "pp_web_username: myusername@example.com\n"
         print "pp_web_password: mypassword\n"
+        print "install_edb: True\n"
       end
-
+    
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
@@ -582,10 +584,36 @@ Vagrant.configure(2) do |config|
     server.vm.network :private_network, ip: "10.0.1.29"
   end
 
-  # DB Server
+  # DB Server (opensource centos 6)
+  config.vm.define :db_server_centos6 do |server|
+    server.vm.box = "bento/centos-6.7"
+    server.vm.host_name = "db-centos6.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    server.vm.provision "ansible" do |ansible|
+
+      ansible.playbook = "deploy_db_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.39"
+  end
+
+  # DB Server (opensource centos 7)
   config.vm.define :db_server_centos7 do |server|
     server.vm.box = "centos/7"
-    server.vm.host_name = "db7.test.dev"
+    server.vm.host_name = "db-centos7.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -601,19 +629,9 @@ Vagrant.configure(2) do |config|
     SHELL
 
     server.vm.provision "ansible" do |ansible|
-
-      if ENV['DB_SERVER_EXTRA_VARS']
-        ansible_extra_vars = ENV['DB_SERVER_EXTRA_VARS']
-      else
-        print "To use the db_server VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
-        print "Example:\n"
-        print "$ export DB_SERVER_EXTRA_VARS=local_settings.yml\n"
-        print "$ cat local_settings.yml\n"
-        print "---\n"
-        print "pp_web_username: myusername@example.com\n"
-        print "pp_web_password: mypassword\n"
-      end
-
+      ansible_extra_vars = {
+        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
@@ -640,6 +658,9 @@ Vagrant.configure(2) do |config|
     SHELL
 
     cc_config.vm.provision "ansible" do |ansible|
+      ansible_extra_vars = {
+        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
       ansible.playbook = "deploy_citus_server.yml"
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
@@ -670,6 +691,9 @@ Vagrant.configure(2) do |config|
       SHELL
 
       cw_config.vm.provision "ansible" do |ansible|
+      ansible_extra_vars = {
+        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
         ansible.playbook = "deploy_citus_server.yml"
         ansible.inventory_path = "vagrant_hosts"
         ansible.tags = ansible_tags
