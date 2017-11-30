@@ -25,18 +25,6 @@
   tags:
     - citus
 
-- name: Preload citus extension
-  become: yes
-  become_method: sudo
-  lineinfile:
-    dest: "{{ pp_datadir }}/postgresql.conf"
-    regexp: "^shared_preload_libraries*"
-    line: "shared_preload_libraries = '{{ pp_shared_preload_libraries }}'"
-  notify:
-    - restart postgres
-  tags:
-    - citus
-
 - name: Add pgpass file
   become: yes
   become_user: "{{ pp_superaccount }}"

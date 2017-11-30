@@ -660,7 +660,8 @@ Vagrant.configure(2) do |config|
     cc_config.vm.provision "ansible" do |ansible|
       ansible_extra_vars = {
         "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
-        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
+        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
+        "pp_shared_preload_libraries": "citus"}
       ansible.playbook = "deploy_citus_server.yml"
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
@@ -693,7 +694,8 @@ Vagrant.configure(2) do |config|
       cw_config.vm.provision "ansible" do |ansible|
       ansible_extra_vars = {
         "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
-        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
+        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
+        "pp_shared_preload_libraries": "citus"}
         ansible.playbook = "deploy_citus_server.yml"
         ansible.inventory_path = "vagrant_hosts"
         ansible.tags = ansible_tags

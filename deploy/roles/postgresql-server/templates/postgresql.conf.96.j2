@@ -632,6 +632,8 @@ restart_after_crash = {{ pp_restart_after_crash }}		# reinitialize after backend
 #timed_statistics = {{ pp_timed_statistics }}			# record wait timings, defaults to on
 
 # Add settings for extensions here
+{% if install_edb %}
 {% for setting in pp_extension_settings %}
 {{ setting.name }} = {{ setting.value }}
 {% endfor %}
+{% endif %}
