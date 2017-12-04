@@ -12,7 +12,7 @@
     - role: postgresql-server
     - role: citus
     - role: postgresql-server-config
-  tasks:
+  post_tasks:
     - name: Ensure file transfer folder exists
       file:
         dest: "{{ pp_file_transfer_dir }}"
@@ -55,6 +55,7 @@
       with_items:
         - postgres
         - template1
+
 
 - hosts: citus_coordinator
   roles:

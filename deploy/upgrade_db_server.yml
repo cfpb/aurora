@@ -34,13 +34,6 @@
   roles:
     - role: postgresql-server
   post_tasks:
-    - name: Ensure PG is started
-      service:
-        name: "{{ pp_servicename }}"
-        state: started
-        enabled: yes
-      tags:
-        - postgresql-server
 
     - name: Ensure that auxillary services are stopped
       service:
@@ -52,6 +45,7 @@
       service:
         name: "{{ pp_servicename }}"
         state: started
+        enabled: yes
       register: pg_db_started
 
     - name: Pause for the DB to go up

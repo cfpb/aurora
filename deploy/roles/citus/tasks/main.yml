@@ -47,6 +47,7 @@
     dest: /etc/systemd/system/postgresql-9.6.service.d/CPUShares.conf
     src: citus_cpu.conf.j2
   when: citus_cpu_limit is defined
+  notify: restart postgres
   tags:
     - citus
 
@@ -55,5 +56,6 @@
     dest: /etc/systemd/system/postgresql-9.6.service.d/MemoryMax.conf
     src: citus_memory.conf.j2
   when: citus_mem_max is defined
+  notify: restart postgres
   tags:
     - citus
