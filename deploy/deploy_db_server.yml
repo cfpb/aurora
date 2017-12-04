@@ -25,6 +25,14 @@
         src: "{{ pp_file_transfer_dir }}"
         state: link
 
+    - name: Ensure PG is started
+      service:
+        name: "{{ pp_servicename }}"
+        state: started
+        enabled: yes
+      tags:
+        - postgresql-server
+
 - hosts: db_server
   roles:
     - role: postgresql-server-config

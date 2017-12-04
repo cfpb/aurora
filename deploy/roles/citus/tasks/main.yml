@@ -34,3 +34,26 @@
     mode: "0600"
   tags:
     - citus
+
+- name: Ensure systemd directory exists
+  file:
+    state: directory
+    path: /etc/systemd/system/postgresql-9.6.service.d
+  tags:
+    - citus
+
+- name: Add CGroup settings cpu limit
+  template:
+    dest: /etc/systemd/system/postgresql-9.6.service.d/CPUShares.conf
+    src: citus_cpu.conf.j2
+  when: citus_cpu_limit is defined
+  tags:
+    - citus
+
+- name: Add CGroup settings memory limit
+  template:
+    dest: /etc/systemd/system/postgresql-9.6.service.d/MemoryMax.conf
+    src: citus_memory.conf.j2
+  when: citus_mem_max is defined
+  tags:
+    - citus

@@ -10,6 +10,8 @@
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
     - role: postgresql-server
+    - role: citus
+    - role: postgresql-server-config
   tasks:
     - name: Ensure file transfer folder exists
       file:
@@ -33,13 +35,14 @@
       with_items: "{{ groups['citus'] }}"
       when: not custom_repo
 
+    - name: Ensure PG is started
+      service:
+        name: "{{ pp_servicename }}"
+        state: started
+        enabled: yes
+      tags:
+        - postgresql-server
 
-- hosts: citus
-  roles:
-    - role: postgresql-server-config
-    - role: citus
-
-  post_tasks:
     - name: Create Citus extension
       postgresql_exec:
         login_host: localhost

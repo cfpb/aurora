@@ -18,6 +18,8 @@ Vagrant.configure(2) do |config|
   ansible_verbosity = ENV['V']
   if ENV['EXTRA_VARS']
     ansible_extra_vars = eval(ENV['EXTRA_VARS'])
+  else
+    ansible_extra_vars = {}
   end
   ansible_limit = ENV['LIMIT']
 
@@ -629,9 +631,7 @@ Vagrant.configure(2) do |config|
     SHELL
 
     server.vm.provision "ansible" do |ansible|
-      ansible_extra_vars = {
-        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
-        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"}
+      ansible_extra_vars = ansible_extra_vars.merge({ jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib", java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"})
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
@@ -658,10 +658,8 @@ Vagrant.configure(2) do |config|
     SHELL
 
     cc_config.vm.provision "ansible" do |ansible|
-      ansible_extra_vars = {
-        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
-        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
-        "pp_shared_preload_libraries": "citus"}
+      ansible_extra_vars = ansible_extra_vars.merge({ jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib", java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/", pp_shared_preload_libraries: "citus"})
+
       ansible.playbook = "deploy_citus_server.yml"
       ansible.inventory_path = "vagrant_hosts"
       ansible.tags = ansible_tags
@@ -692,10 +690,8 @@ Vagrant.configure(2) do |config|
       SHELL
 
       cw_config.vm.provision "ansible" do |ansible|
-      ansible_extra_vars = {
-        "jre_lib_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
-        "java_home_path": "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
-        "pp_shared_preload_libraries": "citus"}
+        ansible_extra_vars = ansible_extra_vars.merge({ jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib", java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/", pp_shared_preload_libraries: "citus"})
+
         ansible.playbook = "deploy_citus_server.yml"
         ansible.inventory_path = "vagrant_hosts"
         ansible.tags = ansible_tags

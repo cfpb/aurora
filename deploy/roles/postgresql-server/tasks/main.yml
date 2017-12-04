@@ -195,11 +195,3 @@
   when: iptables_config and deploy_iptables
   tags:
     - postgresql-server
-
-- name: Ensure PG is started
-  service:
-    name: "{{ pp_servicename }}"
-    state: started
-    enabled: yes
-  tags:
-    - postgresql-server
