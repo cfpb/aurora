@@ -62,14 +62,8 @@
     - evince
     - stattransfer
     - sublime
+    - ultra-edit
   post_tasks:
-    - name: Install Ultra Edit
-      yum:
-        name: UltraEdit.x86_64
-        state: present
-        disable_gpg_check: yes
-      when: custom_repo
-
     - name: Install texlive
       yum:
         name: texlive
