@@ -4,6 +4,7 @@
     url: "{{ rpm_url }}"
     dest: /tmp/rpm.sh
     mode: "0755"
+  when: not custom_repo
   tags:
     - citus
 
@@ -21,7 +22,8 @@
   become: yes
   become_method: sudo
   yum:
-    name: "{{ citus_pkg }}"
+    name: "{{ item }}"
+  with_items: "{{ citus_pkgs }}"
   tags:
     - citus
 
