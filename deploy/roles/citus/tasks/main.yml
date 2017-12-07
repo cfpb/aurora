@@ -1,0 +1,63 @@
+---
+- name: Add Citus rpm
+  get_url:
+    url: "{{ rpm_url }}"
+    dest: /tmp/rpm.sh
+    mode: "0755"
+  when: not custom_repo
+  tags:
+    - citus
+
+- name: Execute rpm script
+  become: yes
+  become_method: sudo
+  shell: ./rpm.sh
+  args:
+    chdir: /tmp/
+  when: not custom_repo
+  tags:
+    - citus
+
+- name: Install Citus
+  become: yes
+  become_method: sudo
+  yum:
+    name: "{{ item }}"
+  with_items: "{{ citus_pkgs }}"
+  tags:
+    - citus
+
+- name: Add pgpass file
+  become: yes
+  become_user: "{{ pp_superaccount }}"
+  template:
+    src: pgpass.j2
+    dest: ~/.pgpass
+    mode: "0600"
+  tags:
+    - citus
+
+- name: Ensure systemd directory exists
+  file:
+    state: directory
+    path: /etc/systemd/system/postgresql-9.6.service.d
+  tags:
+    - citus
+
+- name: Add CGroup settings cpu limit
+  template:
+    dest: /etc/systemd/system/postgresql-9.6.service.d/CPUQuota.conf
+    src: citus_cpu.conf.j2
+  when: citus_cpu_limit is defined
+  notify: reload and restart postgres
+  tags:
+    - citus
+
+- name: Add CGroup settings memory limit
+  template:
+    dest: /etc/systemd/system/postgresql-9.6.service.d/MemoryLimit.conf
+    src: citus_memory.conf.j2
+  when: citus_mem_limit is defined
+  notify: reload and restart postgres
+  tags:
+    - citus

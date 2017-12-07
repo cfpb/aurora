@@ -1,6 +1,6 @@
-# deploy_db_server.yml
+# deploy_citus_server.yml
 ---
-- hosts: db_server
+- hosts: citus
   become: yes
   become_method: sudo
   roles:
@@ -10,7 +10,9 @@
     - {role: log-courier, when: "install_logstash"}
     - role: jdk
     - role: postgresql-server
-  tasks:
+    - role: citus
+    - role: postgresql-server-config
+  post_tasks:
     - name: Ensure file transfer folder exists
       file:
         dest: "{{ pp_file_transfer_dir }}"
@@ -25,6 +27,14 @@
         src: "{{ pp_file_transfer_dir }}"
         state: link
 
+    - name: Setup host file
+      lineinfile:
+        dest: /etc/hosts
+        regexp: '[[0-9+]\.]+\s+{{ item }}'
+        line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
+      with_items: "{{ groups['citus'] }}"
+      when: not custom_repo
+
     - name: Ensure PG is started
       service:
         name: "{{ pp_servicename }}"
@@ -33,6 +43,20 @@
       tags:
         - postgresql-server
 
-- hosts: db_server
+    - name: Create Citus extension
+      postgresql_exec:
+        login_host: localhost
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        port: "{{ pp_serverport }}"
+        db: "{{ item }}"
+        script: CREATE EXTENSION IF NOT EXISTS citus
+      check_mode: no
+      with_items:
+        - postgres
+        - template1
+
+
+- hosts: citus_coordinator
   roles:
-    - role: postgresql-server-config
+    - role: citus_coordinator

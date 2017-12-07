@@ -89,12 +89,26 @@ ci_terminal
 ; Data Warehouse Component
 
 [db_server]
-db_server ansible_ssh_host=10.0.1.29
+db_server_edb ansible_ssh_host=10.0.1.29
+db_server_centos6 ansible_ssh_host=10.0.1.39
+db_server_centos7 ansible_ssh_host=10.0.1.38
+
+[citus_coordinator]
+citus_coordinator ansible_ssh_host=10.0.1.40
+
+[citus_worker]
+citus_worker_1 ansible_ssh_host=10.0.1.41
+citus_worker_2 ansible_ssh_host=10.0.1.42
+citus_worker_3 ansible_ssh_host=10.0.1.43
+
+[citus:children]
+citus_coordinator
+citus_worker
 
 [db_terminal]
 db_terminal ansible_ssh_host=10.0.1.30
 
-[datawarehouse]
+[datawarehouse:children]
 db_server
 db_terminal
 

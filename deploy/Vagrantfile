@@ -14,11 +14,12 @@ Vagrant.configure(2) do |config|
 
   # Constant var holding the root directory where this vagrantfile is being run
   VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
-
   ansible_tags = ENV['TAGS']
   ansible_verbosity = ENV['V']
   if ENV['EXTRA_VARS']
     ansible_extra_vars = eval(ENV['EXTRA_VARS'])
+  else
+    ansible_extra_vars = {}
   end
   ansible_limit = ENV['LIMIT']
 
@@ -546,10 +547,10 @@ Vagrant.configure(2) do |config|
   ### DATA WAREHOUSE COMPONENT ###
   ################################
 
-  # DB Server
-  config.vm.define :db_server do |server|
+  # DB Server (EDB)
+  config.vm.define :db_server_edb do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "db.test.dev"
+    server.vm.host_name = "db-edb.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -560,17 +561,19 @@ Vagrant.configure(2) do |config|
 
     server.vm.provision "ansible" do |ansible|
       if ENV['DB_SERVER_EXTRA_VARS']
-        ansible.extra_vars = ENV['DB_SERVER_EXTRA_VARS']
+        ansible_extra_vars = ENV['DB_SERVER_EXTRA_VARS']
+        print ansible_extra_vars
       else
-        print "To use the db_server VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password.\n"
+        print "To use the db_server_edb VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password as well as 'install_edb' flag set to true.\n"
         print "Example:\n"
         print "$ export DB_SERVER_EXTRA_VARS=local_settings.yml\n"
         print "$ cat local_settings.yml\n"
         print "---\n"
         print "pp_web_username: myusername@example.com\n"
         print "pp_web_password: mypassword\n"
+        print "install_edb: True\n"
       end
-
+    
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
@@ -581,6 +584,131 @@ Vagrant.configure(2) do |config|
     end
 
     server.vm.network :private_network, ip: "10.0.1.29"
+  end
+
+  # DB Server (opensource centos 6)
+  config.vm.define :db_server_centos6 do |server|
+    server.vm.box = "bento/centos-6.7"
+    server.vm.host_name = "db-centos6.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    server.vm.provision "ansible" do |ansible|
+
+      ansible.playbook = "deploy_db_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.39"
+  end
+
+  # DB Server (opensource centos 7)
+  config.vm.define :db_server_centos7 do |server|
+    server.vm.box = "centos/7"
+    server.vm.host_name = "db-centos7.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provider "virtualbox" do |v|
+      v.memory = 1024
+      v.cpus = 1
+    end
+
+    server.ssh.insert_key = false
+    server.vm.provision "shell", inline: <<-SHELL
+      # bug with vagrant 1.9+ and centos/7
+      sudo ifup eth1
+    SHELL
+
+    server.vm.provision "ansible" do |ansible|
+      ansible_extra_vars = ansible_extra_vars.merge({
+        jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+        java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/"
+      })
+      ansible.playbook = "deploy_db_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.38"
+  end
+
+  # Citus Coordinator
+  config.vm.define "citus_coordinator" do |cc_config|
+    cc_config.vm.box = "centos/7"
+    cc_config.vm.host_name = "citus-coordinator.test.dev"
+    cc_config.vm.network :private_network, ip: "10.0.1.40"
+
+    cc_config.ssh.forward_agent = true
+    cc_config.ssh.insert_key = false
+    cc_config.vm.provision "shell", inline: <<-SHELL
+      # bug with vagrant 1.9+ and centos/7
+      sudo ifup eth1
+    SHELL
+
+    cc_config.vm.provision "ansible" do |ansible|
+      ansible_extra_vars = ansible_extra_vars.merge({
+        jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+        java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
+        pp_shared_preload_libraries: "citus"
+      })
+      ansible.playbook = "deploy_citus_server.yml"
+      ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+  end
+
+  # Citus Workers
+  citus_workers = [
+    "10.0.1.41",
+    "10.0.1.42",
+    "10.0.1.43",
+  ]
+
+  citus_workers.each_with_index do |ip, idx|
+    id = idx+1
+    config.vm.define "citus_worker_#{id}" do |cw_config|
+      cw_config.vm.box = "centos/7"
+      cw_config.vm.host_name = "citus-worker-#{id}.test.dev"
+      cw_config.vm.network :private_network, ip: ip
+
+      cw_config.ssh.forward_agent = true
+      cw_config.vm.provision "shell", inline: <<-SHELL
+        # bug with vagrant 1.9+ and centos/7
+        sudo ifup eth1
+      SHELL
+
+      cw_config.vm.provision "ansible" do |ansible|
+        ansible_extra_vars = ansible_extra_vars.merge({
+          jre_lib_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/jre/lib",
+          java_home_path: "/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-11.b12.el7.x86_64/",
+          pp_shared_preload_libraries: "citus"
+        })
+        ansible.playbook = "deploy_citus_server.yml"
+        ansible.inventory_path = "vagrant_hosts"
+        ansible.tags = ansible_tags
+        ansible.verbose = ansible_verbosity
+        ansible.extra_vars = ansible_extra_vars
+        ansible.limit = ansible_limit
+      end
+    end
   end
 
   # DB Terminal
