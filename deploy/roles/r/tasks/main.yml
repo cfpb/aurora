@@ -34,7 +34,7 @@
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: "{{ r_package_state }}"
+    state: "{{ r_core_state }}"
     disable_gpg_check: yes
   with_items:
     - R-devel
