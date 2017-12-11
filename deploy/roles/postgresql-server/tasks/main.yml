@@ -31,6 +31,13 @@
   tags:
     - postgresql-server
 
+- name: Install Postgres key
+  rpm_key:
+    key: "{{ postgres_repository_key_url }}"
+    state: present
+  tags:
+    - postgres_server
+
 - name: Install Postgres
   yum:
     name: "{{ pp_package }}"
