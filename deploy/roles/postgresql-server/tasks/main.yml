@@ -36,7 +36,7 @@
     key: "{{ postgres_repository_key_url }}"
     state: present
   tags:
-    - postgres_server
+    - postgresql_server
 
 - name: Install Postgres
   yum:
