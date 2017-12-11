@@ -133,6 +133,7 @@ pp_bgwriter_lru_multiplier: 2.0
 
 pp_effective_io_concurrency: 1
 pp_max_worker_processes: 8
+pp_max_parallel_workers_per_gather: 0
 
 # WAL
 pp_wal_level: minimal
@@ -328,4 +329,4 @@ pp_timed_statistics: off
 pp_extensions: []
 pp_extension_settings: []
 
-pp_initdb: "service postgresql-9.6 initdb"
+pp_initdb: "service postgresql-9.6 initdb --pgdata {{ pp_datadir }}"

@@ -159,6 +159,9 @@ bgwriter_lru_multiplier = {{ pp_bgwriter_lru_multiplier }}		# 0-10.0 multipler o
 effective_io_concurrency = {{ pp_effective_io_concurrency }}		# 1-1000; 0 disables prefetching
 max_worker_processes = {{ pp_max_worker_processes }}
 
+# For enabling multiprocessing
+max_parallel_workers_per_gather = {{ pp_max_parallel_workers_per_gather }}
+
 #------------------------------------------------------------------------------
 # WRITE AHEAD LOG
 #------------------------------------------------------------------------------
@@ -632,8 +635,6 @@ restart_after_crash = {{ pp_restart_after_crash }}		# reinitialize after backend
 #timed_statistics = {{ pp_timed_statistics }}			# record wait timings, defaults to on
 
 # Add settings for extensions here
-{% if install_edb %}
 {% for setting in pp_extension_settings %}
 {{ setting.name }} = {{ setting.value }}
 {% endfor %}
-{% endif %}
