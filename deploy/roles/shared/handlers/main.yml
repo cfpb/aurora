@@ -39,7 +39,7 @@
 
 - name: restart postgres
   become: yes
-  service:
+  systemd:
     name: "{{ pp_servicename }}"
     state: restarted
 
