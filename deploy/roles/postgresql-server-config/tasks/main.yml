@@ -27,7 +27,7 @@
 - name: Allow postgres empty password login temporarily
   become: yes
   become_method: sudo
-  replace:
+  lineinfile:
     dest: "{{ pp_datadir }}/pg_hba.conf"
     regexp: '^host(.*)postgres(.*)md5'
     backrefs: yes
@@ -51,7 +51,7 @@
 - name: Disallow postgres empty password login
   become: yes
   become_method: sudo
-  replace:
+  lineinfile:
     dest: "{{ pp_datadir }}/pg_hba.conf"
     regexp: '^host(.*)postgres(.*)trust'
     backrefs: yes
