@@ -78,3 +78,11 @@
     - restart postgres
   tags:
     - citus
+
+- name: Ensure PG is started
+  service:
+    name: "{{ pp_servicename }}"
+    state: started
+    enabled: yes
+  tags:
+    - postgresql-server
