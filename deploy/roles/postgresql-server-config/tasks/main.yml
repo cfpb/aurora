@@ -36,6 +36,9 @@
 
 - meta: flush_handlers
 
+- pause:
+    seconds: 15
+
 - name: Ensure password is correct
   postgresql_exec:
     login_host: localhost
