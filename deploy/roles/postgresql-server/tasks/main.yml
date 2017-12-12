@@ -101,6 +101,9 @@
     mode: 0700
   tags:
     - postgresql-server
+    
+- debug:
+    var: pp_initdb
 
 - name: Create postgres cluster
   shell: "{{ pp_initdb }} -D {{ pp_datadir }}"
