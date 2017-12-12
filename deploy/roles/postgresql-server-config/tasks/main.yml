@@ -37,7 +37,7 @@
 - meta: flush_handlers
 
 - pause:
-    seconds: 15
+    seconds: 30
 
 - name: Ensure password is correct
   postgresql_exec:
