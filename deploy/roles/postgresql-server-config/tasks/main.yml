@@ -11,38 +11,38 @@
     - git
   check_mode: no
 
-#- name: Allow postgres empty password login temporarily
-#  become: yes
-#  become_method: sudo
-#  lineinfile:
-#    dest: "{{ pp_datadir }}/pg_hba.conf"
-#    regexp: '^(.*)::1/128(.*)md5'
-#    backrefs: yes
-#    line: '\1::1/128\2trust'
-#  notify: restart postgres
+- name: Allow postgres empty password login temporarily
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    regexp: '^host(.*)postgres(.*)md5'
+    backrefs: yes
+    line: 'host\1postgres\2trust'
+  notify: restart postgres
 
-#- meta: flush_handlers
+- meta: flush_handlers
 
-#- name: Ensure password is correct
-#  postgresql_exec:
-#    login_host: localhost
-#    login_user: "{{ pp_superaccount }}"
-#    port: "{{ pp_serverport }}"
-#    db: postgres
-#    script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
-#  check_mode: no
+- name: Ensure password is correct
+  postgresql_exec:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    port: "{{ pp_serverport }}"
+    db: postgres
+    script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
+  check_mode: no
 
-#- name: Disallow postgres empty password login
-#  become: yes
-#  become_method: sudo
-#  lineinfile:
-#    dest: "{{ pp_datadir }}/pg_hba.conf"
-#    regexp: '^(.*)::1/128(.*)trust'
-#    backrefs: yes
-#    line: '\1::1/128\2md5'
-#  notify: restart postgres
+- name: Disallow postgres empty password login
+  become: yes
+  become_method: sudo
+  lineinfile:
+    dest: "{{ pp_datadir }}/pg_hba.conf"
+    regexp: '^(.*)postgres(.*)trust'
+    backrefs: yes
+    line: '\1postgres\2md5'
+  notify: restart postgres
 
-#- meta: flush_handlers
+- meta: flush_handlers
 
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
