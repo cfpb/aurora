@@ -35,14 +35,6 @@
       with_items: "{{ groups['citus'] }}"
       when: not custom_repo
 
-    - name: Ensure PG is started
-      service:
-        name: "{{ pp_servicename }}"
-        state: started
-        enabled: yes
-      tags:
-        - postgresql-server
-
     - name: Create Citus extension
       postgresql_exec:
         login_host: localhost
