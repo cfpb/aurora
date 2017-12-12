@@ -11,7 +11,10 @@ pp_upgrade: False
 # HTTPS runs into issues
 pgdg_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
 postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG"
-pp_package: "postgresql96-server"
+pp_packages:
+  - postgresql96-server
+  - postgresql96-contrib
+
 pp_install_path: as9.6
 pp_config_template: "postgresql.conf.96.j2"
 

@@ -40,8 +40,9 @@
 
 - name: Install Postgres
   yum:
-    name: "{{ pp_package }}"
+    name: "{{ item }}"
     state: present
+  with_items: "{{ pp_packages }}"
   when: not install_edb
   check_mode: no
   tags:
