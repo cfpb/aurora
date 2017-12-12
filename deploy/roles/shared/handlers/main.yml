@@ -38,6 +38,10 @@
     state: restarted
 
 # rhel7
+- name: reload-daemon
+  systemd:
+    daemon_reload: yes
+
 - name: reload and restart postgres
   systemd:
     state: restarted

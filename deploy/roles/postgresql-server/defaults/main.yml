@@ -1,6 +1,6 @@
 ---
 ## Postgres default variables
-
+pg_version: 9.6
 install_edb: False
 
 # When to install, upgrade, and restart
