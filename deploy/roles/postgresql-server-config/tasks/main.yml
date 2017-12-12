@@ -47,7 +47,7 @@
     db: postgres
     script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
   check_mode: no
-  no_log: true
+  #no_log: true
 
 - name: Disallow postgres empty password login
   become: yes
