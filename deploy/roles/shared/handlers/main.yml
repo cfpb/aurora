@@ -31,11 +31,11 @@
 - name: restart shiny-server
   command: "restart shiny-server"
 
-- name: restart postgres
-  become: yes
-  systemd:
-    name: "{{ pp_servicename }}"
-    state: restarted
+#- name: restart postgres
+#  become: yes
+#  service:
+#    name: "{{ pp_servicename }}"
+#    state: restarted
 
 # rhel7
 - name: reload-daemon

@@ -11,7 +11,6 @@
     - role: jdk
     - role: postgresql-server
     - role: citus
-    - role: postgresql-server-config
   post_tasks:
     - name: Ensure file transfer folder exists
       file:
@@ -35,6 +34,20 @@
       with_items: "{{ groups['citus'] }}"
       when: not custom_repo
 
+    - name: Ensure PG is started
+      service:
+        name: "{{ pp_servicename }}"
+        state: started
+        enabled: yes
+      tags:
+        - postgresql-server
+
+- hosts: citus
+  become: yes
+  become_method: sudo
+  roles:
+    - role: postgresql-server-config
+  post_tasks:
     - name: Create Citus extension
       postgresql_exec:
         login_host: localhost

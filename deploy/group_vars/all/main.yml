@@ -218,6 +218,7 @@ pp_superpassword: password
 pp_serverport: 5432
 
 # Default service account
+deploy_user: vagrant
 pp_dba_username: vagrant
 pp_dba_password: vagrant
 
