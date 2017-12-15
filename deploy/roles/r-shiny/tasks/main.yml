@@ -55,3 +55,10 @@
   when: iptables_config and deploy_iptables
   tags:
     - shiny
+
+- name: Install shiny-server upstart script
+  template:
+    src: shiny-server.conf.j2
+    dest: /etc/init/shiny-server.conf
+  notify:
+      - restart shiny-server
