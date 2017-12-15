@@ -1,5 +1,12 @@
 # main.yml - Activate EPEL
 ---
+- name: Install libselinux-python dependency
+  become: yes
+  become_method: sudo
+  yum:
+    name: libselinux-python
+    state: present
+
 - name: Get EPEL repo
   get_url:
     url: "{{ epel_path }}/{{ epel_rpm }}"
