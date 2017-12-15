@@ -32,7 +32,7 @@
   become_method: sudo
   template:
     src: pgpass.j2
-    dest: ~/.pgpass
+    dest: /var/lib/pgsql/.pgpass
     mode: "0600"
     owner: "{{ pp_superaccount }}"
     group: "{{ pp_superaccount }}"
