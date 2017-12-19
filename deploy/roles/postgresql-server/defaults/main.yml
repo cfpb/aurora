@@ -59,6 +59,15 @@ pg_hba_settings:
     auth_method: md5
     auth_options: ''
   -
+    comment: 'Postgres user connection'
+    context: host
+    db: all
+    user: postgres
+    address: '10.0.1.0/24'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
     comment: 'IPv4 local connections:'
     context: host
     db: all
