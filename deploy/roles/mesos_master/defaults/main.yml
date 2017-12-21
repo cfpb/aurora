@@ -11,8 +11,8 @@ mesos_master_log_file_locations:
 ### MESOS SETTINGS
 mesos_server_packages:
   - libselinux-python
-  - mesos-0:1.3.0-2.0.3.x86_64
-  - marathon-0:1.4.5-1.0.654.el6.x86_64
+  - mesos-0:1.4.1-2.0.1.x86_64
+  - marathon-0:1.4.9-1.0.668.el6.x86_64
   - zookeeper-server
 
 mesos_cluster_name: "Test Cluster"
