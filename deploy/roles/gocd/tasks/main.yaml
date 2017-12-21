@@ -24,6 +24,7 @@
 
 - name: Verify RPM checksum
   stat:
+    checksum_algorithm: sha1
     path: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
     get_md5: False # We want SHA-1 only
   register: gocd_rpm
