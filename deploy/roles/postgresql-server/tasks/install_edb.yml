@@ -1,0 +1,70 @@
+---
+- name: Create configuration file
+  template:
+    src: config_param.j2
+    dest: "{{ pp_temp_dir }}/config_param"
+    mode: 0600
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
+
+- name: Download and extract PostgresPlus Advanced Server installer
+  unarchive:
+    src: "{{ pp_download_url }}"
+    dest: "{{ pp_temp_dir }}/"
+    owner: "{{ ansible_user_id }}"
+    group: "{{ ansible_user_id }}"
+    validate_certs: no
+    remote_src: yes
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
+
+- name: Run PostgresPlus install script
+  shell: "{{ pp_temp_dir }}/{{ pp_installer_path }} --optionfile {{ pp_temp_dir }}/config_param"
+  args:
+    chdir: "{{ pp_temp_dir }}"
+    creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
+  notify:
+    - restart postgres
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
+
+- name: Ensure the install directory exists
+  file:
+    path: "{{ pp_prefix }}/{{ pp_install_path }}"
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+  when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
+
+- name: Set permissions on PPAS directory
+  file:
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}"
+    state: directory
+    recurse: yes
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+  tags:
+    - postgresql-server
+
+- name: Copy the environment file
+  template:
+    src: pgplus_env.sh.j2
+    dest: "{{ pp_prefix }}/{{ pp_install_path }}/.bash_profile"
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0600
+  tags:
+    - postgresql-server
+
+- name: Remove the temporary folder
+  file:
+    path: "{{ pp_temp_dir }}/ppasmeta-{{ pp_installer_version }}-linux-x64"
+    state: absent
+  tags:
+    - postgresql-server

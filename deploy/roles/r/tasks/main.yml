@@ -9,7 +9,7 @@
 - name: Install R-core
   yum:
     name: R-core
-    state: latest
+    state: "{{ r_core_state }}"
     disable_gpg_check: yes
   register: r_core_updated
   tags:
@@ -34,7 +34,7 @@
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: latest
+    state: "{{ r_core_state }}"
     disable_gpg_check: yes
   with_items:
     - R-devel

@@ -1,0 +1,21 @@
+# rhel_7.yml - Sets up iptables for rhel7
+
+---
+- name: Install iptables-services
+  yum:
+    name: iptables-services
+    state: present
+
+- name: Make sure firewalld is masked
+  systemd:
+    name: firewalld
+    masked: yes
+
+- name: Enable iptables services
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - iptables
+    - ip6tables
