@@ -1,0 +1,7 @@
+---
+- name: restart postgres
+  become: yes
+  become_method: sudo
+  service:
+    name: "{{ pp_servicename }}"
+    state: restarted
