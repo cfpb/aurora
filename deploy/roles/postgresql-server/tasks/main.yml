@@ -40,8 +40,9 @@
 
 - name: Install Postgres
   yum:
-    name: "{{ pp_package }}"
+    name: "{{ item }}"
     state: present
+  with_items: "{{ pp_packages }}"
   when: not install_edb
   check_mode: no
   tags:
@@ -101,12 +102,27 @@
     mode: 0700
   tags:
     - postgresql-server
-    
-- debug:
-    var: pp_initdb
+
+- name: Ensure systemd directory exists
+  file:
+    state: directory
+    path: /etc/systemd/system/postgresql-{{ pg_version }}.service.d
+  when: "{{ ansible_distribution_major_version }} == 7"
+  tags:
+    - postgresql-server
+
+- name: Add custom PGDATA
+  template:
+    src: environment.conf.j2
+    dest: /etc/systemd/system/postgresql-{{ pg_version }}.service.d/environment.conf
+  when: "{{ ansible_distribution_major_version }} == 7"
+  notify:
+    - reload-daemon
+  tags:
+    - postgresql-server
 
 - name: Create postgres cluster
-  shell: "{{ pp_initdb }} -D {{ pp_datadir }}"
+  shell: "{{ pp_initdb }}"
   when: pp_install or pp_upgrade
   tags:
     - postgresql-server

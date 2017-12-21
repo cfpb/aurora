@@ -11,8 +11,6 @@
   with_items: "{{ citus_worker_nodes }}"
 
 - name: Verify installation
-  become: yes
-  become_user: "{{ pp_superaccount }}"
   postgresql_exec:
     login_host: localhost
     login_user: "{{ pp_superaccount }}"

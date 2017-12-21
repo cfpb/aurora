@@ -16,12 +16,15 @@
   become_method: sudo
   lineinfile:
     dest: "{{ pp_datadir }}/pg_hba.conf"
-    regexp: '^(.*)::1/128(.*)md5'
+    regexp: '^host(.*)postgres(.*)md5'
     backrefs: yes
-    line: '\1::1/128\2trust'
+    line: 'host\1postgres\2trust'
   notify: restart postgres
 
 - meta: flush_handlers
+
+- pause:
+    seconds: 30
 
 - name: Ensure password is correct
   postgresql_exec:
@@ -31,15 +34,16 @@
     db: postgres
     script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
   check_mode: no
+  #no_log: true
 
 - name: Disallow postgres empty password login
   become: yes
   become_method: sudo
   lineinfile:
     dest: "{{ pp_datadir }}/pg_hba.conf"
-    regexp: '^(.*)::1/128(.*)trust'
+    regexp: '^host(.*)postgres(.*)trust'
     backrefs: yes
-    line: '\1::1/128\2md5'
+    line: 'host\1postgres\2md5'
   notify: restart postgres
 
 - meta: flush_handlers

@@ -11,7 +11,6 @@
     - role: jdk
     - role: postgresql-server
     - role: citus
-    - role: postgresql-server-config
   post_tasks:
     - name: Ensure file transfer folder exists
       file:
@@ -43,6 +42,12 @@
       tags:
         - postgresql-server
 
+- hosts: citus
+  become: yes
+  become_method: sudo
+  roles:
+    - role: postgresql-server-config
+  post_tasks:
     - name: Create Citus extension
       postgresql_exec:
         login_host: localhost
@@ -54,7 +59,6 @@
       check_mode: no
       with_items:
         - postgres
-        - template1
 
 
 - hosts: citus_coordinator

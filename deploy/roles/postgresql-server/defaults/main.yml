@@ -1,6 +1,6 @@
 ---
 ## Postgres default variables
-
+pg_version: 9.6
 install_edb: False
 
 # When to install, upgrade, and restart
@@ -11,7 +11,10 @@ pp_upgrade: False
 # HTTPS runs into issues
 pgdg_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
 postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG"
-pp_package: "postgresql96-server"
+pp_packages:
+  - postgresql96-server
+  - postgresql96-contrib
+
 pp_install_path: as9.6
 pp_config_template: "postgresql.conf.96.j2"
 
@@ -52,6 +55,15 @@ pg_hba_settings:
     db: all
     user: all
     address: ''
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
+    comment: 'Postgres user connection'
+    context: host
+    db: all
+    user: postgres
+    address: '10.0.1.0/24'
     ip_mask: ''
     auth_method: md5
     auth_options: ''
