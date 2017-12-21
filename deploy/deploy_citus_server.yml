@@ -59,7 +59,6 @@
       check_mode: no
       with_items:
         - postgres
-        - template1
 
 
 - hosts: citus_coordinator
