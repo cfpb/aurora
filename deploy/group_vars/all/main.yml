@@ -235,6 +235,7 @@ printers_symlinks: []
 
 # User provided packages for database customization
 db_automation_custom_packages: []
+db_automation_package_state: present
 
 #====================#
 ### Mesos Settings ###
