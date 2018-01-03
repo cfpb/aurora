@@ -244,25 +244,28 @@
 - name: Set permissions on postgres conf file
   acl:
     path: "{{ pg_conf_file }}"
-    entity: "{{ pg_admin_group_name }}"
+    entity: "{{ item }}"
     etype: group
     permissions: rX
     state: present
+  with_items: "{{ pg_admin_group_names }}"
 
 - name: Set permissions on log file directory recursively
   acl:
     path: "{{ pg_log_file_location }}"
-    entity: "{{ pg_admin_group_name }}"
+    entity: "{{ item }}"
     etype: group
     permissions: rX
     recursive: yes
     state: present
+  with_items: "{{ pg_admin_group_names }}"
 
 - name: Set default admin permissions on log folders
   acl:
     path: "{{ pg_log_file_location }}"
-    entity: "{{ pg_admin_group_name }}"
+    entity: "{{ item }}"
     etype: group
     permissions: rX
     default: yes
     state: present
+  with_items: "{{ pg_admin_group_names }}"
