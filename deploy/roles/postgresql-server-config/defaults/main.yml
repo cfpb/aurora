@@ -54,3 +54,6 @@ pp_dba_scripts:
 
 pp_datadir: /var/lib/pgsql/9.6/data
 pp_servicename: postgresql-9.6
+pg_admin_group_name: 'deploy'
+pg_conf_file: /var/lib/pgsql/9.6/data/postgresql.conf
+pg_log_file_location: /var/lib/pgsql/9.6/data/pg_log

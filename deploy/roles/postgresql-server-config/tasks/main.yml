@@ -240,3 +240,29 @@
     type: group
     state: present
     admin_option: no
+
+- name: Set permissions on postgres conf file
+  acl:
+    path: "{{ pg_conf_file }}"
+    entity: "{{ pg_admin_group_name }}"
+    etype: group
+    permissions: rX
+    state: present
+
+- name: Set permissions on log file directory recursively
+  acl:
+    path: "{{ pg_log_file_location }}"
+    entity: "{{ pg_admin_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ pg_log_file_location }}"
+    entity: "{{ pg_admin_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
