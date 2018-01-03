@@ -63,7 +63,7 @@ pg_hba_settings:
     context: host
     db: all
     user: postgres
-    address: '10.0.1.0/24'
+    address: '10.0.1.0/40'
     ip_mask: ''
     auth_method: md5
     auth_options: ''
