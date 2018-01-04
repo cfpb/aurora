@@ -1,0 +1,7 @@
+---
+- hosts: analytics_terminal
+  name: install r with separated roles
+  roles:
+#   - r-core
+#   - r-libs
+    - r-update
