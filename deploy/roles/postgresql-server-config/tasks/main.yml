@@ -246,7 +246,7 @@
     path: "{{ pg_conf_file }}"
     entity: "{{ item }}"
     etype: group
-    permissions: rX
+    permissions: r
     state: present
   with_items: "{{ pg_admin_group_names }}"
 
