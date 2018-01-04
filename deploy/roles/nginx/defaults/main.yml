@@ -6,7 +6,8 @@ deploy_user: vagrant
 
 nginx_listen: 80
 
-nginx_user: nginx_user
+nginx_user: nginx
+nginx_group: nginx
 
 nginx_dir: "/etc/nginx"
 nginx_log_dir: "/var/log/nginx"
@@ -16,6 +17,7 @@ nginx_access_log: "/var/log/nginx/access.log"
 nginx_access_log_format: main
 nginx_pid: "/var/run/nginx.pid"
 nginx_conf_dir: "/etc/nginx/conf.d"
+nginx_certificate_files: {}
 
 # nginx.conf
 nginx_sendfile: "on"

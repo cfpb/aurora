@@ -51,7 +51,7 @@
     - name: Ensure permissions are correct
       file:
         dest: "{{ item }}"
-        mode: 700
+        mode: 0640
         owner: nginx
         group: nginx
       when: generate_certs
