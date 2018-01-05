@@ -11,6 +11,18 @@
     - role: jdk
     - role: postgresql-server
     - role: citus
+  tasks:
+    - name: Install utilities
+      yum:
+        name: sysstat
+        state: present
+
+    - name: Ensure sysstat is enabled
+      service:
+        name: sysstat
+        state: started
+        enabled: yes
+
   post_tasks:
     - name: Ensure file transfer folder exists
       file:
