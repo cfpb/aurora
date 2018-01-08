@@ -252,7 +252,7 @@
 
 - name: Set permissions on log file directory recursively
   acl:
-    path: "{{ pg_log_file_location }}"
+    path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
     etype: group
     permissions: rX
@@ -262,7 +262,7 @@
 
 - name: Set default admin permissions on log folders
   acl:
-    path: "{{ pg_log_file_location }}"
+    path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
     etype: group
     permissions: rX

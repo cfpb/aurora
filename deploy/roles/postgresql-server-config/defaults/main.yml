@@ -57,4 +57,4 @@ pp_servicename: postgresql-9.6
 pg_admin_group_names:
   - vagrant
 pg_conf_file: /var/lib/pgsql/9.6/data/postgresql.conf
-pg_log_file_location: /var/lib/pgsql/9.6/data/pg_log
+pp_log_directory: /var/lib/pgsql/9.6/data/pg_log
