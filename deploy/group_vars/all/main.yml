@@ -218,6 +218,7 @@ pp_superpassword: password
 pp_serverport: 5432
 
 # Default service account
+deploy_user: vagrant
 pp_dba_username: vagrant
 pp_dba_password: vagrant
 
@@ -225,8 +226,6 @@ pp_custom_test_scripts:
   -
     script: "SELECT 1;"
     assertion: "test_output['results'][0]['query_result'] == [[1]]"
-
-db_automation_custom_packages: []
 
 # Eod symlinks
 eod_symlinks: []
@@ -236,6 +235,7 @@ printers_symlinks: []
 
 # User provided packages for database customization
 db_automation_custom_packages: []
+db_automation_package_state: present
 
 #====================#
 ### Mesos Settings ###

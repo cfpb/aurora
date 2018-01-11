@@ -8,6 +8,8 @@
   with_items:
     - libselinux-python
     - nginx
+  notify:
+    - restart nginx
   tags:
     - nginx
 
@@ -15,6 +17,20 @@
   user:
     name: "{{ nginx_user }}"
     comment: "Nginx User"
+  tags:
+    - nginx
+
+- name: Deploy certificates, if any
+  copy:
+    src: "{{ item.source }}"
+    dest: "{{ item.dest }}"
+    remote_src: "{{ item.remote }}"
+    owner: "{{ nginx_user }}"
+    group: "{{ nginx_group }}"
+    mode: 0640
+  with_items: "{{ nginx_certificate_files }}"
+  notify:
+    - restart nginx
   tags:
     - nginx
 
@@ -60,18 +76,21 @@
   tags:
     - nginx
 
+- name: Ensure permissions are correct for Data Admins to view logs
+  acl:
+    path: "{{ nginx_log_dir }}"
+    etype: group
+    permissions: rX
+    entity: "{{ restricted_group_name }}"
+    recursive: yes
+    default: yes
+    state: present
+
 - name: Ensure Nginx is started and enabled at boot time, if desired.
   service:
     name: nginx
     state: "{{ nginx_state }}"
     enabled: "{{ nginx_enable }}"
-  tags:
-    - nginx
-
-- name: Allow "deploy" user to restart Nginx
-  template:
-    src: nginx.j2
-    dest: /etc/sudoers.d/nginx
   tags:
     - nginx
 

@@ -14,6 +14,7 @@
 
 - name: Verify RPM checksum
   stat:
+    checksum_algorithm: sha1
     path: "{{ gocd_server_package_path }}/{{ gocd_server_package_name }}"
     get_md5: False
   register: gocd_rpm

@@ -96,6 +96,6 @@
     - name: Install Database Automation custom packages
       yum:
         name: "{{ item }}"
-        state: present
+        state: "{{ db_automation_package_state }}"
         disable_gpg_check: yes
       with_items: "{{ db_automation_custom_packages }}"

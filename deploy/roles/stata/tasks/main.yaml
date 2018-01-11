@@ -3,62 +3,130 @@
   file:
     path: "{{stata_install_directory}}/"
     state: directory
+    owner: root
+    group: root
+  tags:
+    - stata
 
-- name: Install expect
-  yum:
-    name: expect
-    state: present
+- name: Ensure no installed files exist
+  file:
+    path: "{{ stata_install_directory }}/{{ item }}"
+    state: absent
+  with_items:
+    - installed.150
+    - stata
+    - xstata
+    - isstata.150
+    - ado.tar
+    - ado.tar.Z
+    - base.tar
+    - base.tar.Z
+    - bins.tar
+    - bins.tar.Z
+    - docs.tar
+    - docs.tar.Z
+  tags:
+    - stata
 
-- name: Unarachive the stata tarball
+- name: Unarchive the stata tarball
   unarchive:
     copy: yes
-    src: "{{ stata_local_bin_directory }}/Stata14Linux64.tar.gz"
+    src: "{{ stata_local_bin_directory }}/{{ stata_tarball }}"
     dest: "{{ stata_install_directory }}/"
   when: custom_repo
+  tags:
+    - stata
 
 - name: Set permissions for the install script
   file:
     path: "{{ stata_install_directory }}/install"
     mode: 0755
   when: custom_repo
+  tags:
+    - stata
 
-- name: Copy the expect script
-  template:
-    src: install_stata.exp
-    dest: "{{stata_install_directory}}/install_stata.exp"
+- name: Install pip
+  yum:
+    name: python-pip
+    state: present
+  tags:
+    - stata
+
+- name: pip install pexpect
+  pip:
+    name: pexpect
+    executable: /usr/bin/pip
+  tags:
+    - stata
+
+- name: expect install
+  expect:
+    chdir: "{{ stata_install_directory }}"
+    command: /bin/bash -c ./install
+    timeout: 200
+    responses:
+        '.*Do you wish to continue.*': 'y'
+        '.*Okay to proceed.*': 'y'
+  register: expected
+  failed_when: expected.rc != 0 and "no action taken" not in expected.stdout
+  when: custom_repo
+  tags:
+    - stata
+
+- name: Update permissions
+  file:
+    path: "{{ stata_install_directory }}"
+    recurse: yes
+    state: directory
     mode: 0755
+  tags:
+    - stata
 
-- name: Copy the Stata config file
-  template:
-    src: sysprofile.do.j2 
-    dest: "{{ stata_profile_dir }}/sysprofile.do"
-    mode: 0644
-
-- name: Run stata install expect script
-  shell: "./install_stata.exp"
-  args:
-    chdir: "{{stata_install_directory}}"
+- name: expect stinit
+  expect:
+    chdir: "{{ stata_install_directory }}"
+    command: /bin/bash -c ./stinit
+    responses:
+      '.*Do you agree to the License terms.*': 'Y'
+      '.*Do you wish to continue.*': 'Y'
+      '.*Serial number:.*': '{{ stata_serial_number }}'
+      '.*Code:.*': '{{ stata_code }}'
+      '.*Authorization:.*': '{{ stata_authorization }}'
+      '.*Shall we continue.*': 'Y'
+      '.*Enter what you would like the first line to say:.*': '{{ stata_line_one }}'
+      '.*Enter what you would like the second line to say:.*': '{{ stata_line_two  }}'
+      '.*Is this okay.*': 'Y'
   when: custom_repo
-
-- name: Copy the stinit expect script
-  template:
-    src: stinit_stata.exp
-    dest: "{{stata_install_directory}}/stinit_stata.exp"
-    mode: a+rx
-
-- name: Run the stata stinit expect script
-  shell: "./stinit_stata.exp"
-  args:
-    chdir: "{{stata_install_directory}}"
-  when: custom_repo
+  tags:
+    - stata
 
 # Do we need to source this?
 - name: Copy configure_stata to /etc/profile.d
   template:
     src: configure_stata.sh
     dest: /etc/profile.d/configure_stata.sh
+  tags:
+    - stata
+
+- name: Create symlink
+  file:
+    state: link
+    src: "{{ stata_install_directory }}"
+    dest: "{{ stata_directory }}"
+  tags:
+    - stata
+
+- name: Copy sysprofile
+  template:
+    src: sysprofile.do.j2
+    dest: "{{ stata_directory }}/sysprofile.do"
+    mode: 0644
+  tags:
+    - stata
 
 - name: Remove the tarball
   file:
-    path: /tmp/Stata14Linux64.tar.gz
+    path: "/tmp/{{ stata_tarball }}"
     state: absent
+  tags:
+    - stata

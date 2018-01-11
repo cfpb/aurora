@@ -1,22 +1,21 @@
 ---
-stata_install_directory:            /usr/local/stata14
+stata_install_directory:            /usr/local/stata15
+stata_tarball:                      Stata15Linux64.tar.gz
+stata_directory:                    /usr/local/stata
 stata_local_bin_directory:          /artifacts
 stata_remote_bin_directory:         /tmp
 stata_serial_number:                STATA_SERIAL_NUMBER
 stata_code:                         STATE_CODE
 stata_authorization:                STATA_AUTHORIZATION
-stata_line_one:                     Line 1
-stata_line_two:                     Line 2
+stata_line_one:                     Consumer Financial Protection Bureau
+stata_line_two:                     Washington, DC
 
 stata_odbc_mgr:                     unixodbc
 stata_processor:                    4
-stata_site:                         "/usr/share/shared_ado"
-stata_profile_dir:                  /usr/local/stata14
+stata_site:                         "/home/work/shared_ado"
+stata_profile_dir:                  /usr/local/stata
 
 
 stata_printers:  
-    - 1019A_HP ps "lpr -P 1019A_HP3015P @"
-    - 1006_Konica ps "lpr -P 1006_Konica754 @"
-    - 806_Sharp5001 ps "lpr -P 806_Sharp5001 @"
-    - 831_back_Lexmark410 ps "lpr -P 831_back_Lexmark410 @"
-    - 848_Konica754 ps "lpr -P 848_Konica754 @"
+    - 1001_Konica ps "lpr -P 1001_Konica_1234 @"
+    - 1002_Konica ps "lpr -P 1002_Konica_1234 @"

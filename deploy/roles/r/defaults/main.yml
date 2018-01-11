@@ -2,6 +2,8 @@
 install_r_updates: true
 install_r_packages: true
 
+r_core_state: present
+
 r_dependencies:
   - QuantLib
   - QuantLib-devel

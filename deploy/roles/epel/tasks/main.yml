@@ -2,7 +2,7 @@
 ---
 - name: Get EPEL repo
   get_url:
-    url: "http://dl.fedoraproject.org/pub/epel/6/x86_64/epel-release-6-8.noarch.rpm"
+    url: "{{ epel_path }}/{{ epel_rpm }}"
     dest: /tmp/
   register: get_url_result
   until: '"OK" in get_url_result.msg'
@@ -13,7 +13,7 @@
     - epel
 
 - name: Install EPEL repo
-  command: "rpm -ivh /tmp/epel-release-6-8.noarch.rpm"
+  command: "rpm -ivh /tmp/{{ epel_rpm }}"
   args:
     creates: /etc/yum.repos.d/epel.repo
   check_mode: no
@@ -22,7 +22,7 @@
 
 - name: Import the EPEL GPG key
   rpm_key:
-    key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6"
+    key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
     state: present
   check_mode: no
   tags:

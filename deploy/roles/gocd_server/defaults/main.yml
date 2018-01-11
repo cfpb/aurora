@@ -1,8 +1,8 @@
 ---
-gocd_server_package_url: https://download.gocd.io/binaries/16.12.0-4352/rpm/go-server-16.12.0-4352.noarch.rpm
+gocd_server_package_url: https://download.gocd.io/binaries/17.10.0-5380/rpm/go-server-17.10.0-5380.noarch.rpm
 gocd_server_package_path: /tmp
-gocd_server_package_name: go-server-16.12.0-4352.noarch.rpm
-gocd_server_checksum: "4ca90c3d42a2e3492fa47f1c6316c969ad26380a"
+gocd_server_package_name: go-server-17.10.0-5380.noarch.rpm
+gocd_server_checksum: a0f2805698868dd338031bfbf73b391dd29ad34f
 gocd_server_work_dir: /var/lib/go-server
 gocd_server_port: 8153
 gocd_server_ssl_port: 8154

@@ -14,6 +14,12 @@
          src: "{{ item.src }}"
          dest: "{{ item.dest }}"
       with_items: "{{ eod_symlinks }}"
+
+    - name: Install xauth dependency
+      yum:
+        name: xorg-x11-xauth
+        state: present
+
     - name: Ensure X11 Forwarding is present
       lineinfile:
         dest: /etc/ssh/sshd_config
@@ -56,14 +62,8 @@
     - evince
     - stattransfer
     - sublime
+    - ultra-edit
   post_tasks:
-    - name: Install Ultra Edit
-      yum:
-        name: UltraEdit.x86_64
-        state: present
-        disable_gpg_check: yes
-      when: custom_repo
-
     - name: Install texlive
       yum:
         name: texlive
@@ -91,6 +91,8 @@
   become_method: sudo
   roles:
     # - gauss
+    - {role: epel, when: "use_epel"}
+    - stata
     - gocd
     - stattransfer
 
@@ -98,6 +100,7 @@
   become: yes
   become_method: sudo
   roles:
+    - {role: epel, when: "use_epel"}
     - stata
     - stattransfer
 

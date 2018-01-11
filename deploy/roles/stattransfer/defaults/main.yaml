@@ -2,8 +2,11 @@
 stattransfer_install_directory: /usr/local/StatTransfer13
 stattransfer_local_bin_directory: /artifacts
 stattransfer_license_type: "25 User Lease"
-stattransfer_expiration_date: "August 31, 2017"
+stattransfer_expiration_date: "August 31, 2018"
 stattransfer_reg_code: STAT-TRANSFER-REG
 stattransfer_auth_code: STAT-TRANSFER-AUTH
 stattransfer_sign_code: STAT-TRANSFER-SIGN
-stattransfer_set_code: STAT-TRANSFER-SET
+stattransfer_major_version: "13"
+stattransfer_name: "STAT-TRANSFER-NAME"
+stattransfer_organization: "STAT-TRANSFER-ORGANIZATION"
+stattransfer_set_code: "STAT-TRANSFER-SET-CODE"

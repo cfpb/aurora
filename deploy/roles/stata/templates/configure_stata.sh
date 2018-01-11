@@ -1,11 +1,3 @@
+STATA={{ stata_directory }}
 
-PATH_OUTPUT=`env | grep PATH`
-CHECK={{stata_install_directory}}
-
-if [[ "$PATH_OUTPUT" =~ "$CHECK" ]]
-then
-	echo "no need to add it"
-else
-	echo "need to add it"
-	export PATH=$CHECK:$PATH
-fi
+export PATH=$STATA:$PATH

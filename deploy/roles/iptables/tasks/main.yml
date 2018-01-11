@@ -3,7 +3,11 @@
 # Basically, allows outgoing trafic and established connections,
 # but blocks all incoming traffic except SSH.  This is meant to be replaced
 # by more complex rules.
+
 ---
+- include: rhel_7.yml
+  when: "{{ ansible_distribution_major_version }} == 7"
+
 - name: Temporarily allow all
   command: "iptables -P INPUT ACCEPT"
 

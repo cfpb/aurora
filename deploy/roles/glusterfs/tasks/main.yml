@@ -1,16 +1,16 @@
 # main.yml - Sets up a glusterfs file server node
 ---
-- name: Install glusterfs repos
-  get_url:
-    dest: /etc/yum.repos.d/
-    url: https://download.gluster.org/pub/gluster/glusterfs/3.4/3.4.0/EPEL.repo/glusterfs-epel.repo
 
 - name: Install required packages
   yum:
-    name: "{{ item }}"
+    name: centos-release-gluster38
     state: latest
-  with_items:
-    - glusterfs-server
+  when: not custom_repo
+
+- name: Install required packages
+  yum:
+    name: glusterfs-server-3.8.4
+    state: latest
 
 - name: Enable gluster server
   service:

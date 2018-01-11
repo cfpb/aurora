@@ -9,7 +9,7 @@
 - name: Install R-core
   yum:
     name: R-core
-    state: latest
+    state: "{{ r_core_state }}"
     disable_gpg_check: yes
   register: r_core_updated
   tags:
@@ -34,7 +34,7 @@
 - name: Install base packages
   yum:
     name: "{{ item }}"
-    state: latest
+    state: "{{ r_core_state }}"
     disable_gpg_check: yes
   with_items:
     - R-devel
@@ -144,26 +144,13 @@
     - r
   when: install_r_packages
 
-- name: Allow admins write access to the system R package directory
-  acl:
-    path: "{{ item }}"
-    entity: "{{ restricted_group_name }}"
-    etype: group
-    permissions: rwX
-    recursive: yes
-    default: yes
-    state: present
-  with_items: "{{ r_system_package_dir }}"
-  tags:
-    - r
-
 - name: Permissions for R package directory
   file:
     state: directory
-    mode: '2755'
+    mode: '2775'
     path: "{{ item }}"
     owner: root
-    group: root
+    group: "{{ restricted_group_name }}"
     recurse: yes
   with_items: "{{ r_system_package_dir }}"
   tags:

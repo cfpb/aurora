@@ -1,0 +1,2 @@
+epel_path: http://dl.fedoraproject.org/pub/epel
+epel_rpm: epel-release-latest-{{ ansible_distribution_major_version }}.noarch.rpm

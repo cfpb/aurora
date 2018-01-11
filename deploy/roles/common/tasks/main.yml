@@ -80,7 +80,7 @@
   group:
     name: "{{ restricted_group_name }}"
     state: present
-    
+
 - name: Create empty log file if they don't exist
   file:
     path: "{{ item }}"
@@ -99,8 +99,8 @@
     state: present
   with_items: "{{ log_file_locations }}"
 
-- name: Add vagrant to admin group
-  user: 
-    name: vagrant
+- name: Add service account to admin group
+  user:
+    name: "{{ deploy_user }}"
     append: yes
     groups: "{{ restricted_group_name }}"

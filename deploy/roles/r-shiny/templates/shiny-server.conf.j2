@@ -1,0 +1,32 @@
+# shiny-server.conf
+
+description "Shiny application server"
+
+start on runlevel [2345]
+stop on runlevel [016]
+
+limit nofile 1000000 1000000
+
+post-stop exec sleep 3
+
+pre-start script
+  exec sleep 100
+end script
+
+post-start script
+    i=0
+    while [ $i -lt 5 ]
+    do
+        pgrep "shiny-server" || exit 1
+        sleep 10
+        i=$((i+1))
+    done
+end script
+
+script
+  exec shiny-server --pidfile=/var/run/shiny-server.pid >> /var/log/shiny-server.log 2>&1
+end script
+
+respawn limit 3 30
+
+respawn
