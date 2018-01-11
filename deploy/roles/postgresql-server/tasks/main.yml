@@ -73,19 +73,19 @@
   tags:
     - postgresql-server
 
-- name: Ensure the log directory exists
-  file:
-    path: "{{ pp_xlogdir }}"
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0755
-  tags:
-    - postgresql-server
-
 - name: Ensure the data directory exists
   file:
     path: "{{ pp_datadir }}"
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0700
+  tags:
+    - postgresql-server
+
+- name: Ensure the WAL directory exists
+  file:
+    path: "{{ pp_xlogdir }}"
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
@@ -124,6 +124,16 @@
 - name: Create postgres cluster
   shell: "{{ pp_initdb }}"
   when: pp_install or pp_upgrade
+  tags:
+    - postgresql-server
+
+- name: Ensure the log directory has the right permissions
+  file:
+    path: "{{ pp_log_directory }}"
+    state: directory
+    owner: "{{ pp_serviceaccount }}"
+    group: "{{ pp_serviceaccount }}"
+    mode: 0755
   tags:
     - postgresql-server
 
