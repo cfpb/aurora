@@ -11,5 +11,6 @@ postgres_packages:
 
 postgres_old_packages:
   - postgresql
+  - postgresql-libs
 
 clean_postgresql: False
