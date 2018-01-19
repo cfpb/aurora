@@ -12,5 +12,6 @@ postgres_packages:
 postgres_old_packages:
   - postgresql
   - postgresql-libs
+  - postgis22
 
 clean_postgresql: False
