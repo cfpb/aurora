@@ -242,6 +242,8 @@
     admin_option: no
 
 - name: Set permissions on log file directory recursively
+  become: yes
+  become_method: sudo
   acl:
     path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
@@ -253,6 +255,8 @@
   when: not install_edb
 
 - name: Set default admin permissions on log folders
+  become: yes
+  become_method: sudo
   acl:
     path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
