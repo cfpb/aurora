@@ -39,3 +39,9 @@ mesos_appc_store_dir: "/tmp/mesos/store/appc"
 mesos_docker_enable: yes
 mesos_docker_store_dir: "/tmp/mesos/store/docker"
 mesos_docker_registry: "/home/work/mesos/docker/images"
+
+mesos_cni_networks:
+  - network_name: "default"
+    nameservers:
+      - "8.8.8.8"
+      - "8.8.4.4"
