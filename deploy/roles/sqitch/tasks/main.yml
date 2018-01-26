@@ -40,7 +40,7 @@
   register: timezone
   changed_when: '"is up to date" not in timezone.stdout'
   environment:
-    PATH: "{{ postgres_install_dir|default('/usr/pgsql-9.4') }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+    PATH: "{{ postgres_install_dir }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   tags:
     - sqitch
   when: install_sqitch
@@ -50,7 +50,7 @@
   register: sqitch
   changed_when: '"is up to date" not in sqitch.stdout'
   environment:
-    PATH: "{{ postgres_install_dir|default('/usr/pgsql-9.4') }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+    PATH: "/usr/pgsql/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   tags:
     - sqitch
   when: install_sqitch
@@ -60,7 +60,7 @@
   register: pg_engine
   changed_when: '"is up to date" not in pg_engine.stdout'
   environment:
-    PATH: "{{ postgres_install_dir }}/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+    PATH: "/usr/pgsql/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   when: postgres_install_dir is defined
   tags:
     - sqitch

@@ -57,3 +57,14 @@ It's a new year, so let's start actually tracking things in the Changelog!
 
 ### Fixed
 - Fixed bugs with DMZ Proxy permissions
+
+## 1.1.2 - 2018-01-26
+
+### Added
+- Support for using symlinked postgres directory
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Nothing
