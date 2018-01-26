@@ -62,9 +62,10 @@ It's a new year, so let's start actually tracking things in the Changelog!
 
 ### Added
 - Support for using symlinked postgres directory
+- R Studio 1.1 by default.
 
 ### Deprecated
 - Nothing
 
 ### Fixed
-- Nothing
+- Permissions issues in Postgres/Citus roles.
