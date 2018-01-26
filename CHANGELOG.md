@@ -57,3 +57,15 @@ It's a new year, so let's start actually tracking things in the Changelog!
 
 ### Fixed
 - Fixed bugs with DMZ Proxy permissions
+
+## 1.1.2 - 2018-01-26
+
+### Added
+- Support for using symlinked postgres directory
+- R Studio 1.1 by default.
+
+### Deprecated
+- Nothing
+
+### Fixed
+- Permissions issues in Postgres/Citus roles.

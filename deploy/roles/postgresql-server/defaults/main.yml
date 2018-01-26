@@ -68,6 +68,15 @@ pg_hba_settings:
     auth_method: md5
     auth_options: ''
   -
+    comment: 'Ansible connection (must be last of the host/postgres entries)'
+    context: host
+    db: all
+    user: postgres
+    address: 'localhost'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
     comment: 'IPv4 local connections:'
     context: host
     db: all
@@ -230,7 +239,7 @@ pp_join_collapse_limit: 8
 # Reporting and Logging
 pp_log_destination: stderr
 pp_logging_collector: on
-pp_log_directory: pg_log
+pp_log_directory: /var/lib/pgsql/9.6/data/pg_log
 pp_log_file_mode: 0600
 pp_log_truncate_on_rotation: off
 pp_log_rotation_age: 1d

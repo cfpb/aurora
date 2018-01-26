@@ -3,6 +3,7 @@
 - hosts: citus
   become: yes
   become_method: sudo
+  serial: 1
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
@@ -57,6 +58,7 @@
 - hosts: citus
   become: yes
   become_method: sudo
+  serial: 1
   roles:
     - role: postgresql-server-config
   post_tasks:

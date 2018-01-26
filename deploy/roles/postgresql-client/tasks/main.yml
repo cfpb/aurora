@@ -58,3 +58,11 @@
     mode: 0644
   tags:
     - postgres_client
+
+- name: Create a symlink that can remain constant during upgrades
+  file:
+    src: "{{ postgres_install_dir }}"
+    dest: /usr/pgsql
+    state: link
+  tags:
+    - postgres_client
