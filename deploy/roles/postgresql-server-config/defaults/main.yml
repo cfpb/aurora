@@ -1,5 +1,6 @@
 ---
 # Extensions to install
+install_edb: False
 pp_extensions:
   - postgis2_96
 
