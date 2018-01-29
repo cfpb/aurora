@@ -351,4 +351,4 @@ pp_timed_statistics: off
 pp_extensions: []
 pp_extension_settings: []
 
-pp_initdb: "service postgresql-9.6 initdb --pgdata {{ pp_datadir }}"
+pp_initdb: "service postgresql-9.6 initdb"
