@@ -689,6 +689,7 @@ Vagrant.configure(2) do |config|
       cw_config.vm.host_name = "citus-worker-#{id}.test.dev"
       cw_config.vm.network :private_network, ip: ip
 
+      cw_config.ssh.insert_key = false
       cw_config.ssh.forward_agent = true
       cw_config.vm.provision "shell", inline: <<-SHELL
         # bug with vagrant 1.9+ and centos/7
