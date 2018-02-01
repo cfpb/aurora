@@ -22,6 +22,7 @@
 - name: Create Nginx user, if needed
   user:
     name: "{{ nginx_user }}"
+    group: "{{ nginx_user }}"
     comment: "Nginx User"
   tags:
     - nginx

@@ -9,20 +9,8 @@
   yum:
     name: ruby
     state: absent
-
-  # - name: Get mpapis.asc
-  #   get_url:
-  #     url: https://rvm.io/mpapis.asc
-  #     dest: /tmp/mpapis.asc
-  #   tags:
-  #     - ruby
-  # 
-  # - name: Import key
-  #   command: "gpg --import /tmp/mpapis.asc"
-  #   register: import_key
-  #   changed_when: '"not changed" not in import_key.stderr'
-  #   tags:
-  #     - ruby
+  tags:
+    - ruby
 
 - name: Get script file
   get_url:
