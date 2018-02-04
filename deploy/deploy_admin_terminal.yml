@@ -28,5 +28,5 @@
         name: ansible
         state: present
         umask: "0022"
-      sudo: no
+      #sudo: no
       when: "install_python"
