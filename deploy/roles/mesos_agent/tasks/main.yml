@@ -255,7 +255,7 @@
     content: "{{ mesos_agent_image_backend }}"
   notify:
     - restart mesos-agent
-  when: "{{ mesos_agent_version | version_compare('1.2.0', '>=') }}"
+  when: mesos_agent_version | version_compare('1.2.0', '>=')
   tags:
     - mesos
     - mesos-agent
@@ -266,7 +266,20 @@
     dest: /etc/mesos-slave/default_container_dns
   notify:
     - restart mesos-agent
+  when: mesos_agent_version | version_compare('1.4.0', '>=')
+
+- name: Configure default container info
+  template:
+    src: default_container_info.j2
+    dest: /etc/mesos-slave/default_container_info
+  notify:
+    - restart mesos-agent
   when: "{{ mesos_agent_version | version_compare('1.4.0', '>=') }}"
+
+- name: Configure default container info
+  template:
+    src: default_container_info.j2
+    dest: /etc/mesos-slave/default_container_info
 
 ### AppC Container Images
 
