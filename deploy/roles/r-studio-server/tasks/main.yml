@@ -26,6 +26,7 @@
     state: "{{ rstudio_server_package_state }}"
     disable_gpg_check: yes
     validate_certs: no
+  when: update_rstudio
   tags:
     - rstudio-server
 
@@ -40,3 +41,52 @@
   when: update_rstudio
   tags:
     - rstudio-server
+
+- name: Install pip (driver dependency)
+  yum:
+    name: python-pip
+    state: present
+  when: install_pro_drivers
+  tags:
+    - rstudio-server
+
+- name: pip install pexpect (driver dependency)
+  pip:
+    name: pexpect
+    executable: /usr/bin/pip
+  when: install_pro_drivers
+  tags:
+    - rstudio-server
+
+- name: Create RStudioPro driver folder
+  file:
+    path: "{{ rstudio_pro_driver_install_folder }}"
+    state: directory
+    mode: a+rx
+
+- name: install RStudioPro drivers
+  get_url:
+    url: "{{ rstudio_pro_drivers_url }}"
+    dest: "{{ rstudio_pro_drivers_folder }}"
+  when: install_pro_drivers
+  tags:
+    - rstudio-server
+
+- name: set RStudioPro driver installer to executable
+  file: 
+    path: "{{ rstudio_pro_drivers_folder }}/{{ rstudio_pro_driver_install_name }}"
+    mode: "a+x"
+  when: install_pro_drivers
+  tags:
+    - rstudio-server
+
+- name: run RStudioPro driver install script
+  expect:
+    command: "{{ rstudio_pro_drivers_folder }}/{{ rstudio_pro_driver_install_name }} --download {{ rstudio_pro_drivers_folder }} --install {{ rstudio_pro_driver_install_folder }}"
+    responses:
+      'y/n' : 'y'
+    timeout: 300
+  when: install_pro_drivers
+  tags:
+    - rstudio-server
+  
