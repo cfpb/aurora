@@ -23,6 +23,7 @@
   become_method: sudo
   yum:
     name: "{{ item }}"
+    state: latest
   with_items: "{{ citus_pkgs }}"
   tags:
     - citus
