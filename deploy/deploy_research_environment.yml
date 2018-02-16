@@ -8,6 +8,7 @@
     - emacs
     - jdk
     - odbc
+    - postgresql-client
   post_tasks:
     - name: research eod symlinks
       file:
