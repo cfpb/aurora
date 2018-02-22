@@ -41,3 +41,46 @@ freetds_entries:
     port: 1533
   }
 odbc_package_mode: present
+
+odbcinst_entries:
+  - {
+    drivername: "AmazonRedshift",
+    attributes:
+      {Driver: /home/deploy/amazonredshift/bin/lib/liubamazonredshiftodbc_sb64.so}
+  }
+  - {
+    drivername: "Hive",
+    attributes:
+      {Driver: /home/deploy/hive/bin/lib/libhiveodbc_sb64.so}
+  }
+  - {
+    drivername: "Impala",
+    attributes:
+      {Driver: /home/deploy/impala/bin/lib/libimpalaodbc_sb64.so}
+  }
+  - {
+    drivername: "Oracle",
+    attributes:
+      {Driver: /home/deploy/oracle/bin/lib/liboracleodbc_sb64.so}
+  }
+  - {
+    drivername: "PostgreSQL",
+    attributes:
+      {Driver: /home/deploy/postgresql/bin/lib/libpostgresqlodbc_sb64.so}
+  }
+  - {
+    drivername: "Salesforce",
+    attributes:
+      {Driver: /home/deploy/salesforce/bin/lib/libsalesforceodbc_sb64.so}
+  }
+  - {
+    drivername: "SQLServer",
+    attributes:
+      {Driver: /home/deploy/sqlserver/bin/lib/libsqlserverodbc_sb64.so}
+  }
+  - {
+    drivername: "Teradata",
+    attributes:
+      {Driver: /home/deploy/teradata/bin/lib/tdataodbc_sb64.so}
+  }
+

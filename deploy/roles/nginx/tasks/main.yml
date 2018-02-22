@@ -13,16 +13,9 @@
   tags:
     - nginx
 
-- name: Create Nginx group, if needed
-  group:
-    name: "{{ nginx_user }}"
-  tags:
-    - nginx
-
 - name: Create Nginx user, if needed
   user:
     name: "{{ nginx_user }}"
-    group: "{{ nginx_user }}"
     comment: "Nginx User"
   tags:
     - nginx
@@ -82,11 +75,6 @@
     group: "{{ nginx_user }}"
   tags:
     - nginx
-
-- name: Create admin group if it doesn't exist
-  group:
-    name: "{{ restricted_group_name }}"
-    state: present
 
 - name: Ensure permissions are correct for Data Admins to view logs
   acl:

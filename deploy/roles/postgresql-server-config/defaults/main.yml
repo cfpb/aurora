@@ -1,9 +1,8 @@
 ---
 # Extensions to install
-install_edb: False
 pp_extensions:
   - postgis2_96
-install_edb: False
+
 # Example privileges setting, this revokes all privileges from
 # the PUBLIC role on the public schema in template1, and thus
 # also in all new databases created.
