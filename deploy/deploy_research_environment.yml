@@ -5,6 +5,7 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs"}
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
     - emacs
     - jdk
     - odbc
@@ -92,7 +93,6 @@
   become_method: sudo
   roles:
     # - gauss
-    - {role: epel, when: "use_epel"}
     - stata
     - gocd
     - stattransfer
@@ -101,7 +101,6 @@
   become: yes
   become_method: sudo
   roles:
-    - {role: epel, when: "use_epel"}
     - stata
     - stattransfer
 
@@ -116,7 +115,6 @@
     - {role: python3, when: "custom_repo"}
     - {role: python3-build, when: "not custom_repo"}
     - {role: python-libs}
-    - {role: epel, when: "use_epel"}
     - postgresql-client
     - r
     - r-studio-desktop
