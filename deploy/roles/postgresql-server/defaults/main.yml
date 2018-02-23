@@ -68,15 +68,6 @@ pg_hba_settings:
     auth_method: md5
     auth_options: ''
   -
-    comment: 'Ansible connection (must be last of the host/postgres entries)'
-    context: host
-    db: all
-    user: postgres
-    address: 'localhost'
-    ip_mask: ''
-    auth_method: md5
-    auth_options: ''
-  -
     comment: 'IPv4 local connections:'
     context: host
     db: all
@@ -351,4 +342,4 @@ pp_timed_statistics: off
 pp_extensions: []
 pp_extension_settings: []
 
-pp_initdb: "service postgresql-9.6 initdb"
+pp_initdb: "service postgresql-9.6 initdb --pgdata {{ pp_datadir }}"

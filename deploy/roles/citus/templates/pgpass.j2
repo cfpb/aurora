@@ -2,4 +2,3 @@
 {% for worker in groups['citus'] %}
 {{ worker }}:{{ pp_serverport }}:*:{{ pp_superaccount }}:{{ pp_superpassword }}
 {% endfor %}
-localhost:{{ pp_serverport }}:*:{{ pp_superaccount }}:{{ pp_superpassword }}

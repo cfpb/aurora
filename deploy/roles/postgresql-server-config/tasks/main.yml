@@ -254,9 +254,16 @@
     state: present
     admin_option: no
 
+- name: Set permissions on postgres conf file
+  acl:
+    path: "{{ pg_conf_file }}"
+    entity: "{{ item }}"
+    etype: group
+    permissions: r
+    state: present
+  with_items: "{{ pg_admin_group_names }}"
+
 - name: Set permissions on log file directory recursively
-  become: yes
-  become_method: sudo
   acl:
     path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
@@ -265,11 +272,8 @@
     recursive: yes
     state: present
   with_items: "{{ pg_admin_group_names }}"
-  when: not install_edb
 
 - name: Set default admin permissions on log folders
-  become: yes
-  become_method: sudo
   acl:
     path: "{{ pp_log_directory }}"
     entity: "{{ item }}"
@@ -278,4 +282,3 @@
     default: yes
     state: present
   with_items: "{{ pg_admin_group_names }}"
-  when: not install_edb

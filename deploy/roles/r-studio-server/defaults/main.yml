@@ -1,5 +1,5 @@
 ---
-rstudio_server_package_name: http://download2.rstudio.org/rstudio-server-rhel-1.1.383-x86_64.rpm
+rstudio_server_package_name: https://download2.rstudio.org/rstudio-server-rhel-1.1.383-x86_64.rpm
 rstudio_server_package_state: present
 
 rstudio_pro_drivers_url: http://drivers.rstudio.org/7C152C12/odbc-install.sh

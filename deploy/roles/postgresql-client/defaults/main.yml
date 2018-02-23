@@ -9,12 +9,7 @@ postgres_packages:
   - postgresql96
   - postgresql96-devel
 
-postgres_gis_packages:
-  - postgis24_96
-
 postgres_old_packages:
   - postgresql
-  - postgresql-libs
-  - postgis22
 
 clean_postgresql: False

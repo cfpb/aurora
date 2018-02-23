@@ -38,3 +38,10 @@
   when: custom_repo
   tags:
     - odbc
+
+- name: Set odbc.ini file permissions
+  file: 
+    path: /etc/odbc.ini
+    mode: "u+rw,g+r,o+r"
+  tags:
+    - odbc

@@ -34,15 +34,6 @@
   tags:
     - postgres_client
 
-- name: Install gis postgres packages
-  yum:
-    name: "{{ item }}"
-    state: present
-  with_items: "{{ postgres_gis_packages }}"
-  ignore_errors: True
-  tags:
-    - postgres_client
-
 - name: Ensure other libraries can see header files
   file:
     src: "{{ postgres_install_dir }}/include/"
@@ -65,13 +56,5 @@
     create: yes
     line: export PATH={{ postgres_install_dir }}/bin:$PATH
     mode: 0644
-  tags:
-    - postgres_client
-
-- name: Create a symlink that can remain constant during upgrades
-  file:
-    src: "{{ postgres_install_dir }}"
-    dest: /usr/pgsql
-    state: link
   tags:
     - postgres_client

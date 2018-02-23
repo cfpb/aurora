@@ -52,9 +52,7 @@
     dest: /etc/systemd/system/postgresql-9.6.service.d/CPUQuota.conf
     src: citus_cpu.conf.j2
   when: citus_cpu_limit is defined
-  notify:
-    - reload-daemon
-    - restart postgres
+  notify: reload and restart postgres
   tags:
     - citus
 
@@ -63,8 +61,6 @@
     dest: /etc/systemd/system/postgresql-9.6.service.d/MemoryLimit.conf
     src: citus_memory.conf.j2
   when: citus_mem_limit is defined
-  notify:
-    - reload-daemon
-    - restart postgres
+  notify: reload and restart postgres
   tags:
     - citus

@@ -4,6 +4,7 @@
   become_method: sudo
   roles:
     - r
+    - revolution-r
     - r-shiny
     - r-shiny-config
     - r-studio-server
