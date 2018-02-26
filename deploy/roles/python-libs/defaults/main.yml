@@ -10,6 +10,6 @@ python3_packages:
   - cookiecutter
 
 python_pip_bin: /usr/local/bin/pip2.7
-python3_pip_bin: /usr/local/bin/pip3.4
+python3_pip_bin: /usr/bin/pip3.4
 
 python_package_mode: present

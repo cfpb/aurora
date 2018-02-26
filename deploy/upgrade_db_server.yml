@@ -8,6 +8,8 @@
 - hosts: all_db
   become: yes
   become_method: sudo
+  serial: 1
+  max_fail_percentage: 1
   vars:
     pp_upgrade: True
   pre_tasks:
