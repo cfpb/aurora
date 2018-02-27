@@ -6,7 +6,7 @@
   become: yes
   become_method: sudo
   with_items:
-    - postgresql96-devel
+    - postgresql10-devel
     - python-psycopg2
     - git
   check_mode: no

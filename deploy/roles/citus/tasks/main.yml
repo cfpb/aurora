@@ -43,13 +43,13 @@
 - name: Ensure systemd directory exists
   file:
     state: directory
-    path: /etc/systemd/system/postgresql-9.6.service.d
+    path: /etc/systemd/system/postgresql-10.service.d
   tags:
     - citus
 
 - name: Add CGroup settings cpu limit
   template:
-    dest: /etc/systemd/system/postgresql-9.6.service.d/CPUQuota.conf
+    dest: /etc/systemd/system/postgresql-10.service.d/CPUQuota.conf
     src: citus_cpu.conf.j2
   when: citus_cpu_limit is defined
   notify:
@@ -60,7 +60,7 @@
 
 - name: Add CGroup settings memory limit
   template:
-    dest: /etc/systemd/system/postgresql-9.6.service.d/MemoryLimit.conf
+    dest: /etc/systemd/system/postgresql-10.service.d/MemoryLimit.conf
     src: citus_memory.conf.j2
   when: citus_mem_limit is defined
   notify:

@@ -105,6 +105,10 @@ citus_worker_3 ansible_ssh_host=10.0.1.43
 citus_coordinator
 citus_worker
 
+[all_db:children]
+db_server
+citus
+
 [db_terminal]
 db_terminal ansible_ssh_host=10.0.1.30
 

@@ -156,8 +156,8 @@
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
     mode: 0600
-  notify:
-    - restart postgres
+  #notify:
+  #  - restart postgres
   tags:
     - postgresql-server
 
