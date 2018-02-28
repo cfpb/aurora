@@ -6,8 +6,6 @@
 # have all been updated to the new version, and old_ppas_service_name points
 # to the old running version.
 - hosts: all_db
-  become: yes
-  become_method: sudo
   serial: 1
   max_fail_percentage: 1
   vars:
@@ -38,25 +36,36 @@
       when: '"citus_coordinator" in group_names'
 
     - name: First ensure that the database processes are stopped
+      become: yes
+      become_method: sudo
       service:
         name: "{{ item }}"
         state: stopped
       with_items: "{{ pp_old_servicename }}"
 
   roles:
-    - role: postgresql-server
-    - role: citus
-      when: '"citus" in group_names'
+    - {role: 'postgresql-server', become: yes}
+    - {role: citus, become: yes, when: '"citus" in group_names'}
 
   post_tasks:
-    - name: Allow postgres empty password login temporarily
+    - name: Allow old postgres empty password login temporarily
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_old_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)md5'
+        backrefs: yes
+        line: 'local\1trust'
+      notify: restart postgres
+
+    - name: Allow new postgres empty password login temporarily
       become: yes
       become_method: sudo
       lineinfile:
         dest: "{{ pp_datadir }}/pg_hba.conf"
-        regexp: '^host(.*)postgres(.*)md5'
+        regexp: '^local(.*)md5'
         backrefs: yes
-        line: 'host\1postgres\2trust'
+        line: 'local\1trust'
       notify: restart postgres
 
     - meta: flush_handlers
@@ -64,35 +73,17 @@
     - pause:
         seconds: 30
 
-    - name: Ensure password is correct
-      postgresql_exec:
-        login_host: localhost
-        login_user: "{{ pp_superaccount }}"
-        port: "{{ pp_serverport }}"
-        db: postgres
-        script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
-      check_mode: no
-      #no_log: true
-
-    - name: Disallow postgres empty password login
+    - name: Ensure that the database processes are stopped
       become: yes
       become_method: sudo
-      lineinfile:
-        dest: "{{ pp_datadir }}/pg_hba.conf"
-        regexp: '^host(.*)postgres(.*)trust'
-        backrefs: yes
-        line: 'host\1postgres\2md5'
-      notify: restart postgres
-
-    - meta: flush_handlers
-
-    - name: Ensure that the database processes are stopped
       service:
         name: "{{ item }}"
         state: stopped
       with_items: "{{ pp_servicename }}"
 
     - name: Ensure that auxillary services are stopped
+      become: yes
+      become_method: sudo
       service:
         name: "{{ item }}"
         state: stopped
@@ -101,6 +92,8 @@
 
     # Only needed for local testing
     - name: Add citus as a shared preload library
+      become: yes
+      become_method: sudo
       lineinfile:
         dest: "{{ pp_datadir }}/postgresql.conf"
         regexp: "^shared_preload_libraries*"
@@ -108,17 +101,8 @@
       when: 'not custom_repo and "citus" in group_names'
 
     - name: Run pg_upgrade consistency check
-      become: yes
-      become_user: "{{ pp_serviceaccount }}"
       command: >
-               {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
-                  --old-datadir {{ pp_old_datadir }}
-                  --new-datadir {{ pp_datadir }}
-                  --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
-                  --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
-                  --link
-                  -U {{ pp_serviceaccount }}
-                  --check
+          sudo su - {{ pp_serviceaccount }} -c "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade --old-datadir {{ pp_old_datadir }} --new-datadir {{ pp_datadir }} --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin --link -U {{ pp_serviceaccount }} --check"
       environment:
         - PGPASSWORD: "{{ pp_superpassword }}"
       register: check_result
@@ -131,20 +115,34 @@
         that: '"Clusters are compatible" in check_result.stdout'
 
     - name: Run pg_upgrade
-      become: yes
-      become_user: "{{ pp_serviceaccount }}"
       command: >
-              {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
-                --old-datadir {{ pp_old_datadir }}
-                --new-datadir {{ pp_datadir }}
-                --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
-                --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
-                --link
-                -U {{ pp_serviceaccount }}
+          sudo su - {{ pp_serviceaccount }} -c "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade --old-datadir {{ pp_old_datadir }} --new-datadir {{ pp_datadir }} --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin --link -U {{ pp_serviceaccount }}"
       environment:
         - PGPASSWORD: "{{ pp_superpassword }}"
 
+    - name: Disallow postgres empty password login for old
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_old_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)trust'
+        backrefs: yes
+        line: 'local\1md5'
+      notify: restart postgres
+
+    - name: Disallow postgres empty password login for new
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)trust'
+        backrefs: yes
+        line: 'local\1md5'
+      notify: restart postgres
+
     - name: Ensure that the new database process is started
+      become: yes
+      become_method: sudo
       service:
         name: "{{ pp_servicename }}"
         state: started
