@@ -1,0 +1,34 @@
+---
+install_r_updates: true
+install_r_packages: true
+
+r_dependencies:
+  - QuantLib
+  - QuantLib-devel
+  - libcurl-devel
+  - libxml2-devel
+  - hunspell-devel
+  - udunits2
+  - udunits2-devel
+
+r_packages:
+  - "devtools"
+#  - "http://cran.r-project.org/src/contrib/Archive/RQuantLib/RQuantLib_0.3.12.tar.gz" # The latest version requires QuantLib 1.4.0, which is not supported by Centos 6.5
+
+r_packages_github:
+  - name: shinydashboard
+    user: rstudio
+
+r_env_vars:
+  CC: /opt/rh/devtoolset-2/root/usr/bin/gcc
+  CPP: /opt/rh/devtoolset-2/root/usr/bin/cpp
+  CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
+
+r_packages_with_opts:
+  - name: udunits2
+    include: /usr/include/udunits2
+    lib: /usr/lib64
+
+r_system_package_dir:
+  - /usr/lib64/R/library
+  - /usr/share/doc
