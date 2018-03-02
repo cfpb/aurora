@@ -102,7 +102,14 @@
 
     - name: Run pg_upgrade consistency check
       command: >
-          sudo su - {{ pp_serviceaccount }} -c "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade --old-datadir {{ pp_old_datadir }} --new-datadir {{ pp_datadir }} --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin --link -U {{ pp_serviceaccount }} --check"
+          sudo su - {{ pp_serviceaccount }} -c
+          "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+          --old-datadir {{ pp_old_datadir }}
+          --new-datadir {{ pp_datadir }}
+          --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+          --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+          --link -U {{ pp_serviceaccount }}
+          --check"
       environment:
         - PGPASSWORD: "{{ pp_superpassword }}"
       register: check_result
@@ -116,7 +123,13 @@
 
     - name: Run pg_upgrade
       command: >
-          sudo su - {{ pp_serviceaccount }} -c "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade --old-datadir {{ pp_old_datadir }} --new-datadir {{ pp_datadir }} --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin --link -U {{ pp_serviceaccount }}"
+          sudo su - {{ pp_serviceaccount }} -c
+          "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+          --old-datadir {{ pp_old_datadir }}
+          --new-datadir {{ pp_datadir }}
+          --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+          --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+          --link -U {{ pp_serviceaccount }}"
       environment:
         - PGPASSWORD: "{{ pp_superpassword }}"
 
