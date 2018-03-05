@@ -32,27 +32,6 @@
   tags:
     - r-update
 
-#Address - No /usr/bin/Rscript error
-#- name: Install Rscript
-#  become: yes
-#  become_method: sudo
-#  yum:
-#    name: https://mirrors.sonic.net/epel/6/x86_64/epel-release-6.8.noarch.rpm
-#    state: present
-#  register: rscript_epel
-
-- include_role:
-    name: epel
-  tags:
-    - epel
-
-- name: Install R
-  become: yes
-  become_method: sudo
-  yum:
-    name: R
-    state: present
-
 - name: Update existing R packages
   become: yes
   become_method: sudo
