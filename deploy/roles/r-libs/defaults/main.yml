@@ -3,8 +3,6 @@ install_r_updates: true
 install_r_packages: true
 
 r_dependencies:
-  - QuantLib
-  - QuantLib-devel
   - libcurl-devel
   - libxml2-devel
   - hunspell-devel
@@ -13,7 +11,6 @@ r_dependencies:
 
 r_packages:
   - "devtools"
-#  - "http://cran.r-project.org/src/contrib/Archive/RQuantLib/RQuantLib_0.3.12.tar.gz" # The latest version requires QuantLib 1.4.0, which is not supported by Centos 6.5
 
 r_packages_github:
   - name: shinydashboard
