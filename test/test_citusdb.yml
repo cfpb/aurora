@@ -1,8 +1,5 @@
 ---
-- hosts: citus_coordinator
-  vars:
-    pp_superadmin: "postgres"
-    pp_superpassword: "password"
+- hosts: "{{ hosts }}" 
 
   tasks:
     - name: Install requirements for postgresql Ansible tasks
