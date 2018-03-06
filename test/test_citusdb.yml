@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ hosts }}" 
+- hosts: citus
 
   tasks:
     - name: Install requirements for postgresql Ansible tasks
