@@ -96,6 +96,7 @@
     - stata
     - gocd
     - stattransfer
+    - math_lm
 
 - hosts: research_stata
   become: yes
