@@ -165,7 +165,9 @@
     script: ALTER EXTENSION citus UPDATE
   check_mode: no
   register: result
-  failed_when: 'result.module_stdout is defined and "extension \"citus\" does not exist" not in result.module_stdout'
+  failed_when:
+    - 'result.module_stdout is defined and "extension \"citus\" does not exist" not in result.module_stdout'
+    - 'result.module_stderr is defined and "extension \"citus\" does not exist" not in result.module_stderr'
   with_items: "{{ database_list.query_result }}"
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
