@@ -23,6 +23,7 @@
     - {role: epel, when: "use_epel"}
     - jdk
     - postgresql-client
+    - apache
     #- pentaho
     - gocd
     - nginx

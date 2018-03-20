@@ -1,16 +1,20 @@
 # main.yml - Apache installation and setup
 ---
 - name: Add Apache repo
-  yum: 
+  yum:
     name: centos-release-scl
     state: present
   when: not custom_repo
+  tags:
+    - apache
 
 - name: Install Apache
   yum:
     name: "{{ item }}"
     state: present
   with_items: "{{ apache_packages }}"
+  tags:
+    - apache
 
 - name: Configure global Apache settings
   template:
@@ -19,6 +23,8 @@
     mode: 644
     owner: apache
     group: apache
+  tags:
+    - apache
 
 - name: Ensure other processes are not running
   service:
@@ -26,6 +32,8 @@
     state: stopped
     enabled: no
   with_items: "{{ apache_disabled_services }}"
+  tags:
+    - apache
 
 # We ignore errors here, since the actual host configuration
 # will happen elsewhere in the playbook, so error states should
@@ -37,24 +45,34 @@
     state: started
     enabled: yes
   failed_when: False
+  tags:
+    - apache
 
 - name: Open port 80 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 80 -j ACCEPT"
   when: iptables_config
+  tags:
+    - apache
 
 - name: Open port 443 in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 443 -j ACCEPT"
   when: iptables_config
+  tags:
+    - apache
 
 - name: Save rules
   command: "/sbin/service iptables save"
   when: iptables_config
+  tags:
+    - apache
 
 - name: create certs for apache localhost
   command: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -subj "/C=US/ST=CFPB/L=Washington/O=Dis/CN=www.cf.gov" -keyout /etc/pki/tls/private/localhost.key -out /etc/pki/tls/certs/localhost.crt
   args:
     creates: /etc/pki/tls/certs/localhost.crt
   when: not custom_repo
+  tags:
+    - apache
 
 - name: Set recursive admin permissions on log folders
   acl:
@@ -64,6 +82,8 @@
     permissions: rX
     recursive: yes
     state: present
+  tags:
+    - apache
 
 - name: Set default admin permissions on log folders
   acl:
@@ -73,3 +93,5 @@
     permissions: rX
     default: yes
     state: present
+  tags:
+    - apache
