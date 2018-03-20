@@ -10,14 +10,12 @@
         - python-psycopg2
 
     - name: Download users data (31.7MB)
-#     shell: wget https://examples.citusdata.com/tutorial/users.csv -O /tmp/users.csv 
       get_url:
         url: https://examples.citusdata.com/tutorial/users.csv
         dest: /tmp/users.csv
         mode: 0755
 
     - name: Download events data (74.7MB)
-#     shell: wget https://examples.citusdata.com/tutorial/events.csv -O /tmp/events.csv 
       get_url:
         url: https://examples.citusdata.com/tutorial/events.csv
         dest: /tmp/events.csv
@@ -28,7 +26,6 @@
         login_user: "{{ pp_dba_username }}"
         login_password: "{{ pp_dba_password }}"
         login_host: citus_coordinator
-        #login_host: "{{ hostvars[groups['db_server'][0]]['ansible_ssh_host'] }}"
         port: "{{ pp_serverport }}"
         db: "postgres"
         script: "SELECT 1 AS TEST;"
@@ -58,10 +55,6 @@
         #msg="-----------------------------------------------" 
       #with_nested: "{{ query_result.stdout }}"
  
-#   - name: Assert results are correct
-#     assert:
-#       that: 
-#         - "{{ create_table_users_sql_results['status'] }} s defined"
     - name: create table events
       postgresql_exec:
         login_user: "{{ pp_superadmin }}"
@@ -105,12 +98,10 @@
         db: "postgres"
         script: "SELECT create_distributed_table('github_users', 'user_id');"
       register:  create_dist_table_users_sql_results
-      ignore_errors: true
 
     - name: print sql results
       debug:
         msg: "{{ create_dist_table_users_sql_results['status'] }}"
-      ignore_errors: true 
 
     - name: create distributed table events 
       postgresql_exec:
@@ -121,13 +112,10 @@
         db: "postgres"
         script: "SELECT create_distributed_table('github_events', 'user_id');"
       register:  create_dist_table_events_sql_results
-      ignore_errors: true 
 
     - name: print sql results
       debug:
         msg: "{{ create_dist_table_events_sql_results['status'] }}"
-      ignore_errors: true 
-
 
     - name: import users data
       postgresql_exec:
@@ -136,8 +124,7 @@
         login_host: citus_coordinator
         port: "{{ pp_serverport }}"
         db: "postgres"
-        script: "copy github_users from '/tmp/users.csv\' with csv;"
-        #script: "\\copy github_users from '/tmp/users.csv' with csv;"
+        script: "copy github_users from '/tmp/users.csv' with csv;"
       register:  import_users_data_results
 
     - name: print import results
@@ -173,7 +160,6 @@
 
     - name: print sql results
       debug:
-        #msg: "{{ select_users_counts_results['status'] }}"
         msg: "{{ select_users_counts_results['query_result'] }}"
 
     - name: analyze github push events
@@ -189,7 +175,6 @@
 
     - name: print sql results
       debug:
-        #msg: "{{ analyze_github_events_results['status'] }}"
         msg: "{{ analyze_github_events_results['query_result'] }}"
 
     - name: join users with events
@@ -205,7 +190,6 @@
 
     - name: print sql results
       debug:
-        #msg: "{{ analyze_github_events_results['status'] }}"
         msg: "{{ join_users_events_results['query_result'] }}"
 
     - name: run update query 
