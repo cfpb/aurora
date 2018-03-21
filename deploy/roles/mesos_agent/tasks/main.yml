@@ -267,6 +267,9 @@
   notify:
     - restart mesos-agent
   when: mesos_agent_version | version_compare('1.4.0', '>=')
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure default container info
   template:
@@ -275,11 +278,17 @@
   notify:
     - restart mesos-agent
   when: "{{ mesos_agent_version | version_compare('1.4.0', '>=') }}"
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Configure default container info
   template:
     src: default_container_info.j2
     dest: /etc/mesos-slave/default_container_info
+  tags:
+    - mesos
+    - mesos-agent
 
 ### AppC Container Images
 
@@ -404,6 +413,9 @@
     recursive: yes
     state: present
   with_items: "{{ mesos_agent_log_file_locations }}"
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Set default admin permissions on log folders
   acl:
@@ -414,3 +426,6 @@
     default: yes
     state: present
   with_items: "{{ mesos_agent_log_file_locations }}"
+  tags:
+    - mesos
+    - mesos-agent
