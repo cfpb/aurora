@@ -1,5 +1,6 @@
 ---
 install_sas: false
+sas_version: 9.4
 sas_install_home: /opt/sas/SASInstall
 sas_response_file_path: /opt/sas/SASInstall/deploy_plan.txt
 sas_sid_file: /opt/sas/SASInstall/sid_files/SAS94_9BQWQL_70104781_LINUX_X86-64.txt
@@ -10,3 +11,4 @@ java_heap_size: '-Xmx4096M -Xms1024M'
 sas_log_file_locations:
   - /opt/sas/studioconfig/appserver/studio
   - /opt/sas/studioconfig/spawner/log
+sas_work_dir: /sastmp
