@@ -71,6 +71,14 @@
   tags:
     - sas
 
+- name: Change the sas work directory
+  lineinfile:
+    dest: "{{ sas_home }}/SASFoundation/{{ sas_version }}/sasv9_local.cfg"
+    regexp: "-WORK"
+    line: "-WORK {{ sas_work_dir }}"
+  tags:
+    - sas
+
 - name: Ensure log directory exists
   file:
     path: "{{ item }}"
