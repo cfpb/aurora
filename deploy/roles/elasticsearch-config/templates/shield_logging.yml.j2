@@ -20,9 +20,9 @@ appender:
   access_log:
     type: {{ es_shield_log_type }}
     file: ${path.logs}/${cluster.name}-access.log
-    {% for option, value in es_shield_log_options %}
-    {{ option }}: {{ value }}
-    {% endfor %}
+{% for config_item in es_shield_log_options %}
+    {{ config_item.option }}: {{ config_item.value }}
+{% endfor %}
     layout:
       type: pattern
       conversionPattern: "[%d{ISO8601}] %m%n"
