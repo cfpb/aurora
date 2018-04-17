@@ -131,6 +131,14 @@
   notify:
     - restart elasticsearch
 
+- name: Configure audit logging
+  template:
+    src: shield_logging.yml.j2
+    dest: /etc/elasticsearch/shield/logging.yml
+    mode: 0640
+  notify:
+    - restart elasticsearch
+
 # Message Authentication Settings
 
 - name: Stat key file
