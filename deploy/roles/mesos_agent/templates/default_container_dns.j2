@@ -1,0 +1,17 @@
+{
+  "mesos": [
+    {% for network in mesos_cni_networks %}
+    {
+      "network_mode": "CNI",
+      "network_name": "{{ network.network_name }}",
+      "dns": {
+        "nameservers": [
+          {% for nameserver in network.nameservers %}
+          "{{ nameserver }}"{% if not loop.last %},{% endif %}
+          {% endfor %}
+        ]
+      }
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  ]
+}
