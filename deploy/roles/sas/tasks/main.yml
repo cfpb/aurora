@@ -4,7 +4,6 @@
     name: "{{ item }}"
     state: present
   with_items:
-    - libXext.i686
     - libXp
   notify:
     - restart sas-server
@@ -40,14 +39,14 @@
 
 - name: check sasenv script exists sas-console
   stat:
-    path: "{{ sas_home }}/SASFoundation/9.4/bin/sasenv_local"
+    path: "{{ sas_home }}/SASFoundation/{{ sas_version }}/bin/sasenv_local"
   register: setenv_file_console
   tags:
     - sas
 
 - name: Change the library path sas-console
   lineinfile:
-    dest: "{{ sas_home }}/SASFoundation/9.4/bin/sasenv_local"
+    dest: "{{ sas_home }}/SASFoundation/{{ sas_version }}/bin/sasenv_local"
     line: 'LD_LIBRARY_PATH="{{ sas_home }}/Secure/sasexe:{{ sas_home }}/SASPrivateJavaRuntimeEnvironment/{{ sas_version }}/jre/lib/amd64/server:{{ sas_home }}/SASPrivateJavaRuntimeEnvironment/{{ sas_version }}/jre/lib/amd64:{{ sas_home }}/SASFoundation/{{ sas_version }}/sasexe:/usr/lib64"'
     backup: yes
   when: setenv_file_console.stat.exists == True
