@@ -1,16 +1,4 @@
 ---
-- name: Install requirements for postgresql Ansible tasks
-  yum:
-    name: "{{ item }}"
-    state: present
-  become: yes
-  become_method: sudo
-  with_items:
-    - postgresql10-devel
-    - python-psycopg2
-    - git
-  check_mode: no
-
 - name: Allow postgres empty password login temporarily
   become: yes
   become_method: sudo
@@ -255,6 +243,19 @@
     type: group
     state: present
     admin_option: no
+
+- name: Create replication role
+  postgresql_user:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    name: "{{ replication_user }}"
+    role_attr_flags: LOGIN,REPLICATION
+    encrypted: yes
+    password: "{{ replication_password }}"
+    state: present
+  check_mode: no
 
 - name: Set permissions on log file directory recursively
   become: yes

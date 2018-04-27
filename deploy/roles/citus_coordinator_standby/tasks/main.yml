@@ -1,0 +1,28 @@
+---
+- name: Move the data dir
+  become: True
+  become_user: "{{ pp_superaccount }}"
+  command: "mv /var/lib/pgsql/10/data /var/lib/pgsql/10/data.bk"
+
+- name: Back up the primary server
+  become: True
+  become_user: "{{ pp_superaccount }}"
+  command: "/bin/pg_basebackup -h {{ hostvars['citus_coordinator']['ansible_ssh_host'] }} -U {{ replication_user }} -D {{ pp_datadir }}"
+
+- name: Update the postgres config file
+  become: True
+  become_user: "{{ pp_superaccount }}"
+  lineinfile:
+    dest: "{{ pp_datadir }}/postgresql.conf"
+    regexp: 'hot_standby = (.*)'
+    backrefs: yes
+    line: 'hot_standby = on'
+
+- name: Create the recovery conf
+  become: True
+  become_user: "{{ pp_superaccount }}"
+  template:
+    src: recovery.conf.j2
+    dest: "{{ pp_datadir }}/recovery.conf"
+    mode: "0600"
+    owner: "{{ pp_superaccount }}"

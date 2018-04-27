@@ -1,10 +1,10 @@
 ---
 jdk_packages:
-  - java-1.8.0-openjdk-1.8.0.131
-  - java-1.8.0-openjdk-devel-1.8.0.131
+  - java-1.8.0-openjdk-1.8.0.161
+  - java-1.8.0-openjdk-devel-1.8.0.161
   - libselinux-python
 
 java_deploy_options: []
-jre_lib_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-0.b11.el6_9.x86_64/jre/lib
-java_home_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.131-0.b11.el6_9.x86_64/
+jre_lib_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64/jre/lib
+java_home_path: /usr/lib/jvm/java-1.8.0-openjdk-1.8.0.161-0.b14.el7_4.x86_64/
 java_keystore_password: changeit

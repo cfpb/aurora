@@ -222,6 +222,11 @@ deploy_user: vagrant
 pp_dba_username: vagrant
 pp_dba_password: vagrant
 
+# Replication user
+replication_user: replication
+replication_password: replication
+
+pp_datadir: /var/lib/pgsql/10/data
 pp_custom_test_scripts:
   -
     script: "SELECT 1;"

@@ -9,9 +9,9 @@
     - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: log-courier, when: "install_logstash"}
-    - role: jdk
-    - role: postgresql-server
-    - role: citus
+    - jdk
+    - postgresql-server
+    - citus
   tasks:
     - name: Install utilities
       yum:
@@ -52,15 +52,13 @@
         name: "{{ pp_servicename }}"
         state: started
         enabled: yes
-      tags:
-        - postgresql-server
 
 - hosts: citus
   become: yes
   become_method: sudo
   serial: 1
   roles:
-    - role: postgresql-server-config
+    - postgresql-server-config
   post_tasks:
     - name: Create Citus extension
       postgresql_exec:
@@ -74,7 +72,31 @@
       with_items:
         - postgres
 
-
 - hosts: citus_coordinator
+  become: yes
+  become_method: sudo
+  serial: 1
   roles:
     - role: citus_coordinator
+  tasks:
+    - name: Create back up of postgresql.conf
+      copy:
+        src: "{{ pp_datadir }}/postgresql.conf"
+        dest: "/tmp/postgresql.conf"
+        remote_src: yes
+
+    - name: Create archive directory
+      file:
+        state: directory
+        path: "{{ pp_datadir }}/archives"
+
+- hosts: citus_coordinator_standby
+  serial: 1
+  roles:
+    - role: citus_coordinator_standby
+  tasks:
+    - name: restart postgres
+      become: True
+      service:
+        name: "{{ pp_servicename }}"
+        state: restarted
