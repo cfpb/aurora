@@ -93,10 +93,4 @@
 - hosts: citus_coordinator_standby
   serial: 1
   roles:
-    - role: citus_coordinator_standby
-  tasks:
-    - name: restart postgres
-      become: True
-      service:
-        name: "{{ pp_servicename }}"
-        state: restarted
+    - {role: citus_coordinator_standby, when: "{{ pp_install }}"}

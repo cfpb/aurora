@@ -17,6 +17,8 @@
     regexp: 'hot_standby = (.*)'
     backrefs: yes
     line: 'hot_standby = on'
+  notify:
+    - restart postgres
 
 - name: Create the recovery conf
   become: True
