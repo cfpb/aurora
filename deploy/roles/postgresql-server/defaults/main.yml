@@ -35,6 +35,10 @@ pp_autostart_pgbouncer: yes
 pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
+# Replication user
+replication_user: replication
+replication_password: replication
+
 # Core server config
 pp_clusterdir: /usr/local/pgsql/data
 pp_datadir: /var/lib/pgsql/10/data

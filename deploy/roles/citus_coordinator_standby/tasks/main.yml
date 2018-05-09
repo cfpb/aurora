@@ -1,4 +1,10 @@
 ---
+- name: Ensure PG is stopped
+  become: True
+  service:
+    name: "{{ pp_servicename }}"
+    state: stopped
+
 - name: Move the data dir
   become: True
   become_user: "{{ pp_superaccount }}"
@@ -15,7 +21,6 @@
   lineinfile:
     dest: "{{ pp_datadir }}/postgresql.conf"
     regexp: 'hot_standby = (.*)'
-    backrefs: yes
     line: 'hot_standby = on'
   notify:
     - restart postgres
