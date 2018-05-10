@@ -84,6 +84,7 @@
         src: "{{ pp_datadir }}/postgresql.conf"
         dest: "/tmp/postgresql.conf"
         remote_src: yes
+        mode: "0600"
 
     - name: Create archive directory
       file:
