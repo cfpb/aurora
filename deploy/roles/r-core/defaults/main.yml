@@ -1,0 +1,8 @@
+---
+r_core_state: ""
+
+- include_role: 
+    name: "{{ item }}"
+  with_items:
+    - r-core
+    - r-libs
