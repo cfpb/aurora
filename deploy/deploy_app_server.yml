@@ -78,6 +78,8 @@
   roles:
     - jdk
     - r
+    - r-core
+    - r-libs
     - r-shiny
     - {role: log-courier, when: "install_logstash"}
     - clouseau
