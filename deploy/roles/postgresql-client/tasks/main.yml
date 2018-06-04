@@ -64,6 +64,7 @@
     dest: /etc/profile.d/postgres.sh
     create: yes
     line: export PATH={{ postgres_install_dir }}/bin:$PATH
+    regexp: (.*)export PATH=(.*)
     mode: 0644
   tags:
     - postgres_client
