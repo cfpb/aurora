@@ -63,6 +63,3 @@
     - Makeconf
   tags:
     - r-core
-
-- include_role:
-    name: r-libs
