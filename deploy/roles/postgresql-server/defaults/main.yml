@@ -114,7 +114,7 @@ pg_hba_settings:
     auth_options: ''
 
 # Additional postgresql.conf settings
-pp_listen_addresses: '*'
+pp_listen_addresses: 'localhost,{{ ansible_ssh_host }}'
 pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
