@@ -561,8 +561,7 @@ Vagrant.configure(2) do |config|
 
     server.vm.provision "ansible" do |ansible|
       if ENV['DB_SERVER_EXTRA_VARS']
-        ansible_extra_vars = ENV['DB_SERVER_EXTRA_VARS']
-        print ansible_extra_vars
+        db_server_extra_vars = ENV['DB_SERVER_EXTRA_VARS']
       else
         print "To use the db_server_edb VM, set the DB_SERVER_EXTRA_VARS environment variable to the name of a local YAML file that contains pp_web_username (email addresses only) and pp_web_password as well as 'install_edb' flag set to true.\n"
         print "Example:\n"
@@ -573,7 +572,7 @@ Vagrant.configure(2) do |config|
         print "pp_web_password: mypassword\n"
         print "install_edb: True\n"
       end
-    
+
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
