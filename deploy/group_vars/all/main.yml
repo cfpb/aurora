@@ -173,6 +173,7 @@ ldap_subdomain: ldap
 ldap_server: kdc.test.dev
 ldap_user_scope: "cn=Users"
 ldap_group_scope: "cn=Groups"
+ldap_user_filter: "uid={username}"
 
 # LDAP Service Account
 ldap_service_account: admin

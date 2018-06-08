@@ -52,6 +52,7 @@ auth_proxy {{ shiny_auth_proxy_header }};
 {% if use_active_directory %}
 auth_active_dir ldap://{{ ldap_server }}/dc={{ ldap_server.split(".")[-2] }},dc={{ ldap_server.split(".")[-1] }} {{ domain_name }}{
   user_search_base "{{ ldap_user_scope }}";
+  user_filter "{{ ldap_user_filter }}";
   group_search_base "{{ ldap_group_scope }}";
 }
 {% else %}
@@ -63,6 +64,6 @@ auth_passwd_file /etc/shiny-server/passwd;
 admin {{ shiny_admin_port }} {
   # Only permit the user named `admin` to access the admin interface.
   required_user {{ shiny_required_users }};
-  required_group {{ restricted_group_name }};
+  required_group {{ shiny_required_groups }};
 }
 {% endif %}
