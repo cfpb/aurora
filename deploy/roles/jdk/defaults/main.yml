@@ -1,6 +1,5 @@
 ---
 jdk_packages:
-<<<<<<< HEAD
   - java-1.8.0-openjdk
   - java-1.8.0-openjdk-devel
   - libselinux-python
@@ -8,13 +7,4 @@ jdk_packages:
 java_deploy_options: []
 jre_lib_path: /usr/lib/jvm/java-1.8.0/jre/lib
 java_home_path: /usr/lib/jvm/java-1.8.0
-=======
-  - java-1.8.0-openjdk-1.8.0.171
-  - java-1.8.0-openjdk-devel-1.8.0.171
-  - libselinux-python
-
-java_deploy_options: []
-jre_lib_path: /usr/lib/jvm/java/jre/lib
-java_home_path: /usr/lib/jvm/java
->>>>>>> 10fc6eb... Simplify JDK settings and add wal_sizes
 java_keystore_password: changeit
