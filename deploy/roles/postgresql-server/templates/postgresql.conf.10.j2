@@ -196,7 +196,8 @@ commit_siblings = {{ pp_commit_siblings }}			# range 1-1000
 # Deprecated in 9.5
 # checkpoint_segments = {{ pp_checkpoint_segments }}		# in logfile segments, min 1, 16MB each
 
-max_wal_size = {{ (pp_checkpoint_segments|int)*3*16 }}MB
+min_wal_size = {{ pp_min_wal_size }}
+max_wal_size = {{ pp_max_wal_size }}
 checkpoint_timeout = {{ pp_checkpoint_timeout }}	# range 30s-1h
 checkpoint_completion_target = {{ pp_checkpoint_completion_target }}	# checkpoint target duration, 0.0 - 1.0
 checkpoint_warning = {{ pp_checkpoint_warning }}		# 0 disables

@@ -186,6 +186,8 @@ pp_wal_buffers: -1
 pp_wal_writer_delay: 200ms
 pp_commit_delay: 0
 pp_commit_siblings: 5
+pp_min_wal_size: '80MB'
+pp_max_wal_size: '1GB'
 
 pp_checkpoint_segments: 3
 pp_checkpoint_timeout: 5min
