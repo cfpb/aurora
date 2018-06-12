@@ -143,6 +143,8 @@
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
 
+# TODO: This should have a where clause to limit it to Citus hosts, or perhaps
+# be moved to the Citus role.
 - name: Update Citus extension
   postgresql_exec:
     login_host: localhost
