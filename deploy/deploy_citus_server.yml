@@ -39,6 +39,21 @@
         src: "{{ pp_file_transfer_dir }}"
         state: link
 
+    - name: Check WAL directory exists
+      stat:
+        path: "{{ pp_xlogdir }}/pg_wal"
+      register: stat_result
+
+    - name: Move WAL directory to proper location
+      command: "mv {{ pp_datadir }}/pg_wal {{ pp_xlogdir }}"
+      when: stat_result.stat.exists == False
+
+    - name: Ensure symlink exists for WAL directory
+      file:
+        dest: "{{ pp_datadir }}/pg_wal"
+        src: "{{ pp_xlogdir }}pg_wal"
+        state: link
+
     - name: Setup host file
       lineinfile:
         dest: /etc/hosts
