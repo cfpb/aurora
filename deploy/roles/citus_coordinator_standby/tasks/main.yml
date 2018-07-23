@@ -27,7 +27,7 @@
     command: "/bin/pg_basebackup -h {{ hostvars[groups[item][0]]['ansible_ssh_host'] }} -U {{ replication_user }} -D {{ pp_datadir }}"
     responses:
       "Password:": "{{ replication_password }}"
-  with_items: "{{ citus_coordinator }}"
+  with_items: "{{ 'citus_prod_coordinator' if custom_repo else 'citus_coordinator' }}"
 
 - name: Change the ownership of data directory
   become: True
@@ -55,3 +55,4 @@
     dest: "{{ pp_datadir }}/recovery.conf"
     mode: "0600"
     owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"
