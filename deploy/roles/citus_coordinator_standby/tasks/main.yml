@@ -29,6 +29,29 @@
       "Password:": "{{ replication_password }}"
   with_items: "{{ 'citus_prod_coordinator' if custom_repo else 'citus_coordinator' }}"
 
+- name: Back up the WAL directory
+  become: True
+  command: "mv {{ pp_xlogdir }}{{ pg_wal }} {{ pp_xlogdir }}{{ pg_wal }}.bkup"
+
+- name: Move WAL directory to proper location again
+  become: True
+  command: "mv {{ pp_datadir }}/{{ pg_wal }} {{ pp_xlogdir }}"
+
+- name: Ensure correct ownership of WAL
+  become: True
+  file:
+    path: "{{ pp_xlogdir }}"
+    owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"
+    recurse: yes
+
+- name: Ensure symlink exists for WAL directory
+  become: True
+  file:
+    dest: "{{ pp_datadir }}/{{ pg_wal }}"
+    src: "{{ pp_xlogdir }}{{ pg_wal }}"
+    state: link
+
 - name: Change the ownership of data directory
   become: True
   file:
