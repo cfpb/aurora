@@ -53,7 +53,7 @@ pp_serviceaccount: postgres
 pp_serverport: 5432
 pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql
+pp_xlogdir: /var/log/postgresql/
 ## PostgreSQL Configuration Settings
 
 # pg_hba.conf settings

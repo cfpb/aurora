@@ -7,17 +7,40 @@
 
 - name: Move the data dir
   become: True
-  become_user: "{{ pp_superaccount }}"
-  command: "mv /var/lib/pgsql/10/data /var/lib/pgsql/10/data.bk"
+  command: "mv {{ pp_datadir }} {{ pp_datadir }}.bk"
+
+- name: Install pip (driver dependency)
+  become: True
+  yum:
+    name: python-pip
+    state: present
+
+- name: pip install pexpect
+  become: True
+  pip:
+    name: pexpect
+    executable: /usr/bin/pip
 
 - name: Back up the primary server
   become: True
-  become_user: "{{ pp_superaccount }}"
-  command: "/bin/pg_basebackup -h {{ hostvars['citus_coordinator']['ansible_ssh_host'] }} -U {{ replication_user }} -D {{ pp_datadir }}"
+  expect:
+    command: "/bin/pg_basebackup -h {{ hostvars[groups[item][0]]['ansible_ssh_host'] }} -U {{ replication_user }} -D {{ pp_datadir }}"
+    responses:
+      "Password:": "{{ replication_password }}"
+  with_items: "{{ citus_coordinator }}"
+
+- name: Change the ownership of data directory
+  become: True
+  file:
+    state: directory
+    path: "{{ pp_datadir }}"
+    owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"
+    recurse: yes
+    mode: 0700
 
 - name: Update the postgres config file
   become: True
-  become_user: "{{ pp_superaccount }}"
   lineinfile:
     dest: "{{ pp_datadir }}/postgresql.conf"
     regexp: 'hot_standby = (.*)'
@@ -27,7 +50,6 @@
 
 - name: Create the recovery conf
   become: True
-  become_user: "{{ pp_superaccount }}"
   template:
     src: recovery.conf.j2
     dest: "{{ pp_datadir }}/recovery.conf"
