@@ -66,8 +66,11 @@
   become: True
   lineinfile:
     dest: "{{ pp_datadir }}/postgresql.conf"
-    regexp: 'hot_standby = (.*)'
-    line: 'hot_standby = on'
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - {'regexp': 'hot_standby = (.*)', 'line': 'hot_standby = on'}
+    - {'regexp': 'listen_addresses = (.*)','line': "listen_addresses = 'localhost,{{ ansible_ssh_host }}'"}
   notify:
     - restart postgres
 
