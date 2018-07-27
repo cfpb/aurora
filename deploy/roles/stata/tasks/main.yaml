@@ -73,12 +73,25 @@
   tags:
     - stata
 
+- name: Add the update do file
+  template:
+    src: stataupdate.do.j2
+    dest: "{{ stata_install_directory }}/stataupdate.do"
+  tags:
+    - stata
+
+- name: Run the update do file (checks for updates, installs and restarts stata if updated)
+  shell: "{{ stata_install_directory }}/stata-mp -b {{ stata_install_directory }}/stataupdate.do"
+  when: custom_repo and stata_patch_update
+  tags:
+    - stata
+
 - name: Update permissions
   file:
     path: "{{ stata_install_directory }}"
     recurse: yes
     state: directory
-    mode: 0755
+    mode: "0755"
   tags:
     - stata
 

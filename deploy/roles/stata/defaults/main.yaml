@@ -15,6 +15,7 @@ stata_processor:                    4
 stata_site:                         "/home/work/shared_ado"
 stata_profile_dir:                  /usr/local/stata
 
+stata_patch_update: False
 
 stata_printers:  
     - 1001_Konica ps "lpr -P 1001_Konica_1234 @"
