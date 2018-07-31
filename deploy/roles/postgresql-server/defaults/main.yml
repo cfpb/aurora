@@ -35,6 +35,10 @@ pp_autostart_pgbouncer: yes
 pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
+# Replication user
+replication_user: replication
+replication_password: replication
+
 # Core server config
 pp_clusterdir: /usr/local/pgsql/data
 pp_datadir: /var/lib/pgsql/10/data
@@ -49,7 +53,7 @@ pp_serviceaccount: postgres
 pp_serverport: 5432
 pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql
+pp_xlogdir: /var/log/postgresql/
 ## PostgreSQL Configuration Settings
 
 # pg_hba.conf settings
@@ -68,6 +72,15 @@ pg_hba_settings:
     context: host
     db: all
     user: postgres
+    address: '10.0.1.0/24'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
+    comment: 'replication user connection:'
+    context: host
+    db: replication
+    user: replication
     address: '10.0.1.0/24'
     ip_mask: ''
     auth_method: md5

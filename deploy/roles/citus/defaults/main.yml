@@ -1,8 +1,7 @@
-pp_datadir: /var/lib/pgsql/10/data
 pp_serverport: 5432
 pp_servicename: postgresql-10
 
-rpm_url: https://install.citusdata.com/community/rpm.sh
+rpm_url: https://packagecloud.io/install/repositories/citusdata/community/script.rpm.sh
 
 citus_pkgs:
   - citus72_10

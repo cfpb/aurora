@@ -52,9 +52,13 @@ pp_dba_scripts:
       SECURITY DEFINER
       LANGUAGE plpgsql;
 
-pp_datadir: /var/lib/pgsql/10/data
 pp_servicename: postgresql-10
 pg_admin_group_names:
   - vagrant
 pg_conf_file: /var/lib/pgsql/10/data/postgresql.conf
 pp_log_directory: /var/lib/pgsql/10/data/pg_log
+pp_datadir: /var/lib/pgsql/10/data
+
+# Replication user
+replication_user: replication
+replication_password: replication

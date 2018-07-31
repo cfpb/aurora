@@ -1,0 +1,84 @@
+---
+- name: Ensure PG is stopped
+  become: True
+  service:
+    name: "{{ pp_servicename }}"
+    state: stopped
+
+- name: Move the data dir
+  become: True
+  command: "mv {{ pp_datadir }} {{ pp_datadir }}.bk"
+
+- name: Install pip (driver dependency)
+  become: True
+  yum:
+    name: python-pip
+    state: present
+
+- name: pip install pexpect
+  become: True
+  pip:
+    name: pexpect
+    executable: /usr/bin/pip
+
+- name: Back up the primary server
+  become: True
+  expect:
+    command: "/bin/pg_basebackup -h {{ hostvars[groups[item][0]]['ansible_ssh_host'] }} -U {{ replication_user }} -D {{ pp_datadir }}"
+    responses:
+      "Password:": "{{ replication_password }}"
+  with_items: "{{ 'citus_prod_coordinator' if custom_repo else 'citus_coordinator' }}"
+
+- name: Back up the WAL directory
+  become: True
+  command: "mv {{ pp_xlogdir }}{{ pg_wal }} {{ pp_xlogdir }}{{ pg_wal }}.bkup"
+
+- name: Move WAL directory to proper location again
+  become: True
+  command: "mv {{ pp_datadir }}/{{ pg_wal }} {{ pp_xlogdir }}"
+
+- name: Ensure correct ownership of WAL
+  become: True
+  file:
+    path: "{{ pp_xlogdir }}"
+    owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"
+    recurse: yes
+
+- name: Ensure symlink exists for WAL directory
+  become: True
+  file:
+    dest: "{{ pp_datadir }}/{{ pg_wal }}"
+    src: "{{ pp_xlogdir }}{{ pg_wal }}"
+    state: link
+
+- name: Change the ownership of data directory
+  become: True
+  file:
+    state: directory
+    path: "{{ pp_datadir }}"
+    owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"
+    recurse: yes
+    mode: 0700
+
+- name: Update the postgres config file
+  become: True
+  lineinfile:
+    dest: "{{ pp_datadir }}/postgresql.conf"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - {'regexp': 'hot_standby = (.*)', 'line': 'hot_standby = on'}
+    - {'regexp': 'listen_addresses = (.*)','line': "listen_addresses = 'localhost,{{ ansible_ssh_host }}'"}
+  notify:
+    - restart postgres
+
+- name: Create the recovery conf
+  become: True
+  template:
+    src: recovery.conf.j2
+    dest: "{{ pp_datadir }}/recovery.conf"
+    mode: "0600"
+    owner: "{{ pp_superaccount }}"
+    group: "{{ pp_superaccount }}"

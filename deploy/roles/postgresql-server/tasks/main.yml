@@ -211,6 +211,18 @@
   tags:
     - postgresql-server
 
+- name: Install requirements for postgresql Ansible tasks
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: yes
+  become_method: sudo
+  with_items:
+    - postgresql10-devel
+    - python-psycopg2
+    - git
+  check_mode: no
+
 - name: Install extensions and supplementary packages
   yum:
     name: "{{ item }}"

@@ -1,0 +1,7 @@
+---
+replication_user: replication
+replication_password: replication
+pp_servicename: postgresql-10
+pp_datadir: /var/lib/pgsql/10/data
+pp_xlogdir: /var/log/postgresql/
+pg_wal: pg_wal

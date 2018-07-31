@@ -1,0 +1,7 @@
+---
+pp_wal_level: hot_standby
+pp_max_wal_senders: 5
+pp_wal_keep_segments: 32
+pp_archive_mode: on
+pp_archive_command: 'cp %p {{ pp_datadir }}/archives/%f'
+pp_max_replication_slots: 5
