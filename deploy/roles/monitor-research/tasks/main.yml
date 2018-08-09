@@ -17,5 +17,5 @@
 - name: folder size in CCDB folder
   shell: "du -h --max-depth=1 {{ research_monitor_ccdb_location }} >> {{ dated_file_name }}"
 
-- name: folder size of user folder
-  shell: "du -h --max-depth=1 {{ research_monitor_user_location }} >> {{ dated_file_name }}"
+# - name: folder size of user folder
+#   shell: "du -h --max-depth=1 {{ research_monitor_user_location }} >> {{ dated_file_name }}"
