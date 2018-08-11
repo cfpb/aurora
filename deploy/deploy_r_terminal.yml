@@ -3,7 +3,6 @@
   become: yes
   become_method: sudo
   roles:
-    - r
     - r-core
     - r-libs
     - r-shiny
