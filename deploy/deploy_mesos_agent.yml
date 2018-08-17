@@ -35,7 +35,8 @@
     - jdbc
     - {role: ruby, when: "install_ruby"}
     - sqitch
-    - r
+    - r-core
+    - r-libs
     - r-shiny
     - nodejs
     - redis

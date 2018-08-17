@@ -77,7 +77,6 @@
   become_method: sudo
   roles:
     - jdk
-    - r
     - r-core
     - r-libs
     - r-shiny
