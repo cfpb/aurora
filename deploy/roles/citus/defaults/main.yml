@@ -8,3 +8,7 @@ citus_pkgs:
 
 pp_shared_preload_libraries: citus
 citus_memory_limit_service: MemoryMax
+
+# Replication user
+replication_user: replication
+replication_password: replication

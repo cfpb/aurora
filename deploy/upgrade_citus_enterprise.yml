@@ -1,0 +1,51 @@
+---
+# Example usage:
+# ansible-playbook --private-key=~/.vagrant.d/insecure_private_key -u vagrant -i vagrant_hosts upgrade_citus_enterprise.yml --limit citus_coordinator
+- hosts: citus
+  become: yes
+  become_method: sudo
+  serial: 1
+  max_fail_percentage: 1
+  roles:
+    - citus
+  pre_tasks:
+    - name: Uninstall community edition
+      yum:
+        name: "{{ item }}"
+        state: absent
+      with_items: "{{ citus_community_pkgs }}"
+
+    - name: Install enterprise edition
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items: "{{ citus_pkgs }}"
+      notify: restart postgres
+
+    # Restart postgres
+    - meta: flush_handlers
+
+    - pause:
+        seconds: 30
+
+    - name: Update citus extension
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        port: "{{ pp_serverport }}"
+        db: "{{ item }}"
+        script: "ALTER EXTENSION citus UPDATE;"
+      with_items: "{{ citus_databases }}"
+      check_mode: false
+
+    - name: Create shared_rebalancer extension
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        port: "{{ pp_serverport }}"
+        db: "{{ item }}"
+        script: "CREATE EXTENSION shard_rebalancer;"
+      with_items: "{{ citus_databases }}"
+      check_mode: false
