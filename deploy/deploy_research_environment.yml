@@ -118,7 +118,8 @@
     - {role: python3-build, when: "not custom_repo"}
     - {role: python-libs}
     - postgresql-client
-    - r
+    - r-core
+    - r-libs
     - r-studio-desktop
     - r-studio-server
     - r-studio-server-config

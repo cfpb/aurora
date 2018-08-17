@@ -1,0 +1,95 @@
+---
+- name: Install packages required by R packages
+  become: yes
+  become_method: sudo
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ r_dependencies }}"
+  tags:
+    - r-libs
+
+- name: Find any locked directories
+  become: yes
+  become_method: sudo
+  find:
+    paths: "{{ r_system_package_dir }}"
+    pattern: '00LOCK-*'
+    file_type: directory
+  register: locked_dirs
+  tags:
+    - r-libs
+
+- name: Remove locked directories
+  become: yes
+  become_method: sudo
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items:
+    - "{{ locked_dirs.files }}"
+  tags:
+    - r-libs
+
+- name: Update existing R packages
+  become: yes
+  become_method: sudo
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
+  environment: "{{ r_env_vars }}"
+  async: 2400
+  poll: 60
+  tags:
+    - r-libs
+
+- name: Install R packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r-libs
+
+- name: Install R packages with opts
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages_with_opts }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r-libs
+
+- name: Install R packages from Github
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages_github }}"
+  register: r_github_result
+  failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
+  changed_when: "'Added' in r_github_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r-libs
+
+- name: Re-ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+  tags:
+    - r-libs
+
+- name: Permissions for R package directory
+  file:
+    state: directory
+    mode: '2775'
+    path: "{{ item }}"
+    owner: root
+    group: "{{ restricted_group_name }}"
+    recurse: yes
+  with_items: "{{ r_system_package_dir }}"
+  tags:
+    - r-libs

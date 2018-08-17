@@ -1,0 +1,30 @@
+---
+install_r_packages: true
+
+r_dependencies:
+  - libcurl-devel
+  - libxml2-devel
+  - hunspell-devel
+  - udunits2
+  - udunits2-devel
+
+r_packages:
+  - "devtools"
+
+r_packages_github:
+  - name: shinydashboard
+    user: rstudio
+
+r_env_vars:
+  CC: /opt/rh/devtoolset-2/root/usr/bin/gcc
+  CPP: /opt/rh/devtoolset-2/root/usr/bin/cpp
+  CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
+
+r_packages_with_opts:
+  - name: udunits2
+    include: /usr/include/udunits2
+    lib: /usr/lib64
+
+r_system_package_dir:
+  - /usr/lib64/R/library
+  - /usr/share/doc
