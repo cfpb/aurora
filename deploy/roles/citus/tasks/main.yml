@@ -68,3 +68,13 @@
     - restart postgres
   tags:
     - citus
+
+- name: Add kernel limits settings
+  template:
+    dest: /etc/systemd/system/postgresql-10.service.d/KernelLimits.conf
+    src: citus_limits.conf.j2
+  notify:
+    - reload-daemon
+    - restart postgres
+  tags:
+    - citus

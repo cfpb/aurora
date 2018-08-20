@@ -12,7 +12,7 @@
 - meta: flush_handlers
 
 - pause:
-    seconds: 30
+    seconds: "{{ pp_server_start_pause }}"
 
 - name: Ensure password is correct
   postgresql_exec:
