@@ -105,6 +105,7 @@
   roles:
     - stata
     - stattransfer
+    - r
 
 - hosts: research_python
   become: yes
