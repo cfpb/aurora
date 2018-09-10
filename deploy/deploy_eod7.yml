@@ -1,5 +1,5 @@
 ---
-- hosts:
+- hosts: research_eod
   become: yes
   become_method: sudo
   roles:
