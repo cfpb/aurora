@@ -1,0 +1,20 @@
+[COMMON]
+EoDHomeDir={{ eod_install_directory }}
+EoDSSLAvailable=1
+EoDDataStoreDir={{ eod_datastore_directory }}
+EoDDataStorePassword={{ eod_datastore_password }}
+
+[SERVER]
+EoDSSHCommand=/usr/bin/ssh
+ECSSSLLibPath={{ eod_install_directory }}/bin/sys/libssl.so.1.0.0
+ECSCryptoLibPath={{ eod_install_directory }}/bin/sys/libcrypto.so.1.0.0
+EoDRootCAKey=
+EoDLdapLibrary=
+EoDGSSLibrary=
+EoDKRB5Library=
+EoDFirstDisplay=1
+EoDStartupBannerOn=0
+ECSNodeEnabled=1
+
+[CLUSTER_MANAGER]
+EoDCMPort=5500

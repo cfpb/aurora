@@ -1,0 +1,6 @@
+[No Show Proxy Dialog]
+Identity=unix-user:*
+Action=org.freedesktop.packagekit.system-network-proxy-configure
+ResultAny=no
+ResultInactive=no
+ResultActive=no
