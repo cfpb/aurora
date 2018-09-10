@@ -1,0 +1,5 @@
+{% if eod_use_license_server != 1 %}
+{% for key in eod_license_keys %}
+{{ key }}
+{% endfor %}
+{% endif %}
