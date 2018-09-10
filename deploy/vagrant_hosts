@@ -43,6 +43,9 @@ research_ancillary_services ansible_ssh_host=10.0.1.18
 [research_eod]
 research_eod ansible_ssh_host=10.0.1.19
 
+[research_eod7]
+research_eod7 ansible_ssh_host=10.0.1.119
+
 [research_gauss]
 research_gauss_1 ansible_ssh_host=10.0.1.20
 
@@ -64,6 +67,7 @@ research_sas ansible_ssh_host=10.0.1.25
 [research_environment:children]
 research_ancillary_services
 research_eod
+research_eod7
 research_gauss
 research_stata
 research_python

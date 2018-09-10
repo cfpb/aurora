@@ -1,0 +1,6 @@
+---
+- hosts:
+  become: yes
+  become_method: sudo
+  roles:
+    - eod7

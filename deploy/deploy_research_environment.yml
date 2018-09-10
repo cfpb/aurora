@@ -88,6 +88,13 @@
   roles:
     - eod
 
+- hosts: research_eod7
+  become: yes
+  become_method: sudo
+  serial: 1
+  roles:
+    - eod7
+
 - hosts: research_gauss
   become: yes
   become_method: sudo
