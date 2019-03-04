@@ -62,3 +62,5 @@ pp_datadir: /var/lib/pgsql/10/data
 # Replication user
 replication_user: replication
 replication_password: replication
+
+pp_server_start_pause: 30
