@@ -4,6 +4,7 @@ require 'fileutils'
 
 Vagrant.configure(2) do |config|
 
+  config.vm.box = "bento/centos-7"
   ### COMMON VARIABLES
 
   # First make sure that an .vault_password file exists, and if it doesn't
@@ -32,7 +33,7 @@ Vagrant.configure(2) do |config|
   config.vm.define :file_server_1 do |fs_config|
     fs_config.vm.box = "bento/centos-7"
     #fs_config.vm.box = "centos/7"
-    fs_config.vm.host_name = "file-server-1.test.dev"
+    fs_config.vm.hostname = "file-server-1.test.dev"
 
     fs_config.ssh.forward_agent = true
 
@@ -41,7 +42,7 @@ Vagrant.configure(2) do |config|
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
-        v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_1, '--size', 256, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
@@ -67,15 +68,15 @@ Vagrant.configure(2) do |config|
   # GlusterFS File Server 2
   disk_file_2 = File.join(VAGRANT_ROOT, 'gfs_brick_2.vdi')
   config.vm.define :file_server_2 do |fs_config|
-    fs_config.vm.box = "bento/centos-6.7"
-    fs_config.vm.host_name = "file-server-2.test.dev"
+    #fs_config.vm.box = "bento/centos-6.7"
+    fs_config.vm.hostname = "file-server-2.test.dev"
 
     fs_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
-        v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_2, '--size', 256, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
@@ -112,7 +113,7 @@ Vagrant.configure(2) do |config|
   # Admin Terminal VM
   config.vm.define :admin_terminal do |adterm_config|
     adterm_config.vm.box = "bento/centos-6.7"
-    adterm_config.vm.host_name = "admin.test.dev"
+    adterm_config.vm.hostname = "admin.test.dev"
 
     adterm_config.ssh.forward_agent = true
 
@@ -134,7 +135,7 @@ Vagrant.configure(2) do |config|
   # Kerberos Server VM - for testing purposes only
   config.vm.define :kerberos_server do |kerberos_config|
     kerberos_config.vm.box = "bento/centos-6.7"
-    kerberos_config.vm.host_name = "kdc.test.dev"
+    kerberos_config.vm.hostname = "kdc.test.dev"
 
     kerberos_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.3  proxy.test.dev' >> /etc/hosts"
@@ -166,7 +167,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define :proxy_server do |proxy_config|
     proxy_config.vm.box = "bento/centos-6.7"
-    proxy_config.vm.host_name = "proxy.test.dev"
+    proxy_config.vm.hostname = "proxy.test.dev"
 
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.127  kdc.test.dev' >> /etc/hosts"
@@ -204,7 +205,7 @@ Vagrant.configure(2) do |config|
   # NGINX proxy config
   config.vm.define :nginx_server do |proxy_config|
     proxy_config.vm.box = "bento/centos-6.7"
-    proxy_config.vm.host_name = "nginx-proxy.test.dev"
+    proxy_config.vm.hostname = "nginx-proxy.test.dev"
 
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.127  kdc.test.dev' >> /etc/hosts"
@@ -243,7 +244,7 @@ Vagrant.configure(2) do |config|
   # Analytics Terminal
   config.vm.define :analytics_terminal do |analytics_config|
     analytics_config.vm.box = "bento/centos-6.7"
-    analytics_config.vm.host_name = "analytics.test.dev"
+    analytics_config.vm.hostname = "analytics.test.dev"
 
     analytics_config.ssh.forward_agent = true
 
@@ -270,7 +271,7 @@ Vagrant.configure(2) do |config|
   # Kibana Client Node
   config.vm.define "elk" do |elk_config|
     elk_config.vm.box = "bento/centos-6.7"
-    elk_config.vm.host_name = "elk.test.dev"
+    elk_config.vm.hostname = "elk.test.dev"
     elk_config.ssh.forward_agent = true
 
     elk_config.vm.provision :shell,
@@ -292,7 +293,7 @@ Vagrant.configure(2) do |config|
   (1..3).each do |i|
     config.vm.define "es#{i}" do |es_config|
       es_config.vm.box = "bento/centos-6.7"
-      es_config.vm.host_name = "es#{i}.test.dev"
+      es_config.vm.hostname = "es#{i}.test.dev"
       es_config.ssh.forward_agent = true
 
       es_config.vm.provision :shell,
@@ -314,7 +315,7 @@ Vagrant.configure(2) do |config|
   # App server
   config.vm.define :app_server do |app_config|
     app_config.vm.box = "bento/centos-6.7"
-    app_config.vm.host_name = "app.test.dev"
+    app_config.vm.hostname = "app.test.dev"
 
     app_config.ssh.forward_agent = true
 
@@ -342,7 +343,7 @@ Vagrant.configure(2) do |config|
   # Research ancillary server
   config.vm.define :research_ancillary_services do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-ancillary.test.dev"
+    server.vm.hostname = "research-ancillary.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -361,7 +362,7 @@ Vagrant.configure(2) do |config|
   # Research EOD server
   config.vm.define :research_eod do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-eod.test.dev"
+    server.vm.hostname = "research-eod.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -380,7 +381,7 @@ Vagrant.configure(2) do |config|
   # Research gauss server
   config.vm.define :research_gauss do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-gauss.test.dev"
+    server.vm.hostname = "research-gauss.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -399,7 +400,7 @@ Vagrant.configure(2) do |config|
   # Research stata server
   config.vm.define :research_stata do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-stata.test.dev"
+    server.vm.hostname = "research-stata.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -418,7 +419,7 @@ Vagrant.configure(2) do |config|
   # Research R/Python server
   config.vm.define :research_python do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-python.test.dev"
+    server.vm.hostname = "research-python.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -437,7 +438,7 @@ Vagrant.configure(2) do |config|
   # Research Matlab server
   config.vm.define :research_matlab do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-matlab.test.dev"
+    server.vm.hostname = "research-matlab.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -456,7 +457,7 @@ Vagrant.configure(2) do |config|
   # Research SPSS server
   config.vm.define :research_spss do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-spss.test.dev"
+    server.vm.hostname = "research-spss.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -475,7 +476,7 @@ Vagrant.configure(2) do |config|
   # Research SAS server
   config.vm.define :research_sas do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "research-sas.test.dev"
+    server.vm.hostname = "research-sas.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -497,7 +498,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define :ci_server do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "ci-server.test.dev"
+    server.vm.hostname = "ci-server.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -515,7 +516,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define :ci_agent_1 do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "ci-agent-1.test.dev"
+    server.vm.hostname = "ci-agent-1.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -533,7 +534,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.define :ci_terminal_1 do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "ci-terminal-1.test.dev"
+    server.vm.hostname = "ci-terminal-1.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -556,7 +557,7 @@ Vagrant.configure(2) do |config|
   # DB Server (EDB)
   config.vm.define :db_server_edb do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "db-edb.test.dev"
+    server.vm.hostname = "db-edb.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -594,7 +595,7 @@ Vagrant.configure(2) do |config|
   # DB Server (opensource centos 6)
   config.vm.define :db_server_centos6 do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "db-centos6.test.dev"
+    server.vm.hostname = "db-centos6.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -620,7 +621,7 @@ Vagrant.configure(2) do |config|
   # DB Server (opensource centos 7)
   config.vm.define :db_server_centos7 do |server|
     server.vm.box = "centos/7"
-    server.vm.host_name = "db-centos7.test.dev"
+    server.vm.hostname = "db-centos7.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -655,7 +656,7 @@ Vagrant.configure(2) do |config|
   # Citus Coordinator
   config.vm.define "citus_coordinator" do |cc_config|
     cc_config.vm.box = "centos/7"
-    cc_config.vm.host_name = "citus-coordinator.test.dev"
+    cc_config.vm.hostname = "citus-coordinator.test.dev"
     cc_config.vm.network :private_network, ip: "10.0.1.40"
 
     cc_config.ssh.forward_agent = true
@@ -683,7 +684,7 @@ Vagrant.configure(2) do |config|
   # Citus Coordinator standby
   config.vm.define "citus_coordinator_standby" do |cc_config|
     cc_config.vm.box = "centos/7"
-    cc_config.vm.host_name = "citus-coordinator-standby.test.dev"
+    cc_config.vm.hostname = "citus-coordinator-standby.test.dev"
     cc_config.vm.network :private_network, ip: "10.0.1.44"
 
     cc_config.ssh.forward_agent = true
@@ -719,7 +720,7 @@ Vagrant.configure(2) do |config|
     id = idx+1
     config.vm.define "citus_worker_#{id}" do |cw_config|
       cw_config.vm.box = "centos/7"
-      cw_config.vm.host_name = "citus-worker-#{id}.test.dev"
+      cw_config.vm.hostname = "citus-worker-#{id}.test.dev"
       cw_config.vm.network :private_network, ip: ip
 
       cw_config.ssh.insert_key = false
@@ -749,7 +750,7 @@ Vagrant.configure(2) do |config|
   # DB Terminal
   config.vm.define :db_terminal do |server|
     server.vm.box = "bento/centos-6.7"
-    server.vm.host_name = "dbt.test.dev"
+    server.vm.hostname = "dbt.test.dev"
 
     server.ssh.forward_agent = true
 
@@ -768,7 +769,7 @@ Vagrant.configure(2) do |config|
   # Neo4J Server
   config.vm.define :neo4j1 do |neo4j_config|
     neo4j_config.vm.box = "bento/centos-6.7"
-    neo4j_config.vm.host_name = "neo4j.test.dev"
+    neo4j_config.vm.hostname = "neo4j.test.dev"
 
     neo4j_config.ssh.forward_agent = true
 
@@ -803,7 +804,7 @@ Vagrant.configure(2) do |config|
     id = idx+1
     config.vm.define "mesos_master_#{id}" do |mm_config|
       mm_config.vm.box = "bento/centos-6.7"
-      mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
+      mm_config.vm.hostname = "mesos-master-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
 
       mm_config.ssh.forward_agent = true
@@ -831,7 +832,7 @@ Vagrant.configure(2) do |config|
     id = idx+1
     config.vm.define "mesos_agent_#{id}" do |mm_config|
       mm_config.vm.box = "bento/centos-6.7"
-      mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
+      mm_config.vm.hostname = "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
 
       mm_config.ssh.forward_agent = true
