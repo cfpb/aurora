@@ -1,11 +1,15 @@
-pp_datadir: /var/lib/pgsql/9.6/data
 pp_serverport: 5432
-pp_servicename: postgresql-9.6
+pp_servicename: postgresql-10
 
-rpm_url: https://install.citusdata.com/community/rpm.sh
+rpm_url: https://packagecloud.io/install/repositories/citusdata/community/script.rpm.sh
 
 citus_pkgs:
-  - citus70_96
+  - citus72_10
 
 pp_shared_preload_libraries: citus
 citus_memory_limit_service: MemoryMax
+citus_nofile_limit: "infinity"
+
+# Replication user
+replication_user: replication
+replication_password: replication

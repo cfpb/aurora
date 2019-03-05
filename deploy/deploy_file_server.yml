@@ -3,6 +3,12 @@
 - hosts: file_server
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Install libselinux-python
+      yum:
+        name: libselinux-python
+        state: latest
+
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - iptables

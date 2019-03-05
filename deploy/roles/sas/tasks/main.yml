@@ -1,9 +1,10 @@
 ---
 - name: Install yum dependencies
   yum:
-    name: libXext.i686
+    name: "{{ item }}"
     state: present
-  when: install_sas
+  with_items:
+    - libXp
   notify:
     - restart sas-server
   tags:
@@ -31,6 +32,24 @@
   register: installer_cmd
   failed_when: installer_cmd.stderr != ""
   when: install_sas
+  notify:
+    - restart sas-server
+  tags:
+    - sas
+
+- name: check sasenv script exists sas-console
+  stat:
+    path: "{{ sas_home }}/SASFoundation/{{ sas_version }}/bin/sasenv_local"
+  register: setenv_file_console
+  tags:
+    - sas
+
+- name: Change the library path sas-console
+  lineinfile:
+    dest: "{{ sas_home }}/SASFoundation/{{ sas_version }}/bin/sasenv_local"
+    line: 'export LD_LIBRARY_PATH="{{ sas_home }}/Secure/sasexe:{{ sas_home }}/SASPrivateJavaRuntimeEnvironment/{{ sas_version }}/jre/lib/amd64/server:{{ sas_home }}/SASPrivateJavaRuntimeEnvironment/{{ sas_version }}/jre/lib/amd64:{{ sas_home }}/SASFoundation/{{ sas_version }}/sasexe:/usr/lib64"'
+    backup: yes
+  when: setenv_file_console.stat.exists == True
   notify:
     - restart sas-server
   tags:
@@ -68,6 +87,14 @@
     src: sas_init.d_template.j2
     dest: /etc/init.d/sas-studio
     mode: 0751
+  tags:
+    - sas
+
+- name: Change the sas work directory
+  lineinfile:
+    dest: "{{ sas_home }}/SASFoundation/{{ sas_version }}/sasv9_local.cfg"
+    regexp: "-WORK"
+    line: "-WORK {{ sas_work_dir }}"
   tags:
     - sas
 

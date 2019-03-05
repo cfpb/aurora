@@ -2,8 +2,8 @@
 mesos_agent_log_file_locations:
   - /var/log/mesos
 
-mesos_agent_package: mesos-0:1.3.0-2.0.3.x86_64
-mesos_agent_version: 1.3.0
+mesos_agent_package: mesos-0:1.4.1-2.0.1.x86_64
+mesos_agent_version: 1.4.1
 mesos_agent_port: 5051
 mesos_agent_logging_level: "INFO"
 
@@ -39,3 +39,9 @@ mesos_appc_store_dir: "/tmp/mesos/store/appc"
 mesos_docker_enable: yes
 mesos_docker_store_dir: "/tmp/mesos/store/docker"
 mesos_docker_registry: "/home/work/mesos/docker/images"
+
+mesos_cni_networks:
+  - network_name: "default"
+    nameservers:
+      - "8.8.8.8"
+      - "8.8.4.4"

@@ -1,0 +1,8 @@
+---
+research_monitor_parent_folder_location: parentfolder
+research_monitor_output_file_locaiton: outputlocation
+date_stamp: "{{lookup('pipe','date +%Y%m%d%H%M%S')}}"
+
+research_monitor_experian_location: experianlocation
+research_monitor_ccdb_location: ccdblocation
+research_monitor_user_location: userlocation

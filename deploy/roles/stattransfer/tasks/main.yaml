@@ -43,7 +43,7 @@
 - name: Copy license file over
   template:
     src: license1282.txt
-    dest: "{{stattransfer_install_directory}}/st13.lic"
+    dest: "{{stattransfer_install_directory}}/st14.lic"
   tags:
     - stattransfer
     

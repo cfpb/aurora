@@ -1,24 +1,14 @@
 # main.yml
 ---
-#- name: Add mpapis public key
-#  shell: "curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
+- name: Add mpapis public key
+  shell: "curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
+  tags:
+    - ruby
 
 - name: Remove any RPM installed Ruby
   yum:
     name: ruby
     state: absent
-
-- name: Get mpapis.asc
-  get_url:
-    url: https://rvm.io/mpapis.asc
-    dest: /tmp/mpapis.asc
-  tags:
-    - ruby
-
-- name: Import key
-  command: "gpg --import /tmp/mpapis.asc"
-  register: import_key
-  changed_when: '"not changed" not in import_key.stderr'
   tags:
     - ruby
 

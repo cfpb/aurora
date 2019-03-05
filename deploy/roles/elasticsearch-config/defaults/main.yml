@@ -9,9 +9,14 @@ es_data_node: "true"
 es_log_level: INFO
 es_logging_file_size: "50MB"
 es_logging_max_files: 20
+es_shield_log_level: INFO
+es_shield_log_type: dailyRollingFile
+es_shield_log_options:
+  - option: datePattern
+    value: "'.'yyyy-MM-dd"
 
 # Log File Locations
-es_log_file_locations: 
+es_log_file_locations:
  - /var/log/elasticsearch
 
 # Startup configuration options

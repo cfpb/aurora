@@ -3,8 +3,8 @@
   become: yes
   become_method: sudo
   roles:
-    - r
-    - revolution-r
+    - r-core
+    - r-libs
     - r-shiny
     - r-shiny-config
     - r-studio-server

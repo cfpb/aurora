@@ -4,7 +4,8 @@
 # Installer URL and executable
 pp_installer_version: 9.6.2.7
 pp_download_url: "http://get.enterprisedb.com/ga/edb-as96-meta-9.6.2.7-2-linux-x64.tar.gz"
-pp_install_path: as9.6
+pp_install_path: as10
+pp_old_install_path: as9.6
 pp_config_template: "postgresql.conf.95.j2"
 pp_bindir: /opt/PostgresPlus/9.6AS/bin
 pp_old_bindir: /opt/PostgresPlus/9.4AS/bin

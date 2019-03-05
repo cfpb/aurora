@@ -2,3 +2,5 @@ citus_worker_nodes:
   - citus_worker_1
   - citus_worker_2
   - citus_worker_3
+
+pp_datadir: /var/lib/pgsql/10/data

@@ -1,0 +1,11 @@
+---
+- name: Create new mathpass file and rename existing with timestamp
+  template:
+    src: mathpass
+    dest: "{{mathlm_location}}"
+    owner: root
+    group: root
+    mode: "u=rw,g=r,o=r"
+    backup: yes
+  when: update_math_lm_activation_key
+  tags: math_lm

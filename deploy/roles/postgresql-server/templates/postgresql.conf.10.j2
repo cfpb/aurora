@@ -1,0 +1,640 @@
+# -----------------------------
+# PostgreSQL configuration file
+# -----------------------------
+#
+# This file consists of lines of the form:
+#
+#   name = value
+#
+# (The "=" is optional.)  Whitespace may be used.  Comments are introduced with
+# "#" anywhere on a line.  The complete list of parameter names and allowed
+# values can be found in the PostgreSQL documentation.
+#
+# The commented-out settings shown in this file represent the default values.
+# Re-commenting a setting is NOT sufficient to revert it to the default value;
+# you need to reload the server.
+#
+# This file is read on server startup and when the server receives a SIGHUP
+# signal.  If you edit the file on a running system, you have to SIGHUP the
+# server for the changes to take effect, or use "pg_ctl reload".  Some
+# parameters, which are marked below, require a server shutdown and restart to
+# take effect.
+#
+# Any parameter can also be given as a command-line option to the server, e.g.,
+# "postgres -c log_connections=on".  Some parameters can be changed at run time
+# with the "SET" SQL command.
+#
+# Memory units:  kB = kilobytes        Time units:  ms  = milliseconds
+#                MB = megabytes                     s   = seconds
+#                GB = gigabytes                     min = minutes
+#                TB = terabytes                     h   = hours
+#                                                   d   = days
+
+
+#------------------------------------------------------------------------------
+# FILE LOCATIONS
+#------------------------------------------------------------------------------
+
+# The default values of these variables are driven from the -D command-line
+# option or PGDATA environment variable, represented here as ConfigDir.
+
+#data_directory = 'ConfigDir'		# use data in another directory
+					# (change requires restart)
+#hba_file = 'ConfigDir/pg_hba.conf'	# host-based authentication file
+					# (change requires restart)
+#ident_file = 'ConfigDir/pg_ident.conf'	# ident configuration file
+					# (change requires restart)
+
+# If external_pid_file is not explicitly set, no extra PID file is written.
+#external_pid_file = ''			# write an extra PID file
+					# (change requires restart)
+
+
+#------------------------------------------------------------------------------
+# CONNECTIONS AND AUTHENTICATION
+#------------------------------------------------------------------------------
+
+# - Connection Settings -
+
+listen_addresses = '{{ pp_listen_addresses }}'		# what IP address(es) to listen on;
+					# comma-separated list of addresses;
+					# defaults to 'localhost'; use '*' for all
+					# (change requires restart)
+port = {{ pp_serverport }}				             # (change requires restart)
+
+# Note:  Increasing max_connections costs ~400 bytes of shared memory per
+# connection slot, plus lock space (see max_locks_per_transaction).
+max_connections = {{ pp_max_connections }} # (change requires restart)
+superuser_reserved_connections = {{ pp_superuser_reserved_conns }}	# (change requires restart)
+
+unix_socket_directories = '{{ pp_unix_socket_dirs }}'  # comma-separated list of directories (change requires restart)
+unix_socket_group = '{{ pp_unix_socket_group }}'		  # (change requires restart)
+unix_socket_permissions = {{ pp_unix_socket_perms }}	# begin with 0 to use octal notation (change requires restart)
+
+#bonjour = off				# advertise server via Bonjour (change requires restart)
+#bonjour_name = ''			# defaults to the computer name (change requires restart)
+
+# - Security and Authentication -
+
+authentication_timeout = {{ pp_auth_timeout }}	# 1s-600s
+ssl = {{ pp_ssl_enable }}				# (change requires restart)
+ssl_ciphers = '{{ pp_ssl_ciphers }}' # allowed SSL ciphers (change requires restart)
+ssl_prefer_server_ciphers = {{ pp_prefer_server_cyphers }}		# (change requires restart)
+ssl_ecdh_curve = '{{ pp_ssl_ecdh_curve }}'		# (change requires restart)
+ssl_cert_file = '{{ pp_ssl_cert_file }}'		# (change requires restart)
+ssl_key_file = '{{ pp_ssl_key_file }}'		# (change requires restart)
+ssl_ca_file = '{{ pp_ssl_ca_file }}'			# (change requires restart)
+ssl_crl_file = '{{ pp_ssl_crl_file }}'			# (change requires restart)
+password_encryption = {{ pp_password_encrypt }}
+db_user_namespace = {{ pp_db_user_namespace }}
+
+{% if pp_krb_keyfile is defined %}
+# GSSAPI using Kerberos
+krb_server_keyfile = '{{ pp_krb_keyfile }}'
+krb_caseins_users = {{ pp_krb_caseins_users }}
+{% endif %}
+
+# - TCP Keepalives -
+# see "man 7 tcp" for details
+
+tcp_keepalives_idle = {{ pp_tcp_idle }}		       # TCP_KEEPIDLE, in seconds; 0 selects the system default
+tcp_keepalives_interval = {{ pp_tcp_interval }}	# TCP_KEEPINTVL, in seconds; 0 selects the system default
+tcp_keepalives_count = {{ pp_tcp_count }}		    # TCP_KEEPCNT; 0 selects the system default
+
+#------------------------------------------------------------------------------
+# RESOURCE USAGE (except WAL)
+#------------------------------------------------------------------------------
+
+# - Memory -
+
+shared_buffers = {{ pp_shared_buffers }}		# min 128kB (change requires restart)
+huge_pages = {{ pp_huge_pages }}			# on, off, or try (change requires restart)
+temp_buffers = {{ pp_temp_buffers }}			# min 800kB
+
+max_prepared_transactions = {{ pp_max_prepared_trans }}		# zero disables the feature (change requires restart)
+# Note:  Increasing max_prepared_transactions costs ~600 bytes of shared memory
+# per transaction slot, plus lock space (see max_locks_per_transaction).
+# It is not advisable to set max_prepared_transactions nonzero unless you
+# actively intend to use prepared transactions.
+
+work_mem = {{ pp_work_mem }}				# min 64kB
+maintenance_work_mem = {{ pp_maintenance_work_mem }}	# min 1MB
+autovacuum_work_mem = {{ pp_autovacuum_work_mem }}		# min 1MB, or -1 to use maintenance_work_mem
+max_stack_depth = {{ pp_max_stack_depth }}			# min 100kB
+
+dynamic_shared_memory_type = {{ pp_dynamic_shared_memory_type }}
+# the default is the first option
+# supported by the operating system:
+#   posix
+#   sysv
+#   windows
+#   mmap
+# use none to disable dynamic shared memory
+
+# - Disk -
+
+temp_file_limit = {{ pp_temp_file_limit }}			# limits per-session temp file space; in kB, or -1 for no limit
+
+# - Kernel Resource Usage -
+
+max_files_per_process = {{ pp_max_files }}		# min 25 (change requires restart)
+shared_preload_libraries = '{{ pp_shared_preload_libraries }}' # (change requires restart)
+
+# - Cost-Based Vacuum Delay -
+
+vacuum_cost_delay = {{ pp_vacuum_cost_delay }}			# 0-100 milliseconds
+vacuum_cost_page_hit = {{ pp_vacuum_cost_page_hit }}		# 0-10000 credits
+vacuum_cost_page_miss = {{ pp_vacuum_cost_page_miss }}		# 0-10000 credits
+vacuum_cost_page_dirty = {{ pp_vacuum_cost_page_dirty }}		# 0-10000 credits
+vacuum_cost_limit = {{ pp_vacuum_cost_limit }}		# 1-10000 credits
+
+# - Background Writer -
+
+bgwriter_delay = {{ pp_bgwriter_delay}}			# 10-10000ms between rounds
+bgwriter_lru_maxpages = {{ pp_bgwriter_lru_maxpages }}		# 0-1000 max buffers written/round
+bgwriter_lru_multiplier = {{ pp_bgwriter_lru_multiplier }}		# 0-10.0 multipler on buffers scanned/round
+
+# - Asynchronous Behavior -
+
+effective_io_concurrency = {{ pp_effective_io_concurrency }}		# 1-1000; 0 disables prefetching
+max_worker_processes = {{ pp_max_worker_processes }}
+
+# For enabling multiprocessing
+max_parallel_workers_per_gather = {{ pp_max_parallel_workers_per_gather }}
+
+#------------------------------------------------------------------------------
+# WRITE AHEAD LOG
+#------------------------------------------------------------------------------
+
+# - Settings -
+
+wal_level = {{ pp_wal_level }} # minimal, archive, hot_standby, or logical (change requires restart)
+
+fsync = {{ pp_fsync }}				# turns forced synchronization on or off
+synchronous_commit = {{ pp_sync_commit }}		# synchronization level; off, local, remote_write, or on
+
+wal_sync_method = {{ pp_wal_sync_method }}
+# the default is the first option
+# supported by the operating system:
+#   open_datasync
+#   fdatasync (default on Linux)
+#   fsync
+#   fsync_writethrough
+#   open_sync
+
+full_page_writes = {{ pp_full_page_writes }}			# recover from partial page writes
+wal_log_hints = {{ pp_wal_log_hints }}		         # also do full page writes of non-critical updates; (change requires restart)
+
+wal_buffers = {{ pp_wal_buffers }}			# min 32kB, -1 sets based on shared_buffers; (change requires restart)
+wal_writer_delay = {{ pp_wal_writer_delay }}		# 1-10000 milliseconds
+
+commit_delay = {{ pp_commit_delay }}			# range 0-100000, in microseconds
+commit_siblings = {{ pp_commit_siblings }}			# range 1-1000
+
+# - Checkpoints -
+
+# Deprecated in 9.5
+# checkpoint_segments = {{ pp_checkpoint_segments }}		# in logfile segments, min 1, 16MB each
+
+max_wal_size = {{ (pp_checkpoint_segments|int)*3*16 }}MB
+checkpoint_timeout = {{ pp_checkpoint_timeout }}	# range 30s-1h
+checkpoint_completion_target = {{ pp_checkpoint_completion_target }}	# checkpoint target duration, 0.0 - 1.0
+checkpoint_warning = {{ pp_checkpoint_warning }}		# 0 disables
+
+# - Archiving -
+
+archive_mode = {{ pp_archive_mode }}		# allows archiving to be done; (change requires restart)
+archive_command = '{{ pp_archive_command }}'
+# command to use to archive a logfile segment
+# placeholders: %p = path of file to archive
+#               %f = file name only
+# e.g. 'test ! -f /mnt/server/archivedir/%f && cp %p /mnt/server/archivedir/%f'
+archive_timeout = {{ pp_archive_timeout }}		# force a logfile segment switch after this number of seconds; 0 disables
+
+#------------------------------------------------------------------------------
+# REPLICATION
+#------------------------------------------------------------------------------
+
+# - Sending Server(s) -
+
+# Set these on the master and on any standby that will send replication data.
+
+max_wal_senders = {{ pp_max_wal_senders }}		# max number of walsender processes; (change requires restart)
+wal_keep_segments = {{ pp_wal_keep_segments }}		# in logfile segments, 16MB each; 0 disables
+wal_sender_timeout = {{ pp_wal_sender_timeout }}	# in milliseconds; 0 disables
+
+max_replication_slots = {{ pp_max_replication_slots }}	# max number of replication slots; (change requires restart)
+
+# - Master Server -
+
+# These settings are ignored on a standby server.
+synchronous_standby_names = '{{ pp_syncronous_standby_names }}'
+# standby servers that provide sync rep
+# comma-separated list of application_name
+# from standby(s); '*' = all
+
+vacuum_defer_cleanup_age = {{ pp_vacuum_defer_cleanup_age }}	# number of xacts by which cleanup is delayed
+
+# - Standby Servers -
+
+# These settings are ignored on a master server.
+
+hot_standby = {{ pp_hot_standby }}			# "on" allows queries during recovery; (change requires restart)
+max_standby_archive_delay = {{ pp_max_standby_archive_delay }}
+# max delay before canceling queries
+# when reading WAL from archive;
+# -1 allows indefinite delay
+
+max_standby_streaming_delay = {{ pp_max_standby_streaming_delay }}
+# max delay before canceling queries
+# when reading streaming WAL;
+# -1 allows indefinite delay
+
+wal_receiver_status_interval = {{ pp_wal_receiver_status_interval }}	# send replies at least this often; 0 disables
+hot_standby_feedback = {{ pp_hot_standby_feedback }}		# send info from standby to prevent query conflicts
+wal_receiver_timeout = {{ pp_wal_receiver_timeout }}
+# time that receiver waits for
+# communication from master
+# in milliseconds; 0 disables
+
+
+#------------------------------------------------------------------------------
+# QUERY TUNING
+#------------------------------------------------------------------------------
+
+# - Planner Method Configuration -
+
+enable_bitmapscan = {{ pp_bitmapscan }}
+enable_hashagg = {{ pp_hashagg }}
+enable_hashjoin = {{ pp_hashjoin }}
+enable_indexscan = {{ pp_indexscan }}
+enable_indexonlyscan = {{ pp_indexonlyscan }}
+enable_material = {{ pp_material }}
+enable_mergejoin = {{ pp_mergejoin }}
+enable_nestloop = {{ pp_nestloop }}
+enable_seqscan = {{ pp_seqscan }}
+enable_sort = {{ pp_sort }}
+enable_tidscan = {{ pp_tidscan }}
+#enable_hints = {{ pp_hints }} 			# enable optimizer hints in SQL statements.
+
+# - Planner Cost Constants -
+
+seq_page_cost = {{ pp_seq_page_cost	}}	# measured on an arbitrary scale
+random_page_cost = {{ pp_random_page_cost }}			# same scale as above
+cpu_tuple_cost = {{ pp_cpu_tuple_cost }}			# same scale as above
+cpu_index_tuple_cost = {{ pp_cpu_index_tuple_cost }}		# same scale as above
+cpu_operator_cost = {{ pp_cpu_operator_cost }}		# same scale as above
+effective_cache_size = {{ pp_effective_cache_size }}
+
+# - Genetic Query Optimizer -
+
+geqo = {{ pp_geqo }}
+geqo_threshold = {{ pp_geqo_threshold }}
+geqo_effort = {{ pp_geqo_effort }}			# range 1-10
+geqo_pool_size = {{ pp_geqo_pool_size }}			# selects default based on effort
+geqo_generations = {{ pp_geqo_generations }}			# selects default based on effort
+geqo_selection_bias = {{ pp_geqo_selection_bias }}	# range 1.5-2.0
+geqo_seed = {{ pp_geqo_seed }}			# range 0.0-1.0
+
+# - Other Planner Options -
+
+default_statistics_target = {{ pp_default_statistics_target }}	# range 1-10000
+constraint_exclusion = {{ pp_constraint_exclusion }}	# on, off, or partition
+cursor_tuple_fraction = {{ pp_cursor_tuple_fraction }}		# range 0.0-1.0
+from_collapse_limit = {{ pp_from_collapse_limit }}
+join_collapse_limit = {{ pp_join_collapse_limit }}		# 1 disables collapsing of explicit JOIN clauses
+
+#------------------------------------------------------------------------------
+# ERROR REPORTING AND LOGGING
+#------------------------------------------------------------------------------
+
+# - Where to Log -
+
+log_destination = '{{ pp_log_destination }}'
+# Valid values are combinations of
+# stderr, csvlog, syslog, and eventlog,
+# depending on platform.  csvlog
+# requires logging_collector to be on.
+
+# This is used when logging to stderr:
+logging_collector = {{ pp_logging_collector }}
+# Enable capturing of stderr and csvlog
+# into log files. Required to be on for
+# csvlogs. (change requires restart)
+
+{% if pp_logging_collector == 'on' %}
+# These are only used if logging_collector is on:
+log_directory = '{{ pp_log_directory }}'		# directory where log files are written, can be absolute or relative to PGDATA
+log_filename = '{{ pp_log_filename }}'	# log file name pattern, can include strftime() escapes
+log_file_mode = {{ pp_log_file_mode }}			# creation mode for log files, begin with 0 to use octal notation
+
+log_truncate_on_rotation = {{ pp_log_truncate_on_rotation }}
+# If on, an existing log file with the
+# same name as the new log file will be
+# truncated rather than appended to.
+# But such truncation only occurs on
+# time-driven rotation, not on restarts
+# or size-driven rotation.  Default is
+# off, meaning append to existing files
+# in all cases.
+
+log_rotation_age = {{ pp_log_rotation_age }}			# Automatic rotation of logfiles will happen after that time.  0 disables.
+log_rotation_size = {{ pp_log_rotation_size }} # Automatic rotation of logfiles will happen after that much log output. 0 disables.
+{% endif %}
+
+{% if 'syslog' in pp_log_destination %}
+# These are relevant when logging to syslog:
+syslog_facility = '{{ pp_syslog_facility }}'
+syslog_ident = '{{ pp_syslog_ident }}'
+{% endif %}
+
+{% if 'eventlog' in pp_log_destination %}
+# This is only relevant when logging to eventlog (win32):
+event_source = 'PostgreSQL'
+{% endif %}
+
+# - When to Log -
+
+client_min_messages = {{ pp_client_min_messages }}
+# values in order of decreasing detail:
+#   debug5
+#   debug4
+#   debug3
+#   debug2
+#   debug1
+#   log
+#   notice
+#   warning
+#   error
+
+log_min_messages = {{ pp_log_min_messages }}
+# values in order of decreasing detail:
+#   debug5
+#   debug4
+#   debug3
+#   debug2
+#   debug1
+#   info
+#   notice
+#   warning
+#   error
+#   log
+#   fatal
+#   panic
+
+log_min_error_statement = {{ pp_log_min_error_statement }}
+# values in order of decreasing detail:
+#   debug5
+#   debug4
+#   debug3
+#   debug2
+#   debug1
+#   info
+#   notice
+#   warning
+#   error
+#   log
+#   fatal
+#   panic (effectively off)
+
+log_min_duration_statement = {{ pp_log_min_duration_statement }}
+# -1 is disabled, 0 logs all statements
+# and their durations, > 0 logs only
+# statements running at least this number
+# of milliseconds
+
+# - What to Log -
+
+debug_print_parse = {{ pp_debug_print_parse }}
+debug_print_rewritten = {{ pp_debug_print_rewritten }}
+debug_print_plan = {{ pp_debug_print_plan }}
+debug_pretty_print = {{ pp_debug_pretty_print }}
+
+log_checkpoints = {{ pp_log_checkpoints }}
+log_connections = {{ pp_log_connections }}
+log_disconnections = {{ pp_log_disconnections }}
+log_duration = {{ pp_log_duration }}
+log_error_verbosity = {{ pp_log_error_verbosity }}	# terse, default, or verbose messages
+log_hostname = {{ pp_log_hostname }}
+
+log_line_prefix = '{{ pp_log_line_prefix }}'
+# Use '%t ' to enable log-reading
+# features in PEM and pgAdmin
+# special values:
+#   %a = application name
+#   %u = user name
+#   %d = database name
+#   %r = remote host and port
+#   %h = remote host
+#   %p = process ID
+#   %t = timestamp without milliseconds
+#   %m = timestamp with milliseconds
+#   %i = command tag
+#   %e = SQL state
+#   %c = session ID
+#   %l = session line number
+#   %s = session start timestamp
+#   %v = virtual transaction ID
+#   %x = transaction ID (0 if none)
+#   %q = stop here in non-session
+#        processes
+#   %% = '%'
+# e.g. '<%u%%%d> '
+
+log_lock_waits = {{ pp_log_lock_waits }}			# log lock waits >= deadlock_timeout
+log_statement = '{{ pp_log_statement }}'			# none, ddl, mod, all
+log_temp_files = {{ pp_log_temp_files }}
+# log temporary files equal or larger
+# than the specified size in kilobytes;
+# -1 disables, 0 logs all temp files
+log_timezone = '{{ pp_log_timezone }}'
+
+utl_http.debug = {{ pp_http_debug }}		# trace network conversations
+
+
+#------------------------------------------------------------------------------
+# RUNTIME STATISTICS
+#------------------------------------------------------------------------------
+
+# - Query/Index Statistics Collector -
+
+track_activities = {{ pp_track_activities }}
+track_counts = {{ pp_track_counts }}
+track_io_timing = {{ pp_track_io_timing }}
+track_functions = {{ pp_track_functions }}			# none, pl, all
+track_activity_query_size = {{ pp_track_activity_query_size }}	# (change requires restart)
+update_process_title = {{ pp_update_process_title }}
+stats_temp_directory = '{{ pp_stats_temp_directory }}'
+
+# - Statistics Monitoring -
+
+log_parser_stats = {{ pp_log_parser_stats }}
+log_planner_stats = {{ pp_log_planner_stats }}
+log_executor_stats = {{ pp_log_executor_stats }}
+log_statement_stats = {{ pp_log_statement_stats }}
+
+#------------------------------------------------------------------------------
+# AUTOVACUUM PARAMETERS
+#------------------------------------------------------------------------------
+
+autovacuum = {{ pp_autovacuum }}			# Enable autovacuum subprocess?  'on' requires track_counts to also be on.
+
+log_autovacuum_min_duration = {{ pp_log_autovacuum_min_duration }}
+# -1 disables, 0 logs all actions and
+# their durations, > 0 logs only
+# actions running at least this number
+# of milliseconds.
+
+autovacuum_max_workers = {{ pp_autovacuum_max_workers }}		# max number of autovacuum subprocesses (change requires restart)
+autovacuum_naptime = {{ pp_autovacuum_naptime }}		# time between autovacuum runs
+autovacuum_vacuum_threshold = {{ pp_autovacuum_vacuum_threshold }}	# min number of row updates before vacuum
+autovacuum_analyze_threshold = {{ pp_autovacuum_analyze_threshold }}	# min number of row updates before analyze
+autovacuum_vacuum_scale_factor = {{ pp_autovacuum_vacuum_scale_factor }}	# fraction of table size before vacuum
+autovacuum_analyze_scale_factor = {{ pp_autovacuum_analyze_scale_factor }}	# fraction of table size before analyze
+autovacuum_freeze_max_age = {{ pp_autovacuum_freeze_max_age }}	# maximum XID age before forced vacuum (change requires restart)
+autovacuum_multixact_freeze_max_age = {{ pp_autovacuum_multixact_freeze_max_age }}	# maximum multixact age before forced vacuum (change requires restart)
+
+autovacuum_vacuum_cost_delay = {{ pp_autovacuum_vacuum_cost_delay }}
+# default vacuum cost delay for
+# autovacuum, in milliseconds;
+# -1 means use vacuum_cost_delay
+
+autovacuum_vacuum_cost_limit = {{ pp_autovacuum_vacuum_cost_limit }}
+# default vacuum cost limit for
+# autovacuum, -1 means use
+# vacuum_cost_limit
+
+#------------------------------------------------------------------------------
+# CLIENT CONNECTION DEFAULTS
+#------------------------------------------------------------------------------
+
+# - Statement Behavior -
+search_path = '{{ pp_search_path }}'		# schema names
+default_tablespace = '{{ pp_default_tablespace }}'		# a tablespace name, '' uses the default
+temp_tablespaces = '{{ pp_temp_tablespaces }}'			# a list of tablespace names, '' uses only default tablespace
+check_function_bodies = {{ pp_check_function_bodies }}
+default_transaction_isolation = '{{ pp_default_transaction_isolation }}'
+default_transaction_read_only = {{ pp_default_transaction_read_only }}
+default_transaction_deferrable = {{ pp_default_transaction_deferrable }}
+session_replication_role = '{{ pp_session_replication_role }}'
+statement_timeout = {{ pp_statement_timeout }}			# in milliseconds, 0 is disabled
+lock_timeout = {{ pp_lock_timeout }}			# in milliseconds, 0 is disabled
+vacuum_freeze_min_age = {{ pp_vacuum_freeze_min_age }}
+vacuum_freeze_table_age = {{ pp_vacuum_freeze_table_age }}
+vacuum_multixact_freeze_min_age = {{ pp_vacuum_multixact_freeze_min_age }}
+vacuum_multixact_freeze_table_age = {{ pp_vacuum_multixact_freeze_table_age }}
+bytea_output = '{{ pp_bytea_output }}'			# hex, escape
+xmlbinary = '{{ pp_xmlbinary }}'
+xmloption = '{{ pp_xmloption }}'
+
+# - Locale and Formatting -
+
+datestyle = '{{ pp_datestyle }}'
+#intervalstyle = 'postgres'
+timezone = '{{ pp_timezone }}'
+timezone_abbreviations = '{{ pp_timezone_abbreviations }}'
+# Select the set of available time zone
+# abbreviations.  Currently, there are
+#   Default
+#   Australia (historical usage)
+#   India
+# You can create your own file in
+# share/timezonesets/.
+
+extra_float_digits = {{ pp_extra_float_digits }}			# min -15, max 3
+client_encoding = {{ pp_client_encoding }}		# actually, defaults to database encoding
+
+# These settings are initialized by initdb, but they can be changed.
+lc_messages = '{{ pp_lc_messages }}'			# locale for system error message strings
+lc_monetary = '{{ pp_lc_monetary }}'			# locale for monetary formatting
+lc_numeric = '{{ pp_lc_numeric }}'			# locale for number formatting
+lc_time = '{{ pp_lc_time }}'				# locale for time formatting
+
+# default configuration for text search
+default_text_search_config = '{{ pp_default_text_search_config }}'
+
+# - Other Defaults -
+
+dynamic_library_path = '{{ pp_dynamic_library_path }}'
+local_preload_libraries = '{{ pp_local_preload_libraries }}'
+session_preload_libraries = '{{ pp_session_preload_libraries }}'
+
+#oracle_home ='{{ pp_oracle_home }}'
+# path to the Oracle home directory;
+# only used by OCI Dblink; defaults
+# to ORACLE_HOME environment variable.
+
+#------------------------------------------------------------------------------
+# LOCK MANAGEMENT
+#------------------------------------------------------------------------------
+
+deadlock_timeout = {{ pp_deadlock_timeout }}
+max_locks_per_transaction = {{ pp_max_locks_per_transaction }} # min 10 (change requires restart)
+
+# Note:  Each lock table slot uses ~270 bytes of shared memory, and there are
+# max_locks_per_transaction * (max_connections + max_prepared_transactions)
+# lock table slots.
+max_pred_locks_per_transaction = {{ pp_max_pred_locks_per_transaction }}	# min 10 (change requires restart)
+
+
+#------------------------------------------------------------------------------
+# VERSION/PLATFORM COMPATIBILITY
+#------------------------------------------------------------------------------
+
+# - Previous PostgreSQL Versions -
+
+#array_nulls = on
+#backslash_quote = safe_encoding	# on, off, or safe_encoding
+#default_with_oids = off
+#default_with_rowids = off
+#escape_string_warning = on
+#lo_compat_privileges = off
+#quote_all_identifiers = off
+#sql_inheritance = on
+#standard_conforming_strings = on
+#synchronize_seqscans = on
+
+# - Other Platforms and Clients -
+
+#transform_null_equals = off
+
+
+#------------------------------------------------------------------------------
+# ERROR HANDLING
+#------------------------------------------------------------------------------
+
+exit_on_error = {{ pp_exit_on_error }}			# terminate session on any error?
+restart_after_crash = {{ pp_restart_after_crash }}		# reinitialize after backend crash?
+
+
+#------------------------------------------------------------------------------
+# CONFIG FILE INCLUDES
+#------------------------------------------------------------------------------
+
+# These options allow settings to be loaded from files other than the
+# default postgresql.conf.
+
+#include_dir = 'conf.d'			# include files ending in '.conf' from
+					# directory 'conf.d'
+#include_if_exists = 'exists.conf'	# include file only if it exists
+#include = 'special.conf'		# include file
+
+
+#------------------------------------------------------------------------------
+# CUSTOMIZED OPTIONS
+#------------------------------------------------------------------------------
+
+#dbms_pipe.total_message_buffer = 30kB  # default: 30KB, max: 256MB, min: 30KB
+#dbms_alert.max_alerts = 100		# default 100, max: 500, min: 0
+
+
+#---------------------------------------------------------------------------
+# RUNTIME INSTRUMENTATION AND TRACING
+#---------------------------------------------------------------------------
+
+#timed_statistics = {{ pp_timed_statistics }}			# record wait timings, defaults to on
+
+# Add settings for extensions here
+{% for setting in pp_extension_settings %}
+{{ setting.name }} = {{ setting.value }}
+{% endfor %}

@@ -156,8 +156,8 @@
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
     mode: 0600
-  notify:
-    - restart postgres
+  #notify:
+  #  - restart postgres
   tags:
     - postgresql-server
 
@@ -210,6 +210,18 @@
   when: pp_ssl_enable == 'on'
   tags:
     - postgresql-server
+
+- name: Install requirements for postgresql Ansible tasks
+  yum:
+    name: "{{ item }}"
+    state: present
+  become: yes
+  become_method: sudo
+  with_items:
+    - postgresql10-devel
+    - python-psycopg2
+    - git
+  check_mode: no
 
 - name: Install extensions and supplementary packages
   yum:

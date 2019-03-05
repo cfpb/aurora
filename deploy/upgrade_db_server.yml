@@ -1,15 +1,13 @@
 ---
+# Example usage:
+# ansible-playbook --private-key=~/.vagrant.d/insecure_private_key -u vagrant -i vagrant_hosts upgrade_db_server.yml --limit citus_coordinator
+#
 # First shutdown the existing cluster.  This assumes that the Ansible variables
 # have all been updated to the new version, and old_ppas_service_name points
 # to the old running version.
-- hosts: db_server
-  become: yes
-  become_method: sudo
-
-
-- hosts: db_server
-  become: yes
-  become_method: sudo
+- hosts: all_db
+  serial: 1
+  max_fail_percentage: 1
   vars:
     pp_upgrade: True
   pre_tasks:
@@ -21,27 +19,143 @@
         db: "{{ item.db }}"
         script: "{{ item.script }}"
       with_items: "{{ pp_pre_scripts }}"
-      always_run: true
+      check_mode: false
       when: install_ppas and pp_pre_scripts is defined
 
     # TODO: Use line_in_file to allow trusted local connections
 
+    - name: Back up Citus metadata in the old server
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ item }}"
+        port: "{{ pp_serverport }}"
+      with_items: "{{ backup_metadata_scripts }}"
+      when: '"citus_coordinator" in group_names'
+
     - name: First ensure that the database processes are stopped
+      become: yes
+      become_method: sudo
       service:
         name: "{{ item }}"
         state: stopped
-      with_items: "{{ pp_old_services }}"
+      with_items: "{{ pp_old_servicename }}"
+
   roles:
-    - role: postgresql-server
+    - {role: 'postgresql-server', become: yes}
+    - {role: citus, become: yes, when: '"citus" in group_names'}
+
   post_tasks:
+    - name: Allow old postgres empty password login temporarily
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_old_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)md5'
+        backrefs: yes
+        line: 'local\1trust'
+      notify: restart postgres
+
+    - name: Allow new postgres empty password login temporarily
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)md5'
+        backrefs: yes
+        line: 'local\1trust'
+      notify: restart postgres
+
+    - meta: flush_handlers
+
+    - pause:
+        seconds: 30
+
+    - name: Ensure that the database processes are stopped
+      become: yes
+      become_method: sudo
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ pp_servicename }}"
 
     - name: Ensure that auxillary services are stopped
+      become: yes
+      become_method: sudo
       service:
         name: "{{ item }}"
         state: stopped
       with_items: "{{ pp_support_services }}"
+      when: install_edb
+
+    # Only needed for local testing
+    - name: Add citus as a shared preload library
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_datadir }}/postgresql.conf"
+        regexp: "^shared_preload_libraries*"
+        line: "shared_preload_libraries = 'citus'"
+      when: 'not custom_repo and "citus" in group_names'
+
+    - name: Run pg_upgrade consistency check
+      command: >
+          sudo su - {{ pp_serviceaccount }} -c
+          "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+          --old-datadir {{ pp_old_datadir }}
+          --new-datadir {{ pp_datadir }}
+          --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+          --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+          --link -U {{ pp_serviceaccount }}
+          --check"
+      environment:
+        - PGPASSWORD: "{{ pp_superpassword }}"
+      register: check_result
+
+    - debug:
+        var: check_result
+
+    - name: Ensure clusters are compatable
+      assert:
+        that: '"Clusters are compatible" in check_result.stdout'
+
+    - name: Run pg_upgrade
+      command: >
+          sudo su - {{ pp_serviceaccount }} -c
+          "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
+          --old-datadir {{ pp_old_datadir }}
+          --new-datadir {{ pp_datadir }}
+          --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
+          --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
+          --link -U {{ pp_serviceaccount }}"
+      environment:
+        - PGPASSWORD: "{{ pp_superpassword }}"
+
+    - name: Disallow postgres empty password login for old
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_old_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)trust'
+        backrefs: yes
+        line: 'local\1md5'
+      notify: restart postgres
+
+    - name: Disallow postgres empty password login for new
+      become: yes
+      become_method: sudo
+      lineinfile:
+        dest: "{{ pp_datadir }}/pg_hba.conf"
+        regexp: '^local(.*)trust'
+        backrefs: yes
+        line: 'local\1md5'
+      notify: restart postgres
 
     - name: Ensure that the new database process is started
+      become: yes
+      become_method: sudo
       service:
         name: "{{ pp_servicename }}"
         state: started
@@ -62,6 +176,7 @@
         script: "DROP DATABASE IF EXISTS edb;"
         port: "{{ pp_serverport }}"
         autocommit: yes
+      when: install_edb
 
     - name: Create the "edb" database
       postgresql_exec:
@@ -72,49 +187,76 @@
         script: "CREATE DATABASE edb;"
         port: "{{ pp_serverport }}"
         autocommit: yes
+      when: install_edb
 
-    - name: Ensure that the new database process is stopped
-      service:
-        name: "{{ pp_servicename }}"
-        state: stopped
+    - name: Restore metadata
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ item }}"
+        port: "{{ pp_serverport }}"
+      with_items: "{{ restore_metadata_scripts }}"
+      when: '"citus_coordinator" in group_names'
 
-    - name: Run pg_upgrade consistency check
-      #become: yes
-      #become_method: sudo
-      #become_user: "{{ pp_serviceaccount }}"
-      sudo: yes
-      remote_user: "{{ pp_serviceaccount }}"
-      command: >
-               {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
-                  --old-datadir {{ pp_old_datadir }}
-                  --new-datadir {{ pp_datadir }}
-                  --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
-                  --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
-                  --link
-                  -U {{ pp_serviceaccount }}
-                  --check
-      environment:
-        - PGPASSWORD: "{{ pp_superpassword }}"
+    - name: Drop temp scripts
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ item }}"
+        port: "{{ pp_serverport }}"
+      with_items: "{{ drop_temp_scripts }}"
+      when: '"citus_coordinator" in group_names'
 
-    - name: Run pg_upgrade
-      #become: yes
-      #become_method: sudo
-      #become_user: "{{ pp_serviceaccount }}"
-      sudo: yes
-      remote_user: "{{ pp_serviceaccount }}"
-      command: >
-               {{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
-                  --old-datadir {{ pp_old_datadir }}
-                  --new-datadir {{ pp_datadir }}
-                  --old-bindir {{ pp_prefix }}/{{ pp_old_install_path }}/bin
-                  --new-bindir {{ pp_prefix }}/{{ pp_install_path }}/bin
-                  --link
-                  -U {{ pp_serviceaccount }}
-      environment:
-        - PGPASSWORD: "{{ pp_superpassword }}"
+    - name: Restart sequence
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ item }}"
+        port: "{{ pp_serverport }}"
+      with_items: "{{ restart_sequence_scripts }}"
+      when: '"citus_coordinator" in group_names'
 
-- hosts: db_server
+    - name: Create trigger
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ create_trigger_script.script }}"
+        port: "{{ pp_serverport }}"
+      when: '"citus_coordinator" in group_names'
+
+    - name: Register trigger
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ item }}"
+        port: "{{ pp_serverport }}"
+      with_items: "{{ register_trigger_scripts }}"
+      when: '"citus_coordinator" in group_names'
+
+    - name: Set dependency
+      postgresql_exec:
+        login_user: "{{ pp_superaccount }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: localhost
+        db: postgres
+        script: "{{ set_dependency_scripts.script }}"
+        port: "{{ pp_serverport }}"
+      when: '"citus_coordinator" in group_names'
+
+- hosts: all_db
   become: yes
   become_method: sudo
+  serial: 1
+  max_fail_percentage: 1
   roles:
     - role: postgresql-server-config

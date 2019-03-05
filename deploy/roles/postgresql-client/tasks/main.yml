@@ -34,6 +34,15 @@
   tags:
     - postgres_client
 
+- name: Install gis postgres packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items: "{{ postgres_gis_packages }}"
+  ignore_errors: True
+  tags:
+    - postgres_client
+
 - name: Ensure other libraries can see header files
   file:
     src: "{{ postgres_install_dir }}/include/"
@@ -51,10 +60,9 @@
     - postgres_client
 
 - name: Add psql bin directory to path
-  lineinfile:
+  template:
+    src: postgres.sh.j2
     dest: /etc/profile.d/postgres.sh
-    create: yes
-    line: export PATH={{ postgres_install_dir }}/bin:$PATH
     mode: 0644
   tags:
     - postgres_client

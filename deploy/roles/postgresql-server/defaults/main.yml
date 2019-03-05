@@ -1,7 +1,8 @@
 ---
 ## Postgres default variables
-pg_version: 9.6
+pg_version: 10
 install_edb: False
+install_ppas: False
 
 # When to install, upgrade, and restart
 pp_install: False
@@ -9,14 +10,15 @@ pp_restart: False
 pp_upgrade: False
 
 # HTTPS runs into issues
-pgdg_repository: "https://download.postgresql.org/pub/repos/yum/9.6/redhat/rhel-6-x86_64/pgdg-redhat96-9.6-3.noarch.rpm"
+pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-2.noarch.rpm"
 postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG"
 pp_packages:
-  - postgresql96-server
-  - postgresql96-contrib
+  - postgresql10-server
+  - postgresql10-contrib
 
-pp_install_path: as9.6
-pp_config_template: "postgresql.conf.96.j2"
+pp_install_path: /usr/pgsql-10
+pp_old_install_path: /usr/pgsql-9.6
+pp_config_template: "postgresql.conf.10.j2"
 
 # Directory to install from
 pp_temp_dir: /tmp
@@ -33,18 +35,25 @@ pp_autostart_pgbouncer: yes
 pp_pgbouncerport: 6432
 pp_install_server_monitor: yes
 
+# Replication user
+replication_user: replication
+replication_password: replication
+
 # Core server config
 pp_clusterdir: /usr/local/pgsql/data
-pp_datadir: /var/lib/pgsql/9.6/data
+pp_datadir: /var/lib/pgsql/10/data
+pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_prefix: ''
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: postgresql-9.6
+pp_servicename: postgresql-10
+pp_old_servicename: postgresql-9.6
 
 pp_serviceaccount: postgres
 pp_serverport: 5432
 pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql
+pp_xlogdir: /var/log/postgresql/
 ## PostgreSQL Configuration Settings
 
 # pg_hba.conf settings
@@ -63,6 +72,15 @@ pg_hba_settings:
     context: host
     db: all
     user: postgres
+    address: '10.0.1.0/24'
+    ip_mask: ''
+    auth_method: md5
+    auth_options: ''
+  -
+    comment: 'replication user connection:'
+    context: host
+    db: replication
+    user: replication
     address: '10.0.1.0/24'
     ip_mask: ''
     auth_method: md5
@@ -239,7 +257,7 @@ pp_join_collapse_limit: 8
 # Reporting and Logging
 pp_log_destination: stderr
 pp_logging_collector: on
-pp_log_directory: /var/lib/pgsql/9.6/data/pg_log
+pp_log_directory: /var/lib/pgsql/10/data/pg_log
 pp_log_file_mode: 0600
 pp_log_truncate_on_rotation: off
 pp_log_rotation_age: 1d
@@ -351,4 +369,4 @@ pp_timed_statistics: off
 pp_extensions: []
 pp_extension_settings: []
 
-pp_initdb: "service postgresql-9.6 initdb --pgdata {{ pp_datadir }}"
+pp_initdb: service postgresql-10 initdb

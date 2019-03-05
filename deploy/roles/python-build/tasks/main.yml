@@ -5,6 +5,8 @@
   register: python27_check
   failed_when: python27_check.rc != 0 and "is not installed" not in python27_check.stdout
   changed_when: no
+  tags:
+    - python2
 
 - name: Make sure rpmbuild is empty
   become: no
@@ -12,6 +14,8 @@
     path: "~/rpmbuild"
     state: absent
   when: "'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Make sure git is installed
   become: yes
@@ -19,6 +23,8 @@
     name: git
     state: latest
   when: "'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Clone git repo
   become: no
@@ -26,6 +32,8 @@
     dest: "~/python27"
     repo: https://github.com/cfpb/python27-for-el6.git
   when: "'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Run bootstrap script
   become: no
@@ -33,6 +41,8 @@
   args:
     chdir: "~/python27"
   when: "'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Build python RPM
   become: no
@@ -41,6 +51,8 @@
     chdir: "~/rpmbuild"
     creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm"
   when: "install_python and 'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Copy RPM to /tmp so it is accessible by root
   become: no
@@ -48,6 +60,8 @@
   args:
     creates: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
   when: "install_python and 'is not installed' in python27_check.stdout"
+  tags:
+    - python2
 
 - name: Install python
   become: yes
@@ -55,3 +69,5 @@
     name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
     state: present
   when: "install_python and 'is not installed' in python27_check.stdout"
+  tags:
+    - python2

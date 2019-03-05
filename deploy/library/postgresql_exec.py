@@ -169,7 +169,8 @@ def main():
     kw['status'] = cursor.statusmessage
 
     try:
-        kw['query_result'] = cursor.fetchall()
+        # cursor.fetchall returns a list of DictRow classes which breaks with ansible 2.4
+        kw['query_result'] = [list(row) for row in cursor.fetchall()]
     except psycopg2.ProgrammingError:
         kw['query_result'] = []
 
