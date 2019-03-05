@@ -6,3 +6,4 @@ localhost:{{ pp_serverport }}:*:{{ pp_superaccount }}:{{ pp_superpassword }}
 {% for coordinator in groups['citus_coordinator'] %}
 {{ hostvars[coordinator]['ansible_ssh_host'] }}:5432:replication:{{ replication_user }}:{{ replication_password }}
 {% endfor %}
+localhost:{{ pp_serverport }}:*:{{ pp_superaccount }}:{{ pp_superpassword }}

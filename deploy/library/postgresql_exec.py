@@ -3,6 +3,9 @@
 # This module is for executing arbitrary SQL scripts, either
 # as text or in a file
 
+from ansible.module_utils.database import *
+from ansible.module_utils.basic import *
+from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 DOCUMENTATION = '''
 ---
 module: postgresql_exec
@@ -83,26 +86,26 @@ except ImportError:
 else:
     postgresqldb_found = True
 
-from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 
 # ================================
 # Module execution.
 #
 
+
 def main():
     module = AnsibleModule(
-        argument_spec = dict(
-            login_user         = dict(default="postgres"),
-            login_password    = dict(default=""),
-            login_host         = dict(default=""),
-            login_unix_socket = dict(default=""),
-            db                  = dict(required=True),
-            port                = dict(default='5432'),
-            script_file         = dict(default=None),
-            script              = dict(default=None),
-            autocommit          = dict(default=False)
+        argument_spec=dict(
+            login_user=dict(default="postgres"),
+            login_password=dict(default=""),
+            login_host=dict(default=""),
+            login_unix_socket=dict(default=""),
+            db=dict(required=True),
+            port=dict(default='5432'),
+            script_file=dict(default=None),
+            script=dict(default=None),
+            autocommit=dict(default=False)
         ),
-        supports_check_mode = True
+        supports_check_mode=True
     )
 
     db = module.params['db']
@@ -115,7 +118,8 @@ def main():
     if module.params['script']:
         script = module.params['script']
         if module.params['script_file']:
-            module.fail_json(msg="You cannot specify both script and script_file")
+            module.fail_json(
+                msg="You cannot specify both script and script_file")
     elif not module.params['script_file']:
         module.fail_json(msg="You must specify either script or script_file")
     else:
@@ -129,14 +133,14 @@ def main():
     # check which values are empty and don't include in the **kw
     # dictionary
     params_map = {
-        "login_host":"host",
-        "login_user":"user",
-        "login_password":"password",
-        "port":"port",
-        "db":"database"
+        "login_host": "host",
+        "login_user": "user",
+        "login_password": "password",
+        "port": "port",
+        "db": "database"
     }
-    kw = dict( (params_map[k], v) for (k, v) in module.params.iteritems()
-              if k in params_map and v != "" )
+    kw = dict((params_map[k], v) for (k, v) in module.params.items()
+              if k in params_map and v != "")
 
     # If a login_unix_socket is specified, incorporate it here.
     is_localhost = "host" not in kw or kw["host"] == "" or kw["host"] == "localhost"
@@ -147,7 +151,8 @@ def main():
         db_connection = psycopg2.connect(**kw)
         if module.params["autocommit"]:
             db_connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        cursor = db_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
+        cursor = db_connection.cursor(
+            cursor_factory=psycopg2.extras.DictCursor)
     except Exception, e:
         module.fail_json(msg="unable to connect to database: %s" % e)
 
@@ -176,7 +181,6 @@ def main():
 
     module.exit_json(**kw)
 
+
 # import module snippets
-from ansible.module_utils.basic import *
-from ansible.module_utils.database import *
 main()
