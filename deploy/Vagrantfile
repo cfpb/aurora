@@ -16,7 +16,8 @@ Vagrant.configure(2) do |config|
   # Constant var holding the root directory where this vagrantfile is being run
   VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
   ansible_tags = ENV['TAGS']
-  ansible_verbosity = ENV['V']
+  #ansible_verbosity = ENV['V']
+  ansible_verbosity = true
   if ENV['EXTRA_VARS']
     ansible_extra_vars = eval(ENV['EXTRA_VARS'])
   else
@@ -831,7 +832,7 @@ Vagrant.configure(2) do |config|
   mesos_agents.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos_agent_#{id}" do |mm_config|
-      mm_config.vm.box = "bento/centos-6.7"
+      #mm_config.vm.box = "bento/centos-6.7"
       mm_config.vm.hostname = "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
 
