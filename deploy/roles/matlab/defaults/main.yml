@@ -7,15 +7,10 @@ matlab_iso2_mount:          iso2
 matlab_license_folder:      licenses
 matlab_combined_mount:      installer
 matlab_output_location:     output
-install_matlab:           False
-# matlab_tarball:                      matlab_R2018a_glnxa64.zip
+install_matlab:             False
 
-# matlab_local_bin_directory: /home/dtwork/tools
-# matlab_local_bin_directory: /artifacts
-# matlab_zip_file:            matlab_R2018b_glnxa64.zip
 matlab_iso1:                R2018b_glnxa64_dvd1.iso
 matlab_iso2:                R2018b_glnxa64_dvd2.iso
-
 
 matlab_installation_key:     installkey
 matlab_outputfile:           /usr/local/MATLAB/R2018b/output/mathworks.log
@@ -24,6 +19,9 @@ matlab_network_license_file: /usr/local/MATLAB/R2018b/licenses/network.lic
 matlab_license_file:         proprietary_license_info
 matlab_license_server:       server
 matlab_license_daemon:       daemon
-matlab_license_symlink_src:  etc/lmboot
+matlab_license_boot_symlink_src:  etc/lmboot
+matlab_license_down_symlink_src:  etc/lmdown
+matlab_symlink_boot_dest:    /etc/lmboot_TMW
+matlab_symlink_down_dest:    /etc/lmdown_TMW
 matlab_symlink_dest:         /usr/local/bin/matlab
 matlab_symlink_src:          bin/matlab

@@ -174,10 +174,10 @@
     state: link
     mode: go+rx,u+rwx
   with_items:
-    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_symlink_src }}", dest: "{{ matlab_install_directory }}/lmboot"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_boot_symlink_src }}", dest: "{{ matlab_install_directory }}/lmboot"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_boot_symlink_src }}", dest: "{{ matlab_symlink_boot_dest }}"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_down_symlink_src }}", dest: "{{ matlab_symlink_down_dest }}"}
     - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_symlink_src }}", dest: "{{ matlab_symlink_dest }}"}
-  when: 
-    install_matlab
   tags:
     - matlab
 
