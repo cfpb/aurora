@@ -73,10 +73,16 @@ be installed in the Travis CI image, like so:
 1. git checkout travis
 1. Run commands in travis.yml file
 
+## Running it
 
+- vagrant up file_server_1 file_server_2 mesos_master_1 mesos_master_2 mesos_agent_1 mesos_agent_2
+
+- http://127.0.0.1:8080
 TBD
 
+
 ## Known issues
+- You need the have something in .vault_password
 
 - Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
 
