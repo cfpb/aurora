@@ -9,4 +9,6 @@
   command: restart mesos-master
 
 - name: restart marathon
-  command: restart marathon
+  service: 
+    name: marathon
+    state: restarted

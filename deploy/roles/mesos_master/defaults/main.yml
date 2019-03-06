@@ -10,7 +10,7 @@ mesos_master_log_file_locations:
 
 ### MESOS SETTINGS
 mesos_server_packages:
-  - libevent-devel
+  #- libevent-devel
   - libselinux-python
   - mesos
   - marathon

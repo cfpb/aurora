@@ -510,18 +510,26 @@
     - mesos
     - mesos-master
 
-- name: Start the Mesos master and Marathon processes (they are already enabled)
+- name: Start the Mesos master (they are already enabled)
   command: "start {{ item }}"
   with_items:
     - mesos-master
-    - marathon
   register: mesos_master_start
   failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
   changed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
   tags:
     - mesos
     - mesos-master
-
+- name: Start Marathon processes (they are already enabled)
+  command: "service {{ item }} start"
+  with_items:
+    - marathon
+  register: mesos_marathon_start
+  failed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+  changed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+  tags:
+    - mesos
+    - mesos-master
 ## CONFIGURE IP TABLES
 
 # TODO: More restrictive iptables rules are needed, specifically ports
