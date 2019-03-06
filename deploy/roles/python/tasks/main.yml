@@ -1,5 +1,12 @@
 # main.yml - Install Python 2.7, either from a repo or a built RPM
 ---
+- name: Install epel-release
+  yum:
+    name: ['epel-release']
+    state: latest
+    disable_gpg_check: yes
+  tags:
+    - python
 - name: Install Python from repo
   yum:
     name: ['python','python-setuptools','python-pip']

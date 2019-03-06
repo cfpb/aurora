@@ -17,7 +17,7 @@
     - {role: iptables, when: "iptables_config"}
     #- devtools
     - mesos_agent
-    #- {role: epel, when: "use_epel"}
+    - {role: epel, when: "use_epel"}
     - jdk
     - postgresql-client
     - apache
@@ -31,7 +31,7 @@
     - python-libs
     - odbc
     - jdbc
-    - {role: ruby, when: "install_ruby"}
+    #- {role: ruby, when: "install_ruby"}
     - sqitch
     # - r-core
     # - r-libs
@@ -42,17 +42,17 @@
 
   post_tasks:
 
-    - name: Stop Shiny Server
-      service:
-        name: shiny-server
-        state: stopped
-      ignore_errors: yes
+    # - name: Stop Shiny Server
+    #   service:
+    #     name: shiny-server
+    #     state: stopped
+    #   ignore_errors: yes
 
-    - name: Turn off Shiny Server
-      service:
-        name: shiny-server
-        enabled: no
-      ignore_errors: yes
+    # - name: Turn off Shiny Server
+    #   service:
+    #     name: shiny-server
+    #     enabled: no
+    #   ignore_errors: yes
 
     # - name: Turn off GoCD Agent
     #   service:

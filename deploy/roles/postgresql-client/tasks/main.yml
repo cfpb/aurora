@@ -7,14 +7,14 @@
   tags:
     - postgres_client
 
-- name: Install postgres repository key
-  rpm_key:
-    key: "{{ postgres_repository_key_url }}"
-    state: present
-    validate_certs: no
-  when: postgres_install_repository
-  tags:
-    - postgres_client
+# - name: Install postgres repository key
+#   rpm_key:
+#     key: "{{ postgres_repository_key_url }}"
+#     state: present
+#     validate_certs: no
+#   when: postgres_install_repository
+#   tags:
+#     - postgres_client
 
 - name: Ensure older versions are removed
   yum:
