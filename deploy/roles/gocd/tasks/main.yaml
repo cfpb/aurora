@@ -1,11 +1,9 @@
 ---
 - name: Install all dependencies
   yum:
-    name: "{{item}}"
+    name: ['{{ gocd_rpms }}']
     state: present
     disable_gpg_check: yes
-  with_items:
-    - "{{ gocd_rpms }}"
   notify:
     - restart go-agent
 

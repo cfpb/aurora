@@ -2,18 +2,14 @@
 ---
 - name: Install Python34 packages
   yum:
-    name: "{{ item }}"
+    name: ['python34', 'python34-setuptools', 'python34-devel', 'python34-pip']
     state: present
-  with_items:
-    - python34
-    - python34-setuptools
-    - python34-devel
   tags:
     - python3
 
-- name: Install pip
-  easy_install:
-    name: pip
-    executable: easy_install-3.4
-  tags:
-    - python3
+# - name: Install pip
+#   easy_install:
+#     name: pip
+#     executable: easy_install-3.4
+#   tags:
+#     - python3

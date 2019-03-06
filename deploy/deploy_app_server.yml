@@ -53,17 +53,16 @@
 
     - name: Install Python RPM dependencies
       yum:
-        name: "{{ item }}"
+        name: '{{ python_dep_packages }}'
         state: present
         disable_gpg_check: yes
-      with_items: "{{ python_dep_packages }}"
 
     - name: Install Python packages for 2.7
       pip:
-        name: "{{ item }}"
+        name: "{{ python_packages }}"
         state: present
         executable: /usr/local/bin/pip2.7
-      with_items: "{{ python_packages }}"
+ 
 
     - name: Install Python packages for 3.4
       pip:

@@ -26,48 +26,48 @@
   tags:
     - python2
 
-- name: Clone git repo
-  become: no
-  git:
-    dest: "~/python27"
-    repo: https://github.com/cfpb/python27-for-el6.git
-  when: "'is not installed' in python27_check.stdout"
-  tags:
-    - python2
+# - name: Clone git repo
+#   become: no
+#   git:
+#     dest: "~/python27"
+#     repo: https://github.com/cfpb/python27-for-el6.git
+#   when: "'is not installed' in python27_check.stdout"
+#   tags:
+#     - python2
 
-- name: Run bootstrap script
-  become: no
-  command: "sh ./bootstrap.sh"
-  args:
-    chdir: "~/python27"
-  when: "'is not installed' in python27_check.stdout"
-  tags:
-    - python2
+# - name: Run bootstrap script
+#   become: no
+#   command: "sh ./bootstrap.sh"
+#   args:
+#     chdir: "~/python27"
+#   when: "'is not installed' in python27_check.stdout"
+#   tags:
+#     - python2
 
-- name: Build python RPM
-  become: no
-  command: "rpmbuild -ba SPECS/python27-alt.spec"
-  args:
-    chdir: "~/rpmbuild"
-    creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm"
-  when: "install_python and 'is not installed' in python27_check.stdout"
-  tags:
-    - python2
+# - name: Build python RPM
+#   become: no
+#   command: "rpmbuild -ba SPECS/python27-alt.spec"
+#   args:
+#     chdir: "~/rpmbuild"
+#     creates: "~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm"
+#   when: "install_python and 'is not installed' in python27_check.stdout"
+#   tags:
+#     - python2
 
-- name: Copy RPM to /tmp so it is accessible by root
-  become: no
-  command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm /tmp/python27-2.7.6-2.el6.x86_64.rpm"
-  args:
-    creates: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
-  when: "install_python and 'is not installed' in python27_check.stdout"
-  tags:
-    - python2
+# - name: Copy RPM to /tmp so it is accessible by root
+#   become: no
+#   command: "cp ~/rpmbuild/RPMS/x86_64/python27-2.7.6-2.el6.x86_64.rpm /tmp/python27-2.7.6-2.el6.x86_64.rpm"
+#   args:
+#     creates: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
+#   when: "install_python and 'is not installed' in python27_check.stdout"
+#   tags:
+#     - python2
 
-- name: Install python
-  become: yes
-  yum:
-    name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
-    state: present
-  when: "install_python and 'is not installed' in python27_check.stdout"
-  tags:
-    - python2
+# - name: Install python
+#   become: yes
+#   yum:
+#     name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
+#     state: present
+#   when: "install_python and 'is not installed' in python27_check.stdout"
+#   tags:
+#     - python2

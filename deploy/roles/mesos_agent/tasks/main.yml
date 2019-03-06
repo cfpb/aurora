@@ -34,11 +34,8 @@
 
 - name: Install mesos packages
   yum:
-    name: "{{ item }}"
+    name: ['{{ mesos_agent_package}}', 'libselinux-python']
     state: present
-  with_items:
-    - "{{ mesos_agent_package }}"
-    - libselinux-python
   notify:
     - restart mesos-agent
   tags:
@@ -56,25 +53,30 @@
     - mesos
     - mesos-agent
 
+# - name: Stop the Mesos master process
+#   command: "stop mesos-master"
+#   register: mesos_master_stop
+#   failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
+#   changed_when: "'Unknown instance' not in mesos_master_stop.stderr"
+#   tags:
+#     - mesos
+#     - mesos-agent
 - name: Stop the Mesos master process
-  command: "stop mesos-master"
-  register: mesos_master_stop
-  failed_when: mesos_master_stop.rc != 0 and 'Unknown instance' not in mesos_master_stop.stderr
-  changed_when: "'Unknown instance' not in mesos_master_stop.stderr"
-  tags:
-    - mesos
-    - mesos-agent
+  service:
+    name: mesos-master
+    state: stopped
+    enabled: no
 
-- name: Stop the mesos-master service
-  lineinfile:
-    dest: /etc/init/mesos-master.conf
-    regexp: "^(.*)(start on(.*))$"
-    line: "#\\2"
-    backrefs: yes
-    state: present
-  tags:
-    - mesos
-    - mesos-agent
+# - name: Stop the mesos-master service
+#   lineinfile:
+#     dest: /etc/init/mesos-master.conf
+#     regexp: "^(.*)(start on(.*))$"
+#     line: "#\\2"
+#     backrefs: yes
+#     state: present
+#   tags:
+#     - mesos
+#     - mesos-agent
 
 # FYI, only works on newer versions of Upstart, not RHEL 6
 # - name: Override the mesos-master service
@@ -379,10 +381,6 @@
   with_items:
     - '5051'
     - '31000:32000'
-  tags:
-    - mesos
-    - mesos-agent
-
   when: iptables_config
   tags:
     - mesos
@@ -396,15 +394,22 @@
   tags:
     - mesos
     - mesos-agent
-
 - name: Start the Mesos agent
-  command: "start mesos-slave"
-  register: mesos_agent_start
-  failed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
-  changed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
+  service: 
+    name: mesos-slave
+    state: started
+    enabled: yes
   tags:
     - mesos
     - mesos-agent
+# - name: Start the Mesos agent
+#   command: "start mesos-slave"
+#   register: mesos_agent_start
+#   failed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
+#   changed_when: mesos_agent_start.rc != 0 and 'Job is already running' not in mesos_agent_start.stderr
+#   tags:
+#     - mesos
+#     - mesos-agent
 
 - name: Set recursive admin permissions on log folders
   acl:

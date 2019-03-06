@@ -4,6 +4,7 @@
   service:
     name: zookeeper-server
     state: restarted
+    enabled: yes
 
 - name: restart mesos-master
   command: restart mesos-master
@@ -12,3 +13,4 @@
   service: 
     name: marathon
     state: restarted
+    enabled: yes

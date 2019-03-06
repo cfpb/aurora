@@ -11,34 +11,32 @@
   rpm_key:
     key: "{{ postgres_repository_key_url }}"
     state: present
+    validate_certs: no
   when: postgres_install_repository
   tags:
     - postgres_client
 
 - name: Ensure older versions are removed
   yum:
-    name: "{{ item }}"
+    name: "{{ postgres_old_packages }}"
     state: absent
     disablerepo: "{{ postgres_repository_name }}"
   ignore_errors: yes
-  with_items: "{{ postgres_old_packages }}"
   when: clean_postgresql
   tags:
     - postgres_client
 
 - name: Install postgres packages
   yum:
-    name: "{{ item }}"
+    name: "{{ postgres_packages }}"
     state: present
-  with_items: "{{ postgres_packages }}"
   tags:
     - postgres_client
 
 - name: Install gis postgres packages
   yum:
-    name: "{{ item }}"
+    name: "{{ postgres_gis_packages }}"
     state: present
-  with_items: "{{ postgres_gis_packages }}"
   ignore_errors: True
   tags:
     - postgres_client
