@@ -15,3 +15,11 @@
     state: restarted
     arguments: --disable_ha --master 10.0.1.31:5050
     enabled: yes
+- name: restart mesos-master
+  service: 
+    name: mesos-master
+    state: restarted
+    enabled: yes
+  tags:
+    - mesos
+    - mesos-master

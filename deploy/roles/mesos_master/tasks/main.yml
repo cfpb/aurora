@@ -4,8 +4,8 @@
 ### SETUP REPOSITORIES
 
 - name: Add mesosphere repository
-  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
-  #command:  "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
+  #command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  command:  "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
   when: not 'production' in group_names
@@ -23,7 +23,7 @@
     - mesos-master
 
 - name: Add the CDH repository
-  command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/6/x86_64/cloudera-cdh-4-0.x86_64.rpm"
+  command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/7/x86_64/cloudera-cdh-4-0.x86_64.rpm"
   args:
     creates: /etc/yum.repos.d/cloudera-cdh4.repo
   when: not 'production' in group_names
@@ -70,9 +70,8 @@
 
 - name: Install mesos and supporting packages
   yum:
-    name: "{{ item }}"
+    name: "{{ mesos_server_packages }}"
     state: present
-  with_items: "{{ mesos_server_packages }}"
   notify:
     - restart mesos-master
     - restart marathon
@@ -479,25 +478,25 @@
 
 # Ansible "service" command doesn't work with upstart jobs on Centos, so
 # do it manually
-- name: Stop the Mesos agent process
-  command: "stop mesos-slave"
-  register: mesos_agent_stop
-  failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
-  changed_when: "'Unknown instance' not in mesos_agent_stop.stderr"
-  tags:
-    - mesos
-    - mesos-master
+# - name: Stop the Mesos agent process
+#   command: "stop mesos-slave"
+#   register: mesos_agent_stop
+#   failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
+#   changed_when: "'Unknown instance' not in mesos_agent_stop.stderr"
+#   tags:
+#     - mesos
+#     - mesos-master
 
-- name: Disable the mesos-agent service
-  lineinfile:
-    dest: /etc/init/mesos-slave.conf
-    regexp: "^(.*)(start on(.*))$"
-    line: "#\\2"
-    backrefs: yes
-    state: present
-  tags:
-    - mesos
-    - mesos-master
+# - name: Disable the mesos-agent service
+#   lineinfile:
+#     dest: /etc/init/mesos-slave.conf
+#     regexp: "^(.*)(start on(.*))$"
+#     line: "#\\2"
+#     backrefs: yes
+#     state: present
+#   tags:
+#     - mesos
+#     - mesos-master
 
 ### START ZOOKEEPER, MESOS, AND MARATHON
 
@@ -509,27 +508,44 @@
   tags:
     - mesos
     - mesos-master
+- name: Start mesos-master
+  service: 
+    name: mesos-master
+    state: started
+    enabled: yes
+  tags:
+    - mesos
+    - mesos-master
 
-- name: Start the Mesos master (they are already enabled)
-  command: "start {{ item }}"
-  with_items:
-    - mesos-master
-  register: mesos_master_start
-  failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
-  changed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+- name: Start marathon
+  service: 
+    name: marathon
+    state: started
+    enabled: yes
   tags:
     - mesos
     - mesos-master
-- name: Start Marathon processes (they are already enabled)
-  command: "service {{ item }} start"
-  with_items:
     - marathon
-  register: mesos_marathon_start
-  failed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
-  changed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
-  tags:
-    - mesos
-    - mesos-master
+# - name: Start the Mesos master (they are already enabled)
+#   command: "start {{ item }}"
+#   with_items:
+#     - mesos-master
+#   register: mesos_master_start
+#   failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+#   changed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+#   tags:
+#     - mesos
+#     - mesos-master
+# - name: Start Marathon processes (they are already enabled)
+#   command: "service {{ item }} start"
+#   with_items:
+#     - marathon
+#   register: mesos_marathon_start
+#   failed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+#   changed_when: mesos_marathon_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
+#   tags:
+#     - mesos
+#     - mesos-master
 ## CONFIGURE IP TABLES
 
 # TODO: More restrictive iptables rules are needed, specifically ports
@@ -559,22 +575,22 @@
     - mesos
     - mesos-master
 
-- name: Set recursive admin permissions on log folders
-  acl:
-    path: "{{ item }}"
-    entity: "{{ restricted_group_name }}"
-    etype: group
-    permissions: rX
-    recursive: yes
-    state: present
-  with_items: "{{ mesos_master_log_file_locations }}"
+# - name: Set recursive admin permissions on log folders
+#   acl:
+#     path: "{{ item }}"
+#     entity: "{{ restricted_group_name }}"
+#     etype: group
+#     permissions: rX
+#     recursive: yes
+#     state: present
+#   with_items: "{{ mesos_master_log_file_locations }}"
 
-- name: Set default admin permissions on log folders
-  acl:
-    path: "{{ item }}"
-    entity: "{{ restricted_group_name }}"
-    etype: group
-    permissions: rX
-    default: yes
-    state: present
-  with_items: "{{ mesos_master_log_file_locations }}"
+# - name: Set default admin permissions on log folders
+#   acl:
+#     path: "{{ item }}"
+#     entity: "{{ restricted_group_name }}"
+#     etype: group
+#     permissions: rX
+#     default: yes
+#     state: present
+#   with_items: "{{ mesos_master_log_file_locations }}"
