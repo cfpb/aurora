@@ -23,9 +23,9 @@
     - mesos-master
 
 - name: Add the CDH repository
-  command: "rpm -Uvh http://archive.cloudera.com/cdh4/one-click-install/redhat/7/x86_64/cloudera-cdh-4-0.x86_64.rpm"
+  command: "rpm -Uvh https://archive.cloudera.com/cdh5/one-click-install/redhat/7/x86_64/cloudera-cdh-5-0.x86_64.rpm"
   args:
-    creates: /etc/yum.repos.d/cloudera-cdh4.repo
+    creates: /etc/yum.repos.d/cloudera-cdh5.repo
   when: not 'production' in group_names
   tags:
     - mesos

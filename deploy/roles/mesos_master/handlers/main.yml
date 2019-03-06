@@ -6,14 +6,14 @@
     state: restarted
     enabled: yes
 
-- name: restart mesos-master
-  command: restart mesos-master
+# - name: restart mesos-master
+#   command: restart mesos-master
 
 - name: restart marathon
   service: 
     name: marathon
     state: restarted
-    arguments: --disable_ha --master 10.0.1.31:5050
+    #arguments: --disable_ha --master 10.0.1.31:5050
     enabled: yes
 - name: restart mesos-master
   service: 
