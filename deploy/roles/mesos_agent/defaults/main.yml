@@ -2,13 +2,14 @@
 mesos_agent_log_file_locations:
   - /var/log/mesos
 
-mesos_agent_package: mesos-0:1.4.1-2.0.1.x86_64
+mesos_agent_package: mesos
 mesos_agent_version: 1.4.1
 mesos_agent_port: 5051
 mesos_agent_logging_level: "INFO"
 
 mesos_agent_isolation: "cgroups/cpu,cgroups/mem,cgroups/net_cls,filesystem/linux,disk/du,docker/runtime"
-mesos_agent_cgroups_path: "/cgroups"
+#mesos_agent_isolation: "/sys/fs/cgroup"
+mesos_agent_cgroups_path: "/sys/fs/cgroup"
 mesos_agent_attributes: ""
 
 mesos_agent_work_dir: "/opt/mesos"

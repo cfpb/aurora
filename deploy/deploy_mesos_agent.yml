@@ -19,7 +19,7 @@
     - mesos_agent
     - {role: epel, when: "use_epel"}
     - jdk
-    - postgresql-client
+    #- postgresql-client
     #- apache
     #- pentaho
     #- gocd
