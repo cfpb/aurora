@@ -56,8 +56,8 @@ custom_repo: False
 use_epel: True
 
 # Toggle whether or not to install GlusterFS clients
-install_glusterfs: True
-mount_glusterfs: True
+install_glusterfs: False
+mount_glusterfs: False
 
 # Toggle whether or not to install EOD
 # NOTE: If set to yes, you must provide the EOD binary file
