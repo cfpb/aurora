@@ -12,7 +12,7 @@ apache_packages:
   - php-ldap
 
 apache_disabled_services:
-  - httpd
+  #- httpd
 
 apache_config_path: /opt/rh/httpd24/root/etc/httpd
 apache_config_dir: /opt/rh/httpd24/root/etc/httpd/conf.d
