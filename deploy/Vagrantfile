@@ -810,6 +810,8 @@ Vagrant.configure(2) do |config|
       mm_config.vm.network :private_network, ip: ip
       mm_config.vm.network "forwarded_port", guest: 8080, host: 8080, guest_ip: ip, auto_correct: true
       mm_config.vm.network "forwarded_port", guest: 5050, host: 5050, guest_ip: ip, auto_correct: true
+      mm_config.vm.network "forwarded_port", guest: 3000, host: 3000, guest_ip: ip, auto_correct: true
+      mm_config.vm.network "forwarded_port", guest: 2181, host: 2181, guest_ip: ip, auto_correct: true
       mm_config.ssh.forward_agent = true
 
       mm_config.vm.provision "ansible" do |ansible|

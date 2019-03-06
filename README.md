@@ -75,17 +75,18 @@ be installed in the Travis CI image, like so:
 
 ## Running it
 
-- vagrant up file_server_1 file_server_2 
+- vagrant up file_server_1 file_server_2
 - vagrant up mesos_master_1 mesos_master_2 mesos_master_3 mesos_agent_1 mesos_agent_2
--- changes this to: install_glusterfs: False, mount_glusterfs: False in the group_vars/all/main.yml to disable the dependency on filser_server_1 and 2
+  - changes this to: install_glusterfs: False, mount_glusterfs: False in the group_vars/all/main.yml to disable the dependency on filser_server_1 and 2
 - will need 3 master for quoram
-- http://127.0.0.1:8080 - marathon
-- http://127.0.0.1:5050 - mesos master
-
-TBD
-
+- Vagrant port forward Quick Links once everything is running:
+  - Marathon http://127.0.0.1:8080
+  - Mesos Master http://127.0.0.1:5050
+  - Marathon_scheduler_port: http://127.0.0.1:31000
+  - Zookeeper http://127.0.0.1:2181
 
 ## Known issues
+- Too many..
 - You need the have something in .vault_password
 
 - Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
