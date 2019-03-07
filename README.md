@@ -2,7 +2,7 @@
 
 **Description**:  This repository is a collection of Ansible scripts and other
 supporting code required to build a scalable, secure, and powerful data
-processing platform.
+processing platform.Â
 
   - **Technology stack**: Ansible is used for deployment.
   - **Status**:  Under active development.  Once we've reached "Alpha", further
@@ -10,7 +10,7 @@ processing platform.
 
 ## Dependencies
 
-The Aurora data platform was designed to work on a network of RHEL 6.5 servers, and
+The Aurora data platform was designed to work on a network of RHEL 7 servers, and
 has only been tested in that environment.  Additionally, you must have Ansible
 installed to deploy, and Vagrant to run locally.
 
@@ -84,7 +84,9 @@ be installed in the Travis CI image, like so:
   - Mesos Master http://127.0.0.1:5050
   - Marathon_scheduler_port: http://127.0.0.1:31000
   - Zookeeper http://127.0.0.1:2181
-
+## Dev tips
+- vagrant plugin install vagrant-vbguest
+  - so we can skip updating the guest_additions iso
 ## Known issues
 - Too many..
 - You need the have something in .vault_password

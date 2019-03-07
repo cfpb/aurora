@@ -5,8 +5,16 @@
 #     - mesos
 #     - mesos-agent
 - name: restart mesos-agent
-  service: 
+  service:
     name: mesos-slave
+    state: restarted
+    enabled: yes
+  tags:
+    - mesos
+    - mesos-agent
+- name: restart docker
+  service:
+    name: docker
     state: restarted
     enabled: yes
   tags:

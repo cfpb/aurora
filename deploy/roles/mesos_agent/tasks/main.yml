@@ -41,7 +41,15 @@
   tags:
     - mesos
     - mesos-agent
-
+- name: Install Docker
+  yum:
+    name: docker
+    state: latest
+  notify:
+    - restart docker
+  tags:
+    - mesos
+    - mesos-agent
 - name: Clean up RPM generated files in the config directory
   file:
     path: "{{ item }}"
@@ -395,7 +403,7 @@
     - mesos
     - mesos-agent
 - name: Start the Mesos agent
-  service: 
+  service:
     name: mesos-slave
     state: started
     enabled: yes
