@@ -74,7 +74,8 @@ be installed in the Travis CI image, like so:
 1. Run commands in travis.yml file
 
 ## Running it
-
+- Development (Mesos inside Docker):
+  - docker run --rm --privileged -p 5050:5050 -p 5051:5051 -p 8080:8080 mesos/mesos-mini
 - vagrant up file_server_1 file_server_2
 - vagrant up mesos_master_1 mesos_master_2 mesos_master_3 mesos_agent_1 mesos_agent_2
   - changes this to: install_glusterfs: False, mount_glusterfs: False in the group_vars/all/main.yml to disable the dependency on filser_server_1 and 2
