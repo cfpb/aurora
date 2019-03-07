@@ -84,6 +84,7 @@ be installed in the Travis CI image, like so:
   - Mesos Master http://127.0.0.1:5050
   - Marathon_scheduler_port: http://127.0.0.1:31000
   - Zookeeper http://127.0.0.1:2181
+  - GoCD server http://10.0.1.26:8153
 ## Dev tips
 - vagrant plugin install vagrant-vbguest
   - so we can skip updating the guest_additions iso

@@ -84,7 +84,7 @@
   roles:
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: common, when: "install_glusterfs"}
-    - devtools
+    - devtools6
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}

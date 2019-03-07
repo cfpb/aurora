@@ -510,10 +510,12 @@ Vagrant.configure(2) do |config|
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
+
       ansible.limit = ansible_limit
     end
 
     server.vm.network :private_network, ip: "10.0.1.26"
+    server.vm.network "forwarded_port", guest: 8153, host: 8153, guest_ip: ip, auto_correct: true
   end
 
   config.vm.define :ci_agent_1 do |server|
