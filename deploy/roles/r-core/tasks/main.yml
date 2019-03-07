@@ -1,0 +1,67 @@
+---
+- name: Ensure umask is correct
+  lineinfile:
+    dest: "~/.bashrc"
+    line: umask 0022
+    regexp: (.*)umask(.*)
+    state: present
+  tags:
+    - r-core
+
+- name: Install R-core
+  yum:
+    name: R-core
+    state: "{{ r_core_state }}"
+    disable_gpg_check: yes
+  register: r_core_updated
+  tags:
+    - r-core
+
+- name: Check if rstudio server is installed
+  yum:
+    list: rstudio-server
+  when: r_core_updated.changed
+  register: rstudio_installed
+  tags:
+    - r-core
+
+- name: Restart rstudio if R updates and rstudio server is installed
+  command: /bin/true
+  when: "{{ (rstudio_installed is defined and rstudio_installed.results|length > 0 and item['yumstate']=='installed')}}"
+  with_items: "{{ rstudio_installed.results | default([]) }}"
+  notify: restart rstudio-server
+  tags:
+    - r-core
+
+- name: Install base packages
+  yum:
+    name: "{{ item }}"
+    state: "{{ r_core_state }}"
+    disable_gpg_check: yes
+  with_items:
+    - R-devel
+    - blas
+    - blas-devel
+    - lapack
+    - lapack-devel
+    - texinfo
+    - texinfo-tex
+    - libicu
+    - libicu-devel
+  tags:
+    - r-core
+
+- name: Ensure Java is configured
+  shell: "R CMD javareconf"
+  tags:
+    - r-core
+
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+  tags:
+    - r-core

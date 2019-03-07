@@ -1,0 +1,8 @@
+---
+update_math_lm_activation_key: False
+mathlm_location: /usr/local/Wolfram/MathLM
+
+math_lm_server_name: research_gauss
+math_lm_math_id: math_id
+math_lm_activation_key: key
+math_lm_password: password

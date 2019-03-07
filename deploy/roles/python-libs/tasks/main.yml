@@ -7,6 +7,47 @@
   with_items: "{{ python_dep_packages }}"
   tags:
     - python-libs
+    - python2-libs
+    - python3-libs
+
+- name: Uninstall pycurl
+  pip:
+    name: pycurl
+    executable: "{{ item }}"
+    state: absent
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
+  when: install_python and update_pycurl
+  tags:
+    - python-libs
+    - python2-libs
+    - python3-libs
+
+- name: Reinstall pycurl with correct SSL lib
+  shell: 'PYCURL_SSL_LIBRARY=nss {{ item }} install pycurl --global-option="--with-nss"'
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
+  when: install_python and update_pycurl
+  tags:
+    - python-libs
+    - python2-libs
+    - python3-libs
+
+- name: Update pip
+  pip:
+    name: pip
+    executable: "{{ item }}"
+    state: latest
+  when: install_python
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
+  tags:
+    - python-libs
+    - python2-libs
+    - python3-libs
 
 - name: Install Python packages for 27
   pip:
@@ -16,6 +57,7 @@
   when: install_python
   tags:
     - python-libs
+    - python2-libs
 
 - name: Install Python packages for 35
   pip:
@@ -25,3 +67,4 @@
   when: install_python
   tags:
     - python-libs
+    - python3-libs

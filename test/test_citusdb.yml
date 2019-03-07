@@ -1,0 +1,240 @@
+---
+- hosts: "{{ citus_client_host }}"
+
+  tasks:
+    - name: Install requirements for postgresql Ansible tasks
+      yum:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - python-psycopg2
+
+    - name: Download users data (31.7MB)
+      get_url:
+        url: https://examples.citusdata.com/tutorial/users.csv
+        dest: /tmp/users.csv
+        mode: 0755
+
+    - name: Download events data (74.7MB)
+      get_url:
+        url: https://examples.citusdata.com/tutorial/events.csv
+        dest: /tmp/events.csv
+        mode: 0755
+
+    - name: Ensure that a connection can be made
+      postgresql_exec:
+        login_user: "{{ pp_dba_username }}"
+        login_password: "{{ pp_dba_password }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT 1 AS TEST;"
+      register: sql_out
+
+    - name: print sql results
+      debug:
+        msg: "{{ sql_out }}"
+        #msg="-----------------------------------------------" 
+      #with_nested: "{{ query_result.stdout }}"
+
+    - name: create table users
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "create table IF NOT EXISTS github_users(user_id bigint,url text,login text,avatar_url text,
+          gravatar_id text,display_login text);"
+      register:  create_table_users_sql_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ create_table_users_sql_results['status'] }}"
+        #msg="-----------------------------------------------" 
+      #with_nested: "{{ query_result.stdout }}"
+ 
+    - name: create table events
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "create table IF NOT EXISTS github_events(event_id bigint, event_type text, event_public boolean, 
+          repo_id bigint, payload jsonb,repo jsonb,user_id bigint,org jsonb, created_at timestamp);"
+      register:  create_table_events_sql_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ create_table_events_sql_results['status'] }}"
+
+    - name: create event index 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "CREATE INDEX IF NOT EXISTS event_type_index ON github_events(event_type);"
+        
+    - name: create payload index 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "CREATE INDEX IF NOT EXISTS payload_index ON github_events USING GIN (payload jsonb_path_ops);"
+        
+    - name: create distributed table users
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT create_distributed_table('github_users', 'user_id');"
+      register:  create_dist_table_users_sql_results
+
+    - name: print sql results
+      debug:
+        msg: "{{ create_dist_table_users_sql_results['status'] }}"
+
+    - name: create distributed table events 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT create_distributed_table('github_events', 'user_id');"
+      register:  create_dist_table_events_sql_results
+
+    - name: print sql results
+      debug:
+        msg: "{{ create_dist_table_events_sql_results['status'] }}"
+
+    - name: import users data
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "copy github_users from '/tmp/users.csv' with csv;"
+      register:  import_users_data_results
+
+    - name: print import results
+      debug:
+        msg: "{{ import_users_data_results['status'] }}"
+
+
+    - name: import events data
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "copy github_events from '/tmp/events.csv' with csv;"
+      register:  import_events_data_results
+
+    - name: print import results
+      debug:
+        msg: "{{ import_events_data_results['status'] }}"
+
+ 
+    - name: select counts on user data 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT count(*) FROM github_users;"
+      register:  select_users_counts_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ select_users_counts_results['query_result'] }}"
+
+    - name: analyze github push events
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT date_trunc('minute', created_at) AS minute,sum((payload->>'distinct_size')::int) AS num_commits FROM github_events WHERE event_type='PushEvent' GROUP BY minute ORDER BY minute;"
+      register:  analyze_github_events_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ analyze_github_events_results['query_result'] }}"
+
+    - name: join users with events
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT login,count(*) FROM github_events ge JOIN github_users gu ON ge.user_id=gu.user_id WHERE event_type='CreateEvent' AND payload@> '{\"ref_type\":\"repository\"}' GROUP BY login ORDER BY count(*) DESC LIMIT 10;" 
+      register:  join_users_events_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ join_users_events_results['query_result'] }}"
+
+    - name: run update query 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "UPDATE github_users SET display_login='no1youknow' WHERE user_id=24305673;"
+      register:  update_query_results
+ 
+
+    - name: print sql results
+      debug:
+        msg: "{{ update_query_results['status'] }}"
+        #msg: "{{ update_query_results['query_result'] }}"
+      
+    - name: run distributed shard query 
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "SELECT nodename,count(*) FROM pg_dist_shard_placement GROUP BY nodename;"
+      register:  dist_shard_query_results
+ 
+
+    - name: print sql results
+      debug:
+        #msg: "{{ analyze_github_events_results['status'] }}"
+        msg: "{{ dist_shard_query_results['query_result'] }}"
+
+# Clean up testing artifacts
+    - name: run test cleanup ... dropping tables
+      postgresql_exec:
+        login_user: "{{ pp_superadmin }}"
+        login_password: "{{ pp_superpassword }}"
+        login_host: citus_coordinator
+        port: "{{ pp_serverport }}"
+        db: "postgres"
+        script: "DROP TABLE github_users; DROP TABLE github_events;"
+      register:  drop_tables_cleanup_results
+
+    - name: print sql results
+      debug:
+        msg: "{{ analyze_github_events_results['status'] }}"

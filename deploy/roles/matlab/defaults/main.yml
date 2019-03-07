@@ -1,0 +1,27 @@
+---
+matlab_install_directory:   /usr/local/MATLAB
+# matlab_install_files:       /usr/local/MATLAB_install
+matlab_version:             R2018b
+matlab_iso1_mount:          iso1
+matlab_iso2_mount:          iso2
+matlab_license_folder:      licenses
+matlab_combined_mount:      installer
+matlab_output_location:     output
+install_matlab:             False
+
+matlab_iso1:                R2018b_glnxa64_dvd1.iso
+matlab_iso2:                R2018b_glnxa64_dvd2.iso
+
+matlab_installation_key:     installkey
+matlab_outputfile:           /usr/local/MATLAB/R2018b/output/mathworks.log
+matlab_license_location:     /usr/local/MATLAB/R2018b/licenses/license.lic
+matlab_network_license_file: /usr/local/MATLAB/R2018b/licenses/network.lic
+matlab_license_file:         proprietary_license_info
+matlab_license_server:       server
+matlab_license_daemon:       daemon
+matlab_license_boot_symlink_src:  etc/lmboot
+matlab_license_down_symlink_src:  etc/lmdown
+matlab_symlink_boot_dest:    /etc/lmboot_TMW
+matlab_symlink_down_dest:    /etc/lmdown_TMW
+matlab_symlink_dest:         /usr/local/bin/matlab
+matlab_symlink_src:          bin/matlab

@@ -74,6 +74,7 @@
   with_items: "{{ mesos_server_packages }}"
   notify:
     - restart mesos-master
+    - restart marathon
   tags:
     - mesos
     - mesos-master

@@ -5,3 +5,5 @@
     name: python27
     state: latest
     disable_gpg_check: yes
+  tags:
+    - python2

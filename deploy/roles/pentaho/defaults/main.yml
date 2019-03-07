@@ -1,7 +1,7 @@
 ---
 #pentaho_zip_path: .
 #pentaho_zip_file: pdi-ce-6.0.1.0-386.zip
-pentaho_url: https://osdn.net/frs/g_redir.php?m=netix&f=%2Fpentaho%2FData+Integration%2F6.0%2Fpdi-ce-6.0.1.0-386.zip
+pentaho_url: http://osdn.net/frs/g_redir.php?m=kent&f=pentaho%2FData+Integration%2F6.0%2Fpdi-ce-6.0.1.0-386.zip
 pentaho_version: 6.0.1.0-386
 pentaho_heap_size: "512m"
 pentaho_perm_size: "256m"
