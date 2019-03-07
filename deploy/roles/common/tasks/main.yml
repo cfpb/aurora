@@ -23,6 +23,7 @@
     - glusterfs
     - glusterfs-fuse
     - libselinux-python
+    - fish
   when: not skip_glusterfs
 
 - name: Make needed folders

@@ -10,7 +10,7 @@ postgres_packages:
   - postgresql10-devel
 
 postgres_gis_packages:
-  #- postgis24_10
+  - postgis
 
 postgres_old_packages:
   - postgresql96
