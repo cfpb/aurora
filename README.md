@@ -83,6 +83,7 @@ be installed in the Travis CI image, like so:
   - Marathon http://127.0.0.1:8080
   - Mesos Master http://127.0.0.1:5050
   - GoCD server http://127.0.0.1:8153
+  - Jenkins server http://127.0.0.1:8090
 ## Dev tips
 - vagrant plugin install vagrant-vbguest
   - so we can skip updating the guest_additions iso

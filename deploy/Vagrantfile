@@ -514,8 +514,9 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
     end
     ip = "10.0.1.26"
-    server.vm.network :private_network, ip: "10.0.1.26"
+    server.vm.network :private_network, ip: ip
     server.vm.network "forwarded_port", guest: 8153, host: 8153, guest_ip: ip, auto_correct: true
+    server.vm.network "forwarded_port", guest: 8080, host: 8090, guest_ip: ip, auto_correct: true
   end
 
   config.vm.define :ci_agent_1 do |server|

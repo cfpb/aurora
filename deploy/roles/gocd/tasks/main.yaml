@@ -20,19 +20,23 @@
   args:
     creates: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
 
+- name: Download Create Jenkins key
+  shell: "rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key"
+  args:
+    creates: "/etc/yum.repos.d/jenkins.repo"
+
 - name: Download Create Jenkins repo
   shell: "curl --silent --location {{jenkins_repo_url}} | sudo tee /etc/yum.repos.d/jenkins.repo"
   args:
     creates: "/etc/yum.repos.d/jenkins.repo"
 
-- name: Download Create Jenkins key
-  shell: "rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key"
-  args:
-    creates: "/etc/yum.repos.d/jenkins.repo"
+
 - name: Install Jenkins server
   yum:
     name: "jenkins"
-    state: present
+    state: latest
+    enabled: yes
+
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
   with_items:
