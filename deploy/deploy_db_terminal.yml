@@ -14,7 +14,7 @@
     - jdk
     - postgresql-client
     - eod
-    - devtools
+    - devtools6
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}

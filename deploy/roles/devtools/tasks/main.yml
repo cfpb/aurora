@@ -6,7 +6,7 @@
     mode: 0644
   when: not custom_repo
   tags:
-    - devtools
+    - devtools6
 
 - name: Install updated devtools
   yum:
@@ -21,7 +21,7 @@
     - devtoolset-2-gdb
     - devtoolset-2-git
   tags:
-    - devtools
+    - devtools6
 
 # Breaks some system tools
 #- name: Setup environment variables to use new versions

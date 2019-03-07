@@ -22,14 +22,14 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
-    - pentaho
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - {role: python3, when: "custom_repo"}
-    - {role: python3-build, when: "not custom_repo"}
+    #- pentaho
+    - {role: python, when: "not 'production' in group_names"}
+    - {role: python-build, when: "not custom_repo and not 'production' in group_names"}
+    - {role: python3, when: "not 'production' in group_names"}
+    - {role: python3-build, when: "not custom_repo and not 'production' in group_names"}
     - python-libs
     - odbc
-    - {role: ruby, when: "install_ruby"}
+    #- {role: ruby, when: "install_ruby"}
     - sqitch
     - nodejs
     - maven

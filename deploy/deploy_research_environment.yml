@@ -59,7 +59,7 @@
   become_method: sudo
   roles:
     - umask
-    - devtools
+    - devtools6
     - open_office
     - evince
     - stattransfer
@@ -111,7 +111,7 @@
   become: yes
   become_method: sudo
   roles:
-    - devtools
+    #- devtools
     - devtools6
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}

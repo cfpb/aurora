@@ -6,7 +6,7 @@
     mode: 0644
   when: not custom_repo
   tags:
-    - devtools
+    - devtools6
 
 - name: Copy devtools shell script
   template:
@@ -14,7 +14,7 @@
     dest: /opt/devtools-6.sh
     mode: 0755
   tags:
-    - devtools
+    - devtools6
 
 - name: Install updated devtools
   yum:
@@ -28,4 +28,4 @@
     - devtoolset-6-gcc-gfortran
     - devtoolset-6-gdb
   tags:
-    - devtools
+    - devtools6
