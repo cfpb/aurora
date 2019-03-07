@@ -172,7 +172,7 @@
   become: yes
   become_method: sudo
   roles:
-    # - matlab
+    - matlab
     - gocd
     - stattransfer
 

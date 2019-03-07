@@ -1,0 +1,206 @@
+- name: list of files to delete (reinstall only!)
+  find: 
+    path: "{{ matlab_install_directory }}/{{ matlab_version }}"
+    recurse: no
+    file_type: directory
+    excludes: "{{ matlab_iso1_mount }},{{ matlab_iso2_mount }}"
+  register: delete_find_result
+  when: 
+    install_matlab
+  tags: 
+    - matlab
+
+- name: Delete current version folder (reinstall only!)
+  file:
+    state: absent
+    path: "{{ item.path }}"
+  with_items:
+    - "{{ delete_find_result.files }}"
+  when:
+    install_matlab
+  tags:
+    - matlab
+
+- name: Verify matlab install directory exist
+  file:
+    path: "{{ matlab_install_directory }}/{{ matlab_version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: a+rx
+  when: 
+    install_matlab
+  tags:
+    - matlab
+
+- name: Verify matlab install subdirectories exist
+  file:
+    path: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: a+rx
+  with_items:
+    - "{{ matlab_iso1_mount }}"
+    - "{{ matlab_iso2_mount }}"
+    - "{{ matlab_combined_mount }}"
+    - "{{ matlab_license_folder }}"
+    - "{{ matlab_output_location }}"
+  when: 
+    install_matlab
+  tags:
+    - matlab
+
+- name: Mount matlab iso1 
+  mount:  
+    name: "{{ item.dest }}/{{ matlab_version }}/{{ matlab_iso1_mount }}"  
+    src: "{{ item.src }}/{{ matlab_iso1 }}" 
+    fstype: iso9660 
+    opts: loop  
+    state: mounted  
+  with_items: "{{ mountinfo }}" 
+  when:   
+    mountinfo is defined and install_matlab 
+  tags: 
+    - matlab  
+
+- name: Mount matlab iso2  
+  mount:  
+    name: "{{ item.dest }}/{{ matlab_version }}/{{ matlab_iso2_mount }}"  
+    src: "{{ item.src }}/{{ matlab_iso2 }}" 
+    fstype: iso9660 
+    opts: loop  
+    state: mounted  
+  with_items: "{{ mountinfo }}" 
+  when:   
+    mountinfo is defined and install_matlab 
+  tags: 
+    - matlab
+
+- name: copy mount info into install folder
+  command: "cp -r {{ item }} {{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_combined_mount }}"
+  with_items:
+    - "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_iso1_mount }}/."
+    - "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_iso2_mount }}/."
+  when: 
+    install_matlab
+  tags:
+    - matlab
+
+- name: Copy the matlab license
+  copy:
+    content: "{{ matlab_license_file }}"
+    dest: "{{ matlab_license_location }}"
+    mode: go+rx,u+rwx
+  tags:
+    - matlab
+
+- name: insert server and daemon to licensefile
+  lineinfile:
+    path: "{{ matlab_license_location }}"
+    line: "{{ item }}"
+    insertbefore: BOF
+  with_items:
+    - "{{ matlab_license_daemon }}"
+    - "{{ matlab_license_server }}"
+  tags: 
+    - matlab
+
+- name: update network license
+  command: "cp {{ matlab_license_location }} {{ matlab_network_license_file }}"
+  tags:
+    - matlab 
+
+- name: copy DAEMON options template
+  template:
+    src: mlm.opt
+    dest: "{{ matlab_install_directory }}/{{ matlab_version }}/etc/"
+    force: yes
+    mode: a+rwx
+  tags:
+    - matlab
+
+- name: copy install_input.txt template
+  template:
+    src: installer_input.txt
+    dest: "{{ matlab_install_directory }}/{{ matlab_version }}"
+    mode: go+rx,u+rwx
+  when: 
+    install_matlab
+  tags:
+    - matlab
+
+- name: run the matlab install
+  shell: "./install -inputFile {{ matlab_install_directory }}/{{ matlab_version }}/installer_input.txt -mode silent"
+  args:
+    chdir: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_combined_mount }}"
+  when: 
+    install_matlab
+  tags:
+    - matlab
+
+- name: list files for permission changes
+  find:
+    path: "{{ matlab_install_directory }}/{{ matlab_version }}"
+    recurse: no
+    file_type: directory
+    excludes: "{{ matlab_iso1_mount }},{{ matlab_iso2_mount }}"
+  register: find_result
+  tags:
+    - matlab
+
+- name: Update permissions
+  file:
+    path: "{{ item.path }}"
+    recurse: yes
+    state: directory
+    mode: go+rx,u+rwx
+  with_items: 
+    - "{{ find_result.files }}"
+  tags:
+    - matlab
+
+- name: restart matlab license manager
+  shell: su deploy -c "./lmstart"
+  args: 
+    chdir: "{{ matlab_install_directory }}/{{ matlab_version }}/etc"
+  tags:
+    - matlab
+
+- name: Update symlinks 
+  file:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    state: link
+    mode: go+rx,u+rwx
+  with_items:
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_boot_symlink_src }}", dest: "{{ matlab_install_directory }}/lmboot"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_boot_symlink_src }}", dest: "{{ matlab_symlink_boot_dest }}"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_down_symlink_src }}", dest: "{{ matlab_symlink_down_dest }}"}
+    - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_symlink_src }}", dest: "{{ matlab_symlink_dest }}"}
+  tags:
+    - matlab
+
+- name: unmount matlab iso1
+  mount:
+    name: "{{ item.dest }}/{{ matlab_version }}/{{ matlab_iso1_mount }}"
+    state: none
+    fstype: none
+    state: unmounted
+  with_items: "{{ mountinfo }}"
+  when: 
+    mountinfo is defined and install_matlab
+  tags:
+    - matlab
+
+- name: unmount matlab iso2
+  mount:
+    name: "{{ item.dest }}/{{ matlab_version }}/{{ matlab_iso2_mount }}"
+    state: none
+    fstype: none
+    state: unmounted
+  with_items: "{{ mountinfo }}"
+  when: 
+    mountinfo is defined and install_matlab
+  tags:
+    - matlab
