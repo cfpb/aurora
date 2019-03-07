@@ -1,7 +1,8 @@
 ---
-go_server_address: 10.0.1.26
-go_server_port: 8153
-go_server_url: https://10.0.1.26:8153/go
+#go_server_address: 10.0.1.26
+#go_server_port: 8153
+go_server_url: https://10.0.1.26:8154/go
+# need to update these url eventually
 gocd_agent_package_url: https://download.gocd.io/binaries/17.10.0-5380/rpm/go-agent-17.10.0-5380.noarch.rpm
 gocd_agent_package_name: go-agent-17.10.0-5380.noarch.rpm
 gocd_agent_package_path: /tmp
@@ -11,7 +12,8 @@ gocd_agent_mem: "128m"
 gocd_agent_max_mem: "256m"
 gocd_upgrade: False
 restart_gocd_server: True
-
+jenkins_repo_url: http://pkg.jenkins-ci.org/redhat-stable/jenkins.repo
+jenkins_key_url: https://jenkins-ci.org/redhat/jenkins-ci.org.key
 gocd_rpms:
   - screen
   - git

@@ -44,7 +44,7 @@ Vagrant.configure(2) do |config|
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_1)
-        v.customize ['createhd', '--filename', disk_file_1, '--size', 256, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_1, '--size', 1024, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
@@ -78,7 +78,7 @@ Vagrant.configure(2) do |config|
 
     fs_config.vm.provider 'virtualbox' do |v|
       unless File.exist?(disk_file_2)
-        v.customize ['createhd', '--filename', disk_file_2, '--size', 256, '--variant', 'fixed']
+        v.customize ['createhd', '--filename', disk_file_2, '--size', 1024, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
@@ -513,7 +513,7 @@ Vagrant.configure(2) do |config|
 
       ansible.limit = ansible_limit
     end
-
+    ip = "10.0.1.26"
     server.vm.network :private_network, ip: "10.0.1.26"
     server.vm.network "forwarded_port", guest: 8153, host: 8153, guest_ip: ip, auto_correct: true
   end

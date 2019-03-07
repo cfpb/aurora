@@ -67,6 +67,12 @@
   become_method: sudo
   when: iptables_config and is_terminal and deploy_iptables
 
+# - name: Allow 8080
+#   command: "iptables -A {{ iptables_chain }} -m state --state NEW -p tcp -m tcp --dport 8080 -s {{ subnet }} -j ACCEPT"
+#   become: yes
+#   become_method: sudo
+#   when: iptables_config and is_terminal and deploy_iptables
+
 - name: LOGDROP all others
   command: "iptables -A {{ iptables_chain }} -p all -j LOGDROP"
 
