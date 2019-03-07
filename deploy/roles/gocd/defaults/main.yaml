@@ -15,6 +15,7 @@ restart_gocd_server: True
 gocd_rpms:
   - screen
   - git
+  - fish
   - vim
   - emacs
   - "@Development tools"

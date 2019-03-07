@@ -1,7 +1,7 @@
 ---
-- name: Install all dependencies
+- name: Install all gocd dependencies
   yum:
-    name: ['{{ gocd_rpms }}']
+    name: '{{ gocd_rpms }}'
     state: present
     disable_gpg_check: yes
   notify:
@@ -69,23 +69,25 @@
     name: go-agent
     state: started
 
-- name: Set recursive admin permissions on log folders
-  acl:
-    path: "{{ item }}"
-    entity: "{{ restricted_group_name }}"
-    etype: group
-    permissions: rX
-    recursive: yes
-    state: present
-  with_items: "{{ gocd_log_file_locations }}"
 
-- name: Set default admin permissions on log folders
-  acl:
-    path: "{{ item }}"
-    entity: "{{ restricted_group_name }}"
-    etype: group
-    permissions: rX
-    default: yes
-    state: present
-  with_items: "{{ gocd_log_file_locations }}"
-
+# we should be logging to standard output
+# - name: Set recursive admin permissions on log folders
+#   acl:
+#     path: "{{ item }}"
+#     entity: "{{ restricted_group_name }}"
+#     etype: group
+#     permissions: rX
+#     recursive: yes
+#     state: present
+#   with_items: "{{ gocd_log_file_locations }}"
+#
+# - name: Set default admin permissions on log folders
+#   acl:
+#     path: "{{ item }}"
+#     entity: "{{ restricted_group_name }}"
+#     etype: group
+#     permissions: rX
+#     default: yes
+#     state: present
+#   with_items: "{{ gocd_log_file_locations }}"
+#

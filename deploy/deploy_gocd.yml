@@ -3,6 +3,7 @@
   become: yes
   become_method: sudo
   roles:
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: common, when: "install_glusterfs"}
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
@@ -15,8 +16,9 @@
   serial: 1
   max_fail_percentage: 10
   roles:
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: common, when: "install_glusterfs"}
-    - devtools
+    - devtools6
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
@@ -80,6 +82,7 @@
   become: yes
   become_method: sudo
   roles:
+    - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: common, when: "install_glusterfs"}
     - devtools
     - {role: puppet_disable, when: "disable_puppet"}
