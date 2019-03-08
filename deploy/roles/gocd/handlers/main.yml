@@ -4,3 +4,9 @@
       name: go-agent
       state: restarted
     when: restart_gocd_server
+  - name: restart jenkins
+    service:
+      name: jenkins
+      state: restarted
+      enabled: yes
+    when: restart_gocd_server

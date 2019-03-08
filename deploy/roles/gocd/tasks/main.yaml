@@ -35,7 +35,9 @@
   yum:
     name: "jenkins"
     state: latest
-    enabled: yes
+  register: jenkins
+  notify:
+    - restart jenkins
 
 - name: Open required ports
   command: "iptables -I {{ iptables_chain }} 2 -m state --state NEW -p tcp --dport {{ item }} -j ACCEPT"
