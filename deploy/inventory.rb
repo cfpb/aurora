@@ -1,16 +1,31 @@
-
-module Inventory
-  def Inventory.extract_ipv4(line)
+#
+# class Class
+#   alias old_new new
+#   def new(*args)
+#     print "Creating a new ", self.name, "\n"
+#     old_new(*args)
+#   end
+# end
+class Inventory
+  def extract_ipv4(line)
     ip_regex=/(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})/
     ip=line[ip_regex]
     return ip
   end
-  def Inventory.get_hostname(line)
-    first_word_regex=/([a-z].*) /
-    hostname=line[first_word_regex]
-    return hostname
+  def get_hostname(line)
+    return line.split[0]
   end
-  def Inventory.read_file(file_path="vagrant_hosts")
+
+  #return a dict with all groups passed in
+  def get_hosts_by_groups(group_list)
+
+      inventory={}
+      for group in group_list do
+          inventory[group]=@inventory[group]
+      end
+      return inventory
+  end
+  def initialize(file_path="./vagrant_hosts")
 
       File.open(file_path, "r") do |f|
           dictionary={}
@@ -44,15 +59,15 @@ module Inventory
                   end
               end
           end
-          inventory={}
+          @inventory={}
           dictionary=dictionary.merge(curr_dict)
           dictionary.each do |key, value|
               if value.length>0 then
-                  inventory[key]=value
+                  @inventory[key]=value
                   #puts (key + "\n\t-->" + value*",")
               end
           end
-          return inventory
+
       end
   end
 

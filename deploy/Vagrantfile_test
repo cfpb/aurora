@@ -1,0 +1,65 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+require 'fileutils'
+require './inventory'
+inventory_groups = Inventory.new('./vagrant_hosts')
+
+Vagrant.configure(2) do |config|
+    DOMAIN = 'test.dev'.freeze
+    config.vm.box = 'ubuntu/xenial64'
+    config.vbguest.auto_update = false
+    ### COMMON VARIABLES
+
+    # First make sure that an .vault_password file exists, and if it doesn't
+    # then create an empty file
+    FileUtils.touch('.vault_password') unless File.file?('.vault_password')
+
+    # Constant var holding the root directory where this vagrantfile is being run
+    VAGRANT_ROOT = File.dirname(File.expand_path(__FILE__))
+    ansible_tags = ENV['TAGS']
+    ansible_verbosity = ENV['V']
+
+    ansible_extra_vars = if ENV['EXTRA_VARS']
+                             eval(ENV['EXTRA_VARS'])
+                         else
+                             {}
+                         end
+    ansible_limit = ENV['LIMIT']
+
+    x = inventory_groups.get_hosts_by_groups(['file_server'])
+    x.each do |_hosts_key, host_val|
+        host_val.each do |host|
+            hostname = host[:hostname]
+            ipv4 = host[:ipv4]
+
+            # GlusterFS File Server 1
+            disk_file_1 = File.join(VAGRANT_ROOT, "gfs_brick_1_#{hostname}.vdi")
+            config.vm.define host[:hostname] do |mm_config|
+                hypenated = "#{hostname}.#{DOMAIN}".tr('_', '-')
+                mm_config.vm.hostname = hypenated
+                mm_config.vm.network :private_network, ip: ipv4
+                mm_config.ssh.forward_agent = true
+                # Should go in ansible config
+                fs_config.vm.provision :shell,
+                                       inline: "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+                fs_config.vm.provider 'virtualbox' do |v|
+                    if File.exist?(disk_file_1)
+                        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
+                    else
+                        v.customize ['createhd', '--filename', disk_file_1, '--size', 1024, '--variant', 'fixed']
+                        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
+                    end
+                end
+                mm_config.vm.provision 'ansible' do |ansible|
+                    ansible.playbook = 'deploy_file_server.yml'
+                    ansible.inventory_path = 'vagrant_hosts'
+                    ansible.tags = ansible_tags
+                    ansible.verbose = ansible_verbosity
+                    ansible.extra_vars = ansible_extra_vars
+                    ansible.limit = ansible_limit
+                end
+            end
+
+        end
+    end
+end
