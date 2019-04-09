@@ -54,6 +54,7 @@
     opts: "{{ gluster_mount_options }}"
   with_items: "{{ shared_folders }}"
   when: mount_glusterfs and not skip_glusterfs
+  ignore_errors: true
 
 - name: Remove unneeded folders
   file:
