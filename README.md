@@ -22,7 +22,7 @@ group_vars file to go with it.  Once that has been added, simply run
 "ansible-playbook site.yml -i inventories/{{ your_environment }}"
 
   * Note: if there isn't a postgres instance running on your machine, you'll need to pass an environment variable to install it
-  	- Ex: ```EXTRA_VARS='{pp_install:true}'```
+  	- Ex: ```EXTRA_VARS='{pp_install:true}' vagrant up [server_name]```
 
 ## Configuration
 
