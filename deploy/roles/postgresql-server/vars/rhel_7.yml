@@ -1,2 +1,2 @@
-pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 pp_initdb: "/usr/pgsql-10/bin/postgresql-10-setup initdb"

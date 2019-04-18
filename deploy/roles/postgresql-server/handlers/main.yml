@@ -5,3 +5,8 @@
   service:
     name: "{{ pp_servicename }}"
     state: restarted
+
+- name: reload-daemon
+  service:
+    name: "{{ pp_servicename }}"
+    daemon_reload: yes

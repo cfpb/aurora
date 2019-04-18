@@ -5,6 +5,7 @@
   become_method: sudo
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
+    - common
     - iptables
     - epel
     - ntp

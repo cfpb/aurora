@@ -1,7 +1,7 @@
 ---
 jdk_packages:
-  - java-1.8.0-openjdk-1.8.0.161
-  - java-1.8.0-openjdk-devel-1.8.0.161
+  - java-1.8.0-openjdk
+  - java-1.8.0-openjdk-devel
   - libselinux-python
 
 java_deploy_options: []
