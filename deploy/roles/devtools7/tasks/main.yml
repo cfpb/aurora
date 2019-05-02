@@ -1,0 +1,60 @@
+---
+# RHEL 7
+#- name: Add RHSCL Repo
+# become: yes
+# become_method: sudo
+# command: yum-config-manager --enable rhel-server-rhscl-7-rpms
+# tags:
+#   - devtools7
+
+- name: Install Devtools 7
+  become: yes
+  become_method: sudo
+  yum:
+    name: devtoolset-7
+    state: present
+  tags:
+    - devtools7
+
+- name: Start using devtools
+  become: yes
+  become_method: sudo
+  command: scl enable devtoolset-7 bash
+  rags:
+    - devtools7
+
+# CentOS
+#- name: Install devtools repo
+#  template:
+#    src: devtools-2.repo.j2
+#    dest: /etc/yum.repos.d/devtools-2.repo
+#    mode: 0644
+#  when: not os=rhel7
+# when: not custom_repo
+#  tags:
+#    - devtools
+
+#- name: Install updated devtools
+#  yum:
+#    name: "{{ item }}"
+#    state: present
+#  with_items:
+#    - devtoolset-2-binutils
+#    - devtoolset-2-build
+#    - devtoolset-2-gcc
+#    - devtoolset-2-gcc-c++
+#    - devtoolset-2-gcc-gfortran
+#    - devtoolset-2-gdb
+#    - devtoolset-2-git
+#  when: not os=rhel7
+#  tags:
+#    - devtools
+
+# Breaks some system tools
+#- name: Setup environment variables to use new versions
+#  template:
+#    src: devtools-2.sh.j2
+#    dest: /etc/profile.d/devtools-2.sh
+#    mode: 0644
+#  tags:
+#    - devtools

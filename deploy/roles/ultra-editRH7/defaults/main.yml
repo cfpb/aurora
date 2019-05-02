@@ -1,0 +1,12 @@
+---
+ue_uninstall_list: 
+  - UltraEdit-16.1-0.22.x86_64
+  - UltraEdit-16.1-0.18.x86_64
+  - UltraEdit-3.3-0.12.x86_64
+  - UltraEdit-16.1-0.22.x86_64
+  - UltraEdit-15.1-0.8.x86_64
+
+ue_install_version: UltraEdit-18.0-0.40.el7.x86_64
+ue_install_rpm: UltraEdit-18.0-0.40.el7.x86_64.rpm
+ue_install_dir: /opt/ancillary_local
+#https://downloads.ultraedit.com/main/ue/linux/rpm/UltraEdit-18.0-0.40.el7.x86_64.rpm

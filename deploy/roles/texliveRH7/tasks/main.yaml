@@ -1,0 +1,20 @@
+---
+- name: Install texlive files
+  shell: yum install -y {{item}}
+# yum:
+#   name: "{{item}}"
+#   state: present
+#   disable_gpg_check: yes
+  with_items:
+    - "{{texlive_packages}}"
+# when: custom_repo
+
+- name: download texstudio  
+  shell:  wget http://download.opensuse.org/repositories/home:/jsundermeyer/CentOS_CentOS-7/home:jsundermeyer.repo -O /etc/yum.repos.d/texstudio.repo
+
+#- name: update repo
+# shell: yum update
+
+- name: install texstudio
+  shell: yum install -y texstudio-2.*
+# shell: yum install -y texstudio-2.9.4-3.1

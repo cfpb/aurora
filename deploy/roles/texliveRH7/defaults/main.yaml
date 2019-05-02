@@ -1,0 +1,11 @@
+---
+texlive_packages:
+ - texlive
+ - texlive-latex
+ - texlive-xetex
+ - texlive-collection-latex
+ - texlive-collection-latexrecommended
+ - texlive-xetex-def
+ - texlive-collection-xetex 
+ - texlive-xltxtra
+
