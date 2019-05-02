@@ -352,6 +352,26 @@ Vagrant.configure(2) do |config|
     server.vm.network :private_network, ip: "10.0.1.18"
   end
 
+  # Research ancillary server1 on RedHat 7.5 and above
+  config.vm.define :research_ancillary1_services do |server|
+#   server.vm.box = "bento/centos-6.10"
+    server.vm.box = "clouddood/RH7.5_baserepo"
+    server.vm.host_name = "research-ancillary01.test.dev"
+
+    server.ssh.forward_agent = true
+
+    server.vm.provision "ansible" do |ansible|
+      ansible.playbook = "deploy_ancillaryRH7.dev_local"
+      ansible.inventory_path = "vagrant_hosts"
+      ansible.tags = ansible_tags
+      ansible.verbose = ansible_verbosity
+      ansible.extra_vars = ansible_extra_vars
+      ansible.limit = ansible_limit
+    end
+
+    server.vm.network :private_network, ip: "10.0.1.50"
+  end
+
   # Research EOD server
   config.vm.define :research_eod do |server|
     server.vm.box = "bento/centos-6.10"
