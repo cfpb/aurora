@@ -59,6 +59,8 @@
 #     Already secure copy to destination host
     - name: use gdown to download and build local repo
       shell: gdown https://drive.google.com/uc?id=1qaZH9_SrGyjHjWT3P2WtvZAhEkP9YG1Z -O /tmp/ancilRH7_repo.tar.gz
+#     when: stage == "DEV_LOCAL"
+#       stage values = { "DEV_LOCAL","DEV", "PROD" }
 
 #     shell: gdown https://drive.google.com/uc?id=139Z0MfyT0WVWIzP_uwM2KxPCrfYs_vUV
 #   - name: Install pip
