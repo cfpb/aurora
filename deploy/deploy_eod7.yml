@@ -1,5 +1,5 @@
 ---
-- hosts: eodrh7
+- hosts: research_eod7
 #- hosts: wdcdreseodl05, wdcdreseodl06
   vars:
     custom_repo: true
@@ -30,12 +30,12 @@
         msg: "RHEL Enabled Repos: {{ enabled_repos }}"
         
 # tasks:
-#   - name: download epel
-#     shell:  wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
-#   - name: Install epel
-#     shell:  yum -y localinstall /tmp/epel*rpm
-    - name: install Epel
-      shell: yum install -y epel-release
+    - name: download epel
+      shell:  wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
+    - name: Install epel
+      shell:  yum -y localinstall /tmp/epel*rpm
+#   - name: install Epel
+#     shell: yum install -y epel-release
 
     - name: install libselinux-python
       yum:

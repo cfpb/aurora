@@ -373,7 +373,7 @@ Vagrant.configure(2) do |config|
 
   # Research EOD Redhat 7 server
   config.vm.define :research_eod7 do |server|
-    server.vm.box = "clouddood/RH7.5baserepo"
+    server.vm.box = "clouddood/RH7.5_baserepo"
 #   server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "research-eod7.test.dev"
 
