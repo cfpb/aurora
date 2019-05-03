@@ -21,8 +21,8 @@
       shell: "/usr/bin/subscription-manager repos --enable=rhel-server-rhscl-7-rpms"
     - name: register RHEL7 DevTools
       shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-devtools-rpms"
-    - name: register RHEL7 Extras 
-      shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-extras-rpms"
+#   - name: register RHEL7 Extras 
+#     shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-extras-rpms"
     - name: list RHEL enabled repos
       shell: "/usr/bin/subscription-manager repos --list-enabled"
       register: enabled_repos

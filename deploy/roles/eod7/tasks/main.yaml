@@ -175,8 +175,15 @@
   tags:
     - eod
 #- debug: var="{{ xfce4desktop.stdout }}"
+
 - name: update libraries for MATE installation
   command: yum -y update --enablerepo=epel-testing
+
+# MATE fix for RHEL 7.5, 7.6               
+- name: install dnf (RedHat yum4/yum replacement)
+  shell: yum install -y dnf                
+- name: apply dnf advisory fix for libgtop2 dependency
+  shell: dnf upgrade --advisory=EDORA-EPEL-2018-417249babc
 
 - name: install MATE (GNOME 2) Desktop 
 #  command: yum -y groupinstall mate-desktop
