@@ -1,0 +1,54 @@
+---
+- hosts: eodrh7
+#- hosts: wdcdreseodl05, wdcdreseodl06
+  vars:
+    custom_repo: true
+  vars_files:
+    - ~/RHACCOUNT
+  become: yes
+  become_method: sudo
+  pre_tasks:
+    - debug:
+        msg: "Variables: _uid = {{ _uid }}, _pwd = **********"
+#       msg: "Variables: _uid = {{ _uid }}, _pwd = {{ _pwd }}"
+    - name: register RHEL7.5
+      command: "/usr/bin/subscription-manager register --username {{ _uid }} --password {{ _pwd }} --auto-attach"
+      when: _uid != "" and _pwd != ""
+#     command: "/usr/bin/subscription-manager register --username <name> --password <password> --auto-attach"
+    - name: register RHEL7 repo
+      command: "/usr/bin/subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-optional-rpms"
+    - name: register RHEL7 RHSCL Repo
+      shell: "/usr/bin/subscription-manager repos --enable=rhel-server-rhscl-7-rpms"
+    - name: register RHEL7 DevTools
+      shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-devtools-rpms"
+    - name: register RHEL7 Extras 
+      shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-extras-rpms"
+    - name: list RHEL enabled repos
+      shell: "/usr/bin/subscription-manager repos --list-enabled"
+      register: enabled_repos
+    - debug:
+        msg: "RHEL Enabled Repos: {{ enabled_repos }}"
+        
+# tasks:
+#   - name: download epel
+#     shell:  wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
+#   - name: Install epel
+#     shell:  yum -y localinstall /tmp/epel*rpm
+    - name: install Epel
+      shell: yum install -y epel-release
+
+    - name: install libselinux-python
+      yum:
+        name: libselinux-python
+        state: present
+  roles:
+    - common7
+    - eod7
+
+  post_tasks:
+#   - name: remove RHEL7.5
+#     command:  "/usr/bin/subscription-manager remove --all"
+#   - name: unregister RHEL7.5
+#     command:  "/usr/bin/subscription-manager unregister"
+#   - name: clean RHEL7.5
+#     command:  "/usr/bin/subscription-manager clean"
