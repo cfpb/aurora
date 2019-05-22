@@ -49,16 +49,6 @@ eod_license_server_cache:
 eod_license_keys:
  - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
 
-# GDM Settings
-# This example disables the login user list
-gconf_settings:
-  -
-    setting: "/apps/gdm/simple-greeter/disable_user_list"
-    type: "bool"
-    value: "true"
-
-eod_greeter_include: false
-
 iptables_config: True
 deploy_iptables: True
 iptables_chain: TEST-INPUT

@@ -30,18 +30,12 @@
         msg: "RHEL Enabled Repos: {{ enabled_repos }}"
         
 # tasks:
-    - name: download epel
-      shell:  wget https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm -O /tmp/epel-release-latest-7.noarch.rpm
-    - name: Install epel
-      shell:  yum -y localinstall /tmp/epel*rpm
-#   - name: install Epel
-#     shell: yum install -y epel-release
-
     - name: install libselinux-python
       yum:
         name: libselinux-python
         state: present
   roles:
+    - epel7
     - common7
     - eod7
 
