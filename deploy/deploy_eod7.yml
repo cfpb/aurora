@@ -8,9 +8,6 @@
   become: yes
   become_method: sudo
   pre_tasks:
-    - debug:
-        msg: "Variables: _uid = {{ _uid }}, _pwd = **********"
-#       msg: "Variables: _uid = {{ _uid }}, _pwd = {{ _pwd }}"
     - name: register RHEL7.5
       command: "/usr/bin/subscription-manager register --username {{ _uid }} --password {{ _pwd }} --auto-attach"
       when: _uid != "" and _pwd != ""
