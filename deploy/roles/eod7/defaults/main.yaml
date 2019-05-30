@@ -1,0 +1,58 @@
+---
+#==================#
+### EoD SETTINGS ###
+#==================#
+install_desktop: False
+eod_restart: False
+eod_install: True
+eod_upgrade: False
+#eod_installer: ecs-13.8.5-linux-x64.bin
+eod_installer: ecs-13.8.9-linux-x64.bin
+eod_upgrader:
+eod_installer_directory: '/artifacts'
+#eod_installer_directory: '/tmp'
+custom_repo: True
+
+eod_client_ports:
+  - 5500
+  - 8406
+  - 8407
+  - 6000:6025
+
+eod_client_ports_udp:
+  - 177
+
+eod_admins:
+  - vagrant
+  - admin
+
+#restricted_group_name: vagrant
+restricted_group_name: admin
+
+eod_install_directory: '/usr/local/eod'
+eod_cm_password: PASSWORD
+
+# Define this variable to setup a cluster with a common datastore
+# The datastore must be a shared volume accessible by all EOD nodes.
+# eod_datastore_directory:
+
+eod_datastore_password: PASSWORD
+eod_cm_preferred_pcm: "{{ ansible_ssh_host }}"
+eod_cluster_name: "{{ ansible_ssh_host }}"
+xdmc_query_host:  "{{ ansible_ssh_host }}"
+
+eod_use_license_server: 0
+eod_license_server_host:
+eod_license_server_cache:
+
+# TODO: you can put all the keys you want to here
+eod_license_keys:
+ - AAAA-BBBBBB-CCCCCC-DDDD-EEEEEE-FFF -0123456789 123
+
+iptables_config: True
+deploy_iptables: True
+iptables_chain: TEST-INPUT
+#iptables_chain: INPUT
+
+install_eod: True
+eod_restart: True
