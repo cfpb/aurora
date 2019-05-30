@@ -74,6 +74,7 @@
   serial: 1
   roles:
     - postgresql-server-config
+    - psql-authnz
   post_tasks:
     - name: Create Citus extension
       postgresql_exec:
