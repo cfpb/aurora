@@ -4,9 +4,9 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
-    - {role: epel, when: "use_epel and not 'production' in group_names"}
-    - emacs
+    - {role: common, when: "install_glusterfs and not rh7_upgrade"}
+    - {role: epel, when: "use_epel and not 'production' in group_names" and not rh7_upgrade}
+    - {role: emacs, when: "not rh7_upgrade"}
     - jdk
     - odbc
     - postgresql-client
@@ -86,7 +86,21 @@
   become_method: sudo
   serial: 1
   roles:
-    - eod
+    - {role: eod, when: not rh7_upgrade}     
+
+- hosts: research_eod7
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: epel7, when: "rh7_upgrade"}
+    - {role: common7, when: "rh7_upgrade"}
+    - {role: eod7, when: "rh7_upgrade"}
+    #TODO: emacs for rh7
+  post_tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_gauss
   become: yes

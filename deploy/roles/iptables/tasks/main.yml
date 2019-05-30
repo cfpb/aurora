@@ -6,7 +6,7 @@
 
 ---
 - include: rhel_7.yml
-  when: "{{ ansible_distribution_major_version }} == 7"
+  when: rh7_upgrade
 
 - name: Temporarily allow all
   command: "iptables -P INPUT ACCEPT"
