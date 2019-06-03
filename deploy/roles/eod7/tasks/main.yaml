@@ -236,7 +236,7 @@
 - name: Set configuration settings for gdm mandatory
   shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
   with_items: "{{ gconf_settings }}"
-  kotify:
+  notify:
     - restart gdm
 #   - restart prefdm
   tags:
