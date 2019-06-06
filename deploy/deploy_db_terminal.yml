@@ -17,6 +17,7 @@
     - devtools
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
+    - python36-scl
     - python-libs
     - sqitch
     - {role: pem-client, tags: pem-client}

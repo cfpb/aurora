@@ -9,6 +9,7 @@
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
+    - python36-scl
     - ruby
     - postgresql-client
     - gocd
@@ -63,11 +64,11 @@
         executable: /usr/local/bin/pip2.7
       with_items: "{{ python_packages }}"
 
-    - name: Install Python packages for 3.4
+    - name: Install Python packages for 3.6
       pip:
         name: "{{ item }}"
         state: present
-        executable: /usr/local/bin/pip3.4
+        executable: /opt/rh-python3.6/root/usr/bin/pip3.6
       with_items: "{{ python3_packages }}"
 
 - hosts: app_server

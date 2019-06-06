@@ -1,0 +1,5 @@
+---
+# defaults file for python36-scl
+
+# Should the role set SCL python v3.6 as the default system python for users
+set_python36_default_python: False

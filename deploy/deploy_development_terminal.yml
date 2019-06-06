@@ -7,6 +7,7 @@
       - {role: epel, when: "use_epel and not 'production' in group_names"}
       - {role: python, when: "install_python and custom_repo"}
       - {role: python-build, when: "not custom_repo"}
+      - {role: python36-scl, when: "install_python"}
       - devtools
       - devtools6
       - ruby
