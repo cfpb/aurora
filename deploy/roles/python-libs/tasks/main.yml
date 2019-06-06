@@ -10,14 +10,27 @@
     - python2-libs
     - python3-libs
 
+- name: Check for python2 installation
+  set_fact:
+    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_pip_bin }}' ]"
+  tags:
+    - python-libs
+    - python2-libs
+
+- name: Check for python3.4 installation
+  set_fact:
+    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python3_pip_bin }}' ]"
+  tags:
+    - python-libs
+    - python3-libs
+
 - name: Uninstall pycurl
   pip:
     name: pycurl
     executable: "{{ item }}"
     state: absent
-  with_items:
-    - "{{ python_pip_bin }}"
-    - "{{ python3_pip_bin }}"
+  with_items: "{{ python_pip_binaries }}"
+
   when: install_python and update_pycurl
   tags:
     - python-libs
@@ -26,9 +39,7 @@
 
 - name: Reinstall pycurl with correct SSL lib
   shell: 'PYCURL_SSL_LIBRARY=nss {{ item }} install pycurl --global-option="--with-nss"'
-  with_items:
-    - "{{ python_pip_bin }}"
-    - "{{ python3_pip_bin }}"
+  with_items: "{{ python_pip_binaries }}"
   when: install_python and update_pycurl
   tags:
     - python-libs
@@ -41,9 +52,7 @@
     executable: "{{ item }}"
     state: latest
   when: install_python
-  with_items:
-    - "{{ python_pip_bin }}"
-    - "{{ python3_pip_bin }}"
+  with_items: "{{ python_pip_binaries }}"
   tags:
     - python-libs
     - python2-libs
