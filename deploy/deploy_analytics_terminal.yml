@@ -2,6 +2,13 @@
 - hosts: analytics_terminal
   become: yes
   become_method: sudo
+  pre_tasks:
+    - name: Install libselinux-python
+      yum:
+        name: libselinux-python
+        state: latest
+      tags:
+        - always
 
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
