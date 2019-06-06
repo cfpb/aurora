@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   roles:
-    - {role: common, when: "install_glusterfs"}
+    - common
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}

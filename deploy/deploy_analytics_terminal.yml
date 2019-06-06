@@ -2,18 +2,11 @@
 - hosts: analytics_terminal
   become: yes
   become_method: sudo
-  pre_tasks:
-    - name: Install libselinux-python
-      yum:
-        name: libselinux-python
-        state: latest
-      tags:
-        - always
 
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+    - common
 
 - include: deploy_development_terminal.yml
 - include: deploy_r_terminal.yml

@@ -16,7 +16,7 @@
 
   ## Temporarily remove devtools and r due to limited repositories on agents
   roles:
-    - {role: common, when: "install_glusterfs"}
+    - common
     - {role: iptables, when: "iptables_config"}
     #- devtools
     - mesos_agent
