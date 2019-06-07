@@ -10,6 +10,7 @@
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - python36-scl
+    - python-libs
     - ruby
     - postgresql-client
     - gocd
@@ -56,20 +57,6 @@
         state: present
         disable_gpg_check: yes
       with_items: "{{ python_dep_packages }}"
-
-    - name: Install Python packages for 2.7
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /usr/local/bin/pip2.7
-      with_items: "{{ python_packages }}"
-
-    - name: Install Python packages for 3.6
-      pip:
-        name: "{{ item }}"
-        state: present
-        executable: /opt/rh-python3.6/root/usr/bin/pip3.6
-      with_items: "{{ python3_packages }}"
 
 - hosts: app_server
   become: yes
