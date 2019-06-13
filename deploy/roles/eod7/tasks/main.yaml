@@ -348,3 +348,24 @@
     line: 'Exec=/usr/libexec/polkit-mate-authentication-agent-1'
   tags:
     - eod
+
+- name: copy desktop.xml template to etc location
+  template:
+    src: xfce4-desktop.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
+
+- name: copy keyboard.xml template to etc location
+  template:
+    src: xfce4-keyboard-shortcuts.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
+
+- name: copy panel.xml template to etc location
+  template:
+    src: xfce4-panel.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
