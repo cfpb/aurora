@@ -8,8 +8,8 @@
     - {role: iptables, when: "iptables_config"}
     - common
 
-- include: deploy_development_terminal.yml
-- include: deploy_r_terminal.yml
+- import_playbook: deploy_development_terminal.yml
+- import_playbook: deploy_r_terminal.yml
 
 - hosts: analytics_terminal
   become: yes
