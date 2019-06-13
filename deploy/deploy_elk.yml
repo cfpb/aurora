@@ -14,7 +14,7 @@
   become: yes
   become_method: sudo
   handlers:
-    - include: roles/shared/handlers/main.yml
+    - import_tasks: roles/shared/handlers/main.yml
   pre_tasks:
     - name: Create key for message authentication
       shell: "/usr/share/elasticsearch/bin/shield/syskeygen"
