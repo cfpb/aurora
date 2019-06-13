@@ -1,0 +1,22 @@
+- name: Install git
+  yum:
+    name: git
+    state: present
+
+- name: Install dependencies
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - virtualenv
+    - python-devel
+    - libevent-devel
+    - gcc
+    - gcc-c++
+    - kernel-devel
+    - libxslt-devel
+    - libffi-devel
+    - openssl-devel
+    - openldap-devel
+
+##ToDO: Add https://github.com/cfpb/psql-authnz deployment steps and run on citus hosts and postgres hosts

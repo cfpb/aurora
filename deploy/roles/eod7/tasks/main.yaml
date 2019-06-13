@@ -11,13 +11,9 @@
 #   - abyssinica-fonts
     - tree
     - expect
+    - libselinux-python
   tags:
     - eod
-
-#- name: set up RHEL 7 EPEL Repository
-#  become: yes
-#  become_method:  sudo
-#  command:  subscription-manager repo --enable r-epel-rhel-7-x86-64
 
 - include: install_eod.yaml
   when: eod_install
@@ -98,75 +94,15 @@
   tags:
     - eod
 
-# TODO: Add template for node.cfg
-
-### Install and configure Desktop Environment
-
-#- name: install X, Desktop, fonts
-#  command: yum -y groupinstall gnome-desktop x11 fonts
-
-#- name: install gdm (gnome display manager)
-#  command: yum -y install gdm
-  
-#- name: install X Window System
-#  yum:
-#    name: "@X Window System"
-#    state: present
-#    state: latest
-# skip_broken: yes
-#  tags:
-#    - eod
-
 - name: install "X Window System 
   shell: yum -y groupinstall "X Window System"
-
-#- name: install Desktop
-# shell: yum -y groupinstall X11  
- 
-#  shell: yum -y groupinstall X11 --setopt=group_package_types=mandatory,default,optional
-#  shell: yum -y groupinstall gnome-desktop x11 fonts --skip-broken
-#  shell: yum -y groupinstall "gnome-desktop"
-#  yum:
-#    name: "@gnome-desktop"
-#    state: present
-# skip_broken: yes
   tags:
     - eod
 
-#- name: install gnome-backgrounds
-#  yum:
-#    name: gnome-backgrounds
-#    state: present
-#  tags:
-#    - eod
-  
 - name: install gdm (gnome display manager)
   command: yum -y install gdm
   tags:
     - eod
-
-#- name: install Server with GUI 
-#  yum:
-#    name: "@^Server with GUI"
-#    state: present
-#  register: serverwithgui
-#  tags:
-#    - eod
-#- debug: var="{{ serverwithgui.stdout }}"
-
-#- name: install MATE (GNOME 2) Desktop 
-#  yum:
-#    name: "@MATE Desktop"
-#    state: present
-#  register: matedesktop
-#  tags:
-#    - eod
-#- debug: var="{{ matedesktop.stdout }}"
-
-# Install EPEL moved to deploy  
-#- name: install epel-latest 
-# command: yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-#  when:
 
 - name: install XFCE4 Desktop 
   yum:
@@ -175,28 +111,27 @@
   register: xfce4desktop
   tags:
     - eod
-#- debug: var="{{ xfce4desktop.stdout }}"
 
 - name: update libraries for MATE installation
   command: yum -y update --enablerepo=epel-testing
+  tags:
+    - eod
 
 # MATE fix for RHEL 7.5, 7.6               
 - name: install dnf (RedHat yum4/yum replacement)
-  shell: yum install -y dnf                
+  shell: yum install -y dnf   
+  tags:
+    - eod             
+
 - name: apply dnf advisory fix for libgtop2 dependency
   shell: dnf upgrade --advisory=EDORA-EPEL-2018-417249babc
+  tags:
+    - eod
 
 - name: install MATE (GNOME 2) Desktop 
-#  command: yum -y groupinstall mate-desktop
-# command: yum -y install mate-desktop mate-settings-daemon* mate-background* mate-theme*
   command: yum -y groupinstall "MATE Desktop"
-# yum:
-#   name: "@MATE Desktop"
-#   state: present
-# register: matedesktop
-# tags:
-#   - eod
-#- debug: var="{{ matedesktop.stdout }}"
+  tags:
+    - eod
 
 #- name: install General Purpose Desktop
 - name: install Fonts
@@ -220,7 +155,6 @@
     mode: 064
   notify:
     - restart gdm
-#   - restart prefdm
   tags:
     - eod
 
@@ -229,7 +163,6 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-#   - restart prefdm
   tags:
     - eod
 
@@ -238,10 +171,9 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-#   - restart prefdm
   tags:
     - eod
-# - can configure with systemctl set-default TARGET.target
+    
 - name: configure inittab
   template:
     src: inittab
@@ -255,7 +187,6 @@
   register: xtarget
   tags:
     - eod
-#- debug: var=xtarget.stdout_lines
 
 - name: configure xorg.conf
   template:
@@ -302,8 +233,6 @@
     - eod
 
 - name: run gdm
-# command: start prefdm  -- for CentOS/RHEL6
-#  command: systemctl start display-manager
   command: systemctl start gdm
   register: gdm_status
   failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
@@ -311,27 +240,6 @@
   tags:
     - eod
 
-# copy eodpatch expect script and execute
-#- name: copy eodpatch.exp to remote
-#  file:
-#    path: /files/eodpatch.exp
-#    dest: /tmp/eodpatch.exp
-#    mode: a+x
-#  tags:
-#    - eod
-    
-#- name: execute eodpatch.exp script
-#  command: /tmp/eodpatch.exp
-#  shell: /tmp/eodpatch.exp
-#  ignore_errors: yes
-#  register: eodpatch
-#  tags:
-#    - eod
-    
-#- name: clear host errors`
-#  meta: clear_host_errors
-    
-#- debug: var=eodpatch
 - name: Run eodpatch expect inline - required before running /usr/local/eod/bin/otecs ...
   shell: |
     set timeout 120
@@ -354,7 +262,6 @@
     - eod
 
 ### Ensure EOD starts on boot
-
 - name: Check if EOD is configured to run on boot
   shell: "{{ eod_install_directory }}/bin/otecs bootstatus"
   register: eod_bootstatus
@@ -371,7 +278,6 @@
     - eod
 
 ### Allow the admin group to read logs and configs
-
 - name: Ensure that EOD log directory exists
   file:
     path: "{{ eod_install_directory }}/log"
@@ -382,36 +288,26 @@
   tags:
     - eod
 
-#- name: Set recursive admin permissions on log file
-#  acl:
-#    path: "{{ eod_install_directory }}"
-#    entity: "{{ restricted_group_name }}"
-#    etype: group
-#    permissions: rwX
-#    recursive: yes
-#    state: present
-#  tags:
-#    - eod
-
-#- name: Set default admin permissions on log file
-#  acl:
-#    path: "{{ eod_install_directory }}"
-#    entity: "{{ restricted_group_name }}"
-#    etype: group
-#    permissions: rwX
-#    default: yes
-#    state: present
-#  tags:
-#    - eod
+- name: Allow admins to read EOD logs
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    state: present
+  with_items: "{{ eod_install_directory }}/log"
+  tags:
+    - eod
 
 ### Ensure the needed ports are open
 - name: create custom chain
   command: "iptables -N {{ iptables_chain }}"
   ignore_errors: yes
+  tags:
+    - eod
 
 - name: open up ports in ipconfig
   command: "iptables -A {{ iptables_chain }} -p tcp -m tcp --dport {{ item }} -j ACCEPT"
-  #command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports }}"
   when: iptables_config and deploy_iptables
   tags:
@@ -419,7 +315,6 @@
 
 - name: open up udp port in ipconfig
   command: "iptables -A {{ iptables_chain }} -p udp -m udp --dport {{ item }} -j ACCEPT"
-  #command: "iptables -I {{ iptables_chain }} 3 -p udp -m udp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports_udp }}"
   when: iptables_config and deploy_iptables
   tags:
@@ -442,6 +337,8 @@
     owner: root
     group: root
     mode: 0644
+  tags:
+    - eod
 
 - name: replace XFCE4 PolicyKit Agent with GNOME/MATE agent
   lineinfile:
@@ -449,32 +346,26 @@
     regexp: '^Exec='
     insertafter: '^#Exec='
     line: 'Exec=/usr/libexec/polkit-mate-authentication-agent-1'
+  tags:
+    - eod
 
-#- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register
-#  shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
-#  register: cfg_files
-#  ignore_errors: yes
-#  tags:
-#    - eod
-#  when: custom_repo
+- name: copy desktop.xml template to etc location
+  template:
+    src: xfce4-desktop.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
 
-#- name: Add XkbExtension to four files
-#  lineinfile:
-#    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
-#    regexp: XkbExtension
-#    line: XkbExtension=1
-#  with_items: "{{ cfg_files.stdout_lines }}"
-#  when: custom_repo
-#  tags:
-#    - eod
-#  when: custom_repo
+- name: copy keyboard.xml template to etc location
+  template:
+    src: xfce4-keyboard-shortcuts.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
 
-#- name: Add Composite to four files
-#  lineinfile:
-#    dest: "{{ eod_Xconfig_directory }}/{{ item }}"
-#    regexp: Composite
-#    line: Composite=1
-#  with_items: "{{ cfg_files.stdout_lines }}"
-#  when: custom_repo
-#  tags:
-#    - eod
+- name: copy panel.xml template to etc location
+  template:
+    src: xfce4-panel.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
