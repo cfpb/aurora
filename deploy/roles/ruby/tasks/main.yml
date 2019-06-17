@@ -1,7 +1,12 @@
 # main.yml
 ---
 - name: Add mpapis public key
-  shell: "curl -sSL https://rvm.io/mpapis.asc | gpg --import -"
+  shell: "curl -sSL https://rvm.io/mpapis.asc | gpg2 --import -"
+  tags:
+    - ruby
+
+- name: Add pkuczynskipublic key
+  shell: "curl -sSL https://rvm.io/pkuczynski.asc | gpg2 --import -"
   tags:
     - ruby
 
