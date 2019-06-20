@@ -90,6 +90,8 @@
   group:
     name: "{{ restricted_group_name }}"
     state: present
+  tags:
+    - always
 
 - name: Create empty log file if they don't exist
   file:
