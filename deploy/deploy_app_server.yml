@@ -51,13 +51,6 @@
         - rhobot
       when: custom_repo
 
-    - name: Install Python RPM dependencies
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items: "{{ python_dep_packages }}"
-
 - hosts: app_server
   become: yes
   become_method: sudo
