@@ -8,6 +8,9 @@ r_dependencies:
   - hunspell-devel
   - udunits2
   - udunits2-devel
+  - openmpi
+  - openmpi-devel
+  - openmpi-1.8-devel
 
 r_packages:
   - "devtools"
@@ -24,3 +27,7 @@ r_packages_with_opts:
 r_system_package_dir:
   - /usr/lib64/R/library
   - /usr/share/doc
+
+r_packages_versioned:
+  - name: pbdMPI
+    version: 0.3-8
