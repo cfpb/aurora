@@ -13,7 +13,9 @@ r_dependencies:
   - openmpi-1.8-devel
 
 r_packages:
-  - "devtools"
+  #- "devtools"
+  - pdbBASE
+  - pmclust
 
 r_packages_github:
   - name: shinydashboard
@@ -29,5 +31,9 @@ r_system_package_dir:
   - /usr/share/doc
 
 r_packages_versioned:
+  - name: rlecuyer
+    version: 0.3-4
   - name: pbdMPI
     version: 0.3-8
+  - name: pbdSLAP
+    version: 0.2-4
