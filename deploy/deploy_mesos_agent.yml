@@ -23,10 +23,10 @@
     - {role: epel, when: "use_epel"}
     - jdk
     - postgresql-client
-    - apache
+    - { role: apache, vars: { apache_service_state: "stopped", apache_service_enable: "no" } }
     #- pentaho
     - gocd
-    - nginx
+    - { role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } }
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - python36-scl
