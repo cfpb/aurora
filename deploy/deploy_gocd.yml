@@ -20,7 +20,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
-    - pentaho
+    #- pentaho
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - python36-scl
@@ -85,7 +85,7 @@
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - eod
-    - talend # Talend goes here because it installs an older java
+    #- talend # Talend goes here because it installs an older java
     - gocd
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
