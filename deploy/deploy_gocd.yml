@@ -20,7 +20,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
-    #- pentaho
+    - pentaho
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - python36-scl
