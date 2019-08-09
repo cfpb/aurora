@@ -1,7 +1,7 @@
 galaxy_info:
-  author: your name
-  description: your description
-  company: your company (optional)
+  author: Daniel van Balen
+  description: Install RHEL SCL Python v3.6 and optionally enable.
+  company: Consumer Financial Protection Bureau (CFPB)
 
   # If the issue tracker for your role is not on github, uncomment the
   # next line and provide a value
@@ -14,7 +14,7 @@ galaxy_info:
   # - GPLv3
   # - Apache
   # - CC-BY
-  license: license (GPLv2, CC-BY, etc)
+  license: CC0
 
   min_ansible_version: 2.4
 
