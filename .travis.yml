@@ -187,7 +187,7 @@ script:
 
 # Test role
   - >
-    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
+    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
 #extra log info
 #- >
