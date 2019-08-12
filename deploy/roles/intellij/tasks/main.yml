@@ -54,7 +54,7 @@
   - intellij
 
 - name: Set up idea.png
-  file:
+  copy:
     src: idea.png
     dest: "{{ intellij_main_dir }}/bin/"
   # when: not custom_repo
