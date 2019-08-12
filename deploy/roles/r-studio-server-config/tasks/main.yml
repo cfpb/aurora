@@ -37,11 +37,18 @@
   tags:
     - rstudio-server
 
+- name: Check for rstudio server install
+  stat:
+    path:  "/etc/rstudio/rserver.conf"
+  register: rstudio_conf_dir
+  tags:
+    - rstudio-server
+
 - name: Add server config file
   template:
     src: rserver.conf.j2
     dest: /etc/rstudio/rserver.conf
-  when: update_rstudio
+  when: rstudio_conf_dird.stat.exists
   notify:
     - restart rstudio-server
   tags:
