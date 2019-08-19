@@ -48,7 +48,7 @@
   template:
     src: rserver.conf.j2
     dest: /etc/rstudio/rserver.conf
-  when: rstudio_conf_dird.stat.exists
+  when: rstudio_conf_dir.stat.exists
   notify:
     - restart rstudio-server
   tags:
