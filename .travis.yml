@@ -112,7 +112,7 @@ env:
 
 # Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
   - >
-    PRE_CMD="travis_wait 50"
+    PRE_CMD="travis_wait 60"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_gauss
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -120,7 +120,7 @@ env:
 
 # Research Server research_stata
   - >
-    PRE_CMD="travis_wait 50"
+    PRE_CMD="travis_wait 60"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_stata
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -128,7 +128,7 @@ env:
 
 # Research Server research_python
   - >
-    PRE_CMD="travis_wait 40"
+    PRE_CMD="travis_wait 60"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_python
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -136,7 +136,7 @@ env:
 
 # Research Server research_sas
   - >
-    PRE_CMD="travis_wait 50"
+    PRE_CMD="travis_wait 60"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_sas
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
