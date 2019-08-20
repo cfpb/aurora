@@ -62,3 +62,5 @@
     dest: /etc/init/shiny-server.conf
   notify:
       - restart shiny-server
+  tags:
+    - shiny
