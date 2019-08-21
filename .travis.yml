@@ -70,7 +70,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_master.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "zookeeper_id": 1}'
 
-# gocd  ci_server
+# gocd ci_server
   - >
     PRE_CMD=""
     PARENT_GROUP=all
@@ -210,7 +210,7 @@ script:
   - >
     ${PRE_CMD} docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vv "${PLAYBOOK_LOCATION}"  --skip-tags='r-libs,shiny' --extra-vars "@/tmp/extra_vars.json"
 
-#extra log info
+# extra log info
 #- >
 #    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
