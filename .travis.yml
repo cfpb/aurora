@@ -88,7 +88,7 @@ env:
 
 # gocd ci_terminal
   - >
-    PRE_CMD="travis_wait 40"
+    PRE_CMD="travis_wait 50"
     PARENT_GROUP=all
     HOST_GROUP=ci_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
