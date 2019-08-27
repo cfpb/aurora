@@ -13,6 +13,18 @@
 - name: Check for python2 installation
   set_fact:
     python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_pip_bin }}' ]"
+    python2_pip_bin: "{{ python_pip_bin }}"
+  when: "install_python and custom_repo" 
+  tags:
+    - python-libs
+    - python2-libs
+
+- name: Check for python2 scl installation
+  set_fact:
+    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_scl_pip_bin }}' ]"
+    python2_pip_bin: "{{ python_scl_pip_bin }}"
+    python_pip_ld_path: "{{ python_pip_ld_path }} + [ '{{ python_scl_pip_ld_path }}' ]"
+  when: "install_python and not custom_repo" 
   tags:
     - python-libs
     - python2-libs
@@ -29,6 +41,8 @@
     name: pycurl
     executable: "{{ item }}"
     state: absent
+  environment:
+          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   with_items: "{{ python_pip_binaries }}"
 
   when: install_python and update_pycurl
@@ -53,6 +67,8 @@
     state: latest
   when: install_python
   with_items: "{{ python_pip_binaries }}"
+  environment:
+          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   tags:
     - python-libs
     - python2-libs
@@ -62,18 +78,22 @@
   pip:
     name: "{{ python_packages }}"
     state: "{{ python_package_mode }}"
-    executable: "{{ python_pip_bin }}"
+    executable: "{{ python2_pip_bin }}"
   when: install_python
+  environment:
+          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   tags:
     - python-libs
     - python2-libs
 
-- name: Install Python packages for 35
+- name: Install Python packages for 36
   pip:
     name: "{{ python3_packages }}"
     state: "{{ python_package_mode }}"
     executable: "{{ python3_pip_bin }}"
   when: install_python
+  environment:
+          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   tags:
     - python-libs
     - python3-libs

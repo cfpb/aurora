@@ -4,6 +4,8 @@
     repo: https://github.com/cfpb/clouseau
     dest: /opt/clouseau
     force: yes
+  tags:
+    -python2
 
 #- name: Create links
 #  file:
@@ -16,6 +18,10 @@
 
 - name: Install clouseau
   pip:
-    executable: /usr/local/bin/pip2.7
+    executable: "{{ python_pip_bin }}"  # /opt/rh/python27/root/usr/bin/pip2.7
     name: /opt/clouseau
+  environment:
+    LD_LIBRARY_PATH: "{{ python_scl_pip_ld_path }}"  # scl python2.7 doesn't have the library path included 
   when: install_python
+  tags:
+    -python2
