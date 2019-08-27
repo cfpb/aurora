@@ -1,6 +1,6 @@
 galaxy_info:
   author: Daniel van Balen
-  description: Install RHEL SCL Python v3.6 and optionally enable.
+  description: Install RHEL SCL Python v2.7 and optionally enable.
   company: Consumer Financial Protection Bureau (CFPB)
 
   # If the issue tracker for your role is not on github, uncomment the

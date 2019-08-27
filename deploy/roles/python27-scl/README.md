@@ -15,17 +15,27 @@ ansible_distribution
 
 If "CentOS" will install the CentOS SCL. SCL assumed to already be installed for RHEL
 
+python_pip_bin: [/opt/rh/python27/root/usr/bin/pip2.7]
+
+points to pip binary installed by this role useful for setting the executable parameter
+in "pip" module tasks. Used by python-libs and clouseau roles.
+
+python_pip_ld_path: [/opt/rh/python27/root/usr/lib64]
+
+For setting LD_LIBRARY_PATH when using SCL python. Needed by python27 where libpython path
+is not compiled in to the binary.
+
 set_python27_default_python: [False]
 
 If True will set /etc/profile.d to make python27 the default python for users
 
-python3 tag will run all tasks in this role
+"python" tag will run all tasks in this role
 
 
 Dependencies
 ------------
 
-python-libs role python_pip_binary should point to pip binary installed by this role and depends on python being installed
+Under RHEL this role expects the SCL to be availiable.
 
 Example Playbook
 ----------------
