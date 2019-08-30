@@ -97,6 +97,7 @@
   poll: 60
   tags:
     - r
+    - skip-travis
   when: install_r_updates
 
 - name: Install R packages
@@ -107,6 +108,7 @@
   changed_when: "'Added' in r_result.stdout"
   tags:
     - r
+    - skip-travis
   when: install_r_packages
 
 - name: Install R packages with opts
@@ -117,6 +119,7 @@
   changed_when: "'Added' in r_result.stdout"
   tags:
     - r
+    - skip-travis
   when: install_r_packages
 
 - name: Install R packages from Github
@@ -127,6 +130,7 @@
   changed_when: "'Added' in r_github_result.stdout"
   tags:
     - r
+    - skip-travis
   when: install_r_packages
 
 - name: Re-ensure that R is executable
