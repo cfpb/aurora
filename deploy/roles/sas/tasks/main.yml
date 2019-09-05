@@ -154,3 +154,10 @@
   when: sasstudio_file.stat.exists == True
   tags:
     - sas
+
+- name: Set SAS Installed fact
+  set_fact:
+    sas_server_installed: True
+  when: sas_home_dir.stat.exists
+  tags:
+    - sas
