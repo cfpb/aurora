@@ -40,6 +40,7 @@
   poll: 60
   tags:
     - r-libs
+    - skip-travis
 
 - name: Install R devtools package
   shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE, upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
@@ -50,6 +51,7 @@
   changed_when: "'Added' in r_result.stdout"
   tags:
     - r-libs
+    - skip-travis
 
   # Packages here will most likely be briefly broken/upgraded by packages.update() above on next run
 - name: Install R packages with versions (depends on devtools installed in R packages task)
@@ -60,6 +62,7 @@
   changed_when: "'Added' in r_github_result.stdout"
   tags:
     - r-libs
+    - skip-travis
 
 - name: Install R packages
   shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE, upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
@@ -69,6 +72,7 @@
   changed_when: "'Added' in r_result.stdout"
   tags:
     - r-libs
+    - skip-travis
 
 - name: Install R packages with opts
   shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
@@ -78,6 +82,7 @@
   changed_when: "'Added' in r_result.stdout"
   tags:
     - r-libs
+    - skip-travis
 
 - name: Install R packages from Github
   shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
@@ -87,6 +92,7 @@
   changed_when: "'Added' in r_github_result.stdout"
   tags:
     - r-libs
+    - skip-travis
 
 - name: Re-ensure that R is executable
   file:
