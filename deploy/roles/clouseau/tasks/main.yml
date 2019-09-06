@@ -33,11 +33,6 @@
   tags:
     - python2
 
-- debug: var=custom_repo
-- debug: var=python_pip_bin
-- debug: var=python2_pip_bin
-- debug: var=python_scl_pip_ld_path
-- debug: var=python_pip_ld_path
 - name: Install clouseau
   pip:
     executable: "{{ python2_pip_bin }}"  # /opt/rh/python27/root/usr/bin/pip2.7
