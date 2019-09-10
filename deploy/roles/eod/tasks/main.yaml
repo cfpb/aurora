@@ -96,6 +96,7 @@
   yum:
     name: "@Desktop"
     state: present
+  when: not custom_repo
   tags:
     - eod
 
