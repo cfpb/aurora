@@ -58,7 +58,7 @@
   template:
     src: rsession.conf.j2
     dest: /etc/rstudio/rsession.conf
-  when: update_rstudio
+  when: rstudio_conf_dir.stat.exists
   notify:
     - restart rstudio-server
   tags:
