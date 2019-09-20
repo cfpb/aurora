@@ -152,12 +152,12 @@
     - r
 
   tasks:
-  - name: Set r executable to octl 444
+  - name: Set r executable to octl 444 (why?? dvb)
     file:
       path: '/usr/bin/R'
       owner: root
       group: root
-      mode: 0444
+      mode: 0755
     tags: run_r
 
 - hosts: research_spss
