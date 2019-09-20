@@ -151,7 +151,7 @@
     - stattransfer
     - r
 
-  tasks:
+  pre_tasks:
   - name: Set r executable to octl 444 (why?? dvb)
     file:
       path: '/usr/bin/R'
