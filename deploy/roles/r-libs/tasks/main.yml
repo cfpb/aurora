@@ -6,7 +6,7 @@
     name: "{{ item }}"
     state: present
     disable_gpg_check: yes
-  with_items: "{{ r_dependencies | difference(r_dependencies_ignore) }}"
+  with_items: "{{ r_dependencies | difference(r_dependencies_ignore | default([],true)) }}"
   tags:
     - r-libs
 
@@ -66,7 +66,7 @@
 
 - name: Install R packages
   shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE, upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
-  with_items: "{{ r_packages | difference(r_packages_ignore) }}"
+  with_items: "{{ r_packages | difference(r_packages_ignore | default([],true)) }}"
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
