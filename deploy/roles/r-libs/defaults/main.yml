@@ -12,10 +12,14 @@ r_dependencies:
   - openmpi-devel
   - openmpi-1.8-devel
 
+r_dependencies_ignore:
+
 r_packages:
   #- "devtools"
   - pdbBASE
   - pmclust
+
+r_packages_ignore:
 
 r_packages_github:
   - name: shinydashboard
