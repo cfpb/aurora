@@ -2,4 +2,4 @@
 # defaults file for python-build
 
 python_pip_bin: /usr/local/bin/pip2.7
-python_pip_ld_path:
+python_pip_ld_path: []
