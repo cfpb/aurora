@@ -15,7 +15,7 @@
       - jdk
       - pycharm
       - postgresql-client
-      - nginx
+      - {role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } } 
       - spark
       - sublime
       - nodejs
