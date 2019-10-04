@@ -41,6 +41,7 @@
     name: pycurl
     executable: "{{ item }}"
     state: absent
+    umask: "0022"
   environment:
           LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   with_items: "{{ python_pip_binaries }}"
@@ -65,6 +66,7 @@
     name: pip
     executable: "{{ item }}"
     state: latest
+    umask: "0022"
   when: install_python
   with_items: "{{ python_pip_binaries }}"
   environment:
@@ -79,6 +81,7 @@
     name: "{{ python_packages }}"
     state: "{{ python_package_mode }}"
     executable: "{{ python2_pip_bin }}"
+    umask: "0022"
   when: install_python
   environment:
           LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
@@ -91,6 +94,7 @@
     name: "{{ python3_packages }}"
     state: "{{ python_package_mode }}"
     executable: "{{ python3_pip_bin }}"
+    umask: "0022"
   when: install_python
   environment:
           LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"

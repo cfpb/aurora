@@ -37,6 +37,7 @@
   pip:
     executable: "{{ python2_pip_bin }}"  # /opt/rh/python27/root/usr/bin/pip2.7
     name: /opt/clouseau
+    umask: "0022"
   environment:
     LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   when: install_python

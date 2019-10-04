@@ -27,5 +27,6 @@
         virtualenv: ~/.virtualenvs/data-platform
         name: ansible
         state: present
+        umask: "0022"
       sudo: no
       when: "install_python"
