@@ -75,6 +75,7 @@
     - python-libs
     - python2-libs
     - python3-libs
+    - update-pip
 
 - name: Install Python packages for 27
   pip:
