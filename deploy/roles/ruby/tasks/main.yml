@@ -12,7 +12,7 @@
 
 - name: Get script file
   get_url:
-    url: https://raw.githubusercontent.com/wayneeseguin/rvm/stable/binscripts/rvm-installer
+    url: https://raw.githubusercontent.com/rvm/rvm/master/binscripts/rvm-installer
     dest: /tmp/rvm-installer.sh
     force: yes
   tags:
