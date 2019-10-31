@@ -1,0 +1,13 @@
+---
+
+- name: Give Marathon time to start its restart process
+  wait_for:
+    timeout: 30
+  delegate_to: localhost
+  become: false
+
+- name: Delete Marathon ZK Migration in progress key if present and we didn't ask for an upgrade
+  znode:
+    hosts: "{{ ansible_ssh_host }}:2181"
+    name: /marathon/state/migration-in-progress
+    state: absent

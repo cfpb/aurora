@@ -1,0 +1,8 @@
+---
+# defaults file for python27-scl
+
+python_scl_pip_bin: /opt/rh/python27/root/usr/bin/pip2.7
+python_scl_pip_ld_path: /opt/rh/python27/root/usr/lib64
+
+# Should the role set SCL python v2.7 as the default system python for users
+set_python27_default_python: False

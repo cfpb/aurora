@@ -1,5 +1,4 @@
 ---
 dependencies:
-- role: python
-  when: install_python
+- {role: python, when: "install_python and custom_repo"}
 - role: jdk
