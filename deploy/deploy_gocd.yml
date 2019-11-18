@@ -20,7 +20,7 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
-    - pentaho
+    # - pentaho Per Tim 11.18.19 -- Pentaho not used.
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
     - {role: python3, when: "custom_repo"}
@@ -99,7 +99,7 @@
     - pycharm
     - r-studio-desktop
     - clouseau
-    - {role: pentaho, when: "install_pentaho"}
+    #- {role: pentaho, when: "install_pentaho"}   Per Tim 11.18.19 Pentaho not used
     - sublime
 #   - julia
 
