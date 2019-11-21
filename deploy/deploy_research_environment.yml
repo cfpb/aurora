@@ -5,7 +5,7 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: common, when: "install_glusterfs and not rh7_upgrade"}
-    - {role: epel, when: "use_epel and not 'production' in group_names" and not rh7_upgrade}
+    - {role: epel, when: "use_epel and not 'production' in group_names and not rh7_upgrade"}
     - {role: emacs, when: "not rh7_upgrade"}
     - jdk
     - odbc
