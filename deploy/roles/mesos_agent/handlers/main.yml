@@ -1,6 +1,8 @@
 ---
 - name: restart mesos-agent
-  command: restart mesos-slave
+  service:
+      name: mesos-slave
+      state: restarted
   tags:
     - mesos
     - mesos-agent
