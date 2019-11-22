@@ -114,7 +114,7 @@ pg_hba_settings:
     auth_options: ''
 
 # Additional postgresql.conf settings
-pp_listen_addresses: '*'
+pp_listen_addresses: 'localhost,{{ ansible_ssh_host }}'
 pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
@@ -174,6 +174,7 @@ pp_bgwriter_lru_multiplier: 2.0
 pp_effective_io_concurrency: 1
 pp_max_worker_processes: 8
 pp_max_parallel_workers_per_gather: 0
+pp_max_parallel_workers: 8
 
 # WAL
 pp_wal_level: minimal
@@ -186,6 +187,8 @@ pp_wal_buffers: -1
 pp_wal_writer_delay: 200ms
 pp_commit_delay: 0
 pp_commit_siblings: 5
+pp_min_wal_size: '80MB'
+pp_max_wal_size: '1GB'
 
 pp_checkpoint_segments: 3
 pp_checkpoint_timeout: 5min
