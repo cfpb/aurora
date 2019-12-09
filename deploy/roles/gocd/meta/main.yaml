@@ -1,8 +1,7 @@
 ---
 dependencies:
   - {role: python, when: "install_python and custom_repo"}
-  #- {role: python-build, when: "not custom_repo"}
-  - {role: python27-scl, when: "not custom_repo"}
+  - {role: python-build, when: "not custom_repo"}
   - role: postgresql-client
   - role: jdk
   - {role: epel, when: "use_epel and not 'production' in group_names"}

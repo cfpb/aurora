@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd_server
@@ -15,15 +15,16 @@
   serial: 1
   max_fail_percentage: 10
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
-    # - pentaho Per Tim 11.18.19 -- Pentaho not used.
+    - pentaho
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - python36-scl
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
     - python-libs
     - odbc
     - {role: ruby, when: "install_ruby"}
@@ -79,17 +80,18 @@
   become: yes
   become_method: sudo
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - devtools
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - eod
-    #- talend # Talend goes here because it installs an older java
+    - talend # Talend goes here because it installs an older java
     - gocd
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - python36-scl
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
     - python-libs
     - r-core
     - r-libs
@@ -97,7 +99,7 @@
     - pycharm
     - r-studio-desktop
     - clouseau
-    #- {role: pentaho, when: "install_pentaho"}   Per Tim 11.18.19 Pentaho not used
+    - {role: pentaho, when: "install_pentaho"}
     - sublime
 #   - julia
 
@@ -133,3 +135,9 @@
         disable_gpg_check: yes
       with_items: "{{ db_automation_custom_packages }}"
       when: db_automation_custom_packages is defined
+
+- hosts: hadoop_edge
+  become: yes
+  become_method: sudo
+  roles:
+    - gocd
