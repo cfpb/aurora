@@ -2,20 +2,15 @@
 - name: set variable for dated text file
   set_fact: 
     dated_file_name: "{{ research_monitor_output_file_locaiton }}/{{ date_stamp }}.txt"
+  tags: nightly
 
 - name: create empty logfile
   file:
     dest: "{{ dated_file_name }}"
     state: touch
+  tags: nightly
 
-- name: folder sizes in parent folder
-  shell: "du -h --max-depth=1 {{ research_monitor_parent_folder_location }} >> {{ dated_file_name }}"
-
-- name: folder size in experian folder
-  shell: "du -h --max-depth=1 {{ research_monitor_experian_location }} >> {{ dated_file_name }}"
-
-- name: folder size in CCDB folder
-  shell: "du -h --max-depth=1 {{ research_monitor_ccdb_location }} >> {{ dated_file_name }}"
-
-# - name: folder size of user folder
-#   shell: "du -h --max-depth=1 {{ research_monitor_user_location }} >> {{ dated_file_name }}"
+- name: folder sizes for nightly monitor script for research environment
+  shell: "du -h --max-depth=1 {{ item }} >> {{ dated_file_name }}"
+  with_items: "{{ research_nightly_monitor_locations }}"
+  tags: nightly
