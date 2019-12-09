@@ -1,0 +1,371 @@
+---
+- name: Install EOD dependencies
+  become: yes
+  become_method: sudo
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - openssl
+    - openssl-devel
+#   - abyssinica-fonts
+    - tree
+    - expect
+    - libselinux-python
+  tags:
+    - eod
+
+- include: install_eod.yaml
+  when: eod_install
+  tags:
+    - eod
+
+- include: upgrade_eod.yaml
+  when: eod_upgrade
+  tags:
+    - eod
+
+- name: Configure node.cfg
+  template:
+    src: node.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
+  when: eod_datastore_directory is defined
+  tags:
+    - eod
+
+- name: Configure cluster.cfg
+  template:
+    src: cluster.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/admin/cluster.cfg"
+  when: custom_repo
+  notify:
+    - restart eod
+  tags:
+    - eod
+
+- name: Create admin user directories
+  file:
+    state: directory
+    path: "{{ eod_install_directory }}/conf/users/{{ item }}"
+    owner: root
+    group: root
+    mode: 0750
+  with_items: "{{ eod_admins }}"
+  tags:
+    - eod
+
+- name: Ensure admins can login via Connection Server
+  template:
+    src: admin_settings.cfg.j2
+    dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
+  with_items: "{{ eod_admins }}"
+  tags:
+    - eod
+
+- name: Configure xdmcp
+  template:
+    src: XDMCP_Query.cfg
+    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/XDMCP_Query.cfg"
+  notify:
+    - restart eod
+    - restart gdm
+#   - restart prefdm
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Configure EOD license file
+  template:
+    src: akeys
+    dest: "{{ eod_install_directory }}/conf/admin/akeys"
+  when: custom_repo
+  notify:
+    - restart eod
+  tags:
+    - eod
+
+- name: Configure PAM authentication
+  template:
+    src: exceed-connection-server
+    dest: /etc/pam.d/exceed-connection-server
+    mode: 0644
+  notify:
+    - restart eod
+  tags:
+    - eod
+
+- name: install "X Window System 
+  shell: yum -y groupinstall "X Window System"
+  tags:
+    - eod
+
+- name: install gdm (gnome display manager)
+  command: yum -y install gdm
+  tags:
+    - eod
+
+- name: install XFCE4 Desktop 
+  yum:
+    name: "@xfce"
+    state: present
+  register: xfce4desktop
+  tags:
+    - eod
+
+- name: update libraries for MATE installation
+  command: yum -y update --enablerepo=epel-testing
+  tags:
+    - eod
+
+# MATE fix for RHEL 7.5, 7.6               
+- name: install dnf (RedHat yum4/yum replacement)
+  shell: yum install -y dnf   
+  tags:
+    - eod             
+
+- name: apply dnf advisory fix for libgtop2 dependency
+  shell: dnf upgrade --advisory=EDORA-EPEL-2018-417249babc
+  tags:
+    - eod
+
+- name: install MATE (GNOME 2) Desktop 
+  command: yum -y groupinstall "MATE Desktop"
+  tags:
+    - eod
+
+#- name: install General Purpose Desktop
+- name: install Fonts
+  yum:
+    name: "@fonts"
+    state: present
+  tags:
+    - eod
+
+- name: Install Firefox
+  yum:
+    name: firefox
+    state: present
+  tags:
+    - eod
+
+- name: configure custom.conf
+  template:
+    src: custom.conf
+    dest: /etc/gdm/custom.conf
+    mode: 064
+  notify:
+    - restart gdm
+  tags:
+    - eod
+
+- name: Set configuration settings for gdm defaults
+  shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.defaults --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
+  with_items: "{{ gconf_settings }}"
+  notify:
+    - restart gdm
+  tags:
+    - eod
+
+- name: Set configuration settings for gdm mandatory
+  shell: "gconftool-2 --direct --config-source xml:readwrite:/etc/gconf/gconf.xml.mandatory --type {{ item.type }} --set {{ item.setting }} {{ item.value }}"
+  with_items: "{{ gconf_settings }}"
+  notify:
+    - restart gdm
+  tags:
+    - eod
+    
+- name: configure inittab
+  template:
+    src: inittab
+    dest: /etc/inittab
+  tags:
+    - eod
+
+
+- name: set runlevel 5 graphical.target on startup
+  command: systemctl set-default graphical.target
+  register: xtarget
+  tags:
+    - eod
+
+- name: configure xorg.conf
+  template:
+    src: xorg.conf
+    dest: /etc/X11/xorg.conf
+  notify:
+    - restart gdm
+#   - restart prefdm
+  tags:
+    - eod
+
+- name: configure package update proxy
+  template:
+    src: 20-no-show-proxy-dialog.pkla
+    dest: /etc/polkit-1/localauthority/30-site.d/20-no-show-proxy-dialog.pkla
+    mode: 0644
+  notify:
+    - restart eod
+  tags:
+    - eod
+
+- name: remove S99firstboot
+  file:
+    path: /etc/rc5.d/S99firstboot
+    state: absent
+  tags:
+    - eod
+
+- name: Set /etc/gdm/gdm.schema file
+  template:
+    src: gdm.schemas.j2
+    dest: /etc/gdm/gdm.schemas
+    mode: 0644
+  notify:
+    - restart eod
+  tags:
+  - eod
+
+- name: Remove gpk-update-icon file from /etc/xdg/autostart directory
+  file:
+    path: /etc/xdg/autostart/gpk-update-icon.desktop
+    state: absent
+  tags:
+    - eod
+
+- name: run gdm
+  command: systemctl start gdm
+  register: gdm_status
+  failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
+  changed_when: gdm_status.rc == 0
+  tags:
+    - eod
+
+- name: Run eodpatch expect inline - required before running /usr/local/eod/bin/otecs ...
+  shell: |
+    set timeout 120
+    spawn /usr/local/eod/bin/patch
+
+    match_max 100000
+    expect -exact "\r
+    patch - Patch script for Exceed Connection Server 13.8\r
+    \r
+    \r
+    Proceed to patch permissions bits for /usr/local/eod/bin/sys directory and /usr/local/eod/bin/sys/ewebhost file?\r
+    \[y\]es or \[n\]o, \[Enter\] for no: "
+    send -- "y\r"
+    #expect eof
+    #expect eod
+    exit 0
+  args:
+    executable: /bin/expect
+  tags:
+    - eod
+
+### Ensure EOD starts on boot
+- name: Check if EOD is configured to run on boot
+  shell: "{{ eod_install_directory }}/bin/otecs bootstatus"
+  register: eod_bootstatus
+  changed_when: false
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Configure EOD to start on boot
+  shell: "{{ eod_install_directory }}/bin/otecs bootstart"
+  changed_when: eod_bootstatus.stdout == 'off'
+  when: custom_repo
+  tags:
+    - eod
+
+### Allow the admin group to read logs and configs
+- name: Ensure that EOD log directory exists
+  file:
+    path: "{{ eod_install_directory }}/log"
+    state: directory
+    owner: root
+    group: root
+    mode: 0640
+  tags:
+    - eod
+
+- name: Allow admins to read EOD logs
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    state: present
+  with_items: "{{ eod_install_directory }}/log"
+  tags:
+    - eod
+
+### Ensure the needed ports are open
+- name: create custom chain
+  command: "iptables -N {{ iptables_chain }}"
+  ignore_errors: yes
+  tags:
+    - eod
+
+- name: open up ports in ipconfig
+  command: "iptables -A {{ iptables_chain }} -p tcp -m tcp --dport {{ item }} -j ACCEPT"
+  with_items: "{{ eod_client_ports }}"
+  when: iptables_config and deploy_iptables
+  tags:
+    - eod
+
+- name: open up udp port in ipconfig
+  command: "iptables -A {{ iptables_chain }} -p udp -m udp --dport {{ item }} -j ACCEPT"
+  with_items: "{{ eod_client_ports_udp }}"
+  when: iptables_config and deploy_iptables
+  tags:
+    - eod
+
+- name: install iptables-service
+  command: yum -y install iptables-services
+
+- name: save the new ipconfig
+  command: "/sbin/service iptables save"
+  when: iptables_config and deploy_iptables
+  tags:
+    - eod
+
+- name: fix XFCE4 PolicyKit Agent Error
+  lineinfile:
+    path: /etc/xdg/autostart/xfce-polkit.desktop
+    regexp: '^Exec=/usr/libexec/xfce-polkit'
+    line: '#Exec=/usr/libexec/xfce-polkit'
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - eod
+
+- name: replace XFCE4 PolicyKit Agent with GNOME/MATE agent
+  lineinfile:
+    path: /etc/xdg/autostart/xfce-polkit.desktop
+    regexp: '^Exec='
+    insertafter: '^#Exec='
+    line: 'Exec=/usr/libexec/polkit-mate-authentication-agent-1'
+  tags:
+    - eod
+
+- name: copy desktop.xml template to etc location
+  template:
+    src: xfce4-desktop.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
+
+- name: copy keyboard.xml template to etc location
+  template:
+    src: xfce4-keyboard-shortcuts.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod
+
+- name: copy panel.xml template to etc location
+  template:
+    src: xfce4-panel.xml
+    dest: "{{ eod_prechannel_location }}"
+  tags:
+    - eod

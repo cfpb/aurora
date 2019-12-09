@@ -6,7 +6,7 @@
     name: "{{ item }}"
     state: present
     disable_gpg_check: yes
-  with_items: "{{ r_dependencies | difference(r_dependencies_ignore | default([],true)) }}"
+  with_items: "{{ r_dependencies }}"
   tags:
     - r-libs
 
@@ -35,64 +35,42 @@
 - name: Update existing R packages
   become: yes
   become_method: sudo
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
+  environment: "{{ r_env_vars }}"
   async: 180000
   poll: 60
   tags:
     - r-libs
-    - skip-travis
-
-- name: Install R devtools package
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE, upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
-  with_items: 
-    - devtools
-  register: r_result
-  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
-  changed_when: "'Added' in r_result.stdout"
-  tags:
-    - r-libs
-    - skip-travis
-
-  # Packages here will most likely be briefly broken/upgraded by packages.update() above on next run
-- name: Install R packages with versions (depends on devtools installed in R packages task)
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_version('{{ item.name }}', version='{{ item.version }}',repos=c('http://cran.rstudio.com/'),dependencies=FALSE,upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
-  with_items: "{{ r_packages_versioned }}"
-  register: r_github_result
-  failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
-  changed_when: "'Added' in r_github_result.stdout"
-  tags:
-    - r-libs
-    - skip-travis
 
 - name: Install R packages
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE, upgrade_dependencies=FALSE); print('Added'); } else { print('Already installed'); }"
-  with_items: "{{ r_packages | difference(r_packages_ignore | default([],true)) }}"
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages }}"
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
   tags:
     - r-libs
-    - skip-travis
 
 - name: Install R packages with opts
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
   with_items: "{{ r_packages_with_opts }}"
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
   changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
   tags:
     - r-libs
-    - skip-travis
 
 - name: Install R packages from Github
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
   with_items: "{{ r_packages_github }}"
   register: r_github_result
   failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
   changed_when: "'Added' in r_github_result.stdout"
+  environment: "{{ r_env_vars }}"
   tags:
     - r-libs
-    - skip-travis
 
 - name: Re-ensure that R is executable
   file:

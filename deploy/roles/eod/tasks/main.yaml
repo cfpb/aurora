@@ -12,10 +12,10 @@
   tags:
     - eod
 
-- import_tasks: install_eod.yaml
+- include: install_eod.yaml
   when: eod_install
 
-- import_tasks: upgrade_eod.yaml
+- include: upgrade_eod.yaml
   when: eod_upgrade
 
 - name: Configure node.cfg
@@ -96,7 +96,6 @@
   yum:
     name: "@Desktop"
     state: present
-  when: not custom_repo
   tags:
     - eod
 

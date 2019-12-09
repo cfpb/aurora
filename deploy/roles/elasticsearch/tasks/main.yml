@@ -9,7 +9,6 @@
 - name: Install elasticsearch GPG key
   rpm_key:
     key: https://packages.elasticsearch.org/GPG-KEY-elasticsearch
-    validate_certs: no   # TODO remove on rhel7
     state: present
 
 - name: Setup elasticsearch repo

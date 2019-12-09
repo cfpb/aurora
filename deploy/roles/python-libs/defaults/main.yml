@@ -9,13 +9,8 @@ python3_packages:
   - requests
   - cookiecutter
 
-#python_pip_bin: /opt/rh/python27/root/usr/bin/pip2.7
-#python3_pip_bin: /opt/rh/rh-python36/root/usr/bin/pip3.6
+python_pip_bin: /usr/local/bin/pip2.7
+python3_pip_bin: /usr/bin/pip3.4
 
 python_package_mode: present
 update_pycurl: False
-
-# Used to store the "python*_pip_bin"'s for
-# speced tags to avoid errors
-python_pip_binaries: []
-python_pip_ld_path: []

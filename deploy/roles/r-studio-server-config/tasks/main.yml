@@ -16,11 +16,10 @@
   with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
-  when: deploy_iptables and update_rstudio
+  when: deploy_iptables
 
 - name: Copy over pam.d config from login (usually works)
   shell: cp -f /etc/pam.d/login /etc/pam.d/rstudio
-  when: update_rstudio
   tags:
     - rstudio-server
 
@@ -33,14 +32,6 @@
   with_items:
     - /opt/rstudio-server
     - /opt/rstudio-server/monitoring-data
-  when: update_rstudio
-  tags:
-    - rstudio-server
-
-- name: Check for rstudio server install
-  stat:
-    path:  "/etc/rstudio/rserver.conf"
-  register: rstudio_conf_dir
   tags:
     - rstudio-server
 
@@ -48,7 +39,6 @@
   template:
     src: rserver.conf.j2
     dest: /etc/rstudio/rserver.conf
-  when: rstudio_conf_dir.stat.exists
   notify:
     - restart rstudio-server
   tags:
@@ -58,7 +48,6 @@
   template:
     src: rsession.conf.j2
     dest: /etc/rstudio/rsession.conf
-  when: rstudio_conf_dir.stat.exists
   notify:
     - restart rstudio-server
   tags:
@@ -69,7 +58,6 @@
     src: rstudio_server.sh.j2
     dest: /etc/profile.d/rstudio_server.sh
     mode: 0644
-  when: update_rstudio
   tags:
     - rstudio-server
 
@@ -78,20 +66,19 @@
     src: secure-proxy-user-header.j2
     dest: /etc/rstudio/secure-proxy-user-header
     mode: 0600
-  when: update_rstudio
   tags:
     - rstudio-server
 
 - name: Open R Studio Server port in iptables
   command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ rstudio_port }} -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
-  when: iptables_config and deploy_iptables and update_rstudio
+  when: iptables_config and deploy_iptables
   with_items: "{{ groups['proxy_server']|default(omit) }}"
   tags:
     - rstudio-server
 
 - name: Save rules
   command: "/sbin/service iptables save"
-  when: iptables_config and deploy_iptables and update_rstudio
+  when: iptables_config and deploy_iptables
   tags:
     - rstudio-server
 
@@ -100,6 +87,5 @@
     src: login.html.j2
     dest: /etc/rstudio/login.html
     mode: 0644
-  when: update_rstudio
   tags:
     - rstudio-server

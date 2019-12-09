@@ -1,0 +1,20 @@
+---
+- name: Install iptables-services
+  become: yes
+  become_method: sudo
+  command: yum install -y iptables-services
+
+- name: Make sure firewalld is masked
+  command: systemctl mask firewalld
+
+- name: Enable iptables services
+  command: systemctl enable "{{ item }}"
+  with_items:
+    - iptables
+    - ip6tables
+
+- name: start iptables services
+  command: systemctl start "{{ item }}"
+  with_items:
+    - iptables
+    - ip6tables

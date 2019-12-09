@@ -3,7 +3,8 @@
   become: yes
   become_method: sudo
   handlers:
-    - import_tasks: roles/shared/handlers/main.yml
+    - include: roles/shared/handlers/main.yml
+      static: yes
   tasks:
     - name: Install git
       yum:

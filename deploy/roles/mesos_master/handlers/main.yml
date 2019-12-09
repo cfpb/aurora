@@ -8,11 +8,5 @@
 - name: restart mesos-master
   command: restart mesos-master
 
-- name: restart marathon agent
+- name: restart marathon
   command: restart marathon
-  listen: restart marathon
-
-- name: Give Marathon time to start its restart process
-  include_tasks: post_deploy_mesos_master.yml
-  listen: restart marathon 
-  when: not marathon_upgrade

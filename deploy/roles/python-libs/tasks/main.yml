@@ -10,42 +10,14 @@
     - python2-libs
     - python3-libs
 
-- name: Check for python2 installation
-  set_fact:
-    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_pip_bin }}' ]"
-    python2_pip_bin: "{{ python_pip_bin }}"
-  when: "install_python and custom_repo" 
-  tags:
-    - python-libs
-    - python2-libs
-
-- name: Check for python2 scl installation
-  set_fact:
-    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_scl_pip_bin }}' ]"
-    python2_pip_bin: "{{ python_scl_pip_bin }}"
-    python_pip_ld_path: "{{ python_pip_ld_path }} + [ '{{ python_scl_pip_ld_path }}' ]"
-  when: "install_python and not custom_repo" 
-  tags:
-    - python-libs
-    - python2-libs
-
-- name: Check for python3.4 installation
-  set_fact:
-    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python3_pip_bin }}' ]"
-  tags:
-    - python-libs
-    - python3-libs
-
 - name: Uninstall pycurl
   pip:
     name: pycurl
     executable: "{{ item }}"
     state: absent
-    umask: "0022"
-  environment:
-          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
-  with_items: "{{ python_pip_binaries }}"
-
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
   when: install_python and update_pycurl
   tags:
     - python-libs
@@ -54,7 +26,9 @@
 
 - name: Reinstall pycurl with correct SSL lib
   shell: 'PYCURL_SSL_LIBRARY=nss {{ item }} install pycurl --global-option="--with-nss"'
-  with_items: "{{ python_pip_binaries }}"
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
   when: install_python and update_pycurl
   tags:
     - python-libs
@@ -66,39 +40,31 @@
     name: pip
     executable: "{{ item }}"
     state: latest
-    umask: "0022"
   when: install_python
-  with_items: "{{ python_pip_binaries }}"
-  environment:
-          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
+  with_items:
+    - "{{ python_pip_bin }}"
+    - "{{ python3_pip_bin }}"
   tags:
     - python-libs
     - python2-libs
     - python3-libs
-    - update-pip
 
 - name: Install Python packages for 27
   pip:
     name: "{{ python_packages }}"
     state: "{{ python_package_mode }}"
-    executable: "{{ python2_pip_bin }}"
-    umask: "0022"
+    executable: "{{ python_pip_bin }}"
   when: install_python
-  environment:
-          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   tags:
     - python-libs
     - python2-libs
 
-- name: Install Python packages for 36
+- name: Install Python packages for 35
   pip:
     name: "{{ python3_packages }}"
     state: "{{ python_package_mode }}"
     executable: "{{ python3_pip_bin }}"
-    umask: "0022"
   when: install_python
-  environment:
-          LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   tags:
     - python-libs
     - python3-libs

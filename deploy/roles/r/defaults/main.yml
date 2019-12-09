@@ -7,26 +7,24 @@ r_core_state: present
 r_dependencies:
   - QuantLib
   - QuantLib-devel
-  - openssl-devel
   - libcurl-devel
   - libxml2-devel
   - hunspell-devel
   - udunits2
   - udunits2-devel
 
-# Don't install these r dependencies... meant to be set in host vars
-r_dependencies_ignore:
-
 r_packages:
-  - devtools
+  - "devtools"
 #  - "http://cran.r-project.org/src/contrib/Archive/RQuantLib/RQuantLib_0.3.12.tar.gz" # The latest version requires QuantLib 1.4.0, which is not supported by Centos 6.5
-
-# Don't install these r packages... meant to be set in host vars
-r_packages_ignore:
 
 r_packages_github:
   - name: shinydashboard
     user: rstudio
+
+r_env_vars:
+  CC: /opt/rh/devtoolset-2/root/usr/bin/gcc
+  CPP: /opt/rh/devtoolset-2/root/usr/bin/cpp
+  CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
 
 r_packages_with_opts:
   - name: udunits2

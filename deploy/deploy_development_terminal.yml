@@ -5,17 +5,17 @@
 
   roles:
       - {role: epel, when: "use_epel and not 'production' in group_names"}
-      - {role: python, when: "install_python and custom_repo" }
-      #- {role: python-build, when: "not custom_repo"}
-      - {role: python27-scl, when: "install_python and not custom_repo" }
-      - {role: python36-scl, when: "install_python"}
+      - {role: python, when: "install_python and custom_repo"}
+      - {role: python-build, when: "not custom_repo"}
+      - {role: python3, when: "install_python and custom_repo"}
+      - {role: python3-build, when: "not custom_repo"}
       - devtools
       - devtools6
       - ruby
       - jdk
       - pycharm
       - postgresql-client
-      - {role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } } 
+      - nginx
       - spark
       - sublime
       - nodejs

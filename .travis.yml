@@ -9,7 +9,6 @@ env:
  matrix:
 #  proxy server
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=proxy_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml
@@ -17,7 +16,6 @@ env:
 
  # admin terminal
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=admin_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml
@@ -25,7 +23,6 @@ env:
 
 # development_terminal
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=all
     HOST_GROUP=analytics_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml
@@ -33,7 +30,6 @@ env:
 
 # r_terminal
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=all
     HOST_GROUP=analytics_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml
@@ -41,7 +37,6 @@ env:
 
 # elastic search
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=elasticsearch
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml
@@ -49,7 +44,6 @@ env:
 
 # elk
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=elk
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml
@@ -57,22 +51,19 @@ env:
 
 # mesos
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=all
     HOST_GROUP=mesos_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=mesos_master
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_master.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "zookeeper_id": 1}'
 
-# gocd ci_server
+# gocd  ci_server
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=ci_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
@@ -80,7 +71,6 @@ env:
 
 # gocd ci_agent
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=ci_agent
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
@@ -88,7 +78,6 @@ env:
 
 # gocd ci_terminal
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=all
     HOST_GROUP=ci_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
@@ -96,7 +85,6 @@ env:
 
 # Research Server research_ancillary_services
   - >
-    PRE_CMD=""
     PARENT_GROUP=research_environment
     HOST_GROUP=research_ancillary_services
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -104,7 +92,6 @@ env:
 
 # Research Server research_eod
   - >
-    PRE_CMD=""
     PARENT_GROUP=research_environment
     HOST_GROUP=research_eod
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -112,7 +99,6 @@ env:
 
 # Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_gauss
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -120,7 +106,6 @@ env:
 
 # Research Server research_stata
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_stata
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -128,7 +113,6 @@ env:
 
 # Research Server research_python
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_python
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -136,7 +120,6 @@ env:
 
 # Research Server research_sas
   - >
-    PRE_CMD="travis_wait 50"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_sas
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -144,7 +127,6 @@ env:
 
 # Research Server research_spss
   - >
-    PRE_CMD=""
     PARENT_GROUP=research_environment
     HOST_GROUP=research_spss
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -152,7 +134,6 @@ env:
 
 # Research Server research_matlab
   - >
-    PRE_CMD=""
     PARENT_GROUP=research_environment
     HOST_GROUP=research_matlab
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
@@ -160,7 +141,6 @@ env:
 
 # Data warehouse db_terminal db_server
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=db_terminal
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml
@@ -168,7 +148,6 @@ env:
 
 # Data warehouse db_server
   - >
-    PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=db_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml
@@ -177,9 +156,8 @@ env:
 services:
   - docker
 
-language: python
-python:
-   - "2.7"
+language:
+  - python
 
 before_install:
   - sudo apt-get update
@@ -208,9 +186,9 @@ script:
 
 # Test role
   - >
-    ${PRE_CMD} docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vv "${PLAYBOOK_LOCATION}"  --skip-tags='skip-travis' --extra-vars "@/tmp/extra_vars.json"
+    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 
-# extra log info
+#extra log info
 #- >
 #    docker exec "$(cat ${container_id})" env TERM=xterm ANSIBLE_FORCE_COLOR=1 ansible-playbook -vvvv "${PLAYBOOK_LOCATION}" --extra-vars "@/tmp/extra_vars.json"
 

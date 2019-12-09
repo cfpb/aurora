@@ -3,23 +3,13 @@
 ### FUNCTIONS
 # Sets up access to RH GlusterFS shared volumes, and mounts them
 ---
-- name: Install common packages
-  yum:
-    name: "{{ item }}"
-    state: latest
-    disable_gpg_check: yes
-  with_items:
-    - libselinux-python
-  tags:
-    - always
-
 - name: Ensure that FUSE is enabled
   modprobe:
     name: fuse
     state: present
   when: not skip_glusterfs
 
-- name: Install common Gluster packages
+- name: Install common packages
   yum:
     name: "{{ item }}"
     state: latest
@@ -27,6 +17,7 @@
   with_items:
     - glusterfs
     - glusterfs-fuse
+    - libselinux-python
   when: not skip_glusterfs
 
 - name: Make needed folders
@@ -90,8 +81,6 @@
   group:
     name: "{{ restricted_group_name }}"
     state: present
-  tags:
-    - always
 
 - name: Create empty log file if they don't exist
   file:

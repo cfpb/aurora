@@ -56,7 +56,6 @@
   pip:
     name: pexpect
     executable: /usr/bin/pip
-    umask: "0022"
   tags:
     - stata
 

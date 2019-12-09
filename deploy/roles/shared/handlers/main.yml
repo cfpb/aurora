@@ -44,4 +44,3 @@
   service:
     name: sas-studio
     state: restarted
-  when: sas_server_installed | default(False) | bool

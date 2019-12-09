@@ -4,26 +4,21 @@ install_r_packages: true
 r_dependencies:
   - libcurl-devel
   - libxml2-devel
-  - openssl-devel
   - hunspell-devel
   - udunits2
   - udunits2-devel
-  - openmpi
-  - openmpi-devel
-  - openmpi-1.8-devel
-
-r_dependencies_ignore:
 
 r_packages:
-  #- "devtools"
-  - pdbBASE
-  - pmclust
-
-r_packages_ignore:
+  - "devtools"
 
 r_packages_github:
   - name: shinydashboard
     user: rstudio
+
+r_env_vars:
+  CC: /opt/rh/devtoolset-2/root/usr/bin/gcc
+  CPP: /opt/rh/devtoolset-2/root/usr/bin/cpp
+  CXX: /opt/rh/devtoolset-2/root/usr/bin/c++
 
 r_packages_with_opts:
   - name: udunits2
@@ -33,11 +28,3 @@ r_packages_with_opts:
 r_system_package_dir:
   - /usr/lib64/R/library
   - /usr/share/doc
-
-r_packages_versioned:
-  - name: rlecuyer
-    version: 0.3-4
-  - name: pbdMPI
-    version: 0.3-8
-  - name: pbdSLAP
-    version: 0.2-4

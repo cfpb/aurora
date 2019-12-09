@@ -25,5 +25,3 @@ matlab_symlink_boot_dest:    /etc/lmboot_TMW
 matlab_symlink_down_dest:    /etc/lmdown_TMW
 matlab_symlink_dest:         /usr/local/bin/matlab
 matlab_symlink_src:          bin/matlab
-matlab_nnu_assetinfo:        "fake_nnu_assetinfo"
-matlab_concurrent_assetinfo: "fake_concurrent_assetinfo"

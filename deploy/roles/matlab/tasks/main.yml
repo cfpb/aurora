@@ -87,19 +87,11 @@
   tags:
     - matlab
 
-- name: Check for matlab license folder
-  stat:
-    path:  "{{ matlab_install_directory }}/{{ matlab_version }}/etc/lmstart"
-  register: matlab_license_mgr
-  tags:
-    - matlab
-
 - name: Copy the matlab license
   copy:
     content: "{{ matlab_license_file }}"
     dest: "{{ matlab_license_location }}"
     mode: go+rx,u+rwx
-  when: matlab_license_mgr.stat.exists
   tags:
     - matlab
 
@@ -111,13 +103,11 @@
   with_items:
     - "{{ matlab_license_daemon }}"
     - "{{ matlab_license_server }}"
-  when: matlab_license_mgr.stat.exists
   tags: 
     - matlab
 
 - name: update network license
   command: "cp {{ matlab_license_location }} {{ matlab_network_license_file }}"
-  when: matlab_license_mgr.stat.exists
   tags:
     - matlab 
 
@@ -171,10 +161,9 @@
     - matlab
 
 - name: restart matlab license manager
-  shell: su {{deploy_user}} -c "./lmstart"
+  shell: su deploy -c "./lmstart"
   args: 
     chdir: "{{ matlab_install_directory }}/{{ matlab_version }}/etc"
-  when: matlab_license_mgr.stat.exists
   tags:
     - matlab
 
@@ -189,7 +178,6 @@
     - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_boot_symlink_src }}", dest: "{{ matlab_symlink_boot_dest }}"}
     - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_license_down_symlink_src }}", dest: "{{ matlab_symlink_down_dest }}"}
     - { src: "{{ matlab_install_directory }}/{{ matlab_version }}/{{ matlab_symlink_src }}", dest: "{{ matlab_symlink_dest }}"}
-  when: matlab_license_mgr.stat.exists
   tags:
     - matlab
 

@@ -4,8 +4,6 @@
     repo: https://github.com/cfpb/clouseau
     dest: /opt/clouseau
     force: yes
-  tags:
-    -python2
 
 #- name: Create links
 #  file:
@@ -16,30 +14,8 @@
 #    - clouseau
 #    - clouseau_thin
 
-- name: Check for python2 installation
-  set_fact:
-    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_pip_bin }}' ]"
-    python2_pip_bin: "{{ python_pip_bin }}"
-  when: "install_python and custom_repo" 
-  tags:
-    - python2
-
-- name: Check for python2 scl installation
-  set_fact:
-    python_pip_binaries: "{{ python_pip_binaries }} + [ '{{ python_scl_pip_bin }}' ]"
-    python2_pip_bin: "{{ python_scl_pip_bin }}"
-    python_pip_ld_path: "{{ python_pip_ld_path }} + [ '{{ python_scl_pip_ld_path }}' ]"
-  when: "install_python and not custom_repo" 
-  tags:
-    - python2
-
 - name: Install clouseau
   pip:
-    executable: "{{ python2_pip_bin }}"  # /opt/rh/python27/root/usr/bin/pip2.7
+    executable: /usr/local/bin/pip2.7
     name: /opt/clouseau
-    umask: "0022"
-  environment:
-    LD_LIBRARY_PATH: "{{ python_pip_ld_path | join(':') }}"
   when: install_python
-  tags:
-    -python2

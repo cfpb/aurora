@@ -1,0 +1,21 @@
+#! /usr/bin/expect
+
+# run the actual installer bin
+# TODO: figure out where to put this
+spawn /tmp/{{ eod_installer }}
+
+# set a 2 minute timeout
+set timeout 120
+
+# set up your expects
+expect_background {
+    "Enter directory to install Exceed Connection Server to" {
+        send "{{ eod_install_directory }}\r"
+        exp_continue
+    }
+    "Please press <Enter> to view License Agreement" {
+        exit 0
+    }
+}
+# interact return
+expect eod

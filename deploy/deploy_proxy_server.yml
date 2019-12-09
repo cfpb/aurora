@@ -7,7 +7,7 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - common
+    - {role: common, when: "install_glusterfs"}
     - ntp
     - kerberos
     - apache

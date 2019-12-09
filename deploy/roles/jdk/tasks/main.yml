@@ -5,12 +5,14 @@
     state: present
     disable_gpg_check: yes
   with_items: "{{ jdk_packages }}"
+  tags: jdk
 
 - name: Ensure Java environment variables are set
   template:
     src: jdk.sh.j2
     dest: /etc/profile.d/jdk.sh
     mode: 0644
+  tags: jdk
 
 - name: Add additional deployment settings
   lineinfile:
@@ -20,19 +22,23 @@
     state: present
     create: yes
   with_items: "{{ java_deploy_options }}"
+  tags: jdk
 
 - name: Add deployment config
   template:
     src: deployment.config
     dest: "{{ jre_lib_path }}/deployment.config"
+  tags: jdk
 
 - name: Ensure this version is the default
   alternatives:
     name: java
     path: "{{ java_home_path }}/bin/java"
     link: /usr/bin/java
+  tags: jdk
 
 - name: Ensure nss package is the latest
   yum:
     name: nss
     state: latest
+  tags: jdk

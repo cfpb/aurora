@@ -16,20 +16,20 @@
 
   ## Temporarily remove devtools and r due to limited repositories on agents
   roles:
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: iptables, when: "iptables_config"}
     #- devtools
     - mesos_agent
     - {role: epel, when: "use_epel"}
     - jdk
     - postgresql-client
-    - { role: apache, vars: { apache_service_state: "stopped", apache_service_enable: "no" } }
+    - apache
     #- pentaho
     - gocd
-    - { role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } }
+    - nginx
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - python36-scl
+    - python3
     - python-libs
     - odbc
     - jdbc

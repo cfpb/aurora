@@ -13,7 +13,6 @@
   get_url:
     url: "{{ pentaho_url }}"
     dest: /opt/
-    validate_certs: False #TODO remove when upgrade python
     timeout: 10
   when: pentaho_zip_path is not defined
 

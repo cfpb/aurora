@@ -1,0 +1,2 @@
+epel_path: https://dl.fedoraproject.org/pub/epel
+epel_rpm: epel-release-latest-7.noarch.rpm

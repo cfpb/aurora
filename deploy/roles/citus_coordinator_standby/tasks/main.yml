@@ -20,7 +20,6 @@
   pip:
     name: pexpect
     executable: /usr/bin/pip
-    umask: "0022"
 
 - name: Back up the primary server
   become: True

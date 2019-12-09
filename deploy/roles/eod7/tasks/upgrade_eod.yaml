@@ -1,0 +1,15 @@
+- name: Extract EOD upgrader to install directory
+  unarchive:
+    src: "{{ eod_installer_directory }}/{{ eod_upgrader }}"
+    dest: "{{ eod_install_directory }}/"
+    owner: root
+    group: root
+  tags:
+    - eod
+
+- name: Run the patch
+  shell: "{{ eod_install_directory }}/bin/patch -s"
+  tags:
+    - eod
+  notify:
+    - restart eod

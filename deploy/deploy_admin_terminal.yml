@@ -6,7 +6,7 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "install_python and not custom_repo" }
@@ -27,6 +27,5 @@
         virtualenv: ~/.virtualenvs/data-platform
         name: ansible
         state: present
-        umask: "0022"
       sudo: no
       when: "install_python"

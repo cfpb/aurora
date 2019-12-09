@@ -4,9 +4,9 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - common
-    - {role: epel, when: "use_epel and not 'production' in group_names"}
-    - emacs
+    - {role: common, when: "install_glusterfs and not rh7_upgrade"}
+    - {role: epel, when: "use_epel and not 'production' in group_names and not rh7_upgrade"}
+    - {role: emacs, when: "not rh7_upgrade"}
     - jdk
     - odbc
     - postgresql-client
@@ -86,7 +86,22 @@
   become_method: sudo
   serial: 1
   roles:
-    - eod
+    - {role: eod, when: not rh7_upgrade}     
+
+- hosts: research_eod_rh7
+  become: yes
+  become_method: sudo
+  roles:
+    - {role: epel7, when: "rh7_upgrade"}
+    - {role: common7, when: "rh7_upgrade"}
+    - {role: eod7, when: "rh7_upgrade"}
+    - gocd
+    #TODO: emacs for rh7
+  post_tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_gauss
   become: yes
@@ -114,10 +129,10 @@
     - devtools
     - devtools6
     - {role: python, when: "custom_repo"}
-    #- {role: python-build, when: "not custom_repo"}
-    - {role: python27-scl, when: "not custom_repo"}
-    - python36-scl
-    - python-libs
+    - {role: python-build, when: "not custom_repo"}
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
+    - {role: python-libs}
     - postgresql-client
     - r-core
     - r-libs
@@ -150,6 +165,15 @@
     - gocd
     - stattransfer
     - r
+
+  tasks:
+  - name: Set r executable to octl 444
+    file:
+      path: '/usr/bin/R'
+      owner: root
+      group: root
+      mode: 0444
+    tags: run_r
 
 - hosts: research_spss
   become: yes
@@ -185,3 +209,4 @@
     with_items:
       - libicu
       - libselinux-python
+      

@@ -1,7 +1,0 @@
----
-# defaults file for python36-scl
-
-python3_pip_bin: /opt/rh/rh-python36/root/usr/bin/pip3.6
-
-# Should the role set SCL python v3.6 as the default system python for users
-set_python36_default_python: False

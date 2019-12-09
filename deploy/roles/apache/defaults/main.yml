@@ -17,10 +17,6 @@ apache_disabled_services:
 apache_config_path: /opt/rh/httpd24/root/etc/httpd
 apache_config_dir: /opt/rh/httpd24/root/etc/httpd/conf.d
 
-# Apache service initial state
-apache_service_state: "started"
-apache_service_enable: "yes"
-
 # Apache configuration
 apache_server_tokens: "Full"
 apache_default_listen: 80

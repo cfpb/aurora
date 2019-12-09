@@ -37,13 +37,6 @@
   tags:
     - sas
 
-- name: check sas home (created on install)
-  stat:
-    path: "{{ sas_home }}"
-  register: sas_home_dir
-  tags:
-    - sas
-
 - name: check sasenv script exists sas-console
   stat:
     path: "{{ sas_home }}/SASFoundation/{{ sas_version }}/bin/sasenv_local"
@@ -102,7 +95,6 @@
     dest: "{{ sas_home }}/SASFoundation/{{ sas_version }}/sasv9_local.cfg"
     regexp: "-WORK"
     line: "-WORK {{ sas_work_dir }}"
-  when: sas_home_dir.stat.exists
   tags:
     - sas
 
@@ -152,12 +144,5 @@
     state: started
     enabled: yes
   when: sasstudio_file.stat.exists == True
-  tags:
-    - sas
-
-- name: Set SAS Installed fact
-  set_fact:
-    sas_server_installed: True
-  when: sas_home_dir.stat.exists
   tags:
     - sas

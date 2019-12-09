@@ -246,3 +246,8 @@ db_automation_package_state: present
 #====================#
 mesos_upgrade: False
 marathon_upgrade: False
+
+#======================#
+### RedHat 7 Upgrade ###
+#======================#
+rh7_upgrade: False

@@ -68,7 +68,6 @@
   yum:
     name: "/tmp/python27-2.7.6-2.el6.x86_64.rpm"
     state: present
-    disable_gpg_check: yes
   when: "install_python and 'is not installed' in python27_check.stdout"
   tags:
     - python2

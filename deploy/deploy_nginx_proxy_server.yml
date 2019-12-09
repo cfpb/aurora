@@ -7,7 +7,7 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: epel, when: use_epel and "production" not in group_names }
     - nginx
     - {role: log-courier, when: "install_logstash"}

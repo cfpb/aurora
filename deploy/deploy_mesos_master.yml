@@ -23,17 +23,5 @@
   max_fail_percentage: 30
   roles:
     - {role: iptables, when: "iptables_config"}
-    - epel  # This is for rhel6 pip
     - common
     - mesos_master
-  tasks:
-      # used to install kazoo
-    - name: Install pip
-      yum:
-         name: python-pip
-         state: present
-
-    - name: Install Kazoo (required by Znode ansible module)
-      pip:
-        name: kazoo
-        umask: "0022"

@@ -5,12 +5,12 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - {role: python, when: "custom_repo"}
     - {role: python-build, when: "not custom_repo"}
-    - python36-scl
-    - python-libs
+    - {role: python3, when: "custom_repo"}
+    - {role: python3-build, when: "not custom_repo"}
     - ruby
     - postgresql-client
     - gocd
@@ -50,6 +50,27 @@
         - p7zip
         - rhobot
       when: custom_repo
+
+    - name: Install Python RPM dependencies
+      yum:
+        name: "{{ item }}"
+        state: present
+        disable_gpg_check: yes
+      with_items: "{{ python_dep_packages }}"
+
+    - name: Install Python packages for 2.7
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip2.7
+      with_items: "{{ python_packages }}"
+
+    - name: Install Python packages for 3.4
+      pip:
+        name: "{{ item }}"
+        state: present
+        executable: /usr/local/bin/pip3.4
+      with_items: "{{ python3_packages }}"
 
 - hosts: app_server
   become: yes

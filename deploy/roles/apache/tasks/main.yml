@@ -42,8 +42,8 @@
 - name: Ensure Apache is started and enabled on boot.
   service:
     name: "{{ apache_service }}"
-    state: "{{ apache_service_state }}" #started
-    enabled: "{{ apache_service_enable }}" #yes
+    state: started
+    enabled: yes
   failed_when: False
   tags:
     - apache

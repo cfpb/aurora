@@ -6,7 +6,7 @@
   roles:
     - {role: iptables, when: "iptables_config"}
     - {role: puppet_disable, when: "disable_puppet"}
-    - common
+    - {role: common, when: "install_glusterfs"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - jdk
     - neo4j 
