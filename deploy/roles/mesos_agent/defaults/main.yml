@@ -28,7 +28,7 @@ mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
 mesos_agent_image_backend: "copy"
 
-mesos_executor_registration_timeout: 20mins
+mesos_executor_registration_timeout: 5mins
 
 mesos_appc_enable: yes
 mesos_appc_simple_discovery_uri_prefix: "http://10.0.1.31:8080/v2/artifacts/appc/"
