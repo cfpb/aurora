@@ -12,6 +12,7 @@ eod_upgrader:
 eod_installer_directory: '/artifacts'
 #eod_installer_directory: '/tmp'
 custom_repo: True
+eod_prechannel_location: /etc/xdg/xfce4/xfconf/xfce-perchannel-xml/
 
 eod_client_ports:
   - 5500
