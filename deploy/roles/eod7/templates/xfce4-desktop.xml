@@ -7,7 +7,7 @@
         <property name="workspace0" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/cfpb/sciollis/Pictures/stemma_orbe.jpg"/>
+          <property name="last-image" type="string" value="/usr/share/backgrounds/images/default.png"/>
           <property name="color1" type="array">
             <value type="uint" value="904"/>
             <value type="uint" value="0"/>
