@@ -84,7 +84,7 @@
       <property name="style" type="uint" value="0"/>
     </property>
     <property name="plugin-14" type="string" value="directorymenu">
-      <property name="base-directory" type="string" value="/home/cfpb/clarkbergj"/>
+      <property name="base-directory" type="string" value="/home/work/"/>
     </property>
     <property name="plugin-16" type="string" value="tasklist"/>
     <property name="plugin-17" type="string" value="xfce4-orageclock-plugin"/>
