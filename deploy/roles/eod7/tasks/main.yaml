@@ -116,7 +116,37 @@
   command: yum -y update --enablerepo=epel-testing
   tags:
     - eod
+- name: register RHEL7 repo
+  command: "/usr/bin/subscription-manager repos --enable=rhel-7-server-rpms --enable=rhel-7-server-extras-rpms --enable=rhel-7-server-optional-rpms"
+  tags:
+    - eod
 
+- name: register RHEL7 RHSCL Repo
+  shell: "/usr/bin/subscription-manager repos --enable=rhel-server-rhscl-7-rpms"
+  tags:
+    - eod
+  
+- name: register RHEL7 DevTools
+  shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-devtools-rpms"
+  tags:
+    - eod
+  
+- name: register RHEL7 Extras 
+  shell: "/usr/bin/subscription-manager repos --enable=rhel-7-server-extras-rpms"
+  tags:
+    - eod
+  
+- name: list RHEL enabled repos
+  shell: "/usr/bin/subscription-manager repos --list-enabled"
+  tags:
+    - eod
+  
+  register: enabled_repos
+- debug:
+    msg: "RHEL Enabled Repos: {{ enabled_repos }}"
+  tags:
+    - eod
+  
 # MATE fix for RHEL 7.5, 7.6               
 - name: install dnf (RedHat yum4/yum replacement)
   shell: yum install -y dnf   
