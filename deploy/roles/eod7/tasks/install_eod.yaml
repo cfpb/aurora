@@ -1,7 +1,7 @@
 ---
 - name: Copy over the EOD bin file
   copy:
-     src: "{{ eod_installer_directory }}/{{ eod_installer }}"
+    src: "{{ eod_installer_directory }}/{{ eod_installer }}"
     dest: "/tmp/"
   when: custom_repo
   tags:
