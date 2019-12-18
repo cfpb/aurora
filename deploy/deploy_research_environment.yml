@@ -92,10 +92,10 @@
   become: yes
   become_method: sudo
   roles:
-    - {role: epel7, when: "rh7_upgrade"}
-    - {role: common7, when: "rh7_upgrade"}
-    - {role: eod7, when: "rh7_upgrade"}
-    #TODO: emacs for rh7
+    - epel7
+    - common7
+    - eod7
+    - emacs
   post_tasks:
     - name: Install git
       yum:
