@@ -57,3 +57,5 @@ iptables_chain: TEST-INPUT
 
 install_eod: True
 eod_restart: True
+
+eod_greeter_include: false
