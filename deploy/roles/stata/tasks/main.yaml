@@ -56,7 +56,6 @@
   pip:
     name: pexpect
     executable: /usr/bin/pip
-    umask: "0022"
   tags:
     - stata
 
@@ -74,6 +73,25 @@
   tags:
     - stata
 
+- name: Verify stata update directory
+  file:
+    path: "{{ stata_update_directory }}/"
+    state: directory
+    owner: root
+    group: root
+  when: stata_patch_update
+  tags:
+    - stata
+
+- name: unarchive the stata update tarball
+  unarchive:
+    copy: yes
+    src: "{{ stata_local_bin_directory }}/{{ stata_update_tarball }}"
+    dest: "{{ stata_install_directory }}/"
+  when: stata_patch_update
+  tags:
+    - stata
+
 - name: Add the update do file
   template:
     src: stataupdate.do.j2
@@ -84,9 +102,17 @@
 
 - name: Run the update do file (checks for updates, installs and restarts stata if updated)
   shell: "{{ stata_install_directory }}/stata-mp -b {{ stata_install_directory }}/stataupdate.do"
-  when: custom_repo and stata_patch_update
+  when: stata_patch_update
   tags:
     - stata
+
+- name: remove the stata update files
+  file:
+    path: "{{ stata_update_directory }}"
+    state: absent
+  when: stata_patch_update
+  tags:
+    - stata 
 
 - name: Update permissions
   file:

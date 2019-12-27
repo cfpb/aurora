@@ -1,6 +1,8 @@
 ---
-stata_install_directory:            /usr/local/stata15
-stata_tarball:                      Stata15Linux64.tar.gz
+stata_install_directory:            /usr/local/stata16
+stata_tarball:                      Stata16Linux64-Legacy.tar.gz
+stata_update_tarball:               stata16update_linux64legacy.tar
+stata_update_directory:             /usr/local/stata16/stata16update_linux64legacy
 stata_directory:                    /usr/local/stata
 stata_local_bin_directory:          /artifacts
 stata_remote_bin_directory:         /tmp
