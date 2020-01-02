@@ -149,11 +149,19 @@
   tags:
     - stata
 
-- name: Create symlink
+- name: Create symlink to stata folder
   file:
     state: link
     src: "{{ stata_install_directory }}"
     dest: "{{ stata_directory }}"
+  tags:
+    - stata
+
+-- name: Create symlink to executable
+  file:
+    state: link
+    src: "{{ stata_install_directory }}/xstata-mp"
+    dest: "{{ stata_directory }}/stata"
   tags:
     - stata
 
