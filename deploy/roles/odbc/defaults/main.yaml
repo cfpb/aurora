@@ -2,6 +2,8 @@
 odbc_rpms:
   - libselinux-python
   - unixODBC
+  - unixODBC-devel
+  - postgresql-odbc
 
 odbc_ms_sql_hostname: host_ms_sql
 odbc_entries:
