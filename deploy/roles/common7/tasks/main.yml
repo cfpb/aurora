@@ -2,10 +2,10 @@
 - name: Install iptables-services
   become: yes
   become_method: sudo
-  command: yum install -y iptables-services
-# yum:
-#   name: iptables-services
-#   state: present
+# command: yum install -y iptables-services
+  yum:
+    name: iptables-services
+    state: present
 
 - name: Make sure firewalld is masked
   command: systemctl mask firewalld
