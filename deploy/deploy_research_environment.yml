@@ -88,9 +88,11 @@
   roles:
     - {role: eod, when: not rh7_upgrade}     
 
-- hosts: research_eod_rh7
+- hosts: research-eodrh7
   become: yes
   become_method: sudo
+  vars:
+    rh7_upgrade: true
   roles:
     - epel7
     - common7
