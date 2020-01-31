@@ -79,5 +79,15 @@
 - name: Allow outgoing
   command: "iptables -P OUTPUT ACCEPT"
 
+- name: Install iptables-services
+  yum:
+    name: iptables-services
+    state: present
+
 - name: Save new rules
   command: "/sbin/service iptables save"
+  when: not rh7_upgrade
+
+- name: Save new rules RHEL 7
+  command: "iptables-save"
+  when: rh7_upgrade
