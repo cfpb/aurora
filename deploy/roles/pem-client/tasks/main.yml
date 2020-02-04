@@ -7,7 +7,7 @@
   when: install_pem
 
 - name: Ensure umask is correct
-  sudo: no
+  #sudo: no
   lineinfile:
     dest: ~/.bashrc
     line: umask 0022
