@@ -57,6 +57,9 @@ pp_old_servicename: postgresql-9.6
 pp_old_datadir: /var/lib/pgsql/9.6/data
 pp_old_serverport: 5433
 pp_old_support_services: []
+pp_workload_profile: oltp
+pp_xlogdir: /var/log/postgresql
+## PostgreSQL Configuration Settings
 
 # pg_hba.conf settings
 pg_hba_settings:
