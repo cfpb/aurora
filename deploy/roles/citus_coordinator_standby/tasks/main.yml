@@ -32,7 +32,7 @@
 
 - name: Back up the WAL directory
   become: True
-  command: "mv {{ pp_xlogdir }}{{ pg_wal }} {{ pp_xlogdir }}{{ pg_wal }}.bkup"
+  command: "mv {{ pp_xlogdir }}/{{ pg_wal }} {{ pp_xlogdir }}/{{ pg_wal }}.bkup"
 
 - name: Move WAL directory to proper location again
   become: True
@@ -50,7 +50,7 @@
   become: True
   file:
     dest: "{{ pp_datadir }}/{{ pg_wal }}"
-    src: "{{ pp_xlogdir }}{{ pg_wal }}"
+    src: "{{ pp_xlogdir }}/{{ pg_wal }}"
     state: link
 
 - name: Change the ownership of data directory
