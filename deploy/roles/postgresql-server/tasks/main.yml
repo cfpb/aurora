@@ -40,9 +40,8 @@
 
 - name: Install Postgres
   yum:
-    name: "{{ item }}"
+    name: '{{ pp_packages }}'
     state: present
-  with_items: "{{ pp_packages }}"
   when: not install_edb
   check_mode: no
   tags:
@@ -229,14 +228,10 @@
 
 - name: Install requirements for postgresql Ansible tasks
   yum:
-    name: "{{ item }}"
+    name: ['postgresql10-devel', 'python-psycopg2', 'git']
     state: present
   become: yes
   become_method: sudo
-  with_items:
-    - postgresql10-devel
-    - python-psycopg2
-    - git
   check_mode: no
 
 - name: Install extensions and supplementary packages
