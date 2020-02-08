@@ -1,10 +1,9 @@
 ---
 - name: Install specified JDK version and dependencies
   yum:
-    name: "{{ item }}"
+    name: "{{ jdk_packages }}"
     state: present
     disable_gpg_check: yes
-  with_items: "{{ jdk_packages }}"
 
 - name: Ensure Java environment variables are set
   template:
