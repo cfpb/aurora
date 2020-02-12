@@ -80,4 +80,5 @@
   command: "iptables -P OUTPUT ACCEPT"
 
 - name: Save new rules
-  command: "/sbin/service iptables save"
+  #command: "/sbin/service iptables save"
+  command: "/usr/sbin/iptables-save"

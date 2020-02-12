@@ -250,7 +250,8 @@
     - postgresql-server
 
 - name: Save rules
-  command: "/sbin/service iptables save"
+  #command: "/sbin/service iptables save"
+  command: "/usr/sbin/iptables-save"
   when: iptables_config and deploy_iptables
   tags:
     - postgresql-server
