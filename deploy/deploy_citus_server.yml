@@ -67,8 +67,6 @@
         name: "{{ pp_servicename }}"
         state: started
         enabled: yes
-      tags:
-        - postgresql-server
 
 - hosts: citus
   become: yes
