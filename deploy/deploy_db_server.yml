@@ -18,12 +18,14 @@
         mode: 0755
         owner: postgres
         group: postgres
+      when: pp_file_transfer_dir is defined
 
-    - name: Create symlink from PPAS data directory
+    - name: Create symlink from PostgreSQL data directory
       file:
         dest: "{{ pp_datadir }}/file_transfers"
         src: "{{ pp_file_transfer_dir }}"
         state: link
+      when: pp_file_transfer_dir is defined
 
     - name: Ensure PG is started
       service:
@@ -36,3 +38,4 @@
 - hosts: db_server
   roles:
     - role: postgresql-server-config
+

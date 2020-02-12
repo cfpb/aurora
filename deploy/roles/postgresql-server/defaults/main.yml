@@ -2,7 +2,6 @@
 ## Postgres default variables
 pg_version: 10
 install_edb: False
-install_ppas: False
 
 # When to install, upgrade, and restart
 pp_install: False
@@ -40,21 +39,23 @@ replication_user: replication
 replication_password: replication
 
 # Core server config
-pp_clusterdir: /usr/local/pgsql/data
+pp_servicename: postgresql-10
 pp_datadir: /var/lib/pgsql/10/data
-pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_serverport: 5432
+pp_support_services: []
+
+pp_serviceaccount: postgres
+pp_xlogdir: /var/lib/pgsql/10/data
 pp_prefix: ''
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: postgresql-10
-pp_old_servicename: postgresql-9.6
-
-pp_serviceaccount: postgres
-pp_serverport: 5432
-pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql/
-## PostgreSQL Configuration Settings
+
+# Upgrade settings, default of 9.6->10
+pp_old_servicename: postgresql-9.6
+pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_old_serverport: 5433
+pp_old_support_services: []
 
 # pg_hba.conf settings
 pg_hba_settings:
