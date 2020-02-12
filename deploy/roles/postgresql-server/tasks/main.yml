@@ -83,9 +83,9 @@
   tags:
     - postgresql-server
 
-- name: Ensure Unix sockets directory exists
+- name: Ensure the WAL directory exists
   file:
-    path: "{{ pp_unix_socket_dirs }}"
+    path: "{{ pp_xlogdir }}"
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
@@ -93,9 +93,9 @@
   tags:
     - postgresql-server
 
-- name: Ensure the WAL directory exists
+- name: Ensure Unix sockets directory exists
   file:
-    path: "{{ pp_xlogdir }}"
+    path: "{{ pp_unix_socket_dirs }}"
     state: directory
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
