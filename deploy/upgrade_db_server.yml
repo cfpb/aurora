@@ -130,9 +130,6 @@
         that: '"Clusters are compatible" in check_result.stdout'
 
     - name: Run pg_upgrade
-      become: yes
-      become_method: sudo
-      become_user: "{{ pp_serviceaccount }}"
       command: >
           sudo su - {{ pp_serviceaccount }} -c
           "{{ pp_prefix }}/{{ pp_install_path }}/bin/pg_upgrade
@@ -163,7 +160,6 @@
         backrefs: yes
         line: 'local\1md5'
       notify: restart postgres
-    - role: postgresql-server
 
     - name: Ensure that the new database process is started
       become: yes
@@ -179,7 +175,7 @@
         minutes: 2
       when: pg_db_started.changed
 
-    - name: Drop "edb" database
+    - name: Drop the "edb" database
       postgresql_exec:
         login_user: "{{ pp_superaccount }}"
         login_password: "{{ pp_superpassword }}"
