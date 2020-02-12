@@ -57,6 +57,17 @@ pp_old_datadir: /var/lib/pgsql/9.6/data
 pp_old_serverport: 5433
 pp_old_support_services: []
 
+pp_ident_mappings:
+  - type: krb
+    match: '/^(.*)\.adm@CFPB.LOCAL$'
+    pg_role: '\1'
+  - type: krb
+    match: '/^(.*)@CFPB.LOCAL$'
+    pg_role: '\1'
+  - type: krb
+    match: '/^(.*)@CFPB$'
+    pg_role: '\1'
+
 # pg_hba.conf settings
 pg_hba_settings:
   -

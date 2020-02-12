@@ -137,7 +137,20 @@
   tags:
     - postgresql-server
 
-- name: Configure postgres connection options
+- name: Configure PostgreSQL identity mappings
+  template:
+    src: pg_ident.conf.j2
+    dest: "{{ pp_datadir }}/pg_ident.conf"
+    group: "{{ pp_superaccount }}"
+    owner: "{{ pp_superaccount }}"
+    mode: 0600
+  when: pp_ident_mappings is defined
+  notify:
+    - restart postgres
+  tags:
+    - postgresql-server
+
+- name: Configure PostgreSQL connection options
   template:
     src: pg_hba.conf.j2
     dest: "{{ pp_datadir }}/pg_hba.conf"
@@ -149,15 +162,15 @@
   tags:
     - postgresql-server
 
-- name: Configure PG server
+- name: Configure PostgreSQL server
   template:
     src: "{{ pp_config_template }}"
     dest: "{{ pp_datadir }}/postgresql.conf"
     group: "{{ pp_superaccount }}"
     owner: "{{ pp_superaccount }}"
     mode: 0600
-  #notify:
-  #  - restart postgres
+  notify:
+    - restart postgres
   tags:
     - postgresql-server
 
