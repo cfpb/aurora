@@ -42,7 +42,7 @@
         state: stopped
       with_items: "{{ pp_old_servicename }}"
 
-    - name: And any relevate support services
+    - name: And any relevant support services
       become: yes
       become_method: sudo
       service:

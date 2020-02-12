@@ -103,16 +103,6 @@
   tags:
     - postgresql-server
 
-- name: Ensure Unix sockets directory exists
-  file:
-    path: "{{ pp_unix_socket_dirs }}"
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0700
-  tags:
-    - postgresql-server
-
 - name: Ensure systemd directory exists
   file:
     state: directory
