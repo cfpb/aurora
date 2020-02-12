@@ -73,26 +73,6 @@
   tags:
     - postgresql-server
 
-- name: Ensure the install directory exists
-  file:
-    path: "{{ pp_prefix }}/{{ pp_install_path }}"
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0755
-  tags:
-    - postgresql-server
-
-- name: Ensure the log directory exists
-  file:
-    path: "{{ pp_xlogdir }}"
-    state: directory
-    owner: "{{ pp_serviceaccount }}"
-    group: "{{ pp_serviceaccount }}"
-    mode: 0755
-  tags:
-    - postgresql-server
-
 - name: Ensure the data directory exists
   file:
     path: "{{ pp_datadir }}"
