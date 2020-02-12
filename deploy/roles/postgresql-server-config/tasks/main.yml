@@ -24,31 +24,6 @@
   check_mode: no
   #no_log: true
 
-- name: Allow postgres empty password login temporarily
-  become: yes
-  become_method: sudo
-  lineinfile:
-    dest: "{{ pp_datadir }}/pg_hba.conf"
-    regexp: '^host(.*)postgres(.*)md5'
-    backrefs: yes
-    line: 'host\1postgres\2trust'
-  notify: restart postgres
-
-- meta: flush_handlers
-
-- pause:
-    seconds: 30
-
-- name: Ensure password is correct
-  postgresql_exec:
-    login_host: localhost
-    login_user: "{{ pp_superaccount }}"
-    port: "{{ pp_serverport }}"
-    db: postgres
-    script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
-  check_mode: no
-  #no_log: true
-
 - name: Disallow postgres empty password login
   become: yes
   become_method: sudo
