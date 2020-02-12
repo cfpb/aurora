@@ -268,4 +268,3 @@
   max_fail_percentage: 1
   roles:
     - role: postgresql-server-config
-
