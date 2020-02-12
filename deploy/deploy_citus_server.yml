@@ -51,8 +51,9 @@
     - name: Ensure symlink exists for WAL directory
       file:
         dest: "{{ pp_datadir }}/{{ pg_wal }}"
-        src: "{{ pp_xlogdir }}{{ pg_wal }}"
+        src: "{{ pp_xlogdir }}/{{ pg_wal }}"
         state: link
+      when: pp_datadir != pp_xlogdir
 
     - name: Setup host file
       lineinfile:

@@ -148,7 +148,7 @@ def main():
         if module.params["autocommit"]:
             db_connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = db_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="unable to connect to database: %s" % e)
 
     kw = dict(script=script)
