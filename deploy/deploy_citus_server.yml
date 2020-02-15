@@ -57,11 +57,11 @@
 
     - name: Setup host file
       lineinfile:
-        dest: /etc/hosts
+        path: /etc/hosts
         regexp: '[[0-9+]\.]+\s+{{ item }}'
         line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
       with_items: "{{ groups['citus'] }}"
-      when: not custom_repo
+      when: not custom_repo and not using_docker
 
     - name: Ensure PG is started
       service:
