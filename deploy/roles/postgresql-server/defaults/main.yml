@@ -214,7 +214,7 @@ pp_wal_sender_timeout: 60s
 pp_max_replication_slots: 0
 
 # master
-pp_syncronous_standby_names: ''
+pp_synchronous_standby_names: ''
 pp_vacuum_defer_cleanup_age: 0
 
 # standby
