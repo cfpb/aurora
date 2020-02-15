@@ -32,7 +32,7 @@
         script: "{{ item }}"
         port: "{{ pp_serverport }}"
       with_items: "{{ backup_metadata_scripts }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: First ensure that the database processes are stopped
       become: yes
@@ -206,7 +206,7 @@
         script: "{{ item }}"
         port: "{{ pp_serverport }}"
       with_items: "{{ restore_metadata_scripts }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: Drop temp scripts
       postgresql_exec:
@@ -217,7 +217,7 @@
         script: "{{ item }}"
         port: "{{ pp_serverport }}"
       with_items: "{{ drop_temp_scripts }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: Restart sequence
       postgresql_exec:
@@ -228,7 +228,7 @@
         script: "{{ item }}"
         port: "{{ pp_serverport }}"
       with_items: "{{ restart_sequence_scripts }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: Create trigger
       postgresql_exec:
@@ -238,7 +238,7 @@
         db: postgres
         script: "{{ create_trigger_script.script }}"
         port: "{{ pp_serverport }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: Register trigger
       postgresql_exec:
@@ -249,7 +249,7 @@
         script: "{{ item }}"
         port: "{{ pp_serverport }}"
       with_items: "{{ register_trigger_scripts }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
     - name: Set dependency
       postgresql_exec:
@@ -259,7 +259,7 @@
         db: postgres
         script: "{{ set_dependency_scripts.script }}"
         port: "{{ pp_serverport }}"
-      when: '"citus_coordinator_group" in group_names'
+      when: '"citus_coordinator" in group_names'
 
 - hosts: all_db
   become: yes
