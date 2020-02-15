@@ -93,11 +93,12 @@ db_server_edb ansible_ssh_host=10.0.1.29
 db_server_centos6 ansible_ssh_host=10.0.1.39
 db_server_centos7 ansible_ssh_host=10.0.1.38
 
-citus_coordinator ansible_ssh_host=10.0.1.40
-[citus_coordinator_group]
+[citus_coordinator]
+citus_coordinator_1 ansible_ssh_host=10.0.1.40
+#citus_coordinator1 ansible_host=localhost ansible_port=15 ansible_user=super
 
-[citus_coordinator_standby_group]
-citus_coordinator_standby ansible_ssh_host=10.0.1.44
+[citus_coordinator_standby]
+citus_coordinator_standby_1 ansible_ssh_host=10.0.1.44
 
 [citus_worker]
 citus_worker_1 ansible_ssh_host=10.0.1.41
@@ -105,8 +106,8 @@ citus_worker_2 ansible_ssh_host=10.0.1.42
 citus_worker_3 ansible_ssh_host=10.0.1.43
 
 [citus:children]
-citus_coordinator_group
-citus_coordinator_standby_group
+citus_coordinator
+citus_coordinator_standby
 citus_worker
 
 [all_db:children]

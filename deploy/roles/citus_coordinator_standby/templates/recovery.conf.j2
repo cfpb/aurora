@@ -123,7 +123,7 @@ standby_mode = on
 # If set, the PostgreSQL server will try to connect to the primary using this
 # connection string and receive XLOG records continuously.
 #
-primary_conninfo      = 'host={{ hostvars[groups["citus_prod_coordinator" if custom_repo else "citus_coordinator_group"][0]]["ansible_ssh_host"] }} port=5432 user={{ replication_user }} password={{ replication_password }}'
+primary_conninfo      = 'host={{ hostvars[groups["citus_prod_coordinator" if custom_repo else "citus_coordinator"][0]]["ansible_ssh_host"] }} port=5432 user={{ replication_user }} password={{ replication_password }}'
 #
 # If set, the PostgreSQL server will use the specified replication slot when
 # connecting to the primary via streaming replication to control resource
