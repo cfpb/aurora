@@ -186,11 +186,11 @@ pp_max_parallel_workers: 8
 
 # WAL
 pp_wal_level: minimal
-pp_fsync: on
-pp_sync_commit: on
+pp_fsync: "on"
+pp_sync_commit: "on"
 pp_wal_sync_method: fsync
-pp_full_page_writes: on
-pp_wal_log_hints: off
+pp_full_page_writes: "on"
+pp_wal_log_hints: "off"
 pp_wal_buffers: -1
 pp_wal_writer_delay: 200ms
 pp_commit_delay: 0
@@ -203,8 +203,8 @@ pp_checkpoint_timeout: 5min
 pp_checkpoint_completion_target: 0.5
 pp_checkpoint_warning: 30s
 
-pp_archive_mode: off
-pp_archive_command: off
+pp_archive_mode: "off"
+pp_archive_command: "off"
 pp_archive_timeout: 0
 
 # Replication
