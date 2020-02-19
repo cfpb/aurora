@@ -2,11 +2,17 @@
 - debug:
     msg: "{{ansible_distribution }}-{{ ansible_distribution_major_version}}"
 
+- debug:
+    msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }}"
+
 - name: Include variable for os
   include_vars: rhel_7.yml
   when: ansible_distribution_major_version == "7"
   tags:
     - postgresql-server
+
+- debug:
+    msg: "install_edb = {{ install_edb }}"
 
 - name: Include variable for edb
   include_vars: edb.yml
@@ -79,7 +85,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: ansible_distribution_major_version == "hell_froze_over"
+  when: ansible_distribution_major_version == "hell_froze_over" # TODO: figure out correct check
   tags:
     - postgresql-server
 
@@ -121,9 +127,15 @@
   tags:
     - postgresql-server
 
+- set_fact:
+    pp_install_or_upgrade: "{{ (pp_install | bool) or (pp_upgrade | bool) }}"
+
+- debug:
+    msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }} ; pp_install_or_upgrade: {{ pp_install_or_upgrade }} "
+
 - name: Create postgres cluster
   shell: "{{ pp_initdb }}"
-  when: pp_install or pp_upgrade
+  when: pp_install_or_upgrade
   tags:
     - postgresql-server
 
@@ -251,6 +263,7 @@
     - postgresql-server
 
 - name: Save rules
+  # TODO: see if we can either use Ansible's service, or call "service" (no /sbin/)
   #command: "/sbin/service iptables save"
   command: "/usr/sbin/iptables-save"
   when: iptables_config and deploy_iptables
