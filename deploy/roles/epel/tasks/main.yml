@@ -12,6 +12,7 @@
   tags:
     - epel
 
+# TODO: use yum module with equivalent of "yum --nogpgcheck localinstall packagename.arch.rpm" to stop warnings
 - name: Install EPEL repo
   command: "rpm -ivh /tmp/{{ epel_rpm }}"
   args:
