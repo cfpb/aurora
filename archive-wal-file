@@ -1,0 +1,32 @@
+#!/usr/bin/env bash
+# Use like this (in /var/lib/pgsql/10/data/postgresql.conf):
+# archive_command = '/var/lib/pgsql/10/data/archive_wal_file %p %f'
+
+set -eux # what else should we set? pipefail?
+
+if [[ -z "$1" ]]; then
+  echo "$0: must supply full path and base filename as command-line parameters"
+  exit 1;
+fi;
+if [[ -z "$2" ]]; then
+  echo "$0: missing base filename (second command-line parameter)"
+  exit 2;
+fi;
+
+fullpath="$1"
+filename="$2"
+ARCHIVE_DIR=/var/lib/pgsql/10/data/archives
+STANDBY_ADDRESS=10.0.1.44
+
+
+cp $fullpath $ARCHIVE_DIR/$filename
+
+# so where do we put these?
+# /var/lib/pgsql/10/data/archives -- since that shouldn't have anything in it on the standby
+
+cd $ARCHIVE_DIR
+rsync -ac . $STANDBY_ADDRESS:$ARCHIVE_DIR/
+
+# TODO:
+# make the destination host (or host+dir?) a parameter
+# make the archive dir a parameter? optional parameter?
