@@ -120,7 +120,36 @@
         state: directory
         path: "{{ pp_datadir }}/archives"
 
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+      openssh_keypair:
+        type: rsa # this is the default anyway
+        # TODO: make this a variable
+        path: /var/lib/pgsql/.ssh/id_rsa
+        comment: "key for postgres@citus_coordinator_1"
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
+        state: present # this is the default anyway
+      register: coord_key
+  
+    - name: Fix owner of the generated pub key
+      file:
+        path: /var/lib/pgsql/.ssh/id_rsa .pub
+        owner: postgres
+        group: postgres
+
+
 - hosts: citus_coordinator_standby
   serial: 1
   roles:
     - {role: citus_coordinator_standby, when: install_pp}
+  tasks:
+    - name: Make postgres@standby trust public key of postgres@coordinator
+      ## delegate_to: central_server_name ## what's this?
+      # TODO: add a "when: coord_key.changed
+      authorized_key:
+         user: {{ pp_superaccount }}
+         key: "{{coord_key.public_key}}"
+         state: present
+         path: /var/lib/pgsql/.ssh/authorized_keys
+         # comment: "{{ansible_hostname}}" # ?
