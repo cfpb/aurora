@@ -1,9 +1,4 @@
 ---
 pp_wal_level: hot_standby
-pp_max_wal_senders: 5
-pp_wal_keep_segments: 32
-pp_archive_mode: on
-pp_archive_command: 'cp %p {{ pp_datadir }}/archives/%f'
-pp_max_replication_slots: 5
-
-# This file is for the standby, and should probably be different than the one for the active coordinator.
+# the standby is hot (i.e. can service read-only queries), so override default:
+pp_hot_standby: on
