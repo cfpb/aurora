@@ -21,7 +21,10 @@
       volumes:
         # Update this to wherever you want VS Code to mount the folder of your project
         - ..:/workspace:cached
-  
+
+        # Keep a pip cache on the host to save downloading time:
+        - ../.cache/pip:~/.cache/pip
+
         # Forwards the local Docker socket to the container.
         - /var/run/docker.sock:/var/run/docker.sock 
         - ./bashrc:/root/.bashrc 
@@ -39,4 +42,4 @@
       networks:
         ansible_nw:
           ipv4_address: 10.0.1.253
-  
+
