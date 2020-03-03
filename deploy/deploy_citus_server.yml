@@ -5,9 +5,9 @@
   # Avoid nasty surprises when someone does "--extra-vars pp_install=False", etc.:
   pre_tasks:
   - set_fact:
-      install_pp: "{{ pp_install | bool }}"
-      upgrade_pp: "{{ pp_upgrade | bool }}"
-      install_or_upgrade_pp: "{{ (pp_install | bool) or (pp_upgrade | bool) }}"
+      install_pp: "{{ pp_install | default(False) | bool }}"
+      upgrade_pp: "{{ pp_upgrade | default(False) | bool }}"
+      install_or_upgrade_pp: "{{ (pp_install | default(False) | bool) or (pp_upgrade | default(False) | bool) }}"
   become: yes
   become_method: sudo
   serial: 1
@@ -137,7 +137,7 @@
   
     - name: Fix owner of the generated pub key
       file:
-        path: /var/lib/pgsql/.ssh/id_rsa .pub
+        path: /var/lib/pgsql/.ssh/id_rsa.pub
         owner: postgres
         group: postgres
 
@@ -152,8 +152,8 @@
       ## delegate_to: central_server_name ## what's this?
       # TODO: add a "when: coord_key.changed
       authorized_key:
-         user: {{ pp_superaccount }}
          key: "{{coord_key.public_key}}"
+         user: "{{ pp_superaccount }}"
          state: present
          path: /var/lib/pgsql/.ssh/authorized_keys
          # comment: "{{ansible_hostname}}" # ?
