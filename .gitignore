@@ -92,5 +92,8 @@ local_settings.yml
 #######################
 local_settings.yml
 system_key
+
 *~
 \#*
+pipcache
+yumcache
