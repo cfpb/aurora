@@ -1,0 +1,11 @@
+export WORKSPACE=${WORKSPACE:-/workspace}
+cat $WORKSPACE/.devcontainer/welcome.txt
+
+alias deploy='ansible-playbook $WORKSPACE/deploy/deploy_nginx_proxy_server.yml -i $WORKSPACE/deploy/vagrant_hosts --ask-pass --user=super --ask-sudo-pass' 
+alias rbp='make -f $WORKSPACE/.devcontainer/Makefile rebuild'
+alias rebuild='make -f $WORKSPACE/.devcontainer/Makefile rebuild'
+alias inventory='cat $WORKSPACE'"/deploy/vagrant_hosts | grep ssh_host | sed 's/ ansible_ssh_host=/,/' | sed 's/ .*\$//'"
+alias refreshcomposefile='$WORKSPACE/.devcontainer/scripts/rebuild-docker-compose.sh'
+alias runansible='ansible-playbook --ask-pass --ask-sudo-pass --user=super  -i $WORKSPACE/deploy/vagrant_hosts'
+
+export PS1='[\t \u@dind \W]\$ '

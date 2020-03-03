@@ -1,0 +1,27 @@
+
+  Run alias:
+    inventory - to see all the inventory from vagrant_host
+    refreshcomposefile - will build docker-compose file w/ tmp_inventory
+    rebuild - drop all containers 
+
+  Generate working CSV:
+    inventory > /workspace/.devcontainer/scripts/tmp_inventory.csv
+  
+    OR Comment out the ones you don't want or filter with grep:
+      inventory | grep citus > /workspace/.devcontainer/scripts/tmp_inventory.csv 
+      deploy:
+        ansible-playbook -i /workspace/deploy/vagrant_hosts --ask-pass --ask-sudo-pass --user=super  path_to_playbook.yml
+
+    cat  /workspace/.devcontainer/scripts/tmp_inventory.csv
+
+  Rebuild steps:
+    cd into .devcontainer-->make buildbase (only once)
+    Generate working CSV (see above)
+    refreshcomposefile
+    rebuild
+    wait 10 sec and click "RELOAD WINDOW"
+    runansible /path/to/play/book/playbook.yml
+    
+ Fish is your friend!!!"
+    TYPE fish 
+
