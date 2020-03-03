@@ -1,6 +1,7 @@
 # deploy_citus_server.yml
 ---
-- hosts: citus
+- name: Install common and optional packages, JDK, Postgresql, and Citus
+  hosts: citus
   # Avoid nasty surprises when someone does "--extra-vars pp_install=False", etc.:
   pre_tasks:
   - set_fact:
@@ -78,7 +79,8 @@
         state: started
         enabled: yes
 
-- hosts: citus
+- name: Configure Postgresql and Citus
+  hosts: citus
   become: yes
   become_method: sudo
   serial: 1
@@ -100,7 +102,8 @@
       with_items:
         - postgres
 
-- hosts: citus_coordinator
+- name: Set up Citus Coordinator
+  hosts: citus_coordinator
   become: yes
   become_method: sudo
   serial: 1
@@ -139,7 +142,8 @@
         group: postgres
 
 
-- hosts: citus_coordinator_standby
+- name: Set up Citus Coordinator Standby
+  hosts: citus_coordinator_standby
   serial: 1
   roles:
     - {role: citus_coordinator_standby, when: install_pp}
