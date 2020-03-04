@@ -165,7 +165,7 @@
         type: rsa # this is the default anyway
         # TODO: make this a variable
         path: /var/lib/pgsql/.ssh/id_rsa
-        comment: "key for postgres@citus_coordinator_1"
+        comment: "key for postgres@{{ ansible_hostname }}"
         owner: postgres
         group: postgres
         mode: "u=rw,go="
@@ -200,8 +200,8 @@
       # TODO: add a "when: coord_key.changed
       authorized_key:
          user: "{{ pp_superaccount }}"
-         key: "{{hostvars['citus_coordinator_1'].coord_key.public_key}}"
+         key: "{{ hostvars[groups['citus_coordinator'][0]].coord_key.public_key}}"
          state: present
          path: /var/lib/pgsql/.ssh/authorized_keys
-         # comment: "{{ansible_hostname}}" # ?
+         comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname}}"
 
