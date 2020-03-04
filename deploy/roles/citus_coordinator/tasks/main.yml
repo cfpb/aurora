@@ -28,3 +28,13 @@
   assert:
     that:
       - "{{ worker_nodes['query_result'] | length }} > 0"
+
+- name: Create WAL archiving script
+  template:
+    src: "archive-wal-file.j2"
+    dest: "{{ pp_datadir }}/archive-wal-file"
+    owner: postgres
+    group: postgres
+    mode: 0755
+  tags:
+    - postgresql-server

@@ -39,7 +39,7 @@
       file:
         dest: "{{ pp_file_transfer_dir }}"
         state: directory
-        mode: 0755
+        mode: "u=rwx,go=rx"
         owner: postgres
         group: postgres
 
@@ -48,6 +48,8 @@
         dest: "{{ pp_datadir }}/file_transfers"
         src: "{{ pp_file_transfer_dir }}"
         state: link
+        owner: postgres
+        group: postgres
 
     - name: Check WAL directory exists
       stat:
@@ -63,6 +65,8 @@
         dest: "{{ pp_datadir }}/{{ pg_wal }}"
         src: "{{ pp_xlogdir }}/{{ pg_wal }}"
         state: link
+        owner: postgres
+        group: postgres
       when: pp_datadir != pp_xlogdir
 
     - name: Setup host file
@@ -115,13 +119,19 @@
         src: "{{ pp_datadir }}/postgresql.conf"
         dest: "/tmp/postgresql.conf"
         remote_src: yes
-        mode: "0600"
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
       changed_when: false
 
     - name: Create archive directory
       file:
         state: directory
         path: "{{ pp_datadir }}/archives"
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go=rx"
+        recurse: yes
 
 - name: Set up Citus Coordinator Standby
   hosts: citus_coordinator_standby
@@ -167,6 +177,7 @@
         path: /var/lib/pgsql/.ssh/id_rsa.pub
         owner: postgres
         group: postgres
+        mode: "u=rw,go=r"
 
 - name: Set up SSH key from Coordinator to Standby
   hosts: citus_coordinator_standby

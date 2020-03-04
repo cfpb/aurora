@@ -1,8 +1,11 @@
 ---
+# In versions 9.6 and later, archive and hot_standby are still accepted, BUT ARE MAPPED TO replica.
 pp_wal_level: hot_standby
 pp_max_wal_senders: 5
 pp_wal_keep_segments: 32
+
 pp_archive_mode: on
 # for now, assume the archiving script is in the PGDATA directory:
 pp_archive_command: '{{ pp_datadir }}/archive-wal-file %p %f'
+
 pp_max_replication_slots: 5

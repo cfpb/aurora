@@ -167,6 +167,11 @@ max_parallel_workers = {{ pp_max_parallel_workers }}
 
 # - Settings -
 
+# minimal: remove all logging except the information required to recover from a crash or immediate shutdown
+# replica (default):  write enough data to support WAL archiving and replication, including running read-only queries on a standby server.
+# logical: add information necessary to support logical decoding
+# In releases prior to 9.6, this parameter also allowed the values archive and hot_standby.
+#   These are still accepted BUT ARE MAPPED TO replica.
 wal_level = {{ pp_wal_level }} # minimal, archive, hot_standby, or logical (change requires restart)
 
 fsync = {{ pp_fsync }}				# turns forced synchronization on or off
