@@ -133,3 +133,9 @@
         disable_gpg_check: yes
       with_items: "{{ db_automation_custom_packages }}"
       when: db_automation_custom_packages is defined
+
+- hosts: hadoop_edge
+  become: yes
+  become_method: sudo
+  roles:
+    - gocd
