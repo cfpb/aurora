@@ -30,6 +30,18 @@
       "Password:": "{{ replication_password }}"
   with_items: "{{ 'citus_prod_coordinator' if custom_repo else 'citus_coordinator' }}"
 
+- name: Restore the standby postgresql.conf file from local backup
+  shell: "mv {{ pp_datadir }}/postgresql.conf {{ pp_datadir }}/postgresql.conf ; cp -p {{ pp_datadir }}.bk/postgresql.conf {{ pp_datadir }}/postgresql.conf"
+  become: True
+
+- name: Remove primary-only files
+  # delete the current_logfiles file so the primary and standby logs remain separate
+  #    (pg_basebackup copies the log files from the primary to here);
+  # delete the archive-wal-file script because it's not used on the standby
+  shell: "rm -f {{ pp_datadir }}/current_logfiles {{ pp_datadir }}/archive-wal-file"
+  become: True
+  ignore_errors: yes
+
 - name: Back up the WAL directory
   become: True
   command: "mv {{ pp_xlogdir }}/{{ pg_wal }} {{ pp_xlogdir }}/{{ pg_wal }}.bkup"
