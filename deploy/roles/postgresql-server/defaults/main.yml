@@ -79,7 +79,7 @@ pg_hba_settings:
     user: postgres
     address: '10.0.1.0/24'
     ip_mask: ''
-    auth_method: md5
+    auth_method: trust
     auth_options: ''
   -
     comment: 'replication user connection:'

@@ -14,16 +14,24 @@ if [[ -z "$2" ]]; then
   exit 2;
 fi;
 
+DFMT="%Y-%m-%d %T %Z"
+echo "$(date +\"$DFMT\") archive-wal-file started..."
+
 fullpath="$1"
 filename="$2"
 # Note: this is the same directory we pull the archives FROM on the standby cooridnator
 ARCHIVE_DIR="{{ pp_datadir }}/archives"
 STANDBY_ADDRESS="{{ hostvars[groups['citus_coordinator_standby'][0]]['ansible_ssh_host'] }}"
 
+# check that we can connect first....
+ssh $STANDBY_ADDRESS hostname
+
 cp $fullpath $ARCHIVE_DIR/$filename
 
 cd $ARCHIVE_DIR
 rsync -ac . $STANDBY_ADDRESS:$ARCHIVE_DIR/
+
+echo "$(date +\"$DFMT\") archive-wal-file succeeded."
 
 # TODO:
 # make the destination host (or host+dir?) a parameter

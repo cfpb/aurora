@@ -140,7 +140,9 @@
       install_pp: "{{ pp_install | default(False) | bool }}"
   serial: 1
   roles:
-    - {role: citus_coordinator_standby, when: install_pp}
+    - {role: citus_coordinator_standby, when: "pp_install | default(False) | bool"}
+  tags:
+    - standby-play
 
 
 - name: Set up SSH key for Citus Coordinator
@@ -178,6 +180,19 @@
         owner: postgres
         group: postgres
         mode: "u=rw,go=r"
+
+    - name: Add standby's hostkey to postgres@coordinator
+      lineinfile:
+        path: "~postgres/.ssh/known_hosts"
+        insertafter: "{{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public}}"
+        line: "{{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host}} ecdsa-sha2-nistp256 {{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public}}"
+        create: true
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
+      tags:
+        - add-hostkey
+
 
 - name: Set up SSH key from Coordinator to Standby
   hosts: citus_coordinator_standby

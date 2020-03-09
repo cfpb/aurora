@@ -208,7 +208,7 @@
 - name: Configure default privileges
   postgresql_privs:
     login_host: localhost
-    login: "{{ pp_superaccount }}"
+    login_user: "{{ pp_superaccount }}"
     password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     database: "{{ item.db }}"
