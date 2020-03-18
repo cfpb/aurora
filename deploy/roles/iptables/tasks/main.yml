@@ -79,6 +79,11 @@
 - name: Allow outgoing
   command: "iptables -P OUTPUT ACCEPT"
 
+# We need initscripts so we can call /sbin/service in the next task
+- name: Ensure initscripts is installed
+  command:
+    cmd: yum -y install initscripts
+    creates: /sbin/service
+
 - name: Save new rules
-  #command: "/sbin/service iptables save"
-  command: "/usr/sbin/iptables-save"
+  command: "/sbin/service iptables save"
