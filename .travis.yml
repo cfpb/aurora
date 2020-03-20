@@ -7,7 +7,7 @@ env:
   - container_id=$(mktemp)
 
  matrix:
-###  proxy server
+###  1  proxy server
 ##  - >
 ##    JOB_NAME="Proxy Server"
 ##    PRE_CMD=""
@@ -16,7 +16,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'
 ##
-## # admin terminal
+## # 2  admin terminal
 ##  - >
 ##    JOB_NAME="Admin Terminal"
 ##    PRE_CMD=""
@@ -25,7 +25,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_admin_terminal.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 ##
-### development_terminal
+### 3  development_terminal
 ##  - >
 ##    JOB_NAME="Development Terminal"
 ##    PRE_CMD="travis_wait 50"
@@ -34,7 +34,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_development_terminal.yml
 ##    EXTRA_VAR_DEF='{"install_python": false, "install_ruby": false, "deploy_iptables": false}'
 ##
-### r_terminal
+### 4  r_terminal
 ##  - >
 ##    JOB_NAME="R terminal"
 ##    PRE_CMD="travis_wait 50"
@@ -43,7 +43,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_r_terminal.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_r_updates": false, "deploy_iptables": false, "install_r_packages": false, "ip_whitelist": []}'
 ##
-### elastic search
+### 5  elastic search
 ##  - >
 ##    JOB_NAME="Elastic Search"
 ##    PRE_CMD=""
@@ -52,7 +52,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elastic_search.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false}'
 ##
-### elk
+### 6  elk
 ##  - >
 ##    JOB_NAME="ELK"
 ##    PRE_CMD=""
@@ -61,7 +61,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_elk.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "deploy_iptables": false}'
 
-# mesos
+# 7  mesos
   - >
     JOB_NAME="Mesos Agent"
     PRE_CMD="travis_wait 50"
@@ -70,6 +70,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
+## 8  mesos_master
 ##  - >
 ##    JOB_NAME="Mesos Master"
 ##    PRE_CMD=""
@@ -78,7 +79,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_master.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "zookeeper_id": 1}'
 ##
-### gocd ci_server
+### 9  gocd ci_server
 ##  - >
 ##    JOB_NAME="GoCD CI Server"
 ##    PRE_CMD=""
@@ -87,7 +88,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
 
-# gocd ci_agent
+# 10  gocd ci_agent
   - >
     JOB_NAME="GoCD CI Agent"
     PRE_CMD=""
@@ -96,7 +97,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
-# gocd ci_terminal
+# 11  gocd ci_terminal
   - >
     JOB_NAME="GoCD CI Terminal"
     PRE_CMD="travis_wait 50"
@@ -105,7 +106,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false, "install_talend": false, "install_pentaho": false, "ip_whitelist": []}'
 
-### Research Server research_ancillary_services
+### 12  Research Server research_ancillary_services
 ##  - >
 ##    JOB_NAME="Research Ancillary Services"
 ##    PRE_CMD=""
@@ -114,7 +115,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 ##
-### Research Server research_eod
+### 13  Research Server research_eod
 ##  - >
 ##    JOB_NAME="Research EOD"
 ##    PRE_CMD=""
@@ -123,7 +124,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 ##
-### Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
+### 14  Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
 ##  - >
 ##    JOB_NAME="Research Gauss / Research Stata"
 ##    PRE_CMD="travis_wait 50"
@@ -132,7 +133,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
 ##    EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 ##
-### Research Server research_stata
+### 15  Research Server research_stata
 ##  - >
 ##    JOB_NAME="Research Stata"
 ##    PRE_CMD="travis_wait 50"
@@ -141,7 +142,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
 ##    EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 ##
-### Research Server research_python
+### 16  Research Server research_python
 ##  - >
 ##    JOB_NAME="Research Python"
 ##    PRE_CMD="travis_wait 50"
@@ -150,7 +151,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
 ##    EXTRA_VAR_DEF='{"install_python": false, "install_r_packages": false, "install_r_updates": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-# Research Server research_sas
+# 17  Research Server research_sas
   - >
     JOB_NAME="Research SAS"
     PRE_CMD="travis_wait 50"
@@ -159,7 +160,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-# Research Server research_spss
+# 18  Research Server research_spss
   - >
     JOB_NAME="Research SPSS"
     PRE_CMD=""
@@ -168,7 +169,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-# Research Server research_matlab
+# 19  Research Server research_matlab
   - >
     JOB_NAME="Research Matlab"
     PRE_CMD=""
@@ -177,7 +178,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-### Data warehouse db_terminal db_server
+### 20  Data warehouse db_terminal db_server
 ##  - >
 ##    JOB_NAME="Data warehouse db_terminal db_server"
 ##    PRE_CMD=""
@@ -186,7 +187,7 @@ env:
 ##    PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_terminal.yml
 ##    EXTRA_VAR_DEF='{"install_python": false, "deploy_iptables": false, "install_sqitch": false, "install_pem": false, "skip_glusterfs": true}'
 ##
-### Data warehouse db_server
+### 21  Data warehouse db_server
 ##  - >
 ##    JOB_NAME="Data warehouse db_server"
 ##    PRE_CMD=""
