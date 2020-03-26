@@ -3,7 +3,7 @@
   become: yes
   become_method: sudo
   roles:
-    - {role: common, when: "install_glusterfs"}
+    - common
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
@@ -14,7 +14,7 @@
   become: yes
   become_method: sudo
   handlers:
-    - include: roles/shared/handlers/main.yml
+    - import_tasks: roles/shared/handlers/main.yml
   pre_tasks:
     - name: Create key for message authentication
       shell: "/usr/share/elasticsearch/bin/shield/syskeygen"

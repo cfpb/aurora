@@ -3,3 +3,4 @@
   service:
     name: nginx
     state: restarted
+  when: nginx_state != "stopped"

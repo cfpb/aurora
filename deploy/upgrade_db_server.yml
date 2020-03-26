@@ -19,8 +19,7 @@
         db: "{{ item.db }}"
         script: "{{ item.script }}"
       with_items: "{{ pp_pre_scripts }}"
-      check_mode: false
-      when: install_ppas and pp_pre_scripts is defined
+      check_mode: no
 
     # TODO: Use line_in_file to allow trusted local connections
 
@@ -42,6 +41,15 @@
         name: "{{ item }}"
         state: stopped
       with_items: "{{ pp_old_servicename }}"
+
+    - name: And any relevant support services
+      become: yes
+      become_method: sudo
+      service:
+        name: "{{ item }}"
+        state: stopped
+      with_items: "{{ pp_old_support_services }}"
+      when: install_edb
 
   roles:
     - {role: 'postgresql-server', become: yes}

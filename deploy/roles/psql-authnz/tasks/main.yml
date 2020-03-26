@@ -8,7 +8,7 @@
     name: "{{item}}"
     state: present
   with_items:
-    - virtualenv
+    # - virtualenv
     - python-devel
     - libevent-devel
     - gcc

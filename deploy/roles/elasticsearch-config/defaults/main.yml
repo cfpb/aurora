@@ -31,6 +31,7 @@ es_transport_port: 9300
 es_scripts_path: /etc/elasticsearch/scripts
 es_mlockall: "true"
 es_http_enabled: "false"
+es_http_max_initial_line_length: "4kb"
 es_disable_dynamic_scripts: "true"
 es_allow_explicit_index: "false"
 es_jsonp_enable: "false"

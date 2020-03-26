@@ -2,7 +2,6 @@
 ## Postgres default variables
 pg_version: 10
 install_edb: False
-install_ppas: False
 
 # When to install, upgrade, and restart
 pp_install: False
@@ -40,21 +39,23 @@ replication_user: replication
 replication_password: replication
 
 # Core server config
-pp_clusterdir: /usr/local/pgsql/data
+pp_servicename: postgresql-10
 pp_datadir: /var/lib/pgsql/10/data
-pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_serverport: 5432
+pp_support_services: []
+
+pp_serviceaccount: postgres
+pp_xlogdir: /var/lib/pgsql/10/data
 pp_prefix: ''
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: postgresql-10
-pp_old_servicename: postgresql-9.6
-
-pp_serviceaccount: postgres
-pp_serverport: 5432
-pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql/
-## PostgreSQL Configuration Settings
+
+# Upgrade settings, default of 9.6->10
+pp_old_servicename: postgresql-9.6
+pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_old_serverport: 5433
+pp_old_support_services: []
 
 # pg_hba.conf settings
 pg_hba_settings:
@@ -114,7 +115,7 @@ pg_hba_settings:
     auth_options: ''
 
 # Additional postgresql.conf settings
-pp_listen_addresses: '*'
+pp_listen_addresses: 'localhost,{{ ansible_ssh_host }}'
 pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
@@ -174,6 +175,7 @@ pp_bgwriter_lru_multiplier: 2.0
 pp_effective_io_concurrency: 1
 pp_max_worker_processes: 8
 pp_max_parallel_workers_per_gather: 0
+pp_max_parallel_workers: 8
 
 # WAL
 pp_wal_level: minimal
@@ -186,6 +188,8 @@ pp_wal_buffers: -1
 pp_wal_writer_delay: 200ms
 pp_commit_delay: 0
 pp_commit_siblings: 5
+pp_min_wal_size: '80MB'
+pp_max_wal_size: '1GB'
 
 pp_checkpoint_segments: 3
 pp_checkpoint_timeout: 5min

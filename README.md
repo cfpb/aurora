@@ -82,6 +82,7 @@ TBD
 ## Known issues
 
 - Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
+- R package installation takes too long (currently skipped)
 
 ## Getting help
 
@@ -102,3 +103,4 @@ Refer to [CONTRIBUTING](CONTRIBUTING.md) if you'd like to help!
 ----
 
 ## Credits and references
+

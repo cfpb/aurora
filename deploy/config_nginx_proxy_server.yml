@@ -3,8 +3,7 @@
   become: yes
   become_method: sudo
   handlers:
-    - include: roles/nginx/handlers/main.yml
-      static: yes
+    - import_tasks: roles/nginx/handlers/main.yml
   tasks:
     - name: Install git
       yum:
