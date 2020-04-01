@@ -126,7 +126,7 @@
     src: mlm.opt
     dest: "{{ matlab_install_directory }}/{{ matlab_version }}/etc/"
     force: yes
-    mode: a+rwx
+    mode: go=rx,u=rwx
   tags:
     - matlab
 
