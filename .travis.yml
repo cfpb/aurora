@@ -70,7 +70,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_mesos_agent.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
 
- 8  mesos_master
+# 8  mesos_master
   - >
     JOB_NAME="Mesos Master"
     PRE_CMD=""
