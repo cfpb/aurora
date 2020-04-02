@@ -39,6 +39,77 @@
       networks:
         ansible_nw:
           ipv4_address: 10.0.1.253
+  #please note: the spacing needs to line up w/ the other yaml templates
+    citus_coordinator: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.40
+  
+#please note: the spacing needs to line up w/ the other yaml templates
+    citus_coordinator_standby: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.44
+  
+#please note: the spacing needs to line up w/ the other yaml templates
+    citus_worker_1: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.41
+  
+#please note: the spacing needs to line up w/ the other yaml templates
+    citus_worker_2: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.42
+  
+#please note: the spacing needs to line up w/ the other yaml templates
+    citus_worker_3: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.43
+  
+    #please note: the spacing needs to line up w/ the other yaml templates
+    matlab: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../yumcache:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: 10.0.1.23
   
   networks:
     ansible_nw:
