@@ -216,7 +216,7 @@ pp_superaccount: postgres
 pp_superpassword: password
 
 # PPAS Port
-pp_serverport: 5432
+pp_serverport: "5432"
 
 # Default service account
 deploy_user: vagrant
