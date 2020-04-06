@@ -245,10 +245,11 @@
     port: "{{ pp_serverport }}"
     name: "{{ pp_dba_username }}"
     role_attr_flags: INHERIT,LOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
-    encrypted: no
+    encrypted: yes
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
