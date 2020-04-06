@@ -245,7 +245,7 @@
     port: "{{ pp_serverport }}"
     name: "{{ pp_dba_username }}"
     role_attr_flags: INHERIT,LOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
-    encrypted: yes
+    encrypted: no
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
