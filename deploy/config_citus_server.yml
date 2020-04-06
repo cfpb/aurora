@@ -1,0 +1,7 @@
+# deploy_citus_server.yml
+---
+- hosts: citus
+  become: yes
+  become_method: sudo
+  roles:
+    - postgresql-server-config
