@@ -91,6 +91,7 @@
     db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
   check_mode: no
+  register: result
   with_items:
     - postgres
     - template1
