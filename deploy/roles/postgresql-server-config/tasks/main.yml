@@ -91,6 +91,7 @@
     db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
   check_mode: no
+  register: result
   with_items:
     - postgres
     - template1
@@ -248,6 +249,7 @@
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
