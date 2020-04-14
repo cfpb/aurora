@@ -85,7 +85,9 @@
         port: "{{ pp_serverport }}"
         db: "{{ item }}"
         script: CREATE EXTENSION IF NOT EXISTS citus
+      register: result
       check_mode: no
+      changed_when: '"already exists" not in result.notices'
       with_items:
         - postgres
 
@@ -102,6 +104,7 @@
         dest: "/tmp/postgresql.conf"
         remote_src: yes
         mode: "0600"
+      changed_when: false
 
     - name: Create archive directory
       file:

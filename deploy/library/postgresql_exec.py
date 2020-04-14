@@ -167,6 +167,7 @@ def main():
 
     kw['changed'] = True
     kw['status'] = cursor.statusmessage
+    kw['notices'] = ' '.join(db_connection.notices)
 
     try:
         # cursor.fetchall returns a list of DictRow classes which breaks with ansible 2.4
