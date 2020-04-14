@@ -5,7 +5,7 @@
   service:
     name: "{{ pp_servicename }}"
     state: restarted
-  when: pp_allow_restart
+  when: pp_allow_restart or pp_install
 
 - name: reload-daemon
   service:
@@ -18,4 +18,4 @@
   service:
     name: "{{ pp_servicename }}"
     state: reloaded
-  when: not pp_allow_restart
+  when: not pp_allow_restart and not pp_install

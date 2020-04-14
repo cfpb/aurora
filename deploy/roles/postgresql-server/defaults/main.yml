@@ -141,6 +141,9 @@ pp_db_user_namespace: off
 
 pp_ssl_string: '/C=US/ST=DC/L=NE/O=TESTORG/OU=Admin/CN=localhost'
 
+pp_krb_keyfile: '/etc/sysconfig/pgsql/krb5.keytab'
+pp_krb_caseins_users: 'off'
+
 # TCP Keepalives
 pp_tcp_idle: 0
 pp_tcp_interval: 0
