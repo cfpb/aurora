@@ -146,6 +146,7 @@
     mode: 0600
   when: pp_ident_mappings is defined
   notify:
+    - reload postgres
     - restart postgres
   tags:
     - postgresql-server
@@ -158,6 +159,7 @@
     owner: "{{ pp_superaccount }}"
     mode: 0600
   notify:
+    - reload postgres
     - restart postgres
   tags:
     - postgresql-server
@@ -170,6 +172,7 @@
     owner: "{{ pp_superaccount }}"
     mode: 0600
   notify:
+    - reload postgres
     - restart postgres
   tags:
     - postgresql-server

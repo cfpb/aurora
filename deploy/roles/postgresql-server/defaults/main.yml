@@ -7,6 +7,7 @@ install_edb: False
 pp_install: False
 pp_restart: False
 pp_upgrade: False
+pp_allow_restart: False
 
 # HTTPS runs into issues
 pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-2.noarch.rpm"
