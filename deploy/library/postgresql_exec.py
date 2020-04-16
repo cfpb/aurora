@@ -93,14 +93,14 @@ def main():
     module = AnsibleModule(
         argument_spec = dict(
             login_user         = dict(default="postgres"),
-            login_password    = dict(default=""),
+            login_password    = dict(default="", no_log=True),
             login_host         = dict(default=""),
             login_unix_socket = dict(default=""),
             db                  = dict(required=True),
             port                = dict(default='5432'),
             script_file         = dict(default=None),
             script              = dict(default=None),
-            autocommit          = dict(default=False)
+            autocommit          = dict(default=False, type=bool)
         ),
         supports_check_mode = True
     )
@@ -148,7 +148,7 @@ def main():
         if module.params["autocommit"]:
             db_connection.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cursor = db_connection.cursor(cursor_factory=psycopg2.extras.DictCursor)
-    except Exception, e:
+    except Exception as e:
         module.fail_json(msg="unable to connect to database: %s" % e)
 
     kw = dict(script=script)
@@ -167,6 +167,7 @@ def main():
 
     kw['changed'] = True
     kw['status'] = cursor.statusmessage
+    kw['notices'] = ' '.join(db_connection.notices)
 
     try:
         # cursor.fetchall returns a list of DictRow classes which breaks with ansible 2.4

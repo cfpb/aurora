@@ -8,11 +8,14 @@
     backrefs: yes
     line: 'host\1postgres\2trust'
   notify: restart postgres
+  when: pp_install
 
 - meta: flush_handlers
+  when: pp_install
 
 - pause:
     seconds: "{{ pp_server_start_pause }}"
+  when: pp_install
 
 - name: Ensure password is correct
   postgresql_exec:
@@ -23,6 +26,7 @@
     script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
   check_mode: no
   #no_log: true
+  when: pp_install
 
 - name: Disallow postgres empty password login
   become: yes
@@ -33,8 +37,10 @@
     backrefs: yes
     line: 'host\1postgres\2md5'
   notify: restart postgres
+  when: pp_install
 
 - meta: flush_handlers
+  when: pp_install
 
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
@@ -85,9 +91,12 @@
     db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
   check_mode: no
+  register: result
   with_items:
     - postgres
     - template1
+  changed_when:
+    - '"already exists" not in result.notices'
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
@@ -115,6 +124,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
+  changed_when: false
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
@@ -126,6 +136,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
+  changed_when: false
 
 - name: Retrieve list of databases
   postgresql_exec:
@@ -136,6 +147,7 @@
     db: postgres
     script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
   register: database_list
+  changed_when: false
 
 - debug:
     var: database_list
@@ -156,9 +168,8 @@
     script: ALTER EXTENSION citus UPDATE
   check_mode: no
   register: result
-  failed_when:
-    - 'result.module_stdout is defined and "extension \"citus\" does not exist" not in result.module_stdout'
-    - 'result.module_stderr is defined and "extension \"citus\" does not exist" not in result.module_stderr'
+  failed_when: '"extension \"citus\" does not exist" in result.notices'
+  changed_when: result.notices is not defined or "is already installed" not in result.notices
   with_items: "{{ database_list.query_result }}"
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
@@ -218,6 +229,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_post_scripts }}"
   check_mode: no
+  changed_when: false
 
 ### Step 3: Create default service account using operational_dba role
 
@@ -233,6 +245,7 @@
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
 
 - name: Add default service account to operational_dba group
   postgresql_privs:

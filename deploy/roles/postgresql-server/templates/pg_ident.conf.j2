@@ -1,0 +1,5 @@
+# This is a mapping file to assign Kerberos principals to Postgres roles.
+# See: https://www.postgresql.org/docs/10/auth-username-maps.html
+{% for ident in pp_ident_mappings %}
+{{ ident.type }}    {{ ident.match }}   {{ ident.pg_role }}
+{% endfor %}
