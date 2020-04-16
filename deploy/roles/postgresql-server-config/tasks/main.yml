@@ -170,7 +170,7 @@
   register: result
   failed_when: '"extension \"citus\" does not exist" in result.notices'
   changed_when: result.notices is not defined or "is already installed" not in result.notices
-    with_items: "{{ database_list.query_result }}"
+  with_items: "{{ database_list.query_result }}"
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
   postgresql_privs:
