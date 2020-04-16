@@ -1,4 +1,5 @@
 ---
+# TODO: Implement change logic
 - name: Add worker node information
   postgresql_exec:
     login_host: localhost
@@ -8,6 +9,7 @@
     db: postgres
     script: "SELECT * from master_add_node('{{ item }}', {{ pp_serverport }})"
   check_mode: no
+  changed_when: false
   with_items: "{{ citus_worker_nodes }}"
 
 - name: Verify installation
@@ -19,6 +21,7 @@
     db: postgres
     script: "SELECT * from master_get_active_worker_nodes()"
   check_mode: no
+  changed_when: false
   register: worker_nodes
 
 - name: Assert worker nodes

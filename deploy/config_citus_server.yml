@@ -1,4 +1,4 @@
-# deploy_citus_server.yml
+# config_citus_server.yml
 ---
 - hosts: citus
   become: yes
