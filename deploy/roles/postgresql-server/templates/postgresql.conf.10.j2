@@ -88,11 +88,9 @@ ssl_crl_file = '{{ pp_ssl_crl_file }}'			# (change requires restart)
 password_encryption = {{ pp_password_encrypt }}
 db_user_namespace = {{ pp_db_user_namespace }}
 
-{% if pp_krb_keyfile is defined %}
 # GSSAPI using Kerberos
 krb_server_keyfile = '{{ pp_krb_keyfile }}'
 krb_caseins_users = {{ pp_krb_caseins_users }}
-{% endif %}
 
 # - TCP Keepalives -
 # see "man 7 tcp" for details

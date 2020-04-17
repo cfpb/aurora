@@ -7,9 +7,10 @@ install_edb: False
 pp_install: False
 pp_restart: False
 pp_upgrade: False
+pp_allow_restart: False
 
 # HTTPS runs into issues
-pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG"
 pp_packages:
   - postgresql10-server
@@ -139,6 +140,9 @@ pp_password_encrypt: on
 pp_db_user_namespace: off
 
 pp_ssl_string: '/C=US/ST=DC/L=NE/O=TESTORG/OU=Admin/CN=localhost'
+
+pp_krb_keyfile: '/etc/sysconfig/pgsql/krb5.keytab'
+pp_krb_caseins_users: 'off'
 
 # TCP Keepalives
 pp_tcp_idle: 0
