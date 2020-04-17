@@ -5,7 +5,7 @@
 ---
 - name: Install common packages
   yum:
-    name: ['libselinux-python']
+    name: libselinux-python
     state: latest
     disable_gpg_check: yes
   tags:
@@ -19,7 +19,10 @@
 
 - name: Install common Gluster packages
   yum:
-    name: ['glusterfs', 'glusterfs-fuse']
+    name: [
+      'glusterfs',
+      'glusterfs-fuse'
+      ]
     state: latest
     disable_gpg_check: yes
   when: not skip_glusterfs

@@ -12,7 +12,11 @@
 
 - name: Install log-courier
   yum:
-    name: ['zeromq3', 'zeromq3-devel', 'log-courier']
+    name: [
+      'zeromq3',
+      'zeromq3-devel',
+      'log-courier'
+      ]
     state: present
   when: '"elk" in groups'
 
