@@ -241,7 +241,11 @@
 
 - name: Install requirements for postgresql Ansible tasks
   yum:
-    name: ['postgresql10-devel', 'python-psycopg2', 'git']
+    name: [
+      'postgresql10-devel',
+      'python-psycopg2',
+      'git'
+      ]
     state: present
   become: yes
   become_method: sudo
