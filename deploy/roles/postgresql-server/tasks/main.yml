@@ -1,6 +1,6 @@
 ---
 - debug:
-    msg: "{{ansible_distribution }}-{{ ansible_distribution_major_version}}"
+    msg: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}"
 
 - debug:
     msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }}"

@@ -25,7 +25,7 @@
 
 - name: Restart rstudio if R updates and rstudio server is installed
   command: /bin/true
-  when: "{{ (rstudio_installed is defined and rstudio_installed.results|length > 0 and item['yumstate']=='installed')}}"
+  when: "{{ (rstudio_installed is defined and rstudio_installed.results|length > 0 and item['yumstate']=='installed') }}"
   with_items: "{{ rstudio_installed.results | default([]) }}"
   notify: restart rstudio-server
   tags:
@@ -112,7 +112,7 @@
   when: install_r_packages
 
 - name: Install R packages with opts
-  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  shell: source scl_source enable devtoolset-2 && /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
   with_items: "{{ r_packages_with_opts }}"
   register: r_result
   failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
