@@ -16,7 +16,7 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'
 
-#  2  admin terminal
+# 2  admin terminal
   - >
     JOB_NAME="Admin Terminal"
     PRE_CMD=""
@@ -124,9 +124,9 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false}'
 
-# 14  Research Server research_gauss research_stata - use this to test changing handlers for timeout issue
+# 14  Research Server research_gauss - use this to test changing handlers for timeout issue
   - >
-    JOB_NAME="Research Gauss / Research Stata"
+    JOB_NAME="Research Gauss"
     PRE_CMD="travis_wait 50"
     PARENT_GROUP=research_environment
     HOST_GROUP=research_gauss
@@ -178,9 +178,9 @@ env:
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_research_environment.yml
     EXTRA_VAR_DEF='{"install_python": false, "restart_gocd_server": false, "skip_glusterfs": true, "deploy_iptables": false}'
 
-# 20  Data warehouse db_terminal db_server
+# 20  Data warehouse db_terminal
   - >
-    JOB_NAME="Data warehouse db_terminal db_server"
+    JOB_NAME="Data warehouse db_terminal"
     PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=db_terminal
@@ -194,6 +194,15 @@ env:
     PARENT_GROUP=all
     HOST_GROUP=db_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_db_server.yml
+    EXTRA_VAR_DEF='{"deploy_iptables": false, "pp_install": true, "skip_glusterfs": true}'
+
+# 22  Citus Cluster (includes the standby and workers)
+  - >
+    JOB_NAME="Citus Cluster"
+    PRE_CMD=""
+    PARENT_GROUP=all
+    HOST_GROUP=citus
+    PLAYBOOK_LOCATION=/aurora/deploy/deploy_citus_server.yml
     EXTRA_VAR_DEF='{"deploy_iptables": false, "pp_install": true, "skip_glusterfs": true}'
 
 services:
