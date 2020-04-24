@@ -11,9 +11,7 @@
 #   - intellij
 
 - name: Download intellij
-  get_url:
-    url: "{{ intellij_url }}"
-    dest: "/tmp/intellij-{{ intellij_version }}"
+  shell: "if [[ ! -f /var/cache/downloads/intellij-{{ intellij_version }} ]]; then curl -L --silent --show-error {{ intellij_url }} -o /var/cache/downloads/intellij-{{ intellij_version }} ; fi"
   # when: not custom_repo
   tags:
   - intellij
@@ -26,9 +24,9 @@
   tags:
   - intellij
 
-- name: Extract intellij from /tmp
+- name: Extract intellij from downloads dir
   unarchive:
-    src: "/tmp/intellij-{{ intellij_version }}"
+    src: "/var/cache/downloads/intellij-{{ intellij_version }}"
     dest: "{{ intellij_install_dir }}"
     copy: no
   # when: not custom_repo
