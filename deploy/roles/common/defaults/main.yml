@@ -3,7 +3,7 @@
 gluster_mount_options: "defaults,acl,_netdev"
 shared_links: []
 
-skip_glusterfs: true
+skip_glusterfs: false
 
 log_file_locations:
   - /var/log/messages
