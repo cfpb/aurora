@@ -184,8 +184,8 @@
     - name: Add standby's hostkey to postgres@coordinator
       lineinfile:
         path: "~postgres/.ssh/known_hosts"
-        insertafter: "{{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public}}"
-        line: "{{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host}} ecdsa-sha2-nistp256 {{hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public}}"
+        insertafter: "{{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public }}"
+        line: "{{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host }} ecdsa-sha2-nistp256 {{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public }}"
         create: true
         owner: postgres
         group: postgres
@@ -215,8 +215,8 @@
       # TODO: add a "when: coord_key.changed
       authorized_key:
          user: "{{ pp_superaccount }}"
-         key: "{{ hostvars[groups['citus_coordinator'][0]].coord_key.public_key}}"
+         key: "{{ hostvars[groups['citus_coordinator'][0]].coord_key.public_key }}"
          state: present
          path: /var/lib/pgsql/.ssh/authorized_keys
-         comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname}}"
+         comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname }}"
 
