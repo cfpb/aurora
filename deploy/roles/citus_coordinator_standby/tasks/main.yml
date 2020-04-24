@@ -64,6 +64,9 @@
     dest: "{{ pp_datadir }}/{{ pg_wal }}"
     src: "{{ pp_xlogdir }}/{{ pg_wal }}"
     state: link
+    owner: postgres
+    group: postgres
+  when: pp_datadir != pp_xlogdir
 
 - name: Change the ownership of data directory
   become: True

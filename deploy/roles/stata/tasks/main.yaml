@@ -157,11 +157,6 @@
   tags:
     - stata
 
-- name: DEBUG - see what is in stata_install_directory
-  command: find {{ stata_install_directory }} -ls
-  tags:
-    - stata
-
 - name: Create symlink to executable
   file:
     state: link
