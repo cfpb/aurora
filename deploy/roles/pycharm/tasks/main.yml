@@ -1,6 +1,6 @@
 ---
 - name: Download pycharm to remote host
-  shell: "if [[ ! -f /var/cache/downloads/{{ pycharm_download_basename }} ]]; then curl -L --silent --show-error {{ pycharm_download_url }} -o /var/cache/downloads/{{ pycharm_download_basename }} ; fi"
+  shell: "mkdir -p /var/cache/downloads; if [[ ! -f /var/cache/downloads/{{ pycharm_download_basename }} ]]; then curl -L --silent --show-error {{ pycharm_download_url }} -o /var/cache/downloads/{{ pycharm_download_basename }} ; fi"
   tags:
     - pycharm
 

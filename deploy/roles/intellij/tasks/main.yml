@@ -11,7 +11,7 @@
 #   - intellij
 
 - name: Download intellij
-  shell: "if [[ ! -f /var/cache/downloads/intellij-{{ intellij_version }} ]]; then curl -L --silent --show-error {{ intellij_url }} -o /var/cache/downloads/intellij-{{ intellij_version }} ; fi"
+  shell: "mkdir -p /var/cache/downloads; if [[ ! -f /var/cache/downloads/intellij-{{ intellij_version }} ]]; then curl -L --silent --show-error {{ intellij_url }} -o /var/cache/downloads/intellij-{{ intellij_version }} ; fi"
   # when: not custom_repo
   tags:
   - intellij
