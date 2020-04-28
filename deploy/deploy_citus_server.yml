@@ -69,13 +69,21 @@
         group: postgres
       when: pp_datadir != pp_xlogdir
 
-    - name: Setup host file
+    - name: Set up additions to host file
       lineinfile:
-        path: /etc/hosts
+        path: /tmp/hosts-temp-generated
         regexp: '[[0-9+]\.]+\s+{{ item }}'
         line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
       with_items: "{{ groups['citus'] }}"
-      when: not custom_repo and not using_docker
+      when: not custom_repo
+
+    - name: DEBUG show hosts and additions
+      shell: cat /etc/hosts && echo && cat /tmp/hosts-temp-generated
+      when: not custom_repo
+
+    - name: Append additions to host file
+      shell: cat /tmp/hosts-temp-generated >> /etc/hosts
+      when: not custom_repo
 
     - name: Ensure PG is started
       service:
