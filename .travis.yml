@@ -199,10 +199,14 @@ env:
 # 22  Citus Cluster (includes the standby and workers)
   - >
     JOB_NAME="Citus Cluster"
+
+# 22  Citus Coordinator (does not include the standby and workers)
+  - >
+    JOB_NAME="Citus Coordinator"
     CENTOS_VERSION="7"
     PRE_CMD=""
-    PARENT_GROUP=all
-    HOST_GROUP=citus
+    PARENT_GROUP=citus
+    HOST_GROUP=citus_coordinator
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_citus_server.yml
     EXTRA_VAR_DEF='{"deploy_iptables": false, "pp_install": true, "skip_glusterfs": true}'
 
