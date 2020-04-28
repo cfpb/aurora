@@ -14,7 +14,7 @@ env:
     PARENT_GROUP=all
     HOST_GROUP=proxy_server
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_proxy_server.yml
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false,"use_epel": false}'
+    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "kerberos_enabled": false, "use_epel": false}'
 
 # 2  admin terminal
   - >
@@ -199,6 +199,7 @@ env:
 # 22  Citus Cluster (includes the standby and workers)
   - >
     JOB_NAME="Citus Cluster"
+    CENTOS_VERSION="7"
     PRE_CMD=""
     PARENT_GROUP=all
     HOST_GROUP=citus
@@ -215,15 +216,17 @@ python:
 before_install:
   - sudo apt-get update
   # Pull container
-  - docker pull centos:6
+  - docker pull centos:${CENTOS_VERSION:-6}
   # Customize container
-  - docker build --rm=true --file=Dockerfile --tag=centos:ansible . #replace with variable later
+  # Default is CentOS 6.x, which uses Dockerfile and tag centos:ansible.
+  # If CENTOS_VERSION is set to "7", we use Dockerfile7 and tag centos7:ansible.
+  - docker build --rm=true --file=Dockerfile${CENTOS_VERSION} --tag=centos${CENTOS_VERSION}:ansible . #replace with variable later
 
 #May need to clean up, killed docker instances: docker rm -v $(docker ps -a -q -f status=exited)
 script:
 # Run container in detached state
   - >
-    docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos:ansible "/sbin/init" > "${container_id}"
+    docker run --detach --volume="${PWD}":/aurora:ro --privileged --volume=/sys/fs/cgroup:/sys/fs/cgroup:ro centos${CENTOS_VERSION}:ansible "/sbin/init" > "${container_id}"
   - >
     docker exec "$(cat ${container_id})" env TERM=xterm sh -c "echo $EXTRA_VAR_DEF > /tmp/extra_vars.json"
   - >

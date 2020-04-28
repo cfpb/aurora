@@ -20,13 +20,23 @@
     group: apache
   when: create_keytabs and created_http_keytab
 
-- name: Install mod_auth_kerb and mod_authz_ldap
+- name: Install mod_auth_kerb and mod_authz_ldap (6.x)
   yum:
     name: "{{ item }}"
     state: latest
   with_items:
     - mod_auth_kerb
     - mod_authz_ldap
+  when: ansible_distribution_major_version == "6"
+
+- name: Install mod_auth_kerb and mod_ldap (7.x)
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - mod_auth_kerb
+    - mod_ldap
+  when: ansible_distribution_major_version == "7"
 
 - name: Update neccessary LDAP setting
   lineinfile:
