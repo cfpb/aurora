@@ -74,6 +74,7 @@
         path: /tmp/hosts-temp-generated
         regexp: '[[0-9+]\.]+\s+{{ item }}'
         line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
+        create: true
       with_items: "{{ groups['citus'] }}"
       when: not custom_repo
 
