@@ -87,17 +87,17 @@ env:
 ##     HOST_GROUP=ci_server
 ##     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
 ##     EXTRA_VAR_DEF='{"skip_glusterfs": true, "deploy_iptables": false, "install_python": false, "restart_gocd_server": false}'
-
-# 10  gocd ci_agent
-  - >
-    JOB_NAME="GoCD CI Agent"
-    PRE_CMD=""
-    PARENT_GROUP=all
-    HOST_GROUP=ci_agent
-    PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
-    EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
-
-## # 11  gocd ci_terminal
+## 
+## # 10  gocd ci_agent
+##   - >
+##     JOB_NAME="GoCD CI Agent"
+##     PRE_CMD=""
+##     PARENT_GROUP=all
+##     HOST_GROUP=ci_agent
+##     PLAYBOOK_LOCATION=/aurora/deploy/deploy_gocd.yml
+##     EXTRA_VAR_DEF='{"skip_glusterfs": true, "install_python": false, "mesos_master": false, "install_ruby": false, "install_r_updates": false, "install_sqitch": false, "install_r_packages": false, "deploy_iptables": false}'
+## 
+## ## # 11  gocd ci_terminal
 ##   - >
 ##     JOB_NAME="GoCD CI Terminal"
 ##     PRE_CMD="travis_wait 50"
