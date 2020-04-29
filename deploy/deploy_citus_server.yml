@@ -199,6 +199,8 @@
         owner: postgres
         group: postgres
         mode: "u=rw,go="
+      # In some testing setups, there's no citus_coordinator_standby Ansible group, so there's no hostkey to add
+      when: groups['citus_coordinator_standby'] is defined and groups['citus_coordinator_standby'][0] is defined
       tags:
         - add-hostkey
 
