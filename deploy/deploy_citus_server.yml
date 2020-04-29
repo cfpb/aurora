@@ -111,7 +111,7 @@
         script: CREATE EXTENSION IF NOT EXISTS citus
       register: result
       check_mode: no
-      changed_when: '"already exists" not in result.notices'
+      changed_when: result.notices is defined and "already exists" not in result.notices
       with_items:
         - postgres
 
