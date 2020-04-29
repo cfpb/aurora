@@ -204,7 +204,7 @@ env:
     PARENT_GROUP=citus
     HOST_GROUP=citus_coordinator
     PLAYBOOK_LOCATION=/aurora/deploy/deploy_citus_server.yml
-    EXTRA_VAR_DEF='{"deploy_iptables": false, "pp_install": true, "skip_glusterfs": true}'
+    EXTRA_VAR_DEF='{"deploy_iptables": false, "pp_install": true, "skip_glusterfs": true, "pp_shared_preload_libraries": "citus"}'
 
 services:
   - docker
