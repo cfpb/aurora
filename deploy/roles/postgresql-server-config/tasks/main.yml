@@ -170,7 +170,7 @@
     script: ALTER EXTENSION citus UPDATE
   check_mode: no
   register: result
-  failed_when: result.notices is search('extension "citus" does not exist')
+  failed_when: result.notices is defined and result.notices is search('extension "citus" does not exist')
   changed_when: result.notices is not defined or "is already installed" not in result.notices
   with_items: "{{ database_list.query_result }}"
 
