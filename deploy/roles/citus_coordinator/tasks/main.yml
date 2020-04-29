@@ -39,8 +39,8 @@
 # If we have a citus_coordinator_standby group, and it's not empty, get that host's address:
 - name: Determine the Citus Coordinator Standby address
   set_fact:
-      citus_coordinator_standby_address: "{{ hostvars[groups['citus_coordinator_standby'][0]]['ansible_ssh_host'] }}"
-    when: groups['citus_coordinator_standby'] is defined and groups['citus_coordinator_standby'][0] is defined
+    citus_coordinator_standby_address: "{{ hostvars[groups['citus_coordinator_standby'][0]]['ansible_ssh_host'] }}"
+  when: groups['citus_coordinator_standby'] is defined and groups['citus_coordinator_standby'][0] is defined
   tags:
     - postgresql-server
 
