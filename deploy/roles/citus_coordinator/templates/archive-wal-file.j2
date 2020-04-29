@@ -21,7 +21,8 @@ fullpath="$1"
 filename="$2"
 # Note: this is the same directory we pull the archives FROM on the standby cooridnator
 ARCHIVE_DIR="{{ pp_datadir }}/archives"
-STANDBY_ADDRESS="{{ hostvars[groups['citus_coordinator_standby'][0]]['ansible_ssh_host'] }}"
+# Set this as a fact before using this template:
+STANDBY_ADDRESS="{{ citus_coordinator_standby_address }}"
 
 # check that we can connect first....
 ssh $STANDBY_ADDRESS hostname
