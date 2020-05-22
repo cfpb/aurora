@@ -640,34 +640,48 @@ Vagrant.configure(2) do |config|
 
   # DB Server (opensource centos 7)
   config.vm.define :db_server_centos7 do |server|
-    server.vm.box = "centos/7"
+    #server.vm.box = "centos/7"
     server.vm.host_name = "db-centos7.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.38"
     server.ssh.forward_agent = true
 
-    server.vm.provider "virtualbox" do |v|
-      v.memory = 1024
-      v.cpus = 1
+    #server.vm.provider "virtualbox" do |v|
+    #  v.memory = 1024
+    #  v.cpus = 1
+    #end
+
+    server.vm.provider "docker" do |d|
+      d.build_dir = "."
+      #d.image="debian"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run']
     end
 
-    server.ssh.insert_key = false
-    server.vm.provision "shell", inline: <<-SHELL
+    #server.ssh.username = "vagrant"
+    #server.ssh.password = "password"
+    #server.ssh.guest_port = 22
+    #server.ssh.insert_key = false
+    #server.ssh.ip = 
+    #server.ssh.port = 22
+    #server.vm.provision "shell", inline: <<-SHELL
       # bug with vagrant 1.9+ and centos/7
-      sudo ifup eth1
-    SHELL
+      # sudo ifup eth1
+    #  echo "Hello world"
+    #SHELL
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
 
-      ansible.tags = ansible_tags
+     ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.38"
   end
 
   # Citus Coordinator
