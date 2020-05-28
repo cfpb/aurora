@@ -3,13 +3,13 @@
 
 - name: Install required packages
   yum:
-    name: centos-release-gluster38
+    name: centos-release-gluster
     state: latest
   when: not custom_repo
 
 - name: Install required packages
   yum:
-    name: glusterfs-server-3.8.4
+    name: glusterfs-server
     state: latest
 
 - name: Enable gluster server

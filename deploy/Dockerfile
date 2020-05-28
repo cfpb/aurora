@@ -25,6 +25,8 @@ RUN rm /usr/lib/tmpfiles.d/systemd-nologin.conf
 
 RUN yum clean all && rm -rf /var/cache/yum
 
+# RUN modprobe iptables_filter
+
 EXPOSE 22
 
 CMD ["/usr/sbin/init"]

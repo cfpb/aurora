@@ -5,6 +5,8 @@ pp_extensions:
 
 install_edb: False
 pp_install: False
+# Should be moved
+citus_upgrade: False
 
 # Example privileges setting, this revokes all privileges from
 # the PUBLIC role on the public schema in template1, and thus

@@ -168,6 +168,7 @@
     script: ALTER EXTENSION citus UPDATE
   check_mode: no
   register: result
+  when: citus_upgrade
   failed_when: '"extension \"citus\" does not exist" in result.notices'
   changed_when: result.notices is not defined or "is already installed" not in result.notices
   with_items: "{{ database_list.query_result }}"
