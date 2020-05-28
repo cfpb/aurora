@@ -113,6 +113,8 @@
     permissions: rX
     state: present
   with_items: "{{ log_file_locations }}"
+  # Fails on Centos6 on Docker
+  ignore_errors: yes
 
 - name: Add service account to admin group
   user:

@@ -130,13 +130,22 @@ Vagrant.configure(2) do |config|
 
   # Admin Terminal VM
   config.vm.define :admin_terminal do |adterm_config|
-    adterm_config.vm.box = "bento/centos-6.10"
+    #adterm_config.vm.box = "bento/centos-6.10"
     adterm_config.vm.host_name = "admin.test.dev"
+    adterm_config.vm.network "forwarded_port", guest: 22, host: 2200
 
     adterm_config.ssh.forward_agent = true
 
-    adterm_config.vm.provision :shell,
-      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+    adterm_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024M']
+    end
 
     adterm_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_admin_terminal.yml"
@@ -148,7 +157,7 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
-    adterm_config.vm.network :private_network, ip: "10.0.1.2"
+    # adterm_config.vm.network :private_network, ip: "10.0.1.2"
   end
 
   # Kerberos Server VM - for testing purposes only
@@ -661,38 +670,21 @@ Vagrant.configure(2) do |config|
 
   # DB Server (opensource centos 7)
   config.vm.define :db_server_centos7 do |server|
-    #server.vm.box = "centos/7"
     server.vm.host_name = "db-centos7.test.dev"
-    server.vm.network :private_network, ip: "10.0.1.38"
+    # server.vm.network :private_network, ip: "10.0.1.38"
     server.vm.network "forwarded_port", guest: 22, host: 2222
     server.ssh.forward_agent = true
 
-    #server.vm.provider "virtualbox" do |v|
-    #  v.memory = 1024
-    #  v.cpus = 1
-    #end
-
     server.vm.provider "docker" do |d|
-      d.build_dir = "."
+      d.build_dir = "./docker/centos7"
       d.has_ssh = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       ]
       d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
-                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024']
     end
-
-    #server.ssh.username = "vagrant"
-    #server.ssh.password = "password"
-    #server.ssh.guest_port = 22
-    #server.ssh.insert_key = false
-    #server.ssh.ip = 
-    #server.ssh.port = 22
-    #server.vm.provision "shell", inline: <<-SHELL
-      # bug with vagrant 1.9+ and centos/7
-      # sudo ifup eth1
-    #  echo "Hello world"
-    #SHELL
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_db_server.yml"

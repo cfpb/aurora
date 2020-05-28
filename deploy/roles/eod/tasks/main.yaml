@@ -239,6 +239,8 @@
     permissions: rwX
     recursive: yes
     state: present
+  # Fails with Centos 6 on Docker
+  ignore_errors: yes
   tags:
     - eod
 
@@ -250,6 +252,8 @@
     permissions: rwX
     default: yes
     state: present
+  # Fails with Centos 6 on Docker
+  ignore_errors: yes
   tags:
     - eod
 

@@ -2,7 +2,7 @@
 
 ; Shared Component
 [admin_terminal]
-admin_terminal ansible_ssh_host=10.0.1.2
+admin_terminal ansible_ssh_host=127.0.0.1 ansible_ssh_port=2200
 
 [file_server]
 file_server_1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2201

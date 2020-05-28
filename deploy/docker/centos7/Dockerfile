@@ -1,3 +1,4 @@
+# https://hub.docker.com/r/centos/systemd/dockerfile
 FROM centos/systemd
 
 # Create vagrant user 
@@ -14,18 +15,11 @@ RUN cd ~vagrant && \
     mkdir -p /etc/sudoers.d && \
     echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/vagrant_user
 
-# https://hub.docker.com/r/centos/systemd/dockerfile
 RUN yum -y install sudo openssh-server openssh-clients initscripts && \
     systemctl enable sshd.service
 
 RUN rm /usr/lib/tmpfiles.d/systemd-nologin.conf
-
-# Remove default iptables config
-# RUN rm /etc/sysconfig/iptables
-
 RUN yum clean all && rm -rf /var/cache/yum
-
-# RUN modprobe iptables_filter
 
 EXPOSE 22
 
