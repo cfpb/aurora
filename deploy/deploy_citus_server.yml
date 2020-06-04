@@ -102,7 +102,9 @@
   become_method: sudo
   serial: 1
   roles:
-    - postgresql-server-config
+    - role: postgresql-server-config
+      vars:
+        minimal: "{{ 'citus_coordinator_standby' in group_names }}"
     - psql-authnz
   post_tasks:
     - name: Create Citus extension
@@ -118,6 +120,7 @@
       changed_when: result.notices is defined and "already exists" not in result.notices
       with_items:
         - postgres
+      when: ('citus_coordinator_standby' not in group_names)
 
 - name: Set up Citus Coordinator
   hosts: citus_coordinator

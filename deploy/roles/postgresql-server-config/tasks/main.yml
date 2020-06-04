@@ -1,4 +1,7 @@
 ---
+- debug:
+    var: minimal
+
 - name: Allow postgres empty password login temporarily
   become: yes
   become_method: sudo
@@ -97,6 +100,7 @@
     - template1
   changed_when:
     - '"already exists" not in result.notices'
+  when: not minimal
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
@@ -113,6 +117,7 @@
   with_items:
     - postgres
     - template1
+  when: not minimal
 
 - name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
@@ -125,6 +130,7 @@
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
   changed_when: false
+  when: not minimal
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
@@ -139,6 +145,7 @@
     loop_var: dba_script
   check_mode: no
   changed_when: false
+  when: not minimal
 
 - name: Retrieve list of databases
   postgresql_exec:
@@ -156,7 +163,7 @@
 
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
-  when: database_list is defined
+  when: database_list is defined and not minimal
 
 # TODO: This should have a where clause to limit it to Citus hosts, or perhaps
 # be moved to the Citus role.
@@ -188,6 +195,7 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
+  when: not minimal
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
   postgresql_privs:
@@ -203,6 +211,7 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
+  when: not minimal
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
@@ -219,6 +228,7 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: "{{ pp_privs }}"
+  when: not minimal
 
 # Any post-configuration scripts that need to be executed go here
 - name: Execute post-configuration scripts
@@ -232,6 +242,7 @@
   with_items: "{{ pp_post_scripts }}"
   check_mode: no
   changed_when: false
+  when: not minimal
 
 ### Step 3: Create default service account using operational_dba role
 
@@ -248,6 +259,7 @@
     state: present
   check_mode: no
   ignore_errors: yes
+  when: not minimal
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
@@ -261,6 +273,7 @@
     type: group
     state: present
     admin_option: no
+  when: not minimal
 
 - name: Create replication role
   postgresql_user:
