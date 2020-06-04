@@ -45,10 +45,12 @@
 - name: Back up the WAL directory
   become: True
   command: "mv {{ pp_xlogdir }}/{{ pg_wal }} {{ pp_xlogdir }}/{{ pg_wal }}.bkup"
+  when: pp_xlogdir != pp_datadir
 
 - name: Move WAL directory to proper location again
   become: True
   command: "mv {{ pp_datadir }}/{{ pg_wal }} {{ pp_xlogdir }}"
+  when: pp_xlogdir != pp_datadir
 
 - name: Ensure correct ownership of WAL
   become: True
@@ -66,7 +68,7 @@
     state: link
     owner: postgres
     group: postgres
-  when: pp_datadir != pp_xlogdir
+  when: pp_xlogdir != pp_datadir
 
 - name: Change the ownership of data directory
   become: True
