@@ -1,8 +1,4 @@
 ---
-- name: Check if this is an install or upgrade
-  set_fact:
-      pp_install_or_upgrade: "{{ (pp_install | bool) or (pp_upgrade | bool) }}"
-
 - debug:
     var: pp_install_or_upgrade
 
