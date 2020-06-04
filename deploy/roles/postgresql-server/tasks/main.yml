@@ -2,8 +2,11 @@
 - debug:
     msg: "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}"
 
+- set_fact:
+    pp_install_or_upgrade: "{{ (pp_install | bool) or (pp_upgrade | bool) }}"
+
 - debug:
-    msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }}"
+    msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }} ; pp_install_or_upgrade: {{ pp_install_or_upgrade }} "
 
 - name: Include variable for os
   include_vars: rhel_7.yml
@@ -126,12 +129,6 @@
     - reload-daemon
   tags:
     - postgresql-server
-
-- set_fact:
-    pp_install_or_upgrade: "{{ (pp_install | bool) or (pp_upgrade | bool) }}"
-
-- debug:
-    msg: "pp_install: {{ pp_install }} ; pp_upgrade: {{ pp_upgrade }} ; pp_install_or_upgrade: {{ pp_install_or_upgrade }} "
 
 - name: Create postgres cluster
   shell: "{{ pp_initdb }}"

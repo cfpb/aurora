@@ -2,12 +2,6 @@
 ---
 - name: Install common and optional packages, JDK, Postgresql, and Citus
   hosts: citus
-  # Avoid nasty surprises when someone does "--extra-vars pp_install=False", etc.:
-  pre_tasks:
-  - set_fact:
-      install_pp: "{{ pp_install | default(False) | bool }}"
-      upgrade_pp: "{{ pp_upgrade | default(False) | bool }}"
-      install_or_upgrade_pp: "{{ (pp_install | default(False) | bool) or (pp_upgrade | default(False) | bool) }}"
   become: yes
   become_method: sudo
   serial: 1
@@ -20,9 +14,6 @@
     - postgresql-server
     - citus
   tasks:
-    - debug:
-        msg: "install_pp: {{ install_pp }} ; upgrade_pp: {{ upgrade_pp }}"
-
     - name: Install utilities
       yum:
         name: sysstat
@@ -145,10 +136,9 @@
 - name: Set up Citus Coordinator Standby
   hosts: citus_coordinator_standby
   pre_tasks:
-  - set_fact:
-      install_pp: "{{ pp_install | default(False) | bool }}"
   serial: 1
   roles:
+    # Avoid nasty surprises when someone does "--extra-vars pp_install=False", etc.:
     - {role: citus_coordinator_standby, when: "pp_install | default(False) | bool"}
   tags:
     - standby-play
