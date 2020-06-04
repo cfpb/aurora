@@ -27,6 +27,10 @@
     disable_gpg_check: yes
   when: not skip_glusterfs
 
+- name: Install acl package
+  yum:
+    name: acl
+
 - name: Make needed folders
   file:
     state: directory
