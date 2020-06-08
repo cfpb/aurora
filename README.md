@@ -79,6 +79,14 @@ be installed in the Travis CI image, like so:
 
 TBD
 
+## Role-specific documentation
+
+Some Ansible roles in this project have role-specific documentation:
+
+* (postgresql-server)[deploy/roles/postgresql-server/README.md]
+* (python27-scl)[deploy/roles/python27-scl/README.md]
+* (python36-scl)[deploy/roles/python36-scl/README.md]
+
 ## Known issues
 
 - Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
