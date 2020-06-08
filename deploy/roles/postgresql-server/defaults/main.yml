@@ -127,6 +127,7 @@ pp_unix_socket_perms: 0777
 
 # Auth
 pp_auth_timeout: '1min'
+# pp_ssl_enable is NOT a boolean: it must be one of the two lowercase strings 'on' or 'off'
 pp_ssl_enable: 'off'
 pp_ssl_ciphers: 'HIGH:MEDIUM:+3DES:!aNULL'
 pp_prefer_server_cyphers: on
