@@ -73,10 +73,10 @@ research_sas
 
 ; Pipeline Component
 [ci_server]
-ci_server ansible_ssh_host=10.0.1.26
+ci_server ansible_ssh_host=127.0.0.1 ansible_ssh_port=2211
 
 [ci_agent]
-ci_agent_1 ansible_ssh_host=10.0.1.27
+ci_agent_1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2212
 
 [ci_terminal]
 ci_terminal_1 ansible_ssh_host=10.0.1.28
