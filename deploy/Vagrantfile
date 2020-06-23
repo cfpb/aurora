@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
   ########################
 
   # GlusterFS File Server 1
-  disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
+  # disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
     #fs_config.vm.box = "bento/centos-6.10"
     fs_config.vm.host_name = "file-server-1.test.dev"
@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
     #end
 
     fs_config.vm.provider "docker" do |d|
-      d.build_dir = "."
+      d.build_dir = "./docker/centos7"
       d.has_ssh = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
@@ -95,7 +95,7 @@ Vagrant.configure(2) do |config|
     #end
 
     fs_config.vm.provider "docker" do |d|
-      d.build_dir = "."
+      d.build_dir = "./docker/centos7"
       d.has_ssh = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
