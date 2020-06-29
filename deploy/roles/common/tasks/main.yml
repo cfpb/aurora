@@ -58,17 +58,17 @@
   # Ignoring for Docker
   ignore_errors: true
 
-#- name: Mount shared drives and add to fstab
-#  mount:
-#    fstype: glusterfs
-#    name: "/home/{{ item.name }}"
-#    src: "{{ default_file_server }}:/{{ item.name }}"
-#    state: "{{ item.state }}"
-#    opts: "{{ gluster_mount_options }}"
-#  with_items: "{{ shared_folders }}"
-#  when: mount_glusterfs and not skip_glusterfs
-  # Ignoring for Docker
-#  ignore_errors: true
+- name: Mount shared drives and add to fstab
+  mount:
+    fstype: glusterfs
+    name: "/home/{{ item.name }}"
+    src: "{{ default_file_server }}:/{{ item.name }}"
+    state: "{{ item.state }}"
+    opts: "{{ gluster_mount_options }}"
+  with_items: "{{ shared_folders }}"
+  when: mount_glusterfs and not skip_glusterfs
+# Ignoring for Docker
+  ignore_errors: true
 
 - name: Remove unneeded folders
   file:

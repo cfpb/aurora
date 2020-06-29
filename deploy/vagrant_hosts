@@ -22,12 +22,12 @@ kerberos_server ansible_ssh_host=10.0.1.127
 analytics_terminal ansible_ssh_host=10.0.1.12 rstudio_domain_name=https://rstudio.test.dev/
 
 [elasticsearch]
-es1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2203 es_http_enabled=True
-es2 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2204 es_http_enabled=True
-es3 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2205 es_http_enabled=True
+es1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2204 es_http_enabled=True
+es2 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2205 es_http_enabled=True
+es3 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2206 es_http_enabled=True
 
 [elk]
-elk ansible_ssh_host=127.0.0.1 es_http_enabled=True ansible_ssh_port=2200
+elk ansible_ssh_host=127.0.0.1 es_http_enabled=True ansible_ssh_port=2205
 
 [app_server]
 app ansible_ssh_host=10.0.1.17
