@@ -157,7 +157,7 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
-    # adterm_config.vm.network :private_network, ip: "10.0.1.2"
+    adterm_config.vm.network :private_network, ip: "10.0.1.2"
   end
 
   # Kerberos Server VM - for testing purposes only
@@ -542,15 +542,17 @@ Vagrant.configure(2) do |config|
   ###########################
 
   config.vm.define :ci_server do |server|
-    #server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-server.test.dev"
+    server.vm.network :private_network, ip: "10.0.1.26", name: "vagrant-network", docker_connect__hostname: "ci-server.test.dev"
     server.vm.network "forwarded_port", guest: 22, host: 2211
     server.vm.network "forwarded_port", guest: 8153, host: 8153
     server.ssh.forward_agent = true
 
     server.vm.provider "docker" do |d|
+      d.name = "ci-server"
       d.build_dir = "./docker/centos6"
       d.has_ssh = true
+      d.remains_running = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       ]
@@ -568,31 +570,19 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-    
-    #server.vm.provision "ansible" do |ansible|
-    #  ansible.playbook = "deploy_gocd.yml"
-    #  ansible.inventory_path = "vagrant_hosts"
-    #  ansible.tags = ansible_tags
-    #  ansible.verbose = ansible_verbosity
-    #  ansible.extra_vars = ansible_extra_vars
-    #  ansible.limit = ansible_limit
-    #  ansible.skip_tags = ansible_skip
-    #end
-
-    #server.vm.network :private_network, ip: "10.0.1.26"
-    server.vm.network :private_network, ip: "10.0.1.26"
   end
 
   config.vm.define :ci_agent_1 do |server|
-    #server.vm.box = "bento/centos-6.10"
-    server.vm.network "forwarded_port", guest: 22, host: 2212
     server.vm.host_name = "ci-agent-1.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.27", name: "vagrant-network", docker_connect__hostname: "ci-agent-1.test.dev"
+    server.vm.network "forwarded_port", guest: 22, host: 2212
     server.ssh.forward_agent = true
 
     server.vm.provider "docker" do |d|
+      d.name = "ci-agent-1"
       d.build_dir = "./docker/centos6"
       d.has_ssh = true
+      d.remains_running = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
       ]
@@ -609,14 +599,11 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.27"
   end
 
   config.vm.define :ci_terminal_1 do |server|
     server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-terminal-1.test.dev"
-
     server.ssh.forward_agent = true
 
     server.vm.provision "ansible" do |ansible|
