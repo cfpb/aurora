@@ -7,7 +7,14 @@
   become: yes
   become_method: sudo
 
+  #vars:
+  #    file_server_1_ip: "{{ hostvars['file_server_1']['ansible_eth0']['ipv4']['address'] }}"
+  #    file_server_2_ip: "{{ hostvars['file_server_2']['ansible_eth0']['ipv4']['address'] }}"
+  
   tasks:
+    - debug:
+        var: hostvars['file_server_1']
+
     - name: Probe for other file server
       command: "gluster peer probe 10.0.1.4"
 

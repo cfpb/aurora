@@ -61,4 +61,6 @@
     recursive: yes
     state: present
   with_items: "{{ logcourier_log_file_locations }}"
+  # Fails on Centos 6 on Docker
+  ignore_errors: yes
 

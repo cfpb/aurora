@@ -79,3 +79,20 @@
     - restart postgres
   tags:
     - citus
+
+# TODO: This should have a where clause to limit it to Citus hosts, or perhaps
+# be moved to the Citus role.
+- name: Update Citus extension
+  postgresql_exec:
+    login_host: localhost
+    login_user: "{{ pp_superaccount }}"
+    login_password: "{{ pp_superpassword }}"
+    port: "{{ pp_serverport }}"
+    db: "{{ item }}"
+    script: ALTER EXTENSION citus UPDATE
+  check_mode: no
+  register: result
+  when: upgrade_citus
+  failed_when: '"extension \"citus\" does not exist" in result.notices'
+  changed_when: result.notices is not defined or "is already installed" not in result.notices
+  with_items: "{{ database_list.query_result }}"

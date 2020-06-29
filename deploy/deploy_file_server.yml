@@ -19,17 +19,18 @@
     - odbc
 
   tasks:
-    - name: Create the Filesystem
-      filesystem:
-        fstype: ext4
-        dev: /dev/sdb
+    # These commands won't work in Dockerr
+    #- name: Create the Filesystem
+    #  filesystem:
+    #    fstype: ext4
+    #    dev: /dev/sdb
 
-    - name: Mount volume
-      mount:
-        name: /data
-        src: /dev/sdb
-        fstype: ext4
-        state: mounted
+    #- name: Mount volume
+    #  mount:
+    #    name: /data
+    #    src: /dev/sdb
+    #    fstype: ext4
+    #    state: mounted
 
     - name: Ensure directories exist
       file:

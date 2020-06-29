@@ -29,25 +29,35 @@ Vagrant.configure(2) do |config|
   ########################
 
   # GlusterFS File Server 1
-  disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
+  # disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
-    fs_config.vm.box = "bento/centos-6.10"
+    #fs_config.vm.box = "bento/centos-6.10"
     fs_config.vm.host_name = "file-server-1.test.dev"
-
+    fs_config.vm.network "forwarded_port", guest: 22, host: 2201
     fs_config.ssh.forward_agent = true
 
-    fs_config.vm.provision :shell,
-      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+    #fs_config.vm.provision :shell,
+    #  :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
-    fs_config.vm.provider 'virtualbox' do |v|
-      unless File.exist?(disk_file_1)
-        v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
+    #fs_config.vm.provider 'virtualbox' do |v|
+    #  unless File.exist?(disk_file_1)
+    #    v.customize ['createhd', '--filename', disk_file_1, '--size', 2048, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
 
-        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
-      end
+    #    v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_1]
+    #  end
+    #end
+
+    fs_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos7"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
     end
 
     fs_config.vm.provision 'ansible' do |ansible|
@@ -66,21 +76,32 @@ Vagrant.configure(2) do |config|
   # GlusterFS File Server 2
   disk_file_2 = File.join(VAGRANT_ROOT, 'gfs_brick_2.vdi')
   config.vm.define :file_server_2 do |fs_config|
-    fs_config.vm.box = "bento/centos-6.10"
+    #fs_config.vm.box = "bento/centos-6.10"
     fs_config.vm.host_name = "file-server-2.test.dev"
+    fs_config.vm.network "forwarded_port", guest: 22, host: 2202
 
-    fs_config.vm.provision :shell,
-      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+    #fs_config.vm.provision :shell,
+    #  :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
-    fs_config.vm.provider 'virtualbox' do |v|
-      unless File.exist?(disk_file_2)
-        v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
+    #fs_config.vm.provider 'virtualbox' do |v|
+    #  unless File.exist?(disk_file_2)
+    #    v.customize ['createhd', '--filename', disk_file_2, '--size', 2048, '--variant', 'fixed']
 
 #       v.customize ['storagectl', :id, '--name', 'SATA Controller', '--add', 'sata', '--portcount', 1]
 #       TODO: Detect if SATA controller exists, and only add it if needed
 #
-        v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
-      end
+    #    v.customize ['storageattach', :id, '--storagectl', 'SATA Controller', '--port', 1, '--device', 0, '--type', 'hdd', '--medium', disk_file_2]
+    #  end
+    #end
+
+    fs_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos7"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
     end
 
     fs_config.ssh.forward_agent = true
@@ -109,13 +130,22 @@ Vagrant.configure(2) do |config|
 
   # Admin Terminal VM
   config.vm.define :admin_terminal do |adterm_config|
-    adterm_config.vm.box = "bento/centos-6.10"
+    #adterm_config.vm.box = "bento/centos-6.10"
     adterm_config.vm.host_name = "admin.test.dev"
+    adterm_config.vm.network "forwarded_port", guest: 22, host: 2200
 
     adterm_config.ssh.forward_agent = true
 
-    adterm_config.vm.provision :shell,
-      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+    adterm_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024M']
+    end
 
     adterm_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_admin_terminal.yml"
@@ -512,10 +542,24 @@ Vagrant.configure(2) do |config|
   ###########################
 
   config.vm.define :ci_server do |server|
-    server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-server.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.26", name: "vagrant-network", docker_connect__hostname: "ci-server.test.dev"
+    server.vm.network "forwarded_port", guest: 22, host: 2211
+    server.vm.network "forwarded_port", guest: 8153, host: 8153
     server.ssh.forward_agent = true
+
+    server.vm.provider "docker" do |d|
+      d.name = "ci-server"
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.remains_running = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+    end
+
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_gocd.yml"
@@ -526,15 +570,25 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.26"
   end
 
   config.vm.define :ci_agent_1 do |server|
-    server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-agent-1.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.27", name: "vagrant-network", docker_connect__hostname: "ci-agent-1.test.dev"
+    server.vm.network "forwarded_port", guest: 22, host: 2212
     server.ssh.forward_agent = true
+
+    server.vm.provider "docker" do |d|
+      d.name = "ci-agent-1"
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.remains_running = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+    end
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_gocd.yml"
@@ -545,14 +599,11 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.27"
   end
 
   config.vm.define :ci_terminal_1 do |server|
     server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-terminal-1.test.dev"
-
     server.ssh.forward_agent = true
 
     server.vm.provision "ansible" do |ansible|
@@ -640,34 +691,31 @@ Vagrant.configure(2) do |config|
 
   # DB Server (opensource centos 7)
   config.vm.define :db_server_centos7 do |server|
-    server.vm.box = "centos/7"
     server.vm.host_name = "db-centos7.test.dev"
-
+    # server.vm.network :private_network, ip: "10.0.1.38"
+    server.vm.network "forwarded_port", guest: 22, host: 2222
     server.ssh.forward_agent = true
 
-    server.vm.provider "virtualbox" do |v|
-      v.memory = 1024
-      v.cpus = 1
+    server.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos7"
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024']
     end
-
-    server.ssh.insert_key = false
-    server.vm.provision "shell", inline: <<-SHELL
-      # bug with vagrant 1.9+ and centos/7
-      sudo ifup eth1
-    SHELL
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_db_server.yml"
       ansible.inventory_path = "vagrant_hosts"
-
       ansible.tags = ansible_tags
       ansible.verbose = ansible_verbosity
       ansible.extra_vars = ansible_extra_vars
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.38"
   end
 
   # Citus Coordinator
