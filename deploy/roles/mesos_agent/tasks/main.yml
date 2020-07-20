@@ -99,7 +99,7 @@
 - name: Add the ip address to the Mesos agent config folder
   copy:
     dest: /etc/mesos-slave/ip
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-agent
   tags:
@@ -109,7 +109,7 @@
 - name: Add the ip to the hostname file too
   copy:
     dest: /etc/mesos-slave/hostname
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-agent
   tags:
