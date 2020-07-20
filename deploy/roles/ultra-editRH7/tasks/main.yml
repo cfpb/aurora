@@ -1,0 +1,19 @@
+- name: Uninstall Ultra Edit
+  yum: 
+    name: "{{ item }}" #UltraEdit.x86_64
+    state: removed
+    disable_gpg_check: yes
+  with_items: "{{ ue_uninstall_list }}"
+  when: custom_repo
+  tags:
+    - UltraEdit
+
+- name: Install Ultra Edit
+  shell:  yum localinstall -y {{ ue_install_dir }}/{{ ue_install_rpm }}
+#  yum:
+#   name: "{{ ue_install_version }}" #UltraEdit.x86_64
+#   state: present
+#   disable_gpg_check: yes
+# when: custom_repo
+# tags:
+#   - UltraEdit

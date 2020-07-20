@@ -39,6 +39,7 @@ neo4j1 ansible_ssh_host=10.0.1.37
 
 [research_ancillary_services]
 research_ancillary_services ansible_ssh_host=10.0.1.18
+research_ancillary1_services ansible_ssh_host=10.0.1.50
 
 [research_eod]
 research_eod ansible_ssh_host=10.0.1.19

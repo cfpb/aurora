@@ -1,0 +1,90 @@
+---
+- name: Create install directory
+  shell: mkdir -p /usr/local/sublime
+# shell: mkdir -p {{sublime_install_directory}}
+- name: Verify install directory
+  file:
+    path: "{{sublime_install_directory}}/"
+    state: directory
+    mode: 0755
+  tags:
+    - sublime
+
+# name: Unarchive sublime (from remote)
+# unarchive:
+#   copy: no
+#   src: "https://download.sublimetext.com/sublime_text_3_build_3176_x64.tar.bz2"
+#   dest: "{{ sublime_install_directory }}"
+#   owner: root
+#   group: root
+#   mode: a+r
+# when: not custom_repo
+# tags:
+#   - sublime
+
+#- name: Unarchive sublime
+# unarchive:
+#   copy: yes
+#   src: "{{ sublime_local_artifact_directory }}/sublime_text_3_build_3176_x64.tar.bz2"
+#   src: "{{ sublime_local_artifact_directory }}/sublime_text_3_build_3207_x64.tar.bz2"
+#   dest: "{{ sublime_install_directory }}/"
+#   owner: root
+#   group: root
+#   mode: 0755
+#   mode: a+r
+# when: custom_repo
+# tags:
+#   - sublime
+
+- name: Ensure directories are readable
+  file:
+    path: "{{ sublime_install_directory }}/{{ item }}"
+    state: directory
+    mode: 0755
+  with_items:
+    - "sublime_text_3"
+    - "sublime_text_3/Icon"
+    - "sublime_text_3/Icon/128x128"
+    - "sublime_text_3/Icon/16x16"
+    - "sublime_text_3/Icon/256x256"
+    - "sublime_text_3/Icon/32x32"
+    - "sublime_text_3/Icon/48x48"
+    - "sublime_text_3/Packages"
+#   - "sublime_text_3/lib"
+#   - "sublime_text_3/Pristine Packages"
+
+#   - "Sublime Text 3"
+#   - "Sublime Text 3/Icon"
+#   - "Sublime Text 3/Icon/128x128"
+#   - "Sublime Text 3/Icon/16x16"
+#   - "Sublime Text 3/Icon/256x256"
+#   - "Sublime Text 3/Icon/32x32"
+#   - "Sublime Text 3/Icon/48x48"
+#   - "Sublime Text 3/lib"
+#   - "Sublime Text 3/Pristine Packages"
+
+- name: Ensure sublime_text is executable
+  file:
+    path: "{{ sublime_install_directory }}/sublime_text_3/sublime_text"
+#   path: "{{ sublime_install_directory }}/Sublime\ Text\ 3/sublime_text"
+    mode: 0755
+  tags:
+    - sublime
+
+- name: Create symlink
+  file:
+    dest: /usr/local/bin/sublime
+    src: "{{ sublime_install_directory }}/sublime_text_3/sublime_text"
+#   src: "{{ sublime_install_directory }}/Sublime\ Text\ 3/sublime_text"
+    mode: 0755
+    state: link
+  tags:
+    - sublime
+
+- name: Add Desktop entry
+  template:
+    src: sublime.desktop.j2
+    dest: /usr/share/applications/sublime.desktop
+    mode: 0644
+  tags:
+    - sublime

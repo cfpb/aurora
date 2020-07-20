@@ -1,0 +1,5 @@
+---
+#ublime_local_artifact_directory: /artifacts
+sublime_local_artifact_directory: /opt/ancillary_local 
+sublime_install_directory: /usr/local/sublime
+sublime_remote_artifact_directory: /tmp

@@ -1,0 +1,10 @@
+---
+- name: Install Open Office rpms
+  shell: yum localinstall -y {{item}}
+# yum:
+#   name: "{{item}}"
+#   state: present
+#   disable_gpg_check: yes
+  with_items:
+    - "{{open_office_installdir}}/{{open_office_rpms}}"
+  when: custom_repo
