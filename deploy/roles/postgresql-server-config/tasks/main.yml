@@ -275,6 +275,8 @@
     admin_option: no
   when: not minimal
 
+# TODO: ignore_errors is required due to FIPS blocking of the md5 package.
+#       Investigate if there's a better approach to resolving this.
 - name: Create replication role
   postgresql_user:
     login_host: localhost
@@ -287,6 +289,7 @@
     password: "{{ replication_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
 
 - name: Set permissions on log file directory recursively
   become: yes
