@@ -45,22 +45,11 @@
     - name: Check whether WAL directory exists under pp_xlogdir
       stat:
         path: "{{ pp_xlogdir }}/{{ pg_wal }}"
-      register: wal_under_pp_xlogdir
-
-    - name: Check whether WAL directory exists under pp_datadir
-      stat:
-        path: "{{ pp_datadir }}/{{ pg_wal }}"
-      register: wal_under_pp_datadir
-
-    - name: Warn if directory already exists in both places
-      debug:
-        msg: "WARNING: pg_wal directory already exists under BOTH {{ pp_xlogdir }} and {{ pp_datadir }} ; will leave both in place and (probably) cause problems"
-      when: wal_under_pp_xlogdir.stat.exists == True and wal_under_pp_datadir.stat.exists == True
+      register: stat_result
 
     - name: Move WAL directory to proper location under pp_xlogdir
       command: "mv {{ pp_datadir }}/{{ pg_wal }} {{ pp_xlogdir }}"
-      when: wal_under_pp_xlogdir.stat.exists == False and wal_under_pp_datadir.stat.exists == True
-      # Note: this can only happen when pp_datadir != pp_xlogdir
+      when: stat_result.stat.exists == False
 
     - name: Ensure symlink exists for WAL directory
       file:
@@ -69,9 +58,7 @@
         state: link
         owner: postgres
         group: postgres
-      when: not (wal_under_pp_xlogdir.stat.exists and wal_under_pp_datadir.stat.exists)
-      # If we're in the weird condition where both dirs already exist (as directories),
-      # we can't create the symlink. We warn the user about this above.
+      when: pp_datadir != pp_xlogdir
 
     - name: Set up additions to host file
       lineinfile:
