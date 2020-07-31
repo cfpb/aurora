@@ -31,7 +31,7 @@
   with_items: "{{ 'citus_prod_coordinator' if custom_repo else 'citus_coordinator' }}"
 
 - name: Restore the standby postgresql.conf file from local backup
-  shell: "mv {{ pp_datadir }}/postgresql.conf {{ pp_datadir }}/postgresql.conf ; cp -p {{ pp_datadir }}.bk/postgresql.conf {{ pp_datadir }}/postgresql.conf"
+  shell: "mv {{ pp_datadir }}/postgresql.conf {{ pp_datadir }}/postgresql.conf.old ; cp -p {{ pp_datadir }}.bk/postgresql.conf {{ pp_datadir }}/postgresql.conf"
   become: True
 
 - name: Remove primary-only files
