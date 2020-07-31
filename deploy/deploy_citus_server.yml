@@ -69,9 +69,7 @@
         state: link
         owner: postgres
         group: postgres
-      when: not (wal_under_pp_xlogdir.stat.exists and wal_under_pp_datadir.stat.exists)
-      # If we're in the weird condition where both dirs already exist (as directories),
-      # we can't create the symlink. We warn the user about this above.
+      when: pp_datadir != pp_xlogdir
 
     - name: Set up additions to host file
       lineinfile:
@@ -104,7 +102,7 @@
   roles:
     - role: postgresql-server-config
       vars:
-        minimal: "{{ 'citus_coordinator_standby' in group_names }}"
+        standby: "{{ 'citus_coordinator_standby' in group_names }}"
     - psql-authnz
   post_tasks:
     - name: Create Citus extension
