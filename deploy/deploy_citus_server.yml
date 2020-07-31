@@ -104,7 +104,7 @@
   roles:
     - role: postgresql-server-config
       vars:
-        minimal: "{{ 'citus_coordinator_standby' in group_names }}"
+        standby: "{{ 'citus_coordinator_standby' in group_names }}"
     - psql-authnz
   post_tasks:
     - name: Create Citus extension
