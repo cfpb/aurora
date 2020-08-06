@@ -870,8 +870,10 @@ Vagrant.configure(2) do |config|
       #mm_config.vm.box = "bento/centos-6.10"
       mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
       #mm_config.vm.network :private_network, ip: ip, name: "vagrant-network", docker_connect__hostname: "mesos-master-#{id}.test.dev"
-      mm_config.vm.network :private_network, ip: ip
       mm_config.vm.network "forwarded_port", guest: 22, host: "224#{id}"
+      mm_config.vm.network "forwarded_port", guest: 5050, host: "905#{id}"
+      mm_config.vm.network "forwarded_port", guest: 8080, host: "808#{id}"
+      mm_config.vm.network :private_network, ip: ip
 
       mm_config.ssh.forward_agent = true
 
@@ -880,11 +882,14 @@ Vagrant.configure(2) do |config|
         d.build_dir = "./docker/centos6"
         d.has_ssh = true
         d.remains_running = true
+        d.expose = [ 22, 5050, 8080 ]
         d.volumes = [
           "/sys/fs/cgroup:/sys/fs/cgroup:ro"
         ]
         d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
-                         '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+                         '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                         '--memory', '3048M',
+        ]
       end
 
       mm_config.vm.provision "ansible" do |ansible|
@@ -924,10 +929,12 @@ Vagrant.configure(2) do |config|
         d.has_ssh = true
         d.remains_running = true
         d.volumes = [
-          "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro",
+        #  "mesos_vols_agent_1:/opt"
         ]
         d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
-                         '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+                         '--privileged' ]
+                         #'--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
       end
 
       mm_config.vm.provision "ansible" do |ansible|

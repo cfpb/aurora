@@ -8,7 +8,7 @@
 
 - name: Delete Marathon ZK Migration in progress key if present and we didn't ask for an upgrade
   znode:
-    hosts: "{{ docker_hostname }}:2181"
+    hosts: "{{ aurora_hostname }}:2181"
     name: /marathon/state/migration-in-progress
     state: absent
 

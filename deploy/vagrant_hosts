@@ -123,14 +123,14 @@ db_terminal
 ; Container Component
 
 [mesos_master]
-mesos_master_1 ansible_host=127.0.0.1 ansible_port=2241 zookeeper_id=1 aurora_hostname=mesos-master-1
-mesos_master_2 ansible_host=127.0.0.1 ansible_port=2242 zookeeper_id=2 aurora_hostname=mesos-master-2
-mesos_master_3 ansible_host=127.0.0.1 ansible_port=2243 zookeeper_id=3 aurora_hostname=mesos-master-3
+mesos_master_1 ansible_host=127.0.0.1 ansible_port=2241 zookeeper_id=1 aurora_hostname=10.0.1.31
+mesos_master_2 ansible_host=127.0.0.1 ansible_port=2242 zookeeper_id=2 aurora_hostname=10.0.1.32
+mesos_master_3 ansible_host=127.0.0.1 ansible_port=2243 zookeeper_id=3 aurora_hostname=10.0.1.33
 
 [mesos_agent]
-mesos_agent_1 ansible_host=127.0.0.1 ansible_port=2231 aurora_hostname=mesos_agent_1
-mesos_agent_2 ansible_host=127.0.0.1 ansible_port=2232 aurora_hostname=mesos_agent_2
-mesos_agent_3 ansible_host=127.0.0.1 ansible_port=2233 aurora_hostname=mesos_agent_3
+mesos_agent_1 ansible_host=127.0.0.1 ansible_port=2231 aurora_hostname=10.0.1.34
+mesos_agent_2 ansible_host=127.0.0.1 ansible_port=2232 aurora_hostname=10.0.1.35
+mesos_agent_3 ansible_host=127.0.0.1 ansible_port=2233 aurora_hostname=10.0.1.36
 
 [mesos:children]
 mesos_master
