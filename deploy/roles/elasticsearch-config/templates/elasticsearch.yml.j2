@@ -104,7 +104,7 @@ discovery.zen.minimum_master_nodes: {{ es_majority_num }}
 #
 
 discovery.zen.ping.multicast.enabled: false
-discovery.zen.ping.unicast.hosts: {% if es_ansible_group in groups %}[{% for host in groups[es_ansible_group] %}"{{ hostvars[host]['ansible_ssh_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]{% else %}[127.0.0.1]{% endif %}
+discovery.zen.ping.unicast.hosts: {% if es_ansible_group in groups %}[{% for host in groups[es_ansible_group] %}"{{ hostvars[host]['es_host'] }}"{% if not loop.last %},{% endif %}{% endfor %}]{% else %}[127.0.0.1]{% endif %}
 
 # ---------------------------------- Various -----------------------------------
 #

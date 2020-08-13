@@ -10,3 +10,6 @@
     - elasticsearch
     - {role: log-courier, when: "install_logstash"}
     - elasticsearch-config
+  vars:
+    iptables_config: iptables_config and ansible_virtualization_type != "docker"
+
