@@ -70,7 +70,7 @@ bootstrap.mlockall: {{ es_mlockall }}
 # <http://www.elastic.co/guide/en/elasticsearch/reference/current/modules-network.html>
 #
 
-network.host: {{ ansible_ssh_host }}
+network.host: 0.0.0.0 # localhost for kibana
 
 # ---------------------------------- Gateway -----------------------------------
 #

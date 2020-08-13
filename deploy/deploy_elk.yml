@@ -5,10 +5,12 @@
   roles:
     - common
     - {role: puppet_disable, when: "disable_puppet"}
-    - {role: iptables, when: "iptables_config"}
+    - {role: iptables, when: "iptables_config and ansible_virtualization_type != 'docker'"}
     - {role: epel, when: "use_epel and not 'production' in group_names"}
     - jdk
     - elasticsearch
+  vars:
+    iptables_config: iptables_config and ansible_virtualization_type != "docker"
 
 - hosts: elk
   become: yes
