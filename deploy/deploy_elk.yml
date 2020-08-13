@@ -50,3 +50,5 @@
     - kibana
     - kibana-config
     - {role: log-courier, when: "install_logstash"}
+  vars:
+    iptables_config: iptables_config and ansible_virtualization_type != "docker"
