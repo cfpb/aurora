@@ -1,8 +1,8 @@
 ---
 - name: restart mesos-agent
-  service:
-      name: mesos-slave
-      state: restarted
+  systemd:
+     name: mesos-slave
+     state: restarted
   tags:
     - mesos
     - mesos-agent

@@ -59,7 +59,7 @@
     - redis
 
 - name: Ensure redis is running
-  service:
+  systemd:
    name: "{{ redis_service }}"
    state: started
    enabled: yes

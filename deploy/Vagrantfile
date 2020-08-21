@@ -879,7 +879,7 @@ Vagrant.configure(2) do |config|
 
       mm_config.vm.provider "docker" do |d|
         d.name = "mesos-master-#{id}"
-        d.build_dir = "./docker/centos6"
+        d.build_dir = "./docker/centos7"
         d.has_ssh = true
         d.remains_running = true
         d.expose = [ 22, 5050, 8080 ]
@@ -888,7 +888,7 @@ Vagrant.configure(2) do |config|
         ]
         d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
                          '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
-                         '--memory', '3048M',
+                         '--memory', '3048M', '--privileged',
         ]
       end
 
@@ -925,7 +925,7 @@ Vagrant.configure(2) do |config|
 
       mm_config.vm.provider "docker" do |d|
         d.name = "mesos-agent-#{id}"
-        d.build_dir = "./docker/centos6"
+        d.build_dir = "./docker/centos7"
         d.has_ssh = true
         d.remains_running = true
         d.volumes = [
