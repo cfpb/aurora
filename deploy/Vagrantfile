@@ -937,6 +937,10 @@ Vagrant.configure(2) do |config|
                          #'--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
       end
 
+      # mesos-agent get's confused where it's cgroup is inside docker
+      mm_config.vm.provision "shell",
+        inline: "mkdir -p /cgroup/systemd && mount --bind /sys/fs/cgroup/systemd/docker/$( basename $( cat /proc/1/cpuset ) ) /cgroup/systemd"
+
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_agent.yml"
         ansible.inventory_path = "vagrant_hosts"
