@@ -1,0 +1,107 @@
+---
+- name: Install license
+  command: rstudio-server license-manager activate {{ rstudio_server_key }}
+  when: rstudio_server_key is defined
+  notify:
+    - restart rstudio-server
+  tags:
+    - rstudio-server
+
+- name: Add ip whitelist
+  template:
+    src: ip-rules.j2
+    dest: /etc/rstudio/ip-rules
+  with_items: "{{ groups['proxy_server']|default(omit) }}"
+  when: deploy_iptables and envir != "dev.local"
+  notify:
+    - restart rstudio-server
+  tags:
+    - rstudio-server
+
+- name: Copy over pam.d config from login (usually works)
+  shell: cp -f /etc/pam.d/login /etc/pam.d/rstudio
+  tags:
+    - rstudio-server
+
+- name: Add group rstudio-server
+  group:
+    name: rstudio-server
+    state: present
+
+- name: Add user rstudio-server if doesn't exist
+  user:
+    name: rstudio-server
+    state: present
+    groups: rstudio-server
+
+- name: Create folder for monitoring data
+  file:
+    dest: "{{ item }}"
+    state: directory
+    owner: rstudio-server
+    group: rstudio-server
+  with_items:
+    - /opt/rstudio-server
+    - /opt/rstudio-server/monitoring-data
+  tags:
+    - rstudio-server
+
+- name: Create /etc/rstudio folder
+  file:
+    path: /etc/rstudio
+    state: directory
+
+- name: Add server config file
+  template:
+    src: rserver.conf.j2
+    dest: /etc/rstudio/rserver.conf
+  notify:
+    - restart rstudio-server
+  tags:
+    - rstudio-server
+
+- name: Add rsession config file
+  template:
+    src: rsession.conf.j2
+    dest: /etc/rstudio/rsession.conf
+  notify:
+    - restart rstudio-server
+  tags:
+    - rstudio-server
+
+- name: Add required user settings
+  template:
+    src: rstudio_server.sh.j2
+    dest: /etc/profile.d/rstudio_server.sh
+    mode: 0644
+  tags:
+    - rstudio-server
+
+- name: Add secure-proxy-user-header
+  template:
+    src: secure-proxy-user-header.j2
+    dest: /etc/rstudio/secure-proxy-user-header
+    mode: 0600
+  tags:
+    - rstudio-server
+
+- name: Open R Studio Server port in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport {{ rstudio_port }} -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+  when: iptables_config and deploy_iptables and envir != "dev.local"
+  with_items: "{{ groups['proxy_server']|default(omit) }}"
+  tags:
+    - rstudio-server
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config and deploy_iptables and envir != "dev.local"
+  tags:
+    - rstudio-server
+
+- name: Add login html
+  template:
+    src: login.html.j2
+    dest: /etc/rstudio/login.html
+    mode: 0644
+  tags:
+    - rstudio-server

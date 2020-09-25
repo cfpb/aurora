@@ -1,0 +1,54 @@
+# main.yml - Handlers that are used by other roles should be placed here
+---
+#- include_tasks: rhel6.yml
+#  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_version == 6
+
+#- include_tasks: rhel7.yml
+  #  when: (ansible_distribution == 'CentOS' or ansible_distribution == 'Red Hat Enterprise Linux') and ansible_distribution_version == 7
+- name: restart postgres
+  become: True
+  systemd:
+    name: "{{ pp_servicename }}"
+    state: restarted
+    daemon_reload: yes
+
+- name: restart iptables
+  service:
+    name: iptables
+    state: restarted
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: restart rstudio-server
+  command: systemctl restart rstudio-server
+# command: restart rstudio-server
+
+- name: restart elasticsearch
+  service:
+    name: elasticsearch
+    state: restarted
+
+- name: restart kibana
+  service:
+    name: kibana
+    state: restarted
+
+- name: restart logstash
+  service:
+    name: logstash
+    state: restarted
+
+- name: restart shiny-server
+  command: "systemctl restart shiny-server"
+
+- name: restart apache
+  shell: "systemctl restart httpd24-httpd"
+# shell: "service httpd24-httpd restart"
+
+- name: restart sas-server
+  service:
+    name: sas-studio
+    state: restarted

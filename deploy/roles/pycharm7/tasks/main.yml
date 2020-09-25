@@ -1,0 +1,42 @@
+---
+- name: Extract pycharm to destination
+  unarchive:
+    copy: no
+    src: "{{ pycharm_download_url }}"
+    dest: /opt/
+    mode: 0644
+    creates: /opt/{{ pycharm_path }}
+  tags:
+    - pycharm
+
+- name: Ensure read permissions are set
+  shell: "chmod a+r /opt/{{ pycharm_path }}/ -R"
+  tags:
+    - pycharm
+
+- name: Ensure directories can be displayed
+  shell: "find /opt/{{ pycharm_path }}/ -type d -exec chmod a+x {} +"
+  tags:
+    - pycharm
+
+- name: Ensure executables are executable
+  shell: "chmod a+x /opt/{{ pycharm_path }}/bin/{{ item }}"
+  with_items:
+    - "pycharm.sh"
+    - "inspect.sh"
+    - "fsnotifier"
+    - "fsnotifier64"
+  tags:
+    - pycharm
+
+- name:  Create syslinks for executables
+  file:
+    src: "/opt/{{ pycharm_path }}/bin/{{ item }}.sh"
+    dest: "/usr/local/bin/{{ item }}"
+    state: link
+    force: yes
+  with_items:
+    - "pycharm"
+    - "inspect"
+  tags:
+    - pycharm

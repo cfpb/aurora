@@ -1,0 +1,70 @@
+---
+- name: Install R packages for Shiny
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) install.packages(pkgs='{{item}}', repos=c('http://cran.rstudio.com/'))"
+  with_items:
+    - shiny
+    - rmarkdown
+  tags:
+    - shiny
+  when: install_r_packages
+
+- name: Create needed symlinks
+  file:
+    src: "/usr/lib64/{{ item }}.so"
+    dest: "/usr/lib64/{{ item }}.so.6"
+    state: link
+  with_items:
+    - libssl
+    - libcrypto
+  tags:
+    - shiny
+  when: install_r_packages
+
+- name: Install R Shiny Server
+  yum:
+    name: "{{ r_shiny_server_package }}"
+    disable_gpg_check: yes
+    state: "{{ r_shiny_server_package_state }}"
+  tags:
+    - shiny
+
+- name: Install R Shiny Server license, if present
+  command: /opt/shiny-server/bin/license-manager{% if proxy_host and proxy_port %} --proxy=http://{{ proxy_host }}:{{ proxy_port }}/{% endif %} activate {{ r_shiny_server_license }}
+  when: r_shiny_server_license is defined
+  notify:
+    - restart shiny-server
+  tags:
+    - shiny
+
+- name: Make shiny app directory
+  file:
+    dest: /opt/shiny-server
+    state: directory
+  tags:
+    - shiny
+
+- name: Open port 3838 in iptables
+  command: "iptables -I {{ iptables_chain }} 3 -m state --state NEW -p tcp --dport 3838 -s {{ hostvars[item]['ansible_ssh_host'] }} -j ACCEPT"
+  when: iptables_config and deploy_iptables and envir != "dev.local"
+  with_items: "{{ groups['proxy_server']|default(omit) }}"
+  tags:
+    - shiny
+
+- name: Save rules
+  command: "/sbin/service iptables save"
+  when: iptables_config and deploy_iptables
+  tags:
+    - shiny
+
+#- name: Create upstart directory
+# file:
+#   dest: /etc/init
+#   state: directory
+# when: envir == "dev.local"
+
+#- name: Install shiny-server upstart script
+# template:
+#   src: shiny-server.conf.j2
+#   dest: /etc/init/shiny-server.conf
+# notify:
+#     - restart shiny-server

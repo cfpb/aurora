@@ -1,0 +1,7 @@
+---
+pycharm_download_url: "https://download.jetbrains.com/python/pycharm-community-2019.2.2.tar.gz"
+pycharm_path: pycharm-community-2019.2.2
+#pycharm_download_url: "http://download.jetbrains.com/python/pycharm-community-4.5.5.tar.gz"
+#pycharm_path: pycharm-community-4.5.5
+pycharm_install_directory: /usr/local/pycharm
+pycharm_local_bin_directory: /artifacts

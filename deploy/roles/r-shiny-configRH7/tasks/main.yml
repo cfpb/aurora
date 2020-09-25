@@ -1,0 +1,27 @@
+---
+- name: Create app directory
+  file:
+    dest: /opt/shiny-server/apps
+    state: directory
+    mode: 0755
+  tags:
+    - shiny
+    - config
+
+- name: Load config file
+  template:
+    src: shiny-server.conf.j2
+    dest: /etc/shiny-server/shiny-server.conf
+  tags:
+    - shiny
+    - config
+  notify:
+    - restart shiny-server
+
+- name: Ensure Shiny Server is started
+  shell: "systemctl start shiny-server"
+# shell: "start shiny-server"
+  register: shiny_result
+  failed_when: shiny_result.rc != 0 and "already running" not in shiny_result.stderr
+  tags:
+    - shiny

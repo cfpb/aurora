@@ -950,6 +950,11 @@ Vagrant.configure(2) do |config|
         ansible.limit = ansible_limit
         ansible.skip_tags = ansible_skip
       end
+
+      # Testing Luan's python playbook
+      mm_config.vm.provision "py_main", type: "ansible" do |ansible|
+        ansible.playbook = "deploy_PythonTest.yml"
+      end
     end
   end
 end

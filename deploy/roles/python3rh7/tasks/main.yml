@@ -1,0 +1,34 @@
+# main.yml - Install Python 3.6 from RedHat Satellite
+---
+- name: Install Python36 packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - python36
+    - python36-PyYAML
+    - python36-setuptools
+    - python36-devel
+    - python36-libs
+    - python36-tkinter
+    - rh-python36-numpy
+    - rh-python36-scipy
+    - rh-python36-python-pip
+    - rh-python36-python-tools
+    - rh-python36-python-six
+    - rh-python36-python-virtualenv
+
+#- name: Pip install virtualenvwrapper
+#  pip: executable=pip3
+#    name: virtualenvwrapper
+#    state: present
+- name: SCL Enabled Pip Install Upgrade Pip
+  shell: |
+    scl enable rh-python36 -- pip install --upgrade pip
+  become: yes
+  become_method: sudo
+
+#- name: Install pip
+#  easy_install:
+#    name: pip
+#    executable: easy_install-3.6
