@@ -30,6 +30,13 @@
   tags:
     - rstudio-server
 
+- name: Take server online
+  systemd:
+    name: rstudio-server
+    state: stopped
+    enabled: yes
+  when: update_rstudio
+
 - name: Verify install
   command: "rstudio-server verify-installation"
   when: update_rstudio
@@ -37,10 +44,18 @@
     - rstudio-server
 
 - name: Take server online
-  command: "rstudio-server online"
+  systemd:
+    name: rstudio-server
+    state: started
+    enabled: yes
   when: update_rstudio
-  tags:
-    - rstudio-server
+
+
+#- name: Take server online
+#  command: "rstudio-server online"
+#  when: update_rstudio
+#  tags:
+#    - rstudio-server
 
 - name: Install pip (driver dependency)
   yum:
