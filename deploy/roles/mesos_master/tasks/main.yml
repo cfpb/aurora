@@ -94,6 +94,7 @@
     - marathon
 
 ### CONFIGURE ZOOKEEPER
+
 - name: Configure zookeeper with the IP's of all masters
   template:
     src: zk.j2
@@ -189,7 +190,7 @@
 - name: Add the ip address to the mesos-master folder
   copy:
     dest: /etc/mesos-master/ip
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-master
   tags:
@@ -199,7 +200,7 @@
 - name: Add the ip to the hostname file too
   copy:
     dest: /etc/mesos-master/hostname
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-master
   tags:
@@ -295,7 +296,7 @@
 - name: Copy hostname file to Marathon config
   copy:
     dest: /etc/marathon/conf/hostname
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart marathon
   tags:

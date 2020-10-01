@@ -6,7 +6,9 @@
     state: restarted
 
 - name: restart mesos-master
-  command: restart mesos-master
+  service:
+     name: mesos-master
+     state: restarted
 
 - name: restart marathon agent
   command: restart marathon

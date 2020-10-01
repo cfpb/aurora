@@ -36,4 +36,5 @@
     - name: Install Kazoo (required by Znode ansible module)
       pip:
         name: kazoo
+        version: "2.6.1"
         umask: "0022"

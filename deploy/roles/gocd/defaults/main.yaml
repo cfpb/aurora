@@ -1,8 +1,6 @@
 ---
-go_server_address: 10.0.1.26
-go_server_port: 8153
-go_server_url: https://10.0.1.26:8153/go
-gocd_agent_package_url: /artifacts/go-agent-17.10.0-5380.noarch.rpm
+go_server_url: https://10.0.1.26:8154/go
+gocd_agent_package_url: https://download.gocd.org/binaries/17.10.0-5380/rpm/go-agent-17.10.0-5380.noarch.rpm
 gocd_agent_package_name: go-agent-17.10.0-5380.noarch.rpm
 gocd_agent_package_path: /tmp
 gocd_agent_checksum: 0b1c82949e46b58c3510269baff31cfc77a7a638

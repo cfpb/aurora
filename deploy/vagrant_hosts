@@ -73,10 +73,10 @@ research_sas
 
 ; Pipeline Component
 [ci_server]
-ci_server ansible_ssh_host=10.0.1.26
+ci_server ansible_ssh_host=127.0.0.1 ansible_ssh_port=2211
 
 [ci_agent]
-ci_agent_1 ansible_ssh_host=10.0.1.27
+ci_agent_1 ansible_ssh_host=127.0.0.1 ansible_ssh_port=2212
 
 [ci_terminal]
 ci_terminal_1 ansible_ssh_host=10.0.1.28
@@ -123,14 +123,14 @@ db_terminal
 ; Container Component
 
 [mesos_master]
-mesos_master_1 ansible_ssh_host=10.0.1.31 zookeeper_id=1
-mesos_master_2 ansible_ssh_host=10.0.1.32 zookeeper_id=2
-mesos_master_3 ansible_ssh_host=10.0.1.33 zookeeper_id=3
+mesos_master_1 ansible_host=127.0.0.1 ansible_port=2241 zookeeper_id=1 aurora_hostname=10.0.1.31
+mesos_master_2 ansible_host=127.0.0.1 ansible_port=2242 zookeeper_id=2 aurora_hostname=10.0.1.32
+mesos_master_3 ansible_host=127.0.0.1 ansible_port=2243 zookeeper_id=3 aurora_hostname=10.0.1.33
 
 [mesos_agent]
-mesos_agent_1 ansible_ssh_host=10.0.1.34
-mesos_agent_2 ansible_ssh_host=10.0.1.35
-mesos_agent_3 ansible_ssh_host=10.0.1.36
+mesos_agent_1 ansible_host=127.0.0.1 ansible_port=2231 aurora_hostname=10.0.1.34
+mesos_agent_2 ansible_host=127.0.0.1 ansible_port=2232 aurora_hostname=10.0.1.35
+mesos_agent_3 ansible_host=127.0.0.1 ansible_port=2233 aurora_hostname=10.0.1.36
 
 [mesos:children]
 mesos_master

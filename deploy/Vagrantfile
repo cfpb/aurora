@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
   ########################
 
   # GlusterFS File Server 1
-  disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
+  # disk_file_1 = File.join(VAGRANT_ROOT, 'gfs_brick_1.vdi')
   config.vm.define :file_server_1 do |fs_config|
     #fs_config.vm.box = "bento/centos-6.10"
     fs_config.vm.host_name = "file-server-1.test.dev"
@@ -51,7 +51,7 @@ Vagrant.configure(2) do |config|
     #end
 
     fs_config.vm.provider "docker" do |d|
-      d.build_dir = "."
+      d.build_dir = "./docker/centos7"
       d.has_ssh = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
@@ -95,7 +95,7 @@ Vagrant.configure(2) do |config|
     #end
 
     fs_config.vm.provider "docker" do |d|
-      d.build_dir = "."
+      d.build_dir = "./docker/centos7"
       d.has_ssh = true
       d.volumes = [
         "/sys/fs/cgroup:/sys/fs/cgroup:ro"
@@ -157,7 +157,7 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
-    # adterm_config.vm.network :private_network, ip: "10.0.1.2"
+    adterm_config.vm.network :private_network, ip: "10.0.1.2"
   end
 
   # Kerberos Server VM - for testing purposes only
@@ -562,10 +562,24 @@ Vagrant.configure(2) do |config|
   ###########################
 
   config.vm.define :ci_server do |server|
-    server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-server.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.26", name: "vagrant-network", docker_connect__hostname: "ci-server.test.dev"
+    server.vm.network "forwarded_port", guest: 22, host: 2211
+    server.vm.network "forwarded_port", guest: 8153, host: 8153
     server.ssh.forward_agent = true
+
+    server.vm.provider "docker" do |d|
+      d.name = "ci-server"
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.remains_running = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+    end
+
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_gocd.yml"
@@ -576,15 +590,25 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.26"
   end
 
   config.vm.define :ci_agent_1 do |server|
-    server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-agent-1.test.dev"
-
+    server.vm.network :private_network, ip: "10.0.1.27", name: "vagrant-network", docker_connect__hostname: "ci-agent-1.test.dev"
+    server.vm.network "forwarded_port", guest: 22, host: 2212
     server.ssh.forward_agent = true
+
+    server.vm.provider "docker" do |d|
+      d.name = "ci-agent-1"
+      d.build_dir = "./docker/centos6"
+      d.has_ssh = true
+      d.remains_running = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+    end
 
     server.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_gocd.yml"
@@ -595,14 +619,11 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    server.vm.network :private_network, ip: "10.0.1.27"
   end
 
   config.vm.define :ci_terminal_1 do |server|
     server.vm.box = "bento/centos-6.10"
     server.vm.host_name = "ci-terminal-1.test.dev"
-
     server.ssh.forward_agent = true
 
     server.vm.provision "ansible" do |ansible|
@@ -866,11 +887,30 @@ Vagrant.configure(2) do |config|
   mesos_masters.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos_master_#{id}" do |mm_config|
-      mm_config.vm.box = "bento/centos-6.10"
+      #mm_config.vm.box = "bento/centos-6.10"
       mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
+      #mm_config.vm.network :private_network, ip: ip, name: "vagrant-network", docker_connect__hostname: "mesos-master-#{id}.test.dev"
+      mm_config.vm.network "forwarded_port", guest: 22, host: "224#{id}"
+      mm_config.vm.network "forwarded_port", guest: 5050, host: "905#{id}"
+      mm_config.vm.network "forwarded_port", guest: 8080, host: "808#{id}"
       mm_config.vm.network :private_network, ip: ip
 
       mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provider "docker" do |d|
+        d.name = "mesos-master-#{id}"
+        d.build_dir = "./docker/centos6"
+        d.has_ssh = true
+        d.remains_running = true
+        d.expose = [ 22, 5050, 8080 ]
+        d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        ]
+        d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                         '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                         '--memory', '3048M',
+        ]
+      end
 
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_master.yml"
@@ -895,11 +935,27 @@ Vagrant.configure(2) do |config|
   mesos_agents.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos_agent_#{id}" do |mm_config|
-      mm_config.vm.box = "bento/centos-6.10"
+      #mm_config.vm.box = "bento/centos-6.10"
       mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
+      #mm_config.vm.network :private_network, ip: ip, name: "vagrant-network", docker_connect__hostname: "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
+      mm_config.vm.network "forwarded_port", guest: 22, host: "223#{id}"
 
       mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provider "docker" do |d|
+        d.name = "mesos-agent-#{id}"
+        d.build_dir = "./docker/centos6"
+        d.has_ssh = true
+        d.remains_running = true
+        d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro",
+        #  "mesos_vols_agent_1:/opt"
+        ]
+        d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                         '--privileged' ]
+                         #'--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+      end
 
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_agent.yml"
