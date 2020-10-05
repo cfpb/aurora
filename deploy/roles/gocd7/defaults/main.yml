@@ -1,0 +1,29 @@
+---
+go_server_address: 10.0.1.26
+go_server_port: 8153
+go_server_url: https://10.0.1.26:8153/go
+gocd_server_package_url: https://download.gocd.org/binaries/19.7.0-9567/rpm/go-server-19.7.0-9567.noarch.rpm
+gocd_server_checksum: b9c17b0b3657b668b3cdbc79628dee11c45cd1c565c9e3ad3fa2b79e4e4006d
+#gocd_agent_package_url: https://download.gocd.io/binaries/17.10.0-5380/rpm/go-agent-17.10.0-5380.noarch.rpm
+gocd_agent_package_url: https://download.gocd.org/binaries/19.7.0-9567/rpm/go-agent-19.7.0-9567.noarch.rpm 
+#gocd_agent_package_name: go-agent-17.10.0-5380.noarch.rpm
+gocd_agent_package_name: go-agent-19.7.0-9567.noarch.rpm
+gocd_agent_package_path: /tmp
+#gocd_agent_checksum: ce65027c2e3f3ec4768071758dd3ac8b2a846b90
+gocd_agent_checksum: d1cf1228c68b8d4dce3d6551dbea18a7dc5694e293d7822ce96fccf5a3459b2c
+gocd_agent_work_dir: /var/lib/go-agent
+gocd_agent_mem: "128m"
+gocd_agent_max_mem: "256m"
+gocd_upgrade: False
+restart_gocd_server: True
+install_python: False
+
+gocd_rpms:
+  - screen
+  - git
+  - vim
+  - emacs
+  - "@Development tools"
+
+gocd_log_file_locations:
+  - /var/log/go-agent

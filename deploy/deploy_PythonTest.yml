@@ -10,12 +10,12 @@
   become_method: sudo
 
   roles:
+    - common7
+    - common
     - epel7
 #   - emacsrh7
-
     - openjdk1.8
- 
-    #- odbc7
+    - odbc7
     - postgresql-client7
 
     - devtools7   # CHECK!
@@ -23,8 +23,8 @@
     - python3rh7
     - pyenvrh7
     - pycharm7
-    #- gocd7
-    #- stattransfer14
+    - gocd7
+    - stattransfer14
     - r_rh7
     - r-studio-desktoprh7
     - r-studio-serverrh7

@@ -1,0 +1,27 @@
+---
+#Required for computer to make an ssl connection for postgres (since they sign their cert with letsencrypt)
+- name: Install cert utilities
+  yum: 
+    name: ca-certificates
+    state: latest
+  become: yes
+  become_method: sudo
+
+- name: Get JDBC driver JAR file for postgresql
+  get_url:
+    url: "{{ jdbc_postgres_url }}"
+    dest: "{{ jre_lib_path }}/"
+    mode: 0644
+
+- name: Get the JDBC driver for SQLServer
+  unarchive:
+    src: "{{ jdbc_sql_url }}"
+    dest: "/tmp/"
+    copy: no
+
+- name: Move the JAR file to the right location
+  copy:
+    src: "/tmp/sqljdbc_6.0/enu/jre8/sqljdbc42.jar"
+    dest: "{{ jre_lib_path }}"
+    remote_src: yes
+    mode: 0644

@@ -1,0 +1,9 @@
+export GO_SERVER={{ go_server_address }}
+export GO_SERVER_PORT={{ go_server_port }}
+export GO_SERVER_URL={{ go_server_url }}
+export AGENT_WORK_DIR={{ gocd_agent_work_dir }}
+export AGENT_MEM={{ gocd_agent_mem }}
+export AGENT_MAX_MEM={{ gocd_agent_max_mem }}
+export JAVA_HOME={{ java_home_path }}
+DAEMON=Y
+VNC=N
