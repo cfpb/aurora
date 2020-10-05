@@ -15,14 +15,15 @@
   serial: 1
   max_fail_percentage: 10
   roles:
-    - common
+    # - common
     - devtools
+    - devtools7
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
     # - pentaho Per Tim 11.18.19 -- Pentaho not used.
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
+    #- {role: python, when: "custom_repo"}
+    #- {role: python-build, when: "not custom_repo"}
     - python36-scl
     - python-libs
     - odbc
@@ -30,6 +31,7 @@
     - sqitch
     - nodejs
     - maven
+    - tesseract
     #- julia
 
 - hosts: ci_agent
