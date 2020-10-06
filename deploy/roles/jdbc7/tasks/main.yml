@@ -21,7 +21,8 @@
 
 - name: Move the JAR file to the right location
   copy:
-    src: "/tmp/sqljdbc_6.0/enu/jre8/sqljdbc42.jar"
+    #src: "/tmp/sqljdbc_6.0/enu/jre8/sqljdbc42.jar"
+    src: "/tmp/sqljdbc_7.2/enu/mssql-jdbc-7.2.2.jre8.jar"
     dest: "{{ jre_lib_path }}"
     remote_src: yes
     mode: 0644
