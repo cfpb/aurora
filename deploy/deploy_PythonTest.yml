@@ -5,7 +5,6 @@
     custom_repo: true
     use_epel: true
     deploy_iptables: true
-    envir: dev
   become: yes
   become_method: sudo
 

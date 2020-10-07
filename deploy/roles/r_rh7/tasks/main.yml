@@ -279,7 +279,6 @@
     group: "{{ restricted_group_name }}"
     recurse: yes
   with_items: "{{ r_system_package_dir }}"
-  when: envir != "dev.local"
   tags:
     - r
 
