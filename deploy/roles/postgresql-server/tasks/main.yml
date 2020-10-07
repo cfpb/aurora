@@ -88,7 +88,6 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: ansible_distribution_major_version == "hell_froze_over" # TODO: figure out correct check
   tags:
     - postgresql-server
 

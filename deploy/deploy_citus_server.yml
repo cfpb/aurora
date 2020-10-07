@@ -226,7 +226,6 @@
         mode: "u=rwx,go="
 
     - name: Make postgres@standby trust public key of postgres@coordinator
-      ## delegate_to: central_server_name ## what's this?
       # TODO: add a "when: coord_key.changed
       authorized_key:
          user: "{{ pp_superaccount }}"
