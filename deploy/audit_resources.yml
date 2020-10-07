@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  sudo: no
+  become: no
 
   tasks:
     - name: Make directory for stats

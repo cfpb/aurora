@@ -10,10 +10,10 @@
     - restart go-agent
   tags: gocd
 
-- name: Copy local to remote
-  copy: 
-    src: "{{ gocd_agent_package_url }}"
-    dest: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+- name: Download GoCD Agent RPM
+  shell: "curl -o {{ gocd_agent_package_path }}/{{ gocd_agent_package_name }} {{ gocd_agent_package_url }}"
+  args:
+    creates: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
   tags: gocd
 
 - name: Verify RPM checksum
