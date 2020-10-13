@@ -952,9 +952,15 @@ Vagrant.configure(2) do |config|
       end
 
       # Testing Luan's python playbook
-      mm_config.vm.provision "py_main", type: "ansible" do |ansible|
-        ansible.playbook = "deploy_PythonTest.yml"
-      end
+      #mm_config.vm.provision "py_main", type: "ansible" do |ansible|
+      #  ansible.playbook = "deploy_PythonTest.yml"
+      # ansible.inventory_path = "vagrant_hosts"
+      # ansible.tags = ansible_tags
+      # ansible.verbose = ansible_verbosity
+      # ansible.extra_vars = ansible_extra_vars
+      # ansible.limit = ansible_limit
+      # ansible.skip_tags = ansible_skip
+      #end
     end
   end
 end
