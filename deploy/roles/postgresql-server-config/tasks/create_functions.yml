@@ -12,6 +12,9 @@
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: "{{ database }}"
-    script: "{{ item.script }}"
+    script: "{{ dba_script.script }}"
   with_items: "{{ pp_dba_scripts }}"
+  loop_control:
+    loop_var: dba_script
   check_mode: no
+  changed_when: False

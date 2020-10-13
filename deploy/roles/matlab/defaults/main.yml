@@ -21,6 +21,15 @@ matlab_license_server:       server
 matlab_license_daemon:       daemon
 matlab_license_boot_symlink_src:  etc/lmboot
 matlab_license_down_symlink_src:  etc/lmdown
+
+# Used in the GROUP NAMED_USERS line in the mlm.opt file.
+# A user's operating-system username MUST be listed here to have access to MATLAB.
+# Case does not matter: 'USERNAME', 'UserName', or 'username' will all match 'username'.
+# The number of users listed here must not exceed the number of available license keys.
+matlab_named_users:
+  - dummyusername
+#  - anotherusername
+
 matlab_symlink_boot_dest:    /etc/lmboot_TMW
 matlab_symlink_down_dest:    /etc/lmdown_TMW
 matlab_symlink_dest:         /usr/local/bin/matlab

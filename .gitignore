@@ -92,3 +92,11 @@ local_settings.yml
 #######################
 local_settings.yml
 system_key
+
+*~
+\#*
+pipcache
+yumcache
+
+# This is a generated file, but the initial version is useful and should not change:
+.devcontainer/docker-compose.yml

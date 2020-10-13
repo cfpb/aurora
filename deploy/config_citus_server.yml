@@ -1,0 +1,9 @@
+# config_citus_server.yml
+---
+- hosts: citus
+  become: yes
+  become_method: sudo
+  vars:
+    pp_install: false
+  roles:
+    - postgresql-server-config

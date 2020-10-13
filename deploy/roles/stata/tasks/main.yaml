@@ -1,7 +1,7 @@
 ---
 - name: Verify install directory
   file:
-    path: "{{stata_install_directory}}/"
+    path: "{{ stata_install_directory }}/"
     state: directory
     owner: root
     group: root

@@ -19,7 +19,7 @@
 # listed in a GROUP or HOST_GROUP.  This is not
 # required but it is here to prevent some common errors.
 GROUPCASEINSENSITIVE ON
-GROUP NAMED_USERS kulaevs nelsons fulfords conklingt beckettd
+GROUP NAMED_USERS {{ matlab_named_users|join(' ') }}
 
 INCLUDE MATLAB:asset_info={{matlab_nnu_assetinfo}} GROUP NAMED_USERS
 EXCLUDE MATLAB:asset_info={{matlab_concurrent_assetinfo}} GROUP NAMED_USERS

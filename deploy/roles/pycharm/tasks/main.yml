@@ -1,8 +1,13 @@
 ---
+- name: Download pycharm to remote host
+  shell: "mkdir -p /var/cache/downloads; if [[ ! -f /var/cache/downloads/{{ pycharm_download_basename }} ]]; then curl -L --silent --show-error {{ pycharm_download_url }} -o /var/cache/downloads/{{ pycharm_download_basename }} ; fi"
+  tags:
+    - pycharm
+
 - name: Extract pycharm to destination
   unarchive:
     copy: no
-    src: "{{ pycharm_download_url }}"
+    src: /var/cache/downloads/{{ pycharm_download_basename }}
     dest: /opt/
     mode: 0644
     creates: /opt/{{ pycharm_path }}

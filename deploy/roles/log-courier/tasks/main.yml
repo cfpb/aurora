@@ -12,12 +12,12 @@
 
 - name: Install log-courier
   yum:
-    name: "{{ item }}"
+    name: [
+      'zeromq3',
+      'zeromq3-devel',
+      'log-courier'
+      ]
     state: present
-  with_items:
-    - zeromq3
-    - zeromq3-devel
-    - log-courier
   when: '"elk" in groups'
 
 - name: Install configuration template

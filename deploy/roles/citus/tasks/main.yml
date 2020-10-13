@@ -15,6 +15,7 @@
   args:
     chdir: /tmp/
   when: not custom_repo
+  changed_when: False
   tags:
     - citus
 
@@ -22,9 +23,8 @@
   become: yes
   become_method: sudo
   yum:
-    name: "{{ item }}"
+    name: '{{ citus_pkgs }}'
     state: latest
-  with_items: "{{ citus_pkgs }}"
   tags:
     - citus
 

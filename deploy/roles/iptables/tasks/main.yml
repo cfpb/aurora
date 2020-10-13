@@ -6,7 +6,7 @@
 
 ---
 - import_tasks: rhel_7.yml
-  when: "{{ ansible_distribution_major_version }} == 7"
+  when: ansible_distribution_major_version == "7"
 
 - name: Temporarily allow all
   command: "iptables -P INPUT ACCEPT"
@@ -83,6 +83,12 @@
   yum:
     name: iptables-services
     state: present
+
+# We need initscripts so we can call /sbin/service in the next task
+- name: Ensure initscripts is installed
+  command:
+    cmd: yum -y install initscripts
+    creates: /sbin/service
 
 - name: Save new rules
   command: "/sbin/service iptables save"

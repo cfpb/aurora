@@ -19,3 +19,7 @@
   with_items:
     - iptables
     - ip6tables
+  ignore_errors: yes
+
+- name: DEBUG -- show error log
+  shell: systemctl status ip6tables.service; journalctl -xe

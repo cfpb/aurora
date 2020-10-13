@@ -1,0 +1,13 @@
+---
+# In versions 9.6 and later, archive and hot_standby are still accepted, BUT ARE MAPPED TO replica.
+pp_wal_level: hot_standby
+
+# the standby is hot (i.e. can service read-only queries), so override default:
+pp_hot_standby: on
+
+# the standby does not archive:
+pp_archive_mode: off
+pp_archive_command: ''
+
+# force a logfile segment switch after this number of seconds; 0 disables:
+pp_archive_timeout: 0

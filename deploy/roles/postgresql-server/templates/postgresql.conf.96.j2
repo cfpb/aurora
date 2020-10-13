@@ -150,7 +150,7 @@ vacuum_cost_limit = {{ pp_vacuum_cost_limit }}		# 1-10000 credits
 
 # - Background Writer -
 
-bgwriter_delay = {{ pp_bgwriter_delay}}			# 10-10000ms between rounds
+bgwriter_delay = {{ pp_bgwriter_delay }}			# 10-10000ms between rounds
 bgwriter_lru_maxpages = {{ pp_bgwriter_lru_maxpages }}		# 0-1000 max buffers written/round
 bgwriter_lru_multiplier = {{ pp_bgwriter_lru_multiplier }}		# 0-10.0 multipler on buffers scanned/round
 
@@ -228,7 +228,7 @@ max_replication_slots = {{ pp_max_replication_slots }}	# max number of replicati
 # - Master Server -
 
 # These settings are ignored on a standby server.
-synchronous_standby_names = '{{ pp_syncronous_standby_names }}'
+synchronous_standby_names = '{{ pp_synchronous_standby_names }}'
 # standby servers that provide sync rep
 # comma-separated list of application_name
 # from standby(s); '*' = all
@@ -279,7 +279,7 @@ enable_tidscan = {{ pp_tidscan }}
 
 # - Planner Cost Constants -
 
-seq_page_cost = {{ pp_seq_page_cost	}}	# measured on an arbitrary scale
+seq_page_cost = {{ pp_seq_page_cost }}	# measured on an arbitrary scale
 random_page_cost = {{ pp_random_page_cost }}			# same scale as above
 cpu_tuple_cost = {{ pp_cpu_tuple_cost }}			# same scale as above
 cpu_index_tuple_cost = {{ pp_cpu_index_tuple_cost }}		# same scale as above

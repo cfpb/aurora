@@ -68,6 +68,9 @@ install_eod: False
 # Allow disabling of Python building when needed
 install_python: True
 
+# Indicate whether we're using Docker (default is Vagrant):
+using_docker: False
+
 # Proxy settings
 proxy_host:
 proxy_port:
@@ -216,7 +219,7 @@ pp_superaccount: postgres
 pp_superpassword: password
 
 # PPAS Port
-pp_serverport: 5432
+pp_serverport: "5432"
 
 # Default service account
 deploy_user: vagrant
