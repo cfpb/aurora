@@ -22,8 +22,8 @@
     - {role: iptables, when: "iptables_config"}
     - gocd
     # - pentaho Per Tim 11.18.19 -- Pentaho not used.
-    #- {role: python, when: "custom_repo"}
-    #- {role: python-build, when: "not custom_repo"}
+    - {role: python, when: "custom_repo"}
+    - {role: python-build, when: "not custom_repo"}
     - python36-scl
     - python-libs
     - odbc
