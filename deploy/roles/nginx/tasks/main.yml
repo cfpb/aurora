@@ -87,6 +87,8 @@
   group:
     name: "{{ restricted_group_name }}"
     state: present
+  tags:
+    - nginx
 
 - name: Ensure permissions are correct for Data Admins to view logs
   acl:
@@ -97,6 +99,8 @@
     recursive: yes
     default: yes
     state: present
+  tags:
+    - nginx
 
 - name: Ensure Nginx is started and enabled at boot time, if desired.
   service:

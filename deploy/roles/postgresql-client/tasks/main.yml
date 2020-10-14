@@ -1,15 +1,15 @@
 ---
-- name: Install postgres repository
-  yum:
-    name: "{{ postgres_repository_url }}"
+- name: Install postgres repository key
+  rpm_key:
+    key: "{{ postgres_repository_key_url }}"
     state: present
   when: postgres_install_repository
   tags:
     - postgres_client
 
-- name: Install postgres repository key
-  rpm_key:
-    key: "{{ postgres_repository_key_url }}"
+- name: Install postgres repository
+  yum:
+    name: "{{ postgres_repository_url }}"
     state: present
   when: postgres_install_repository
   tags:
