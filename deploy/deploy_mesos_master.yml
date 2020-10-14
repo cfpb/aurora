@@ -23,7 +23,7 @@
   max_fail_percentage: 30
   roles:
     - {role: iptables, when: "iptables_config"}
-    - { role: epel, when: "use_epel and not 'production' in group_names" } # This is for rhel6 pip
+    - { role: epel, when: "use_epel and ( 'production' in group_names or 'developement in group_names)" } # This is for rhel6 pip
     - common
     - mesos_master
   tasks:
