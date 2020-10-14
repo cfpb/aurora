@@ -20,7 +20,7 @@
     - {role: iptables, when: "iptables_config"}
     #- devtools
     - mesos_agent
-    - { role: epel, when: "use_epel and not ( 'production' in group_names or 'developement in group_names)" }
+    - { role: epel, when: "use_epel and not ( 'production' in group_names or 'developement' in group_names)" }
     - jdk
     - postgresql-client
     - { role: apache, vars: { apache_service_state: "stopped", apache_service_enable: "no" } }
