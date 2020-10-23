@@ -97,3 +97,14 @@
     - ./configure CC={{ CC }} CXX={{ CXX }} --prefix=/usr/local --with-extra-libraries=/usr/local/lib 
     - make
     - make install
+
+- name: "Empty out tessdata"
+  file:
+    path: "{{ tessdata_dir }}"
+    state: absent
+
+- name: "Download all language packs"
+  git:
+    repo: "{{ tesseract_lang_best }}"
+    dest: "{{ tessdata_dir }}"
+    version: master
