@@ -9,8 +9,8 @@
       #- {role: python-build, when: "not custom_repo"}
       - {role: python27-scl, when: "install_python and not custom_repo" }
       - {role: python36-scl, when: "install_python"}
-      - devtools
-      - devtools6
+      - {role: devtools, when: "ansible_distribution_major_version == 6"}
+      - {role: devtools6, when: "ansible_distribution_major_version == 7"}
       - ruby
       - jdk
       - pycharm

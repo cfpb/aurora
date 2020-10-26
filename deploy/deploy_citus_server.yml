@@ -1,6 +1,7 @@
 # deploy_citus_server.yml
 ---
-- hosts: citus
+- name: Install common and optional packages, JDK, Postgresql, and Citus
+  hosts: citus
   become: yes
   become_method: sudo
   serial: 1
@@ -29,7 +30,7 @@
       file:
         dest: "{{ pp_file_transfer_dir }}"
         state: directory
-        mode: 0755
+        mode: "u=rwx,go=rx"
         owner: postgres
         group: postgres
 
@@ -38,29 +39,53 @@
         dest: "{{ pp_datadir }}/file_transfers"
         src: "{{ pp_file_transfer_dir }}"
         state: link
+        owner: postgres
+        group: postgres
 
-    - name: Check WAL directory exists
+    - name: Check whether WAL directory exists under pp_xlogdir
       stat:
         path: "{{ pp_xlogdir }}/{{ pg_wal }}"
-      register: stat_result
+      register: wal_under_pp_xlogdir
 
-    - name: Move WAL directory to proper location
+    - name: Check whether WAL directory exists under pp_datadir
+      stat:
+        path: "{{ pp_datadir }}/{{ pg_wal }}"
+      register: wal_under_pp_datadir
+
+    - name: Warn if directory already exists in both places
+      debug:
+        msg: "WARNING: pg_wal directory already exists under BOTH {{ pp_xlogdir }} and {{ pp_datadir }} ; will leave both in place and (probably) cause problems"
+      when: wal_under_pp_xlogdir.stat.exists == True and wal_under_pp_datadir.stat.exists == True
+
+    - name: Move WAL directory to proper location under pp_xlogdir
       command: "mv {{ pp_datadir }}/{{ pg_wal }} {{ pp_xlogdir }}"
-      when: stat_result.stat.exists == False
+      when: wal_under_pp_xlogdir.stat.exists == False and wal_under_pp_datadir.stat.exists == True
+      # Note: this can only happen when pp_datadir != pp_xlogdir
 
     - name: Ensure symlink exists for WAL directory
       file:
         dest: "{{ pp_datadir }}/{{ pg_wal }}"
         src: "{{ pp_xlogdir }}/{{ pg_wal }}"
         state: link
+        owner: postgres
+        group: postgres
       when: pp_datadir != pp_xlogdir
 
-    - name: Setup host file
+    - name: Set up additions to host file
       lineinfile:
-        dest: /etc/hosts
+        path: /tmp/hosts-temp-generated
         regexp: '[[0-9+]\.]+\s+{{ item }}'
         line: "{{ hostvars[item]['ansible_ssh_host'] }} {{ item }}"
+        create: true
       with_items: "{{ groups['citus'] }}"
+      when: not custom_repo
+
+    - name: DEBUG show hosts and additions
+      shell: cat /etc/hosts && echo && cat /tmp/hosts-temp-generated
+      when: not custom_repo
+
+    - name: Append additions to host file
+      shell: cat /tmp/hosts-temp-generated >> /etc/hosts
       when: not custom_repo
 
     - name: Ensure PG is started
@@ -69,12 +94,15 @@
         state: started
         enabled: yes
 
-- hosts: citus
+- name: Configure Postgresql and Citus
+  hosts: citus
   become: yes
   become_method: sudo
   serial: 1
   roles:
-    - postgresql-server-config
+    - role: postgresql-server-config
+      vars:
+        standby: "{{ 'citus_coordinator_standby' in group_names }}"
     - psql-authnz
   post_tasks:
     - name: Create Citus extension
@@ -87,11 +115,13 @@
         script: CREATE EXTENSION IF NOT EXISTS citus
       register: result
       check_mode: no
-      changed_when: '"already exists" not in result.notices'
+      changed_when: result.notices is defined and "already exists" not in result.notices
       with_items:
         - postgres
+      when: ('citus_coordinator_standby' not in group_names)
 
-- hosts: citus_coordinator
+- name: Set up Citus Coordinator
+  hosts: citus_coordinator
   become: yes
   become_method: sudo
   serial: 1
@@ -103,15 +133,104 @@
         src: "{{ pp_datadir }}/postgresql.conf"
         dest: "/tmp/postgresql.conf"
         remote_src: yes
-        mode: "0600"
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
       changed_when: false
 
     - name: Create archive directory
       file:
         state: directory
         path: "{{ pp_datadir }}/archives"
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go=rx"
+        recurse: yes
 
-- hosts: citus_coordinator_standby
+- name: Set up Citus Coordinator Standby
+  hosts: citus_coordinator_standby
+  pre_tasks:
   serial: 1
   roles:
-    - {role: citus_coordinator_standby, when: "{{ pp_install }}"}
+    # Avoid nasty surprises when someone does "--extra-vars pp_install=False", etc.:
+    - {role: citus_coordinator_standby, when: "pp_install | default(False) | bool"}
+  tags:
+    - standby-play
+
+
+- name: Set up SSH key for Citus Coordinator
+  hosts: citus_coordinator
+  become: yes
+  become_method: sudo
+  serial: 1
+  tags:
+    - ssh-key
+  tasks:
+    - name: Create .ssh directory for user postgres
+      file:
+        state: directory
+        path: "/var/lib/pgsql/.ssh"
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    # Note: the openssh_keypair module requires Ansible 2.8 or later
+    - name: Generate an OpenSSH keypair with the default values (4096 bits, rsa)
+      openssh_keypair:
+        type: rsa # this is the default anyway
+        # TODO: make this a variable
+        path: /var/lib/pgsql/.ssh/id_rsa
+        comment: "key for postgres@{{ ansible_hostname }}"
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
+        state: present # this is the default anyway
+      register: coord_key
+  
+    - name: Fix owner of the generated pub key
+      file:
+        path: /var/lib/pgsql/.ssh/id_rsa.pub
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go=r"
+
+    - name: Add standby's hostkey to postgres@coordinator
+      lineinfile:
+        path: "~postgres/.ssh/known_hosts"
+        insertafter: "{{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public }}"
+        line: "{{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host }} ecdsa-sha2-nistp256 {{ hostvars[groups['citus_coordinator_standby'][0]].ansible_ssh_host_key_ecdsa_public }}"
+        create: true
+        owner: postgres
+        group: postgres
+        mode: "u=rw,go="
+      # In some testing setups, there's no citus_coordinator_standby Ansible group, so there's no hostkey to add
+      when: groups['citus_coordinator_standby'] is defined and groups['citus_coordinator_standby'][0] is defined
+      tags:
+        - add-hostkey
+
+
+- name: Set up SSH key from Coordinator to Standby
+  hosts: citus_coordinator_standby
+  become: yes
+  become_method: sudo
+  serial: 1
+  tags:
+    - ssh-key
+  tasks:
+    - name: Create .ssh directory for user postgres
+      file:
+        state: directory
+        path: "/var/lib/pgsql/.ssh"
+        owner: postgres
+        group: postgres
+        mode: "u=rwx,go="
+
+    - name: Make postgres@standby trust public key of postgres@coordinator
+      # TODO: add a "when: coord_key.changed
+      authorized_key:
+         user: "{{ pp_superaccount }}"
+         key: "{{ hostvars[groups['citus_coordinator'][0]].coord_key.public_key }}"
+         state: present
+         path: /var/lib/pgsql/.ssh/authorized_keys
+         comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname }}"
+

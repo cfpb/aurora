@@ -22,11 +22,11 @@
         disable_gpg_check: yes
 
     - name: Install Ansible in Python 2.7
+      become: no
       pip:
         virtualenv_command: /usr/local/bin/virtualenv
         virtualenv: ~/.virtualenvs/data-platform
         name: ansible
         state: present
         umask: "0022"
-      sudo: no
       when: "install_python"

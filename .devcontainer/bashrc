@@ -1,0 +1,20 @@
+export WORKSPACE=${WORKSPACE:-/workspace}
+cat $WORKSPACE/.devcontainer/welcome.txt
+
+alias deploy='ansible-playbook $WORKSPACE/deploy/deploy_nginx_proxy_server.yml -i $WORKSPACE/deploy/vagrant_hosts --ask-pass --user=super --ask-sudo-pass' 
+alias rbp='make -f $WORKSPACE/.devcontainer/Makefile rebuild'
+alias rebuild='make -f $WORKSPACE/.devcontainer/Makefile rebuild'
+alias inventory='cat $WORKSPACE'"/deploy/vagrant_hosts | grep ssh_host | sed 's/ ansible_ssh_host=/,/' | sed 's/ .*\$//'"
+alias refreshcomposefile='$WORKSPACE/.devcontainer/scripts/rebuild-docker-compose.sh'
+alias runansible='ansible-playbook --ask-pass --ask-sudo-pass --user=super  -i $WORKSPACE/deploy/vagrant_hosts'
+
+alias lf='ls -altr'
+export PROMPT_COMMAND=
+export VERBOSITY=-vv
+export STANDBY=10.0.1.44
+export PAGER=/bin/cat
+pip3 install --upgrade ansible # if it wasn't; takes about 34 seconds
+
+cd $WORKSPACE/deploy
+
+export PS1='[\t \u@dind \W]\$ '

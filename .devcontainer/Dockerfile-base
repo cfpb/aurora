@@ -1,0 +1,21 @@
+FROM centos/systemd
+
+MAINTAINER "Hung Nguyen" <you@example.com>
+#https://hub.docker.com/r/centos/systemd/dockerfile
+RUN yum -y install sudo openssh-server openssh-clients initscripts; systemctl enable sshd.service
+
+# Create user 
+RUN adduser super && \
+    usermod -a -G wheel super && \
+    echo "super:password" | chpasswd
+RUN useradd -ms /bin/bash vagrant
+RUN rm /usr/lib/tmpfiles.d/systemd-nologin.conf
+RUN yum update -y
+
+
+EXPOSE 22
+
+CMD ["/usr/sbin/init"]
+
+#docker run --privileged --name sshserver -v /sys/fs/cgroup:/sys/fs/cgroup:ro   -d  centos7-sshd
+#docker build -f Dockerfile-base --rm --no-cache -t centos7-sshd .
