@@ -32,6 +32,27 @@
     - make
     - make install
 
+- name: Get autoconf-archive
+  get_url:
+    url: "{{ autoconf_archive_url }}"
+    dest: /tmp
+
+- name: Extract autoconf-archive
+  unarchive:
+    copy: no
+    src: /tmp/autoconf-archive-2019.01.06.tar.xz
+    dest: /tmp
+    creates: /tmp/autoconf-archive-2019.01.06/
+
+- name: autoconf-archive - Build and install
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/autoconf-archive-2019.01.06/
+  with_items:
+    - ./configure --prefix=/usr/
+    - make
+    - make install
+
 - name: Download Leptonica
   get_url:
     url: "{{ leptonica_url }}"
