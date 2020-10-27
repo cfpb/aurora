@@ -1,0 +1,22 @@
+---
+- name: Install Python RPM dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ python_dep_packages }}"
+  tags:
+    - python-libs
+
+- name: tst Install Python packages for 27
+  command: scl enable python27 "pip install {{ ' '.join(python_packages) }}"
+  when: install_python
+  tags:
+    - python-libs
+
+- name: Install Python packages for 36
+  command: scl enable rh-python36 "pip install {{ ' '.join(python3_packages) }}"
+  when: install_python
+  tags:
+    - python-libs
+
