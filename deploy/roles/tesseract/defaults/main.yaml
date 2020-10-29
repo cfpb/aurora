@@ -3,7 +3,7 @@ autoconf_url: http://ftp.gnu.org/gnu/autoconf/autoconf-2.69.tar.gz
 autoconf_archive_url: http://gnu.mirror.constant.com/autoconf-archive/autoconf-archive-2019.01.06.tar.xz
 leptonica_url: http://leptonica.org/source/leptonica-1.77.0.tar.gz
 tesseract_url: https://github.com/tesseract-ocr/tesseract/archive/4.0.0.tar.gz
-tesseract_lang_best: https://github.com/tesseract-ocr/tessdata_best
+tesseract_eng_lang: https://github.com/tesseract-ocr/tessdata/raw/master/eng.traineddata
 
 # Directories
 tessdata_dir: /usr/local/share/tessdata

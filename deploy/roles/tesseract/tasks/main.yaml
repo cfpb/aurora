@@ -94,13 +94,7 @@
     - make
     - make install
 
-- name: "Empty out tessdata"
-  file:
-    path: "{{ tessdata_dir }}"
-    state: absent
-
 - name: "Download all language packs"
-  git:
-    repo: "{{ tesseract_lang_best }}"
+  get_url:
+    url: "{{ tesseract_eng_lang }}"
     dest: "{{ tessdata_dir }}"
-    version: master
