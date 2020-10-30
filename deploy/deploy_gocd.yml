@@ -17,6 +17,7 @@
   roles:
     - common
     - devtools
+    - devtools7
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - gocd
@@ -30,6 +31,7 @@
     - sqitch
     - nodejs
     - maven
+    - tesseract
     #- julia
 
 - hosts: ci_agent
