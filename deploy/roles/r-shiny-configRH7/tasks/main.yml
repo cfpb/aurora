@@ -16,12 +16,20 @@
     - shiny
     - config
   notify:
-    - restart shiny-server
+    - restart shiny-server7
 
 - name: Ensure Shiny Server is started
-  shell: "systemctl start shiny-server"
-# shell: "start shiny-server"
-  register: shiny_result
-  failed_when: shiny_result.rc != 0 and "already running" not in shiny_result.stderr
+  systemd:
+     name: shiny-server
+     enabled: True
+     state: started
   tags:
     - shiny
+
+#- name: Ensure Shiny Server is started
+#  shell: "systemctl start shiny-server"
+## shell: "start shiny-server"
+#  register: shiny_result
+#  failed_when: shiny_result.rc != 0 and "already running" not in shiny_result.stderr
+#  tags:
+#    - shiny

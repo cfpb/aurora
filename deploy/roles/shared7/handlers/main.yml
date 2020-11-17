@@ -41,12 +41,20 @@
     name: logstash
     state: restarted
 
-- name: restart shiny-server
-  command: "systemctl restart shiny-server"
+- name: restart shiny-server7
+  #command: "systemctl restart shiny-server"
+  systemd:
+    name: shiny-server
+    state: restarted
+    enabled: True
 
-- name: restart apache
-  shell: "systemctl restart httpd24-httpd"
+- name: restart apache7
+# shell: "systemctl restart httpd24-httpd"
 # shell: "service httpd24-httpd restart"
+  systemd:
+    name: httpd24-httpd
+    state: restarted
+    enabled: True
 
 - name: restart sas-server
   service:

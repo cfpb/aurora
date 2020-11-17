@@ -32,7 +32,7 @@
   command: /opt/shiny-server/bin/license-manager{% if proxy_host and proxy_port %} --proxy=http://{{ proxy_host }}:{{ proxy_port }}/{% endif %} activate {{ r_shiny_server_license }}
   when: r_shiny_server_license is defined
   notify:
-    - restart shiny-server
+    - restart shiny-server7
   tags:
     - shiny
 
