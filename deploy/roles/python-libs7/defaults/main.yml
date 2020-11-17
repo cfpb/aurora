@@ -1,7 +1,7 @@
 python_dep_packages:
   - libxml2
 
-python_packages:
+python2_packages:
   - requests
   - cookiecutter
 
