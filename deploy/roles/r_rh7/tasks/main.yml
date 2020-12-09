@@ -23,22 +23,22 @@
 
 - name: Download texinfo (1) packages for dependency resolution
   get_url:
-    url: http://mirror.centos.org/centos/7/os/x86_64/Packages/texinfo-tex-5.1-5.el7.x86_64.rpm
+    url: http://vault.centos.org/centos/7/os/x86_64/Packages/texinfo-tex-5.1-5.el7.x86_64.rpm
     dest: /opt/texinfo-tex-5.1-5.el7.x86_64.rpm
 
 - name: Download texinfo (2) packages for dependency resolution
   get_url:
-    url: http://mirror.centos.org/centos/7/os/x86_64/Packages/texlive-epsf-doc-svn21461.2.7.4-45.el7.noarch.rpm
+    url: http://vault.centos.org/centos/7/os/x86_64/Packages/texlive-epsf-doc-svn21461.2.7.4-45.el7.noarch.rpm
     dest: /opt/texlive-epsf-doc-svn21461.2.7.4-45.el7.noarch.rpm
 
 - name: Download texinfo (3) packages for dependency resolution
   get_url:
-    url: http://mirror.centos.org/centos/7/os/x86_64/Packages/texlive-epsf-svn21461.2.7.4-45.el7.noarch.rpm
+    url: http://vault.centos.org/centos/7/os/x86_64/Packages/texlive-epsf-svn21461.2.7.4-45.el7.noarch.rpm
     dest: /opt/texlive-epsf-svn21461.2.7.4-45.el7.noarch.rpm
 
 - name: Download texinfo (4) packages for dependency resolution
   get_url:
-    url: http://mirror.centos.org/centos/6/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
+    url: http://vault.centos.org/centos/6/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
     dest: /opt/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
 
 - name: Install texlive packages
