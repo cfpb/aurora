@@ -20,7 +20,7 @@
     - common
     - {role: iptables, when: "iptables_config"}
     - devtools7
-    #- mesos_agent
+    - mesos_agent
     - {role: epel7, when: "use_epel"}
     - openjdk1.8
     - postgresql-client7
