@@ -18,7 +18,7 @@
   roles:
     - common7
     - common
-    - {role: iptables, when: "iptables_config"}
+    - {role: iptables, when: "{{ iptables_config | bool }}"}
     - devtools7
     - mesos_agent
     - {role: epel7, when: "use_epel"}
