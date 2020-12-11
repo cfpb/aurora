@@ -58,6 +58,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_pre_scripts }}"
   check_mode: no
+  when: not standby
 
 - name: Execute configuration scripts
   postgresql_exec:
@@ -69,6 +70,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_setup_scripts }}"
   check_mode: "{{ item.check_mode }}"
+  when: not standby
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -84,6 +86,7 @@
     role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
     state: present
   check_mode: no
+  when: not standby
 
 - name: Create Operational DBA schema
   postgresql_exec:
