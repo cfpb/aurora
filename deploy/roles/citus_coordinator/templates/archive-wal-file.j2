@@ -27,10 +27,12 @@ STANDBY_ADDRESS="{{ citus_coordinator_standby_address }}"
 # check that we can connect first....
 ssh $STANDBY_ADDRESS hostname
 
-cp $fullpath $ARCHIVE_DIR/$filename
+scp -q $fullpath $STANDBY_ADDRESS:$ARCHIVE_DIR/$filename
 
-cd $ARCHIVE_DIR
-rsync -ac . $STANDBY_ADDRESS:$ARCHIVE_DIR/
+# TODO: Remove this code once functionality is confirmed
+# cp $fullpath $ARCHIVE_DIR/$filename
+# cd $ARCHIVE_DIR
+# rsync -ac . $STANDBY_ADDRESS:$ARCHIVE_DIR/
 
 echo $(date +"$DFMT") "archive-wal-file succeeded."
 
