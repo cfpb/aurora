@@ -41,7 +41,7 @@
 # NOTE that the basename of %p will be different from %f; do not
 # expect them to be interchangeable.
 #
-restore_command = 'cp {{ pp_datadir }}/archives/%f "%p"' # e.g. 'cp /mnt/server/archivedir/%f %p'
+restore_command = 'cp {{ pp_datadir }}/archives/%f %p' # e.g. 'cp /mnt/server/archivedir/%f %p'
 #
 #
 # archive_cleanup_command
@@ -49,7 +49,7 @@ restore_command = 'cp {{ pp_datadir }}/archives/%f "%p"' # e.g. 'cp /mnt/server/
 # specifies an optional shell command to execute at every restartpoint.
 # This can be useful for cleaning up the archive of a standby server.
 #
-#archive_cleanup_command = ''
+archive_cleanup_command = 'pg_archivecleanup {{ pp_datadir }}/archives %r'
 #
 # recovery_end_command
 #
