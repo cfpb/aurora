@@ -103,7 +103,6 @@
     - role: postgresql-server-config
       vars:
         standby: "{{ 'citus_coordinator_standby' in group_names }}"
-    - psql-authnz
   post_tasks:
     - name: Create Citus extension
       postgresql_exec:
@@ -127,6 +126,7 @@
   serial: 1
   roles:
     - role: citus_coordinator
+    - role: psql-authnz
   tasks:
     - name: Create back up of postgresql.conf
       copy:
