@@ -232,5 +232,6 @@
          key: "{{ hostvars[groups['citus_coordinator'][0]].coord_key.public_key }}"
          state: present
          path: /var/lib/pgsql/.ssh/authorized_keys
-         comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname }}"
+         # TODO: ansible_hostname was undefined
+         #comment: "postgres@{{ hostvars[groups['citus_coordinator'][0]].ansible_hostname }}"
 
