@@ -30,7 +30,7 @@
     - { role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } }
     - python2rh7
     - python3rh7
-    - pyenvrh7
+    - pyenvRH7
     - python-libs7
     - odbc7
     - jdbc7
