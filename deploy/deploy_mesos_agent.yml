@@ -38,8 +38,8 @@
     - sqitch
     - r_rh7
     # TO TEST - r-libs7
-    - r-shinyrh7
-    - r-shiny-configrh7
+    - r-shinyRH7
+    - r-shiny-configRH7
     - nodejs
     # Not used on prod - redis
     #- julia
