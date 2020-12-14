@@ -1,0 +1,12 @@
+---
+jdk_packages:
+# - java-1.8.0-openjdk-1.8.0.161
+# - java-1.8.0-openjdk-devel-1.8.0.161
+  - java-1.8.0-openjdk
+  - java-1.8.0-openjdk-devel
+  - libselinux-python
+
+java_deploy_options: []
+jre_lib_path: /usr/lib/jvm/java-1.8.0/jre/lib
+java_home_path: /usr/lib/jvm/java-1.8.0
+java_keystore_password: changeit

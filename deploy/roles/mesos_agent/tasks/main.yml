@@ -370,14 +370,14 @@
     - mesos
     - mesos-agent
 
-  when: iptables_config
+  when: iptables_config | bool
   tags:
     - mesos
     - mesos-agent
 
 - name: Save iptables
   command: "/sbin/service iptables save"
-  when: iptables_config
+  when: iptables_config | bool
   notify:
     - restart iptables
   tags:

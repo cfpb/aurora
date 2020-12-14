@@ -1,0 +1,38 @@
+---
+- name: Install specified JDK version and dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+    disable_gpg_check: yes
+  with_items: "{{ jdk_packages }}"
+
+- name: Ensure Java environment variables are set
+  template:
+    src: jdk.sh.j2
+    dest: /etc/profile.d/jdk.sh
+    mode: 0644
+
+- name: Add additional deployment settings
+  lineinfile:
+    dest: "{{ jre_lib_path }}/deployment.properties"
+    line: "{{ item }}"
+    regexp: "{{ item }}"
+    state: present
+    create: yes
+  with_items: "{{ java_deploy_options }}"
+
+- name: Add deployment config
+  template:
+    src: deployment.config
+    dest: "{{ jre_lib_path }}/deployment.config"
+
+- name: Ensure this version is the default
+  alternatives:
+    name: java
+    path: "{{ java_home_path }}/bin/java"
+    link: /usr/bin/java
+
+- name: Ensure nss package is the latest
+  yum:
+    name: nss
+    state: latest

@@ -1,0 +1,6 @@
+{{ template_masthead }}
+
+{% if rstudio_pro %}
+allow-package-installation=0
+{% endif %}
+session-timeout-minutes={{ rstudio_session_timeout }}

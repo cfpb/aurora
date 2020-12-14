@@ -1,0 +1,14 @@
+---
+update_rstudio: True
+#studio_server_package_name: http://download2.rstudio.org/rstudio-server-rhel-1.1.383-x86_64.rpm
+# Open Source
+rstudio_server_package_name: https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel-1.2.5042-x86_64.rpm
+#rstudio_server_package_name: https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel-1.2.1335-x86_64.rpm
+# Professional/Commercial 
+#rstudio_server_package_name: https://download2.rstudio.org/server/centos6/x86_64/rstudio-server-rhel-1.2.1335-x86_64.rpm
+rstudio_server_package_state: present
+
+rstudio_pro_drivers_url: http://drivers.rstudio.org/7C152C12/odbc-install.sh
+rstudio_pro_drivers_folder: /tmp
+rstudio_pro_driver_install_name: odbc-install.sh
+rstudio_pro_driver_install_folder: /opt/rstudio-server/drivers

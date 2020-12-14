@@ -1,0 +1,69 @@
+# Define the user we should use when spawning R Shiny processes
+run_as shiny;
+
+# Define a top-level server which will listen on a port
+server {
+  # Instruct this server to listen on port 3838
+  listen 3838;
+
+  {% if r_shiny_pro %}
+  whitelist_headers {{ shiny_http_headers }};
+  {% endif %}
+
+  {% if r_shiny_pro %}
+  # Fails to work for some reason
+  # app_session_timeout 900
+  {% endif %}
+
+  # Define the location available at the base URL
+  location / {
+    {% if r_shiny_pro %}
+    # Only up tp 20 connections per Shiny process and at most 3 Shiny processes
+    # per application. Proactively spawn a new process when our processes reach
+    # 90% capacity.
+    utilization_scheduler 20 .9 3;
+    {% endif %}
+
+    # Run this location in 'site_dir' mode, which hosts the entire directory
+    # tree at '/srv/shiny-server'
+    # site_dir /opt/shiny-server/apps/;
+
+    run_as :HOME_USER:;
+    user_dirs;
+
+    # Restrict to only allow certain groups to host peronal applications.
+    members_of {{ shiny_groups }};
+
+    # Define where we should put the log files for this location
+    # log_dir /var/log/shiny-server/;
+
+    # Should we list the contents of a (non-Shiny-App) directory when the user
+    # visits the corresponding URL?
+    directory_index off;
+  }
+}
+
+{% if r_shiny_pro %}
+# Setup a flat-file authentication system. {.pro}
+
+{% if shiny_auth_proxy %}
+auth_proxy {{ shiny_auth_proxy_header }};
+{% else %}
+{% if use_active_directory %}
+auth_active_dir ldap://{{ ldap_server }}/dc={{ ldap_server.split(".")[-2] }},dc={{ ldap_server.split(".")[-1] }} {{ domain_name }}{
+  user_search_base "{{ ldap_user_scope }}";
+  user_filter "{{ ldap_user_filter }}";
+  group_search_base "{{ ldap_group_scope }}";
+}
+{% else %}
+auth_passwd_file /etc/shiny-server/passwd;
+{% endif %}
+{% endif %}
+
+# Define a default admin interface to be run on port 4151. {.pro}
+admin {{ shiny_admin_port }} {
+  # Only permit the user named `admin` to access the admin interface.
+  required_user {{ shiny_required_users }};
+  required_group {{ shiny_required_groups }};
+}
+{% endif %}

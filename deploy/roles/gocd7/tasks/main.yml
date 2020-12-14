@@ -1,0 +1,93 @@
+---
+- name: Install all dependencies
+  yum:
+    name: "{{item}}"
+    state: present
+    disable_gpg_check: yes
+  with_items:
+    - "{{ gocd_rpms }}"
+  notify:
+    - restart go-agent
+
+# Does not work due to lack of SNI support in Python < 2.7.9
+#- name: Get GoCD RPM
+#  get_url:
+#    url: "{{ gocd_agent_package_url }}"
+#    dest: /tmp/
+#    checksum: "sha1:{{ gocd_agent_checksum }}"
+#    validate_certs: False
+
+- name: Download GoCD Agent RPM
+  shell: "curl -o {{ gocd_agent_package_path }}/{{ gocd_agent_package_name }} {{ gocd_agent_package_url }}"
+  args:
+    creates: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+
+- name: Verify RPM checksum
+  stat:
+    checksum_algorithm: sha1
+    path: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+    get_md5: False # We want SHA-1 only
+  register: gocd_rpm
+
+- name: Ensure the checksum maches expected value
+  assert:
+    that: "gocd_rpm.stat.checksum == '{{ gocd_agent_checksum }}'"
+
+- name: Install GoCD Agent
+  yum:
+    name: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+    state: present
+  when: not gocd_upgrade
+  notify:
+    - restart go-agent
+
+- name: Upgrade GoCD Agent
+  command: rpm -U "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
+  register: gocd_upgrade_result
+  when: gocd_upgrade
+  failed_when: gocd_upgrade_result.rc != 0 and "is already installed" not in gocd_upgrade_result.stderr
+  notify:
+    - restart go-agent
+
+- name: Ensure working directory exists
+  file:
+    state: directory
+    dest: "{{ gocd_agent_work_dir }}"
+    owner: go
+    group: go
+    mode: 0755
+  notify:
+    - restart go-agent
+
+- name: Replace go-agent file
+  template:
+    src: go-agent
+    dest: /etc/default/go-agent
+  notify:
+    - restart go-agent
+
+- name: Start go-agent
+  service:
+    name: go-agent
+    state: started
+
+- name: Set recursive admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    recursive: yes
+    state: present
+  with_items: "{{ gocd_log_file_locations }}"
+
+- name: Set default admin permissions on log folders
+  acl:
+    path: "{{ item }}"
+    entity: "{{ restricted_group_name }}"
+    etype: group
+    permissions: rX
+    default: yes
+    state: present
+  with_items: "{{ gocd_log_file_locations }}"
+

@@ -1,0 +1,12 @@
+python_dep_packages:
+  - libxml2
+
+python2_packages:
+  - requests
+  - cookiecutter
+
+python3_packages:
+  - requests
+  - cookiecutter
+
+

@@ -1,0 +1,87 @@
+---
+odbc_rpms:
+  - libselinux-python
+  - unixODBC
+  - unixODBC-devel
+  - postgresql-odbc
+
+odbc_ms_sql_hostname: host_ms_sql
+odbc_entries:
+  - {
+    hostname: host1,
+    Server: host1.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+  - {
+    hostname: host2,
+    Server: host2.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+  - {
+    hostname: host3,
+    Server: host3.example.com,
+    Description: /usr/lib64/libtdsodbc.so,
+    Driver: /usr/lib64/libtdsodbc.so
+  }
+
+freetds_entries:
+  - {
+    hostname: odbc_host_1,
+    fqdn: odbc_host_1.example.com,
+    use_ntlmv2: True,
+    port: 1433
+  }
+
+  - {
+    hostname: odbc_host_2,
+    fqdn: odbc_host_2.example.com,
+    use_ntlmv2: False,
+    port: 1533
+  }
+odbc_package_mode: present
+
+odbcinst_entries:
+  - {
+    drivername: "AmazonRedshift",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/amazonredshift/bin/lib/liubamazonredshiftodbc_sb64.so}
+  }
+  - {
+    drivername: "Hive",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/hive/bin/lib/libhiveodbc_sb64.so}
+  }
+  - {
+    drivername: "Impala",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/impala/bin/lib/libimpalaodbc_sb64.so}
+  }
+  - {
+    drivername: "Oracle",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/oracle/bin/lib/liboracleodbc_sb64.so}
+  }
+  - {
+    drivername: "PostgreSQL",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/postgresql/bin/lib/libpostgresqlodbc_sb64.so}
+  }
+  - {
+    drivername: "Salesforce",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/salesforce/bin/lib/libsalesforceodbc_sb64.so}
+  }
+  - {
+    drivername: "SQLServer",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/sqlserver/bin/lib/libsqlserverodbc_sb64.so}
+  }
+  - {
+    drivername: "Teradata",
+    attributes:
+      {Driver: /opt/rstudio-server/drivers/teradata/bin/lib/tdataodbc_sb64.so}
+  }

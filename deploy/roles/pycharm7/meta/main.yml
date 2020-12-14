@@ -1,0 +1,19 @@
+---
+dependencies:
+#- name: check if Python installed
+# stat:
+#   path: /usr/bin/python
+# register: installed_python
+
+#- role: python
+#  when: installed_python == False
+# when: installed_python.stat.exists == False
+
+#- name: check if Java installed
+# stat:
+#   path: /usr/bin/java
+# register: installed_java
+
+#- role: openjdk1.8
+#  when: installed_java == False
+# when: installed_java.stat.exists == False

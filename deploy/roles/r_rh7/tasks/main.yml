@@ -1,0 +1,333 @@
+---
+- name: Ensure umask is correct
+  lineinfile:
+    dest: "~/.bashrc"
+    line: umask 0022
+    regexp: (.*)umask(.*)
+    state: present
+
+- name: check if symbolic link exists
+  stat:
+    path: /opt/rh/devtoolset-2
+  register: devtoolsetlink
+
+- name: create symbolic link for pointers to /opt/rh/devtoolset-2
+  become: yes
+  become_method: sudo
+# shell: ln -s /opt/rh/devtoolset-7 /opt/rh/devtoolset-2
+  file:
+    src: /opt/rh/devtoolset-7
+    dest: /opt/rh/devtoolset-2
+    state: link
+  when: devtoolsetlink.stat.exists == false 
+
+- name: Download texinfo (1) packages for dependency resolution
+  get_url:
+    url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texinfo-tex-5.1-5.el7.x86_64.rpm
+    dest: /opt/texinfo-tex-5.1-5.el7.x86_64.rpm
+
+- name: Download texinfo (2) packages for dependency resolution
+  get_url:
+    url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texlive-epsf-doc-svn21461.2.7.4-43.el7.noarch.rpm
+    dest: /opt/texlive-epsf-doc-svn21461.2.7.4-43.el7.noarch.rpm
+
+- name: Download texinfo (3) packages for dependency resolution
+  get_url:
+    url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texlive-epsf-svn21461.2.7.4-43.el7.noarch.rpm
+    dest: /opt/texlive-epsf-svn21461.2.7.4-43.el7.noarch.rpm
+
+- name: Download texinfo (4) packages for dependency resolution
+  get_url:
+    url: http://vault.centos.org/centos/6/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
+    dest: /opt/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
+
+- name: Install texlive packages
+#  shell:  yum localinstall /opt/texlive* -y
+  yum:
+    name: texlive
+    state: present
+    
+- name: Download texlive dummy for for dependency resolution
+  get_url:
+    url: http://mirrors.ctan.org/support/texlive/texlive-dummy/EnterpriseLinux-7/texlive-dummy-2012a-1.el7.noarch.rpm
+    dest: /opt/texlive-dummy-2012a-1.el7.noarch.rpm
+#  http://mirrors.ctan.org/support/texlive/texlive-dummy/EnterpriseLinux-7/texlive-dummy-2012a-1.el7.noarch.rpm
+
+#- name: Execute texlive dummy rpm
+#  shell: yum localinstall /opt/texlive-dummy-2012a-1.el7.noarch.rpm -y --skip-broken
+  
+- name: Install packages required by R packages
+  vars:
+#   install_RDep: False
+    install_RDep: True
+  yum:
+    name: "{{ item }}"
+#    state: latest
+    state: present
+    disable_gpg_check: yes
+    skip_broken: yes
+#   exclude:  texlive-texmf-xetex
+  with_items: "{{ r_dependencies }}"
+  when: install_RDep
+  register: r_dependencies
+  tags:
+    - r
+#- debug:
+#    msg: "R dependencies {{ r_dependencies }}"
+
+- name: Ensure epel7 latest is installed
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+    disable_gpg_check: yes
+    
+# R is a meta package that ensures R-core, R-core-devel, R-java, libRMath, libRMath-devel
+- name: Install R-core
+  yum:
+    name: R
+    state: "{{ r_core_state }}"
+    disable_gpg_check: yes
+  register: r_core_updated
+  tags:
+    - r
+
+- name: Check if rstudio server is installed
+  yum:
+    list: rstudio-server
+  when: r_core_updated.changed
+  register: rstudio_installed
+  tags:
+    - r
+
+- name: Restart rstudio if R updates and rstudio server is installed
+  command: /bin/true
+  when: "{{ (rstudio_installed is defined and rstudio_installed.results|length > 0 and item['yumstate']=='installed')}}"
+  with_items: "{{ rstudio_installed.results | default([]) }}"
+  notify: restart rstudio-server
+  tags:
+    - r
+
+- name: Install base packages
+  yum:
+    name: "{{ item }}"
+    state: "{{ r_core_state }}"
+    disable_gpg_check: yes
+  with_items:
+#   - R-devel
+    - blas64
+    - blas64-devel
+    - blas64-static
+#   - blas
+#   - blas-devel
+    - lapack64
+    - lapack64-devel
+#   - lapack
+#   - lapack-devel
+    - texinfo
+    - texinfo-tex
+    - libicu
+    - libicu-devel
+  tags:
+    - r
+
+- name: Ensure Java is configured
+  shell: "R CMD javareconf"
+  tags:
+    - r
+
+- name: Ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+  tags:
+    - r
+
+# Get texlive 2019 install
+- name: Get texlive 2019 binary
+  get_url:
+    url: http://mirror.ctan.org/systems/texlive/tlnet/install-tl-unx.tar.gz
+    dest: /tmp/install-tl-unx.tar.gz
+    mode: 0755
+- name: Extract texlive 2019
+  unarchive:
+    src: /tmp/install-tl-unx.tar.gz
+    dest: /opt
+    remote_src: yes
+
+# texlive installation and dependencies for RedHat 7 are old (2012) and require this deployment to help resolve (texlive-texmf-xetex)
+#- name: Install texlive dependency fixes
+#  shell: yum install -y https://rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/t/texlive-2018-25.fc30.noarch.rpm https://rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/t/texlive-obsolete-2018-25.fc30.noarch.rpm --nogpgcheck --skip-broken
+# shell: yum install -y http://rpmfind.net/linux/centos/7.6.1810/os/x86_64/Packages/texlive-2012-43.20130427_r30134.el7.x86_64.rpm
+#  shell: yum install -y texlive2016
+#  shell: yum install -y http://mirror.centos.org/centos/7/os/x86_64/Packages/texlive-xetex-svn26330.0.9997.5-43.el7.noarch.rpm --nogpgcheck
+#  shell:  yum install -y texlive-collection-xetex
+#  shell: yum install -y http://rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-xetex-2007-60.el6_7.x86_64.rpm
+#  shell: yum install -y http://mirrors.ctan.org/support/texlive/texlive-dummy/EnterpriseLinux-7/texlive-dummy-2012a-1.el7.noarch.rpm --exclude=texlive-cyrillic*
+
+#- name: Add texlive repository
+#  yum_repository:
+#    name: texlive
+#    description: texlive repo
+#    baseurl: http://jnovy.fedorapeople.org/texlive/2012/packages.f17/
+#    enabled: yes
+#    gpgcheck: no
+
+#- name: Remove blocking package
+#  shell: yum remove -y texlive-collection-xetex-svn29634.0-43.20130427_r30134.el7.noarch
+  
+#- name: Install dependencies for texlive-texmf-xetex
+#  http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-errata-xetex-2007-7.1.el6.noarch.rpm
+#  http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-2007-39.el6_7.noarch.rpm
+#  http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-PDF-Reuse-0.39-8.fc30.noarch.rpm
+#  http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-Text-PDF-0.31-8.fc30.noarch.rpm
+#  http://www.rpmfind.net/linux/fedora/linux/updates/30/Everything/x86_64/Packages/p/perl-libs-5.28.2-439.fc30.x86_64.rpm
+  
+#- name: Install texlive additional fixes
+#  shell: yum install -y http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-PDF-Reuse-0.39-8.fc30.noarch.rpm http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-2007-39.el6_7.noarch.rpm http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-errata-xetex-2007-7.1.el6.noarch.rpm --nogpgcheck --skip-broken
+# shell: yum install -y http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-PDF-Reuse-0.39-8.fc30.noarch.rpm http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-Text-PDF-0.31-8.fc30.noarch.rpm http://www.rpmfind.net/linux/fedora/linux/updates/30/Everything/x86_64/Packages/p/perl-libs-5.28.2-439.fc30.x86_64.rpm http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm http://www.rpmfind.net/linux/fedora/linux/releases/30/Everything/x86_64/os/Packages/p/perl-PDF-Reuse-0.39-8.fc30.noarch.rpm http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-2007-39.el6_7.noarch.rpm http://www.rpmfind.net/linux/centos/6.10/os/x86_64/Packages/texlive-texmf-errata-xetex-2007-7.1.el6.noarch.rpm --nogpgcheck --skip-broken
+#  shell: yum -y install texlive texlive-*noarch
+#  shell: yum -y install texlive texlive-* --exclude=texlive-kpathsea* texlive-cyrillic* texlive-metapost* texlive-amstex*
+    
+- name: Find any locked directories
+  find:
+    paths: "{{ r_system_package_dir }}"
+    pattern: '00LOCK-*'
+    file_type: directory
+  register: locked_dirs
+  tags:
+    - r
+
+- name: Remove locked directories
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items:
+    - "{{ locked_dirs.files }}"
+  tags:
+    - r
+
+- name: Update existing R packages
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
+  environment: "{{ r_env_vars }}"
+  async: 3600
+  poll: 60
+  tags:
+    - r
+  when: install_r_updates
+
+# https://github.com/jeroen/curl/issues/204 ----------------   curl_sslbackend error --------------------
+- name: Install R packages
+  vars:
+    do_r_install_packages: False
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item }}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r
+  when: install_r_packages and do_r_install_packages
+
+- name: Install R packages with opts
+  vars:
+    do_r_install_w_opts: False
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', configure.args='--with-{{ item.name }}-lib={{ item.lib }}, --with-{{ item.name }}-include={{ item.include}}', INSTALL_opts=c('--no-test-load'),repos=c('http://cran.rstudio.com/'),dep=TRUE); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages_with_opts }}"
+  register: r_result
+  failed_when: "r_result.rc != 0 or 'had non-zero exit status' in r_result.stderr"
+  changed_when: "'Added' in r_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r
+  when: install_r_packages and do_r_install_w_opts
+
+- name: Install R packages from Github
+  vars:
+    do_r_install_github: True
+  command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install.packages(pkgs='{{ item.name }}', repos=c('http://cran.rstudio.com/')); print('Added'); } else { print('Already installed'); }"
+# command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "library(devtools); if (! ('{{ item.name }}' %in% installed.packages()[,'Package'])) { install_github('{{ item.user }}/{{ item.name }}'); print('Added'); } else { print('Already installed'); }"
+  with_items: "{{ r_packages_github }}"
+  register: r_github_result
+  failed_when: "r_github_result.rc != 0 or 'had non-zero exit status' in r_github_result.stderr"
+  changed_when: "'Added' in r_github_result.stdout"
+  environment: "{{ r_env_vars }}"
+  tags:
+    - r
+  when: install_r_packages and do_r_install_github
+
+- name: Re-ensure that R is executable
+  file:
+    dest: /usr/lib64/R/etc/{{ item }}
+    mode: 0644
+  with_items:
+    - ldpaths
+    - Makeconf
+  tags:
+    - r
+  when: install_r_packages
+
+- name: Permissions for R package directory
+  file:
+    state: directory
+    mode: '2775'
+    path: "{{ item }}"
+    owner: root
+    group: "{{ restricted_group_name }}"
+    recurse: yes
+  with_items: "{{ r_system_package_dir }}"
+  tags:
+    - r
+
+- name: Install pdfgrep
+  yum:
+    name: pdfgrep
+    state: present
+
+#- name: Get and Build gdal 2.2.1
+#  become: yes
+#  become_method: sudo
+#  shell: wget http://download.osgeo.org/gdal/2.2.1/gdal-2.2.1.tar.gz -O /tmp/gdal-2.2.1.tar.gz
+#  shell: tar xvf /tmp/gdal-2.2.1.tar.gz -C /opt/gdalRH7
+#  shell: /opt/gdalRH7/configure --prefix=/usr/local --with-sfcgal=no
+#  shell: make -j4
+#  shell: make install
+# unpack, configure, make, make install
+
+
+#- name: Install python gdal bindings - Pip install gdal 2.2.1
+#  become: yes
+#  become_method: sudo
+#  shell: pip3 install gdal==2.2.1 
+
+#- name: create necessary links with ldconfig
+#  become: yes
+#  become_method: sudo
+#  shell: ldconfig
+
+- name: Ensure epel 7 is installed
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+    
+#- name: Install gdal dependencies
+# yum:
+#   name: "{{ item }}"
+#   state: present
+# with_items:
+#   - libgdal*dev*
+#   - gdal-devel
+#   - gdal-libs
+#   - proj
+#   - proj-devel
+#   - proj-nad
+#   - proj-epsg
+
+#- name: Fix rgdal non-zero status exit when installing OpenStreetMap
+# shell: cp /usr/local/lib/libgdal.so.* /usr/lib64
+
+#- name: Install OpenStreetMap
+# shell:  R CMD install.pakcages("OpenStreetMap")

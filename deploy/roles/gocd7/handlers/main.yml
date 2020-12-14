@@ -1,0 +1,6 @@
+---
+  - name: restart go-agent
+    service:
+      name: go-agent
+      state: restarted
+    when: restart_gocd_server

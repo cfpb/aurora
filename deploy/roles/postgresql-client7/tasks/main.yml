@@ -1,0 +1,128 @@
+---
+- name: Install postgres 9.4 packages on RHEL 7
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - rh-postgresql94
+    - rh-postgresql94-runtime
+    - rh-postgresql94-scldevel
+    - rh-postgresql94-postgresql-devel
+    - rh-postgresql94-postgresql-libs
+    - rh-postgresql94-postgresql-static
+    - rh-postgresql94-postgresql-plpython
+    - rh-postgresql94-postgresql-contrib
+  tags:
+    - never
+
+- name: Install postgres 9.6 packages on RHEL 7
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - postgresql96
+    - postgresql96-libs
+    - postgresql96-devel
+    - postgresql96-docs
+    - postgresql96-contrib
+  tags:
+    - never
+
+- name: Install postgres repository
+  yum:
+    name: "{{ postgres_repository_url }}"
+    state: present
+    disable_gpg_check: yes
+  when: postgres_install_repository
+  tags:
+    - postgres_client
+
+- name: Install postgres repository key
+  rpm_key:
+    key: "{{ postgres_repository_key_url }}"
+    state: present
+  when: postgres_install_repository
+  tags:
+    - postgres_client
+
+- name: Ensure older versions are removed
+  yum:
+    name: "{{ item }}"
+    state: absent
+    disablerepo: "{{ postgres_repository_name }}"
+  ignore_errors: yes
+  with_items: "{{ postgres_old_packages }}"
+  when: clean_postgresql
+  tags:
+    - postgres_client
+
+- name: Add 94 yum repo
+  yum_repository:
+    name: postgres94
+    description: postgresql 94 repo for RHEL 7
+    baseurl: https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/
+
+- name: Install postgres packages
+  yum:
+    name: "{{ item }}"
+    state: present
+#   state: latest
+    disable_gpg_check: yes
+  with_items: "{{ postgres_packages }}"
+  tags:
+    - postgres_client
+
+- name: Install gis postgres packages
+  yum:
+    name: "{{ item }}"
+#   state: present
+    state: latest
+    disable_gpg_check: yes
+  with_items: "{{ postgres_gis_packages }}"
+  ignore_errors: True
+  tags:
+    - postgres_client
+
+- name: Check if include link exists
+  stat:
+    path: /usr/include/pgsql
+  register: lpgsqlinclude
+
+- name: Ensure other libraries can see header files
+  file:
+    src: "{{ postgres_install_dir }}/include/"
+    dest: /usr/include/pgsql
+    state: link
+  tags:
+    - postgres_client
+  when: lpgsqlinclude.stat.exists == false
+
+- name: Check if lib link exists
+  stat:
+    path: /usr/include/pgsql
+  register: lpgsqllib
+
+- name: Ensure other libraries can see library files
+  file:
+    src: "{{ postgres_install_dir }}/lib"
+    dest: /usr/lib/pgsql
+    state: link
+  tags:
+    - postgres_client
+  when: lpgsqllib.stat.exists == false
+
+- name: Add psql bin directory to path
+  template:
+    src: postgres.sh.j2
+    dest: /etc/profile.d/postgres.sh
+    mode: 0644
+  tags:
+    - postgres_client
+
+- name: Create a symlink that can remain constant during upgrades
+  file:
+    src: "{{ postgres_install_dir }}"
+    dest: /usr/pgsql
+    state: link
+  tags:
+    - postgres_client

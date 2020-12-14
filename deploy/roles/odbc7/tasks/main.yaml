@@ -1,0 +1,47 @@
+---
+- name: Install rpms
+  yum:
+    name: "{{ item }}"
+    state: "{{ odbc_package_mode }}"
+    disable_gpg_check: yes
+  with_items:
+    - "{{ odbc_rpms }}"
+  tags:
+    - odbc
+
+- name: Install freetds
+  yum:
+    name: freetds.x86_64
+    state: present
+  when: custom_repo
+  tags:
+    - odbc
+
+- name: Configure odbc.ini
+  template:
+    src: odbc.ini
+    dest: /etc/odbc.ini
+  tags:
+    - odbc
+
+- name: Configure odbcinst.ini
+  template:
+    src: odbcinst.ini
+    dest: /etc/odbcinst.ini
+  tags:
+    - odbc
+
+- name: Configure freetds.conf
+  template:
+    src: freetds.conf
+    dest: /usr/local/etc/freetds.conf
+  when: custom_repo
+  tags:
+    - odbc
+
+- name: Set odbc.ini file permissions
+  file: 
+    path: /etc/odbc.ini
+    mode: "u+rw,g+r,o+r"
+  tags:
+    - odbc
