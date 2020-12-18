@@ -37,6 +37,7 @@
   yum:
     name: "{{ gocd_agent_package_path }}/{{ gocd_agent_package_name }}"
     state: present
+    disable_gpg_check: yes
   when: not gocd_upgrade
   notify:
     - restart go-agent
