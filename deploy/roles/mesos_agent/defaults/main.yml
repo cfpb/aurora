@@ -8,7 +8,7 @@ mesos_agent_port: 5051
 mesos_agent_logging_level: "INFO"
 
 mesos_agent_isolation: "cgroups/cpu,cgroups/mem,cgroups/net_cls,filesystem/linux,disk/du,docker/runtime"
-mesos_agent_cgroups_path: "/cgroup"
+mesos_agent_cgroups_path:  '/sys/fs/cgroup'  # For Vagrant build overiden in Vagrantfile
 mesos_agent_attributes: ""
 
 mesos_agent_work_dir: "/opt/mesos"
