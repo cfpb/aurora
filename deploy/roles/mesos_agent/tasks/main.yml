@@ -274,7 +274,7 @@
     dest: /etc/mesos-slave/default_container_info
   notify:
     - restart mesos-agent
-  when: "{{ mesos_agent_version | version_compare('1.4.0', '>=') }}"
+  when:  mesos_agent_version | version_compare('1.4.0', '>=')
   tags:
     - mesos
     - mesos-agent
