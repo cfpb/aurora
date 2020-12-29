@@ -12,7 +12,7 @@
     - sqitch
 
 - name: Ensure umask is correct
-  sudo: no
+  become: no
   lineinfile:
     dest: ~/.bashrc
     line: umask 0022
