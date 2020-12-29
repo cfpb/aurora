@@ -195,8 +195,24 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :proxy_server do |proxy_config|
-    proxy_config.vm.box = "bento/centos-6.10"
+    #proxy_config.vm.box = "bento/centos-6.10"
     proxy_config.vm.host_name = "proxy.test.dev"
+    proxy_config.vm.network "forwarded_port", guest: 22, host: 2203
+    proxy_config.ssh.forward_agent = true
+    proxy_config.vm.network :private_network, ip: "10.0.1.3"
+
+    proxy_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos7"
+      d.has_ssh = true
+      d.remains_running = true
+      d.expose = [ 22, 8080 ]
+      d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024M']
+    end
 
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.127  kdc.test.dev' >> /etc/hosts"
@@ -207,7 +223,6 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
-    proxy_config.ssh.forward_agent = true
 
     proxy_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_proxy_server.yml"
@@ -230,7 +245,6 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
-    proxy_config.vm.network :private_network, ip: "10.0.1.3"
   end
 
   # NGINX proxy config
