@@ -15,7 +15,7 @@
     - python-libs
 
 - name: Install Python packages dep for othe package for 27 (needed by SLIP)
-  command: scl enable python27 "pip install matplotlib"
+  command: scl enable python27 "pip install matplotlib NeuroTools"
   when: install_python
   tags:
     - python-libs
