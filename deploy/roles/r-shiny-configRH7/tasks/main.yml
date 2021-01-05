@@ -21,7 +21,7 @@
 - name: Ensure Shiny Server is started
   systemd:
      name: shiny-server
-     enabled: True
+     enabled: "{{ r_shiny_server_running }}"
      state: started
   tags:
     - shiny
