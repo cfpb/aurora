@@ -1,0 +1,45 @@
+# deploy_avastus_service.yml
+# Ansible script to deploy Avasus which provides name resolution between marathon services and 
+# the enclave proxy. It is expected to run on the same host as the enclave proxy and is tightly
+# coupled with the apache config directory.
+#
+
+---
+- hosts: proxy_server
+  become: yes
+  become_method: sudo
+
+  tasks:
+    - name: Pull the Avastus repo
+      git:
+          repo: https://github.cfpb.gov/data/avastus.git
+          dest: /opt/avastus
+      tags:
+        - avastus
+    - name: Create Avastus virtualenv
+      pip:
+          virtualenv: /opt/avastus.env3
+          requirements: /opt/avastus/requirements.txt
+          virtualenv_python: /opt/rh/rh-python36/root/usr/bin/python3
+      tags:
+        - avastus
+    - name: Create the conf directory 
+      file:
+          state: directory
+          path: /srv/www/enclave_proxy/apps
+      tags:
+        - avastus
+    - name: Save supervisord config file for Avastus service
+      template:
+          src: avastus.conf.j2
+          dest: /etc/init/avastus.conf
+      tags:
+        - avastus
+        - never
+    - name: Start Avastus
+      service:
+          name: avastus
+          state: started
+      tags:
+        - avastus
+        - never

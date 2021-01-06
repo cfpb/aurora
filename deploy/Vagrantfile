@@ -245,6 +245,16 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
+    proxy_config.vm.provision "ansible" do |ansible_avastus|
+      ansible_avastus.playbook = "deploy_avastus_service.yml"
+      ansible_avastus.inventory_path = "vagrant_hosts"
+      ansible_avastus.tags = ansible_tags
+      ansible_avastus.verbose = ansible_verbosity
+      ansible_avastus.extra_vars = ansible_extra_vars
+      ansible_avastus.limit = ansible_limit
+      ansible_avastus.skip_tags = ansible_skip
+    end
+
   end
 
   # NGINX proxy config
