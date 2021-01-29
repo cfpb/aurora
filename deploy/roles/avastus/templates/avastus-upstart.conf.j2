@@ -1,0 +1,22 @@
+# Avastus upstart script
+start on runlevel [2345]
+stop on runlevel [016]
+
+console output
+
+respawn
+
+
+env AVASTUS_MARATHON_HOSTS={% for h in avastus_marathon_hosts %}http://{{ h }}:8080{% if not loop.last %},{% endif %}{% endfor %}
+
+env AVASTUS_LOG_LEVEL=info
+env AVASTUS_LOG_FILE=/var/log/avastus.log
+env AVASTUS_SERVICE_NAME=httpd24-httpd
+env AVASTUS_APACHE_CONF_DIR={{ avastus_apache_conf }}
+env AVASTUS_LOGSTASH_HOST={{ avastus_logstash_host }}
+env AVASTUS_LOGSTASH_PORT={{ avastus_logstash_port }}
+
+script
+  . {{ avastus_venv_path }}/bin/activate
+  exec python {{ avastus_base_path }}/main.py > /var/log/avastus.log
+end script

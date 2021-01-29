@@ -1,0 +1,23 @@
+[Unit]
+Description=Avastus marathon name resolution service
+After=network.target
+
+[Service]
+
+Environment=AVASTUS_MARATHON_HOSTS={% for h in avastus_marathon_hosts %}http://{{ h }}:8080{% if not loop.last %},{% endif %}{% endfor %}
+
+Environment=AVASTUS_LOG_LEVEL=info
+Environment=AVASTUS_LOG_FILE=/var/log/avastus.log
+Environment=AVASTUS_SERVICE_NAME=httpd24-httpd
+Environment=AVASTUS_APACHE_CONF_DIR={{ avastus_apache_conf }}
+Environment=AVASTUS_LOGSTASH_HOST={{ avastus_logstash_host }}
+Environment=AVASTUS_LOGSTASH_PORT={{ avastus_logstash_port }}
+
+ExecStart={{ avastus_venv_path }}/bin/python {{ avastus_base_path }}/main.py
+StandardOutput=/var/log/avastus.log
+StandardError=/var/log/avastus.log
+
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
