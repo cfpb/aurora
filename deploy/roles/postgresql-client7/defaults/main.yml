@@ -1,0 +1,30 @@
+---
+#postgres_repository_url: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+postgres_repository_repo: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64"
+#postgres_repository_url: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+postgres94_repository_url: "https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-redhat94-9.4-3.noarch.rpm"
+#postgres94_repository_url: "https://download.postgresql.org/pub/repos/yum/9.4/redhat/rhel-7-x86_64/pgdg-redhat-repo-latest.hnoarch.rpm"
+postgres_repository_url: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+#postgres_rpm: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+postgres_rpm: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-7-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
+#postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-10"
+postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG-10"
+postgres_repository_name: pgdg10
+postgres_install_dir: /usr/pgsql-10
+postgres_install_repository: True
+
+postgres_packages:
+  - postgresql10
+  - postgresql10-devel
+
+postgres_gis_packages:
+  - postgis24_10
+
+postgres_old_packages:
+  - postgresql96
+  - postgresql96-libs
+  - postgresql96-odbc
+# - postgis22
+  - postgis24_96
+
+clean_postgresql: False

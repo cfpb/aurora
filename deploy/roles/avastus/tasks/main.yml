@@ -1,0 +1,83 @@
+---
+# tasks file for avastus
+- name: Pull the Avastus repo
+  git:
+      repo: "{{ avastus_repo }}"
+      dest: "{{ avastus_base_path }}"
+  tags:
+    - avastus
+
+- name: Install Avastus virtualenv requirements
+  pip:
+      requirements: "{{ avastus_base_path }}/requirements.txt"
+      virtualenv: "{{ avastus_venv_path }}"
+      state: present
+      virtualenv_command: /opt/rh/rh-python36/root/usr/bin/virtualenv
+  tags:
+    - avastus
+      
+- name: Create the avastus group
+  group:
+      name: avastus
+      local: yes
+  tags:
+    - avastus
+
+- name: Create the avastus user
+  user:
+      name: avastus
+      group: avastus
+      local: yes
+  tags:
+    - avastus
+
+- name: Create the apache conf directory 
+  file:
+      state: directory
+      path: "{{ avastus_apache_conf }}"
+      owner: avastus
+      group: avastus
+      mode: 755
+  tags:
+    - avastus
+
+- name: Create the conf file directory 
+  file:
+      state: directory
+      path: "{{ avastus_conf_file_path }}"
+      owner: avastus
+      group: avastus
+      mode: 755
+  tags:
+    - avastus
+
+- name: "[Deprecated] Save supervisord config file for Avastus service"
+  template:
+      src: avastus-upstart.conf.j2
+      dest:  "{{ avastus_conf_file_path }}/avastus.conf"
+  tags:
+    - never
+    - avastus
+
+- name: Save systemd config file for Avastus service
+  template:
+      src: avastus-systemd.conf.j2
+      dest:  "{{ avastus_conf_file_path }}/avastus.service"
+  tags:
+    - avastus
+
+- name: Copy config to systemd unit folder
+  copy:
+      src:  "{{ avastus_conf_file_path }}/avastus.service"
+      dest: /etc/systemd/system/avastus.service
+      remote_src: true
+  tags:
+    - avastus
+
+- name: Start Avastus
+  systemd:
+      name: avastus
+      state: started
+      enabled: true
+  tags:
+    - avastus

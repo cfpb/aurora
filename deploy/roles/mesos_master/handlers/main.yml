@@ -1,15 +1,19 @@
 # main.yml
 ---
 - name: restart zookeeper
-  service:
+  systemd:
     name: zookeeper-server
     state: restarted
 
 - name: restart mesos-master
-  command: restart mesos-master
+  systemd:
+     name: mesos-master
+     state: restarted
 
 - name: restart marathon agent
-  command: restart marathon
+  systemd:
+     name: marathon
+     state: restarted
   listen: restart marathon
 
 - name: Give Marathon time to start its restart process

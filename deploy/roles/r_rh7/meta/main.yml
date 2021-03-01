@@ -1,0 +1,7 @@
+---
+dependencies:
+# - {role: epel, when: "use_epel and not 'production' in group_names"}
+# - devtools
+## devtools7 already installed
+  - shared7
+  - common7

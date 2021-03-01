@@ -16,30 +16,32 @@
 
   ## Temporarily remove devtools and r due to limited repositories on agents
   roles:
+    - common7
     - common
-    - {role: iptables, when: "iptables_config"}
-    #- devtools
+    - {role: iptables, when: "{{ iptables_config | bool }}"}
+    - devtools7
     - mesos_agent
-    - {role: epel, when: "use_epel"}
-    - jdk
-    - postgresql-client
+    - {role: epel7, when: "use_epel and not ( 'production' in group_names or 'developement' in group_names)"}
+    - openjdk1.8
+    - postgresql-client7
     - { role: apache, vars: { apache_service_state: "stopped", apache_service_enable: "no" } }
     #- pentaho
-    - gocd
+    - gocd7
     - { role: nginx, vars: { nginx_state: "stopped", nginx_enable: "no" } }
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - python36-scl
-    - python-libs
-    - odbc
-    - jdbc
+    - python2rh7
+    - python3rh7
+    - pyenvRH7
+    - python-libs7
+    - odbc7
+    - jdbc7
     - {role: ruby, when: "install_ruby"}
     - sqitch
-    - r-core
-    - r-libs
-    - r-shiny
+    - r_rh7
+    # TO TEST - r-libs7
+    - r-shinyRH7
+    - r-shiny-configRH7
     - nodejs
-    - redis
+    # Not used on prod - redis
     #- julia
 
   post_tasks:
@@ -95,3 +97,5 @@
         state: "{{ db_automation_package_state }}"
         disable_gpg_check: yes
       with_items: "{{ db_automation_custom_packages }}"
+      tags:
+        - db-automation

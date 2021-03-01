@@ -1,0 +1,37 @@
+# main.yml - Activate EPEL
+---
+- name: Instell Latest EPEL 7 Release
+ #  shell:  yum install "{{ epel_url }}" -y --nogpgcheck
+  yum:
+    name: "{{ epel_url }}"
+    state: present
+    disable_gpg_check: yes
+  tags:
+    - epel7
+#- name: Get EPEL repo
+#  get_url:
+#    url: "{{ epel_path }}/{{ epel_rpm }}"
+#    dest: /tmp/
+#  register: get_url_result
+#  until: '"OK" in get_url_result.msg'
+#  retries: 3
+#  delay: 15
+#  check_mode: no
+#  tags:
+#    - epel7
+
+#- name: Install EPEL repo
+#  command: "rpm -ivh /tmp/{{ epel_rpm }}"
+#  args:
+#    creates: /etc/yum.repos.d/epel.repo
+#  check_mode: no
+#  tags:
+#    - epel7
+
+#- name: Import the EPEL GPG key
+#  rpm_key:
+#    key: "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-7"
+#    state: present
+#  check_mode: no
+#  tags:
+#    - epel7

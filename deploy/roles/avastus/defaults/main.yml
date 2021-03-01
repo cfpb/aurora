@@ -1,0 +1,18 @@
+---
+# defaults file for avastus
+avastus_base_path: /opt/avastus
+
+avastus_conf_file_path: /opt/avastus-conf
+
+avastus_venv_path: /opt/avastus.env3
+
+avastus_repo: 
+
+avastus_apache_conf: /srv/www/enclave_proxy/apps
+
+#avastus_marathon_hosts: "http://10.0.1.31:8080,http://10.0.1.32:8080,http://10.0.1.33:8080"
+avastus_marathon_hosts: "{{ groups['mesos_master'] | map('extract',hostvars,'aurora_hostname') | list}}"
+
+avastus_logstash_host:
+
+avastus_logstash_port:

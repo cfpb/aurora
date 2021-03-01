@@ -6,14 +6,17 @@ zookeeper_maxbackupindex: 20
 
 mesos_master_log_file_locations:
   - /var/log/mesos/
-  - /var/log/zookeeper/
+  #- /var/log/zookeeper/
 
 ### MESOS SETTINGS
 mesos_server_packages:
   - libselinux-python
-  - mesos-0:1.4.1-2.0.1.x86_64
-  - marathon-0:1.4.9-1.0.668.el6.x86_64
-  - zookeeper-server
+  - mesos-1.4.1-2.0.1.x86_64
+  - marathon-1.4.9-1.0.668.el7.x86_64
+  - mesosphere-zookeeper
+  #- mesos-0:1.4.1-2.0.1.x86_64
+  #- marathon-0:1.4.9-1.0.668.el6.x86_64
+  #- zookeeper-server
 
 mesos_cluster_name: "Test Cluster"
 mesos_master_port: 5050

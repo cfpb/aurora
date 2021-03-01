@@ -1,0 +1,13 @@
+# deploy_avastus_service.yml
+# Ansible script to deploy Avasus which provides name resolution between marathon services and 
+# the enclave proxy. It is expected to run on the same host as the enclave proxy and is tightly
+# coupled with the apache config directory.
+#
+
+---
+- hosts: proxy_server
+  become: yes
+  become_method: sudo
+
+  roles:
+      - avastus

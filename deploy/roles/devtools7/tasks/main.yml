@@ -1,0 +1,29 @@
+---
+# RHEL 7
+- name: Install CentOS Software Collection Library (SCL) when on CentOS
+  yum:
+      name: centos-release-scl
+      state: present
+  when: ansible_distribution == "CentOS"
+  tags:
+    - devtools7
+
+- name: Install Devtools 7
+  become: yes
+  become_method: sudo
+  yum:
+    name: devtoolset-7
+    state: present
+  tags:
+    - devtools7
+
+- name: Install Updated Devtoolset 7
+  yum:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - devtoolset-7-binutils
+    - devtoolset-7-build
+    - git
+  tags:
+    - devtools7

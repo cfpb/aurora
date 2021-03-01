@@ -1,0 +1,16 @@
+---
+rstudio_domain_name: "http://rstudio.test.dev"
+rstudio_port: 8787
+rstudio_address: 0.0.0.0
+rstudio_pro: False
+rstudio_session_timeout: 15
+
+# Pro settings
+rstudio_enable_auth_proxy: 0
+rstudio_admin_group: admins
+rstudio_manager_group: managers
+ip_whitelist:
+  - "{{ hostvars[groups['proxy_server'][0]]['ansible_ssh_host'] }}"
+update_rstudio: False
+install_pro_drivers: False
+rstudio_secret_header: X-RStudio-Username

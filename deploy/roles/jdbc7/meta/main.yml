@@ -1,0 +1,5 @@
+---
+dependencies:
+  - role: postgresql-client
+  - role: openjdk1.8 
+# - role: openjdk1.11 

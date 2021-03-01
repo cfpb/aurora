@@ -4,7 +4,8 @@
 ### SETUP REPOSITORIES
 
 - name: Add mesosphere repository
-  command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
+  command: "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
+  #command: "rpm -Uvh http://repos.mesosphere.io/el/6/noarch/RPMS/mesosphere-el-repo-6-2.noarch.rpm"
   args:
     creates: /etc/yum.repos.d/mesosphere.repo
   when: not 'production' in group_names
@@ -18,6 +19,7 @@
     state: present
   when: not 'production' in group_names
   tags:
+    - never
     - mesos
     - mesos-master
 
@@ -27,6 +29,19 @@
     creates: /etc/yum.repos.d/cloudera-cdh4.repo
   when: not 'production' in group_names
   tags:
+    - never
+    - mesos
+    - mesos-master
+
+- name: Add the CDH Repository
+  yum_repository:
+    name: cloudera-cdh6
+    gpgkey: https://archive.cloudera.com/cdh6/6.3.2/redhat7/yum/RPM-GPG-KEY-cloudera
+    gpgcheck: yes
+    baseurl: https://archive.cloudera.com/cdh6/6.3.2/redhat7/yum/
+    description: Cloudera CDH 6 RHEL 7 repo
+  tags:
+    - never
     - mesos
     - mesos-master
 
@@ -67,6 +82,11 @@
     - mesos
     - mesos-master
 
+- name: Install yum versionlock plugin
+  yum:
+    name: yum-plugin-versionlock
+    state: present
+
 - name: Install mesos and supporting packages
   yum:
     name: "{{ item }}"
@@ -79,6 +99,9 @@
     - mesos
     - mesos-master
     - marathon
+
+- name: Versionlock mesos/marathon packages
+  command: yum versionlock mesos* marathon
 
 - name: Clean up RPM generated files in the config directory
   file:
@@ -94,6 +117,7 @@
     - marathon
 
 ### CONFIGURE ZOOKEEPER
+
 - name: Configure zookeeper with the IP's of all masters
   template:
     src: zk.j2
@@ -108,8 +132,8 @@
   file:
     dest: "{{ item }}"
     state: directory
-    owner: zookeeper
-    group: zookeeper
+    owner: root #zookeeper
+    group: root #zookeeper
   with_items:
     - "/etc/zookeeper"
   tags:
@@ -120,8 +144,8 @@
   template:
     dest: /etc/zookeeper/conf/zoo.cfg
     src: zoo.cfg
-    owner: zookeeper
-    group: zookeeper
+    owner: root #zookeeper
+    group: root #zookeeper
   tags:
     - mesos
     - mesos-master
@@ -135,11 +159,17 @@
     - mesos
     - mesos-master
 
+- name: Initialize zookeeper [manual]
+  copy:
+    dest: /var/lib/zookeeper/myid
+    content: "{{ zookeeper_id }}"
+
 - name: Initialize zookeeper
   command: "zookeeper-server-initialize --myid {{ zookeeper_id }}"
   args:
     creates: /var/lib/zookeeper/myid
   tags:
+    - never
     - mesos
     - mesos-master
 
@@ -148,8 +178,8 @@
     dest: /var/lib/zookeeper
     state: directory
     recurse: yes
-    owner: zookeeper
-    group: zookeeper
+    owner: root #zookeeper
+    group: root #zookeeper
   tags:
     - mesos
     - mesos-master
@@ -189,7 +219,7 @@
 - name: Add the ip address to the mesos-master folder
   copy:
     dest: /etc/mesos-master/ip
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-master
   tags:
@@ -199,7 +229,7 @@
 - name: Add the ip to the hostname file too
   copy:
     dest: /etc/mesos-master/hostname
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart mesos-master
   tags:
@@ -295,7 +325,7 @@
 - name: Copy hostname file to Marathon config
   copy:
     dest: /etc/marathon/conf/hostname
-    content: "{{ ansible_ssh_host }}"
+    content: "{{ aurora_hostname }}"
   notify:
     - restart marathon
   tags:
@@ -476,24 +506,11 @@
 
 ### DISABLE MESOS AGENT (INSTALLED BY RPM)
 
-# Ansible "service" command doesn't work with upstart jobs on Centos, so
-# do it manually
 - name: Stop the Mesos agent process
-  command: "stop mesos-slave"
-  register: mesos_agent_stop
-  failed_when: mesos_agent_stop.rc != 0 and 'Unknown instance' not in mesos_agent_stop.stderr
-  changed_when: "'Unknown instance' not in mesos_agent_stop.stderr"
-  tags:
-    - mesos
-    - mesos-master
-
-- name: Disable the mesos-agent service
-  lineinfile:
-    dest: /etc/init/mesos-slave.conf
-    regexp: "^(.*)(start on(.*))$"
-    line: "#\\2"
-    backrefs: yes
-    state: present
+  systemd:
+    name: mesos-slave
+    state: stopped
+    enabled: False
   tags:
     - mesos
     - mesos-master
@@ -501,10 +518,22 @@
 ### START ZOOKEEPER, MESOS, AND MARATHON
 
 - name: Start zookeeper
-  service:
-    name: zookeeper-server
+  systemd:
+    name: zookeeper #zookeeper-server
     state: started
     enabled: yes
+  tags:
+    - mesos
+    - mesos-master
+
+- name: Start the Mesos master and Marathon processes (they are already enabled)
+  systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: yes
+  with_items:
+    - mesos-master
+    - marathon
   tags:
     - mesos
     - mesos-master
@@ -518,6 +547,7 @@
   failed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
   changed_when: mesos_master_start.rc != 0 and 'Job is already running' not in mesos_master_start.stderr
   tags:
+    - never
     - mesos
     - mesos-master
 

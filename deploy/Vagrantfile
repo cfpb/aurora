@@ -195,8 +195,24 @@ Vagrant.configure(2) do |config|
   end
 
   config.vm.define :proxy_server do |proxy_config|
-    proxy_config.vm.box = "bento/centos-6.10"
+    #proxy_config.vm.box = "bento/centos-6.10"
     proxy_config.vm.host_name = "proxy.test.dev"
+    proxy_config.vm.network "forwarded_port", guest: 22, host: 2203
+    proxy_config.ssh.forward_agent = true
+    proxy_config.vm.network :private_network, ip: "10.0.1.3"
+
+    proxy_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos7"
+      d.has_ssh = true
+      d.remains_running = true
+      d.expose = [ 22, 8080 ]
+      d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '1', '--memory', '1024M']
+    end
 
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.127  kdc.test.dev' >> /etc/hosts"
@@ -207,7 +223,6 @@ Vagrant.configure(2) do |config|
     proxy_config.vm.provision :shell,
       :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
 
-    proxy_config.ssh.forward_agent = true
 
     proxy_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_proxy_server.yml"
@@ -230,7 +245,16 @@ Vagrant.configure(2) do |config|
       ansible.skip_tags = ansible_skip
     end
 
-    proxy_config.vm.network :private_network, ip: "10.0.1.3"
+    proxy_config.vm.provision "ansible" do |ansible_avastus|
+      ansible_avastus.playbook = "deploy_avastus_service.yml"
+      ansible_avastus.inventory_path = "vagrant_hosts"
+      ansible_avastus.tags = ansible_tags
+      ansible_avastus.verbose = ansible_verbosity
+      ansible_avastus.extra_vars = ansible_extra_vars
+      ansible_avastus.limit = ansible_limit
+      ansible_avastus.skip_tags = ansible_skip
+    end
+
   end
 
   # NGINX proxy config
@@ -867,11 +891,30 @@ Vagrant.configure(2) do |config|
   mesos_masters.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos_master_#{id}" do |mm_config|
-      mm_config.vm.box = "bento/centos-6.10"
+      #mm_config.vm.box = "bento/centos-6.10"
       mm_config.vm.host_name = "mesos-master-#{id}.test.dev"
+      #mm_config.vm.network :private_network, ip: ip, name: "vagrant-network", docker_connect__hostname: "mesos-master-#{id}.test.dev"
+      mm_config.vm.network "forwarded_port", guest: 22, host: "224#{id}"
+      mm_config.vm.network "forwarded_port", guest: 5050, host: "905#{id}"
+      mm_config.vm.network "forwarded_port", guest: 8080, host: "808#{id}"
       mm_config.vm.network :private_network, ip: ip
 
       mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provider "docker" do |d|
+        d.name = "mesos-master-#{id}"
+        d.build_dir = "./docker/centos7"
+        d.has_ssh = true
+        d.remains_running = true
+        d.expose = [ 22, 5050, 8080 ]
+        d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+        ]
+        d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                         '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                         '--memory', '3048M', '--privileged',
+        ]
+      end
 
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_master.yml"
@@ -896,11 +939,31 @@ Vagrant.configure(2) do |config|
   mesos_agents.each_with_index do |ip, idx|
     id = idx+1
     config.vm.define "mesos_agent_#{id}" do |mm_config|
-      mm_config.vm.box = "bento/centos-6.10"
+      #mm_config.vm.box = "bento/centos-6.10"
       mm_config.vm.host_name = "mesos-agent-#{id}.test.dev"
+      #mm_config.vm.network :private_network, ip: ip, name: "vagrant-network", docker_connect__hostname: "mesos-agent-#{id}.test.dev"
       mm_config.vm.network :private_network, ip: ip
+      mm_config.vm.network "forwarded_port", guest: 22, host: "223#{id}"
 
       mm_config.ssh.forward_agent = true
+
+      mm_config.vm.provider "docker" do |d|
+        d.name = "mesos-agent-#{id}"
+        d.build_dir = "./docker/centos7"
+        d.has_ssh = true
+        d.remains_running = true
+        d.volumes = [
+          "/sys/fs/cgroup:/sys/fs/cgroup:ro",
+        #  "mesos_vols_agent_1:/opt"
+        ]
+        d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                         '--privileged' ]
+                         #'--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW']
+      end
+
+      # mesos-agent get's confused where it's cgroup is inside docker
+      mm_config.vm.provision "shell",
+        inline: "mkdir -p /cgroup/systemd && mount --bind /sys/fs/cgroup/systemd/docker/$( basename $( cat /proc/1/cpuset ) ) /cgroup/systemd"
 
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_agent.yml"
@@ -908,9 +971,21 @@ Vagrant.configure(2) do |config|
         ansible.tags = ansible_tags
         ansible.verbose = ansible_verbosity
         ansible.extra_vars = ansible_extra_vars
+        ansible.extra_vars['mesos_agent_cgroups_path'] = "/cgroup"
         ansible.limit = ansible_limit
         ansible.skip_tags = ansible_skip
       end
+
+      # Testing Luan's python playbook
+      #mm_config.vm.provision "py_main", type: "ansible" do |ansible|
+      #  ansible.playbook = "deploy_PythonTest.yml"
+      # ansible.inventory_path = "vagrant_hosts"
+      # ansible.tags = ansible_tags
+      # ansible.verbose = ansible_verbosity
+      # ansible.extra_vars = ansible_extra_vars
+      # ansible.limit = ansible_limit
+      # ansible.skip_tags = ansible_skip
+      #end
     end
   end
 end

@@ -10,6 +10,10 @@
     disable_gpg_check: yes
   with_items:
     - libselinux-python
+    - python-urllib3
+    - python-pyasn1
+    - pyOpenSSL
+    #- python2-ndg_httpsclient
   tags:
     - always
 

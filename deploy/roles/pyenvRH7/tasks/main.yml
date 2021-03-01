@@ -1,0 +1,37 @@
+# main.yml - Install Python 2.7 and Packages from RedHat Satellite
+---
+- name: Install PyEnv Required Packages
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - zlib-devel
+    - bzip2
+    - bzip2-devel
+    - readline-devel
+    - sqlite
+    - sqlite-devel
+    - openssl-devel
+    - xz
+    - xz-devel
+    - libffi-devel
+
+- name: Get PyEnv Installer
+  get_url:
+    url:   https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer
+    dest:  /tmp/pyenv-installer.sh
+
+- name: Make PyEnv Installer Executable
+  file: 
+    dest: /tmp/pyenv-installer.sh
+    mode: a+x
+
+- name: Check if PyEnv is already installed
+  stat:
+    path: /root/.pyenv
+  register: pyenv_installed
+
+- name: Install PyEnv
+  shell: /tmp/pyenv-installer.sh
+  when: pyenv_installed.stat.exists == False
+
