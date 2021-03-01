@@ -328,12 +328,25 @@ Vagrant.configure(2) do |config|
 
   # Kibana Client Node
   config.vm.define "elk" do |elk_config|
-    elk_config.vm.box = "bento/centos-6.10"
     elk_config.vm.host_name = "elk.test.dev"
+    elk_config.vm.network :private_network, ip: "10.0.1.16"
+	elk_config.vm.network "forwarded_port", guest: 5601, host: 5601
+	elk_config.vm.network "forwarded_port", guest: 9200, host: 9200
+	elk_config.vm.network "forwarded_port", guest: 22, host: 2205
     elk_config.ssh.forward_agent = true
 
-    elk_config.vm.provision :shell,
-      :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+	elk_config.vm.provider "docker" do |d|
+      d.build_dir = "./docker/centos6"
+      d.name = "elk"
+      d.remains_running = true
+      d.has_ssh = true
+      d.volumes = [
+        "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+      ]
+      d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+                       '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+                       '--cpus', '3', '--memory', '4024M', '--privileged']
+    end
 
     elk_config.vm.provision "ansible" do |ansible|
       ansible.playbook = "deploy_elk.yml"
@@ -344,19 +357,27 @@ Vagrant.configure(2) do |config|
       ansible.limit = ansible_limit
       ansible.skip_tags = ansible_skip
     end
-
-    elk_config.vm.network :private_network, ip: "10.0.1.16"
   end
 
   # Elastic Search Cluster
   (1..3).each do |i|
     config.vm.define "es#{i}" do |es_config|
-      es_config.vm.box = "bento/centos-6.10"
+      #es_config.vm.box = "bento/centos-6.10"
       es_config.vm.host_name = "es#{i}.test.dev"
       es_config.ssh.forward_agent = true
+      es_config.vm.network :private_network, ip: "10.0.1.#{i+12}"
+	  es_config.vm.network "forwarded_port", guest: 22, host: "200#{i+3}"
 
-      es_config.vm.provision :shell,
-        :inline => "sudo echo '10.0.1.16  elk.test.dev' >> /etc/hosts"
+      es_config.vm.provider "docker" do |d|
+		  d.build_dir = "./docker/centos6"
+		  d.has_ssh = true
+		#  d.volumes = [
+		#	"/sys/fs/cgroup:/sys/fs/cgroup:ro"
+		 # ]
+		  d.create_args = ['--tmpfs', '/tmp:exec', '--tmpfs', '/run',
+						   '--cap-add', 'NET_ADMIN', '--cap-add', 'NET_RAW',
+						   '--cpus', '1', '--memory', '1024M', '--privileged']
+	  end
 
       es_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_elastic_search.yml"
@@ -368,7 +389,6 @@ Vagrant.configure(2) do |config|
         ansible.skip_tags = ansible_skip
       end
 
-      es_config.vm.network :private_network, ip: "10.0.1.#{i+12}"
     end
   end
 
