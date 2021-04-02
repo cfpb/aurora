@@ -1,14 +1,13 @@
 ---
 - name: Install EOD dependencies
   yum:
-    name: "{{ item }}"
+    name: 
+      - openssl
+      - openssl-devel
+      - sil-abyssinica-fonts
+      - tree
+      - expect
     state: present
-  with_items:
-    - openssl
-    - openssl-devel
-    - abyssinica-fonts
-    - tree
-    - expect
   tags:
     - eod
 
@@ -92,17 +91,16 @@
   tags:
     - eod
 
-- name: install Desktop
+- name: install Server with GUI  # replaced Desktop
   yum:
-    name: "@Desktop"
+    name: "@^Server with GUI" # environment
     state: present
-  when: not custom_repo
   tags:
     - eod
 
-- name: install General Purpose Desktop
+- name: install Xfce Desktop # replaced general desktop
   yum:
-    name: "@General Purpose Desktop"
+    name: "@Xfce"
     state: present
   tags:
     - eod
@@ -185,7 +183,7 @@
   notify:
     - restart eod
   tags:
-  - eod
+    - eod
 
 - name: Remove gpk-update-icon file from /etc/xdg/autostart directory
   file:
@@ -195,10 +193,11 @@
     - eod
 
 - name: run gdm
-  command: start prefdm
+  service:
+    name: gdm
+    state: started
+    use: service
   register: gdm_status
-  failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
-  changed_when: gdm_status.rc == 0
   tags:
     - eod
 
@@ -274,7 +273,9 @@
     - eod
 
 - name: save the new ipconfig
-  command: "/sbin/service iptables save"
+  shell:
+    cmd: "/sbin/service iptables save"
+    warn: false
   when: iptables_config and deploy_iptables
   tags:
     - eod

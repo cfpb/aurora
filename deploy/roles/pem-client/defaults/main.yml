@@ -1,4 +1,4 @@
 ---
 pem_installer_bin: pem_client-5.0.3-4-linux-x64.run
 pem_install_dir: /opt/PEM
-install_pem: True
+install_pem: False

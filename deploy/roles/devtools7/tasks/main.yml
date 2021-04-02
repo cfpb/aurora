@@ -19,11 +19,10 @@
 
 - name: Install Updated Devtoolset 7
   yum:
-    name: "{{ item }}"
+    name: 
+      - devtoolset-7-binutils
+      - devtoolset-7-build
+      - git
     state: latest
-  with_items:
-    - devtoolset-7-binutils
-    - devtoolset-7-build
-    - git
   tags:
     - devtools7

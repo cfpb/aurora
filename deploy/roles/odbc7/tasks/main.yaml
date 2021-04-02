@@ -1,11 +1,9 @@
 ---
 - name: Install rpms
   yum:
-    name: "{{ item }}"
+    name: '{{ odbc_rpms }}'
     state: "{{ odbc_package_mode }}"
     disable_gpg_check: yes
-  with_items:
-    - "{{ odbc_rpms }}"
   tags:
     - odbc
 
