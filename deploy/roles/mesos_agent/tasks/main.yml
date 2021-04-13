@@ -205,9 +205,16 @@
     - mesos
     - mesos-agent
 
+- name: Create mesos main group
+  group:
+    name: "{{ marathon_mesos_user }}"
+    gid: "{{ marathon_mesos_gid }}"
 - name: Create mesos user
   user:
     name: "{{ marathon_mesos_user }}"
+    uid: "{{ marathon_mesos_uid }}"
+    group: "{{ marathon_mesos_user }}"
+    groups: "{{ marathon_mesos_extra_groups }}"
     comment: "Mesos User"
     home: /home/{{ marathon_mesos_user }}
   tags:

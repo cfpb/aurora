@@ -21,6 +21,9 @@ mesos_agent_fix_link: True
 
 # User to run processes in Mesos as
 marathon_mesos_user: "mesagent"
+marathon_mesos_uid: "5000"
+marathon_mesos_gid: "5000"
+marathon_mesos_extra_groups:
 
 # Container images
 mesos_containerizers: "mesos"
