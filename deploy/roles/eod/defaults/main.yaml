@@ -8,7 +8,7 @@ eod_install: False
 eod_upgrade: False
 eod_installer: ecs-13.8.9-linux-x64.bin
 eod_upgrader:
-eod_installer_directory: '/tmp'
+eod_installer_directory: '/artifacts'
 
 eod_client_ports:
   - 5500
