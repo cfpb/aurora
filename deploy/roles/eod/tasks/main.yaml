@@ -203,6 +203,27 @@
 
 ### Ensure EOD starts on boot
 
+# patch
+- name: Run eodpatch expect inline - required before running /usr/local/eod/bin/otecs ...
+  shell: |
+    set timeout 120
+    spawn /usr/local/eod/bin/patch
+    match_max 100000
+    expect -exact "\r
+    patch - Patch script for Exceed Connection Server 13.8\r
+    \r
+    \r
+    Proceed to patch permissions bits for /usr/local/eod/bin/sys directory and /usr/local/eod/bin/sys/ewebhost file?\r
+    \[y\]es or \[n\]o, \[Enter\] for no: "
+    send -- "y\r"
+    #expect eof
+    #expect eod
+    exit 0
+  args:
+    executable: /bin/expect
+  tags:
+    - eod
+
 - name: Check if EOD is configured to run on boot
   shell: "{{ eod_install_directory }}/bin/otecs bootstatus"
   register: eod_bootstatus
