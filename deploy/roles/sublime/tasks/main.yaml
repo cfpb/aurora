@@ -38,19 +38,22 @@
     state: directory
     mode: 0755
   with_items:
-    - "Sublime Text 2"
-    - "Sublime Text 2/Icon"
-    - "Sublime Text 2/Icon/128x128"
-    - "Sublime Text 2/Icon/16x16"
-    - "Sublime Text 2/Icon/256x256"
-    - "Sublime Text 2/Icon/32x32"
-    - "Sublime Text 2/Icon/48x48"
-    - "Sublime Text 2/lib"
-    - "Sublime Text 2/Pristine Packages"
+    - sublime_text_3
+    - sublime_text_3/Icon
+    - sublime_text_3/Icon/128x128
+    - sublime_text_3/Icon/16x16
+    - sublime_text_3/Icon/256x256
+    - sublime_text_3/Icon/32x32
+    - sublime_text_3/Icon/48x48
+ #   - sublime_text_3/lib
+    - sublime_text_3/Packages
+    - sublime_text_3/sublime_plugin.py #?
+    - sublime_text_3/sublime.py #?
+    
 
 - name: Ensure sublime_text is executable
   file:
-    path: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    path: "{{ sublime_install_directory }}/sublime_text_3/sublime_text"
     mode: 0755
   tags:
     - sublime
@@ -58,7 +61,7 @@
 - name: Create symlink
   file:
     dest: /usr/local/bin/subl
-    src: "{{ sublime_install_directory }}/Sublime\ Text\ 2/sublime_text"
+    src: "{{ sublime_install_directory }}/sublime_text_3/sublime_text"
     mode: 0755
     state: link
   tags:
