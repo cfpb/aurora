@@ -10,26 +10,27 @@
 - name: Unarchive sublime (from remote)
   unarchive:
     copy: no
-    src: "https://download.sublimetext.com/Sublime%20Text%202.0.2%20x64.tar.bz2"
+#    src: "https://download.sublimetext.com/Sublime%20Text%202.0.2%20x64.tar.bz2"
+    src: "https://download.sublimetext.com/sublime_text_3_build_3211_x64.tar.bz2"
     dest: "{{ sublime_install_directory }}"
     owner: root
     group: root
     mode: a+r
-  when: not custom_repo
+ # when: not custom_repo
   tags:
     - sublime
 
-- name: Unarchive sublime
-  unarchive:
-    copy: yes
-    src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
-    dest: "{{ sublime_install_directory }}/"
-    owner: root
-    group: root
-    mode: a+r
-  when: custom_repo
-  tags:
-    - sublime
+#- name: Unarchive sublime
+#  unarchive:
+#    copy: yes
+#    src: "{{ sublime_local_artifact_directory }}/Sublime_Text_2.0.2_x64.tar.bz2"
+#    dest: "{{ sublime_install_directory }}/"
+#    owner: root
+#    group: root
+#    mode: a+r
+#  when: custom_repo
+#  tags:
+#    - sublime
 
 - name: Ensure directories are readable
   file:
