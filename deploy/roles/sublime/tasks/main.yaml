@@ -47,8 +47,6 @@
     - sublime_text_3/Icon/48x48
  #   - sublime_text_3/lib
     - sublime_text_3/Packages
-    - sublime_text_3/sublime_plugin.py #?
-    - sublime_text_3/sublime.py #?
     
 
 - name: Ensure sublime_text is executable
