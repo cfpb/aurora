@@ -1,5 +1,11 @@
 # main.yml - Install Python 2.7 and Packages from RedHat Satellite
 ---
+- name: Install Python2 packages (non scl)
+  yum:
+    name:
+        - python2-pip
+        - python2-virtualenv
+
 - name: Install Python27 packages
   yum:
     name: 
