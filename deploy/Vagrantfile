@@ -948,10 +948,9 @@ Vagrant.configure(2) do |config|
       mm_config.vm.provision "ansible" do |ansible|
         ansible.playbook = "deploy_mesos_master.yml"
         ansible.inventory_path = "vagrant_hosts"
-        ansible.extra_vars = {:zookeeper_id => "#{id}"}
+        ansible.extra_vars = {:zookeeper_id => "#{id}", :mesos_master_listen_ip => "0.0.0.0" }.merge(ansible_extra_vars)
         ansible.tags = ansible_tags
         ansible.verbose = ansible_verbosity
-        ansible.extra_vars = ansible_extra_vars
         ansible.limit = ansible_limit
         ansible.skip_tags = ansible_skip
       end
