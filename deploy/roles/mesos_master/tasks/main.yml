@@ -219,7 +219,7 @@
 - name: Add the ip address to the mesos-master folder
   copy:
     dest: /etc/mesos-master/ip
-    content: "{{ aurora_hostname }}"
+    content: "{{ mesos_master_listen_ip }}"
   notify:
     - restart mesos-master
   tags:
