@@ -5,7 +5,7 @@
 
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
-  creates: /etc/yum.repos.d/mesosphere.repo
+    creates: /etc/yum.repos.d/mesosphere.repo
   when: not 'production' in group_names
   tags:
     - mesos
