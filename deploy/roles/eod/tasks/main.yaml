@@ -13,15 +13,21 @@
 
 - import_tasks: install_eod.yaml
   when: eod_install
+  tags:
+    - eod
 
 - import_tasks: upgrade_eod.yaml
   when: eod_upgrade
+  tags:
+    - eod
 
 - name: Configure node.cfg
   template:
     src: node.cfg.j2
     dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
   when: eod_datastore_directory is defined
+  tags:
+    - eod
 
 - name: Configure cluster.cfg
   template:
@@ -41,12 +47,16 @@
     group: root
     mode: 0750
   with_items: "{{ eod_admins }}"
+  tags:
+    - eod
 
 - name: Ensure admins can login via Connection Server
   template:
     src: admin_settings.cfg.j2
     dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
   with_items: "{{ eod_admins }}"
+  tags:
+    - eod
 
 - name: Configure xdmcp
   template:
@@ -55,7 +65,7 @@
   notify:
     - restart eod
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   when: custom_repo
   tags:
     - eod
@@ -119,7 +129,7 @@
     mode: 0644
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -128,7 +138,7 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -137,7 +147,7 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -148,13 +158,19 @@
   tags:
     - eod
 
+- name: set runlevel 5 graphical.target on startup
+  command: systemctl set-default graphical.target
+  register: xtarget
+  tags:
+    - eod
+
 - name: configure xorg.conf
   template:
     src: xorg.conf
     dest: /etc/X11/xorg.conf
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -301,6 +317,20 @@
   tags:
     - eod
 
+- name: fix XFCE4 PolicyKit Agent Error
+  lineinfile:
+    path: /etc/xdg/autostart/xfce-polkit.desktop
+    regexp: '^Exec=/usr/libexec/xfce-polkit'
+    line: '#Exec=/usr/libexec/xfce-polkit'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install xfce4 trash can fix
+  yum:
+    name: gvfs
+    state: latest
+    
 #- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register
 #  shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
 #  register: cfg_files

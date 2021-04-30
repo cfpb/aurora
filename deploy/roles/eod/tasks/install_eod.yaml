@@ -3,12 +3,18 @@
   yum:
     name: python3-pip
     state: present
+  tags:
+    - eod
 
 - name: Install gdown for remote download
   shell: pip3 install gdown
+  tags:
+    - eod
 
 - name: Use gdown to download file
   shell: /usr/local/bin/gdown https://drive.google.com/uc?id=1zBw9zmt65pfyA7dkuJlSPEscTYO8ZOc0 -O /tmp/ecs-13.8.9-linux-x64.bin 
+  tags:
+    - eod
   
 - name: Chmod EOD binary
   file:
