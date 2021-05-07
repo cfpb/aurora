@@ -59,3 +59,12 @@
   when: postgres_install_dir is defined
   tags:
     - sqitch
+
+- name: Add usr/local/bin directory to path
+# when login to db terminal through EoD, /usr/local/bin directory is not in the PATH, sqitch is not found
+  template:
+    src: sqitch.sh.j2
+    dest: /etc/profile.d/sqitch.sh
+    mode: 0644
+  tags:
+    - sqitch

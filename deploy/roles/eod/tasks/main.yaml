@@ -102,7 +102,9 @@
     - eod
 
 - name: install gdm (gnome display manager)
-  command: yum -y install gdm
+  yum:
+    name: gdm
+    state: present
   tags:
     - eod
 
