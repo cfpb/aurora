@@ -36,6 +36,9 @@
           - sysstat
           - systemtap
           - ant # sar, iostat, vmstat
+          - p7zip
+          - p7zip-plugins
+          - tesseract
         state: present
 
     - name: Install custom packages

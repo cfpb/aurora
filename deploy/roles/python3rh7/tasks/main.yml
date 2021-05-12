@@ -9,6 +9,7 @@
       - python36-devel
       - python36-libs
       - python36-tkinter
+      - rh-python36
       - rh-python36-numpy
       - rh-python36-scipy
       - rh-python36-python-pip

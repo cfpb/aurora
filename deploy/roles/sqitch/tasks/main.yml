@@ -1,7 +1,10 @@
 ---
 - name: Install dependencies
   yum:
-    name: ['perl-devel', 'perl-CPAN', '@Development Tools'] # perl-DBD-Pg
+    name: 
+      - perl-devel
+      - perl-CPAN
+      - "@Development Tools"
     state: present
   tags:
     - sqitch
@@ -24,7 +27,8 @@
     - sqitch
 
 - name: Run with perl
-  shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
+#  shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
+  shell: cpanm --notest --sudo DWHEELER/App-Sqitch-0.9996.tar.gz
   args:
     creates: /usr/local/bin/cpanm
   tags:

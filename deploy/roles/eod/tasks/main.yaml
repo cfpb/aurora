@@ -70,6 +70,27 @@
   tags:
     - eod
 
+- name: Adding config files for XConfig
+  template:
+    src: templates/{{ item }}
+    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/{{ item }}"
+  with_items:
+    - HiResMonitor.cfg
+    - LowResMonitor.cfg
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Adding config files for XStart
+  template:
+    src: templates/{{ item }}
+    dest: "{{ eod_install_directory }}/conf/admin/Xstart/{{ item }}"
+  with_items:
+    - xfce4.xs
+  when: custom_repo
+  tags:
+    - eod
+
 - name: Configure EOD license file
   template:
     src: akeys
