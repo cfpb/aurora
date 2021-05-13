@@ -37,11 +37,12 @@
   tags:
     - python-libs
 
-# - name: Install Python packages dep for EPEL package for 36 (needed by SLIP)
-#   command: sudo python3 -m pip install matplotlib NeuroTools
-#   when: install_python
-#   tags:
-#     - python-libs
+- name: Install Python packages dep for EPEL package for 36 (needed by SLIP)
+  become: yes
+  command: python3 -m pip install matplotlib NeuroTools
+  when: install_python
+  tags:
+    - python-libs
 
 # - name: Install Python packages for EPEL 36
 #   command: pip3 install {{ ' '.join(python3_packages) }}
