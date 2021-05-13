@@ -35,3 +35,9 @@
 #  easy_install:
 #    name: pip
 #    executable: easy_install-3.6
+
+- name: Upgrade Pip
+  pip:
+    name: pip
+    executable: pip3
+    umask: '0022'
