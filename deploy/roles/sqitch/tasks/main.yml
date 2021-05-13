@@ -27,8 +27,7 @@
     - sqitch
 
 - name: Run with perl
-#  shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
-  shell: cpanm --notest --sudo DWHEELER/App-Sqitch-0.9996.tar.gz
+  shell: perl /tmp/cpanminus.pl --sudo App::cpanminus
   args:
     creates: /usr/local/bin/cpanm
   tags:
@@ -45,7 +44,8 @@
   when: install_sqitch
 
 - name: Get sqitch
-  shell: cpanm --notest --sudo App::Sqitch
+#  shell: cpanm --notest --sudo App::Sqitch
+  shell: cpanm --notest --sudo DWHEELER/App-Sqitch-0.9996.tar.gz
   register: sqitch
   changed_when: '"is up to date" not in sqitch.stdout'
   environment:

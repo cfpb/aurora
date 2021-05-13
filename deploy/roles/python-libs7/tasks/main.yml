@@ -37,8 +37,17 @@
   tags:
     - python-libs
 
+# - name: Install Python packages for EPEL 36
+#   command: pip3 install {{ ' '.join(python3_packages) }}
+#   when: install_python
+#   tags:
+#     - python-libs
+
 - name: Install Python packages for EPEL 36
-  command: pip3 install {{ ' '.join(python3_packages) }}
+  pip:
+    name: "{{ python3_packages }}"
+    executable: pip3
+    umask: '0022'
   when: install_python
   tags:
     - python-libs
