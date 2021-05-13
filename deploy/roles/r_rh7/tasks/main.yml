@@ -81,6 +81,13 @@
     state: present
     disable_gpg_check: yes
     
+- name: Install yum versionlock plugin
+  yum:
+    name: yum-plugin-versionlock
+    state: present
+  tags:
+    - r
+
 # R is a meta package that ensures R-core, R-core-devel, R-java, libRMath, libRMath-devel
 - name: Install R-core
   yum:
@@ -88,6 +95,11 @@
     state: "{{ r_core_state }}"
     disable_gpg_check: yes
   register: r_core_updated
+  tags:
+    - r
+
+- name: Versionlock R, libRMath
+  command: yum versionlock R-* libRMath
   tags:
     - r
 

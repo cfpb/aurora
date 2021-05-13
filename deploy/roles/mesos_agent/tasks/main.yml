@@ -35,6 +35,9 @@
   yum:
     name: yum-plugin-versionlock
     state: present
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Install mesos packages
   yum:
@@ -51,6 +54,9 @@
 
 - name: Versionlock mesos/marathon packages
   command: yum versionlock mesos* marathon
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Clean up RPM generated files in the config directory
   file:
