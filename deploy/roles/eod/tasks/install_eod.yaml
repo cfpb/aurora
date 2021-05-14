@@ -42,6 +42,8 @@
 - name: run EOD expect script
   shell: /tmp/install_eod_server.exp
   when: custom_repo
+  args:
+    creates: "{{ eod_install_directory }}/bin/otecs"
   tags:
     - eod
 
