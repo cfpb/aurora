@@ -99,7 +99,7 @@
     - r
 
 - name: Versionlock R, libRMath
-  command: yum versionlock R-* libRMath
+  command: yum versionlock R-* libRmath*
   tags:
     - r
 
