@@ -42,3 +42,9 @@
     executable: pip3
     umask: '0022'
     state: latest
+
+- name: Make python 3.6 the default python
+  template:
+      src: scl_enable_python36.sh.j2
+      dest: /etc/profile.d/scl_enable_python36.sh
+  when: set_python36_default_python

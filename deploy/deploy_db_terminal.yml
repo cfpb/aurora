@@ -38,6 +38,7 @@
           - ant # sar, iostat, vmstat
           - p7zip
           - p7zip-plugins
+          - libpng12
           - tesseract
         state: present
 

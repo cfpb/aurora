@@ -25,7 +25,9 @@
   template:
     src: node.cfg.j2
     dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
-#  when: eod_datastore_directory is defined
+  when: custom_repo
+  notify:
+    - restart eod
   tags:
     - eod
 
@@ -77,6 +79,8 @@
   with_items:
     - HiResMonitor.cfg
     - LowResMonitor.cfg
+    - "Passive - Monitor 1.cfg"
+    - "Passive - Monitor 2.cfg"
   when: custom_repo
   tags:
     - eod
@@ -87,6 +91,7 @@
     dest: "{{ eod_install_directory }}/conf/admin/Xstart/{{ item }}"
   with_items:
     - xfce4.xs
+    - Passive-Single-Sign-On.xs
   when: custom_repo
   tags:
     - eod

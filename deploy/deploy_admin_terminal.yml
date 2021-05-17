@@ -7,13 +7,14 @@
     - { role: puppet_disable, when: "disable_puppet" }
     - { role: iptables, when: "iptables_config" }
     - common
-    - { role: epel, when: "use_epel and not 'production' in group_names" }
+    - { role: epel7, when: "use_epel and not 'production' in group_names" }
     - { role: python, when: "install_python and custom_repo" }
-    - { role: python27-scl, when: "install_python and not custom_repo" }
-    - { role: python36-scl, when: "install_python"}
-    - { role: log-courier, when: "install_logstash" }
     - eod
-    - odbc
+    - devtools7
+    - python2rh7
+    - python3rh7
+    - python-libs7
+    - odbc7
 
   tasks:
     - name: Install development tools
