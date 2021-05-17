@@ -13,8 +13,8 @@
   tags:
     - python-libs
 
-- name: Install Python packages dep for othe package for 27 (needed by SLIP)
-  command: scl enable python27 "pip install NeuroTools matplotlib==2.2.3 --ignore-installed six"
+- name: Install Python packages dep for othe package for 27 (needed by SLIP, and for cairocffi)
+  command: scl enable python27 "pip install matplotlib==2.2.3 NeuroTools cffi==1.14.4 --ignore-installed six"
   when: install_python
   tags:
     - python-libs
