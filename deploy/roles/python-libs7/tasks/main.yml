@@ -7,8 +7,8 @@
   tags:
     - python-libs
 
-- name: tst Install updated setuptools Python packages for 27 (for pysolr)
-  command: scl enable python27 "pip install setuptools==12"
+- name: tst Install updated pip & setuptools Python packages for 27 (for pysolr)
+  command: scl enable python27 -- pip install pip==20.3.4 setuptools==12
   when: install_python
   tags:
     - python-libs
