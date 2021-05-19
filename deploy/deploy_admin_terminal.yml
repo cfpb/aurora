@@ -8,7 +8,7 @@
     - { role: iptables, when: "iptables_config" }
     - common
     - { role: epel7, when: "use_epel and not 'production' in group_names" }
-    - { role: python, when: "install_python and custom_repo" }
+  #  - { role: python, when: "install_python and custom_repo" }
     - eod
     - devtools7
     - python2rh7
