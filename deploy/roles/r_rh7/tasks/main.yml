@@ -75,13 +75,6 @@
 #- debug:
 #    msg: "R dependencies {{ r_dependencies }}"
 
-- name: Ensure epel7 latest is installed
-  yum:
-    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
-    state: present
-    disable_gpg_check: yes
-  when: when: use_epel and "production" not in group_names
-    
 - name: Install yum versionlock plugin
   yum:
     name: yum-plugin-versionlock
