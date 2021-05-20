@@ -5,11 +5,15 @@
     line: umask 0022
     regexp: (.*)umask(.*)
     state: present
+  tags:
+    - r-core
 
 - name: check if symbolic link exists
   stat:
     path: /opt/rh/devtoolset-2
   register: devtoolsetlink
+  tags:
+    - r-core
 
 - name: create symbolic link for pointers to /opt/rh/devtoolset-2
   become: yes
@@ -20,26 +24,36 @@
     dest: /opt/rh/devtoolset-2
     state: link
   when: devtoolsetlink.stat.exists == false 
+  tags:
+    - r-core
 
 - name: Download texinfo (1) packages for dependency resolution
   get_url:
     url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texinfo-tex-5.1-5.el7.x86_64.rpm
     dest: /opt/texinfo-tex-5.1-5.el7.x86_64.rpm
+  tags:
+    - r-core
 
 - name: Download texinfo (2) packages for dependency resolution
   get_url:
     url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texlive-epsf-doc-svn21461.2.7.4-43.el7.noarch.rpm
     dest: /opt/texlive-epsf-doc-svn21461.2.7.4-43.el7.noarch.rpm
+  tags:
+    - r-core
 
 - name: Download texinfo (3) packages for dependency resolution
   get_url:
     url: http://vault.centos.org/centos/7.6.1810/os/x86_64/Packages/texlive-epsf-svn21461.2.7.4-43.el7.noarch.rpm
     dest: /opt/texlive-epsf-svn21461.2.7.4-43.el7.noarch.rpm
+  tags:
+    - r-core
 
 - name: Download texinfo (4) packages for dependency resolution
   get_url:
     url: http://vault.centos.org/centos/6/os/x86_64/Packages/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
     dest: /opt/texlive-texmf-xetex-2007-39.el6_7.noarch.rpm
+  tags:
+    - r-core
 
 - name: Install texlive packages
 #  shell:  yum localinstall /opt/texlive* -y
@@ -52,6 +66,8 @@
     url: http://mirrors.ctan.org/support/texlive/texlive-dummy/EnterpriseLinux-7/texlive-dummy-2012a-1.el7.noarch.rpm
     dest: /opt/texlive-dummy-2012a-1.el7.noarch.rpm
 #  http://mirrors.ctan.org/support/texlive/texlive-dummy/EnterpriseLinux-7/texlive-dummy-2012a-1.el7.noarch.rpm
+  tags:
+    - r-core
 
 #- name: Execute texlive dummy rpm
 #  shell: yum localinstall /opt/texlive-dummy-2012a-1.el7.noarch.rpm -y --skip-broken
@@ -81,6 +97,7 @@
     state: present
   tags:
     - r
+    - r-core
 
 # R is a meta package that ensures R-core, R-core-devel, R-java, libRMath, libRMath-devel
 - name: Install R-core
@@ -91,11 +108,13 @@
   register: r_core_updated
   tags:
     - r
+    - r-core
 
 - name: Versionlock R, libRMath
   command: yum versionlock R-* libRmath*
   tags:
     - r
+    - r-core
 
 - name: Check if rstudio server is installed
   yum:
@@ -104,6 +123,7 @@
   register: rstudio_installed
   tags:
     - r
+    - r-core
 
 - name: Restart rstudio if R updates and rstudio server is installed
   command: /bin/true
@@ -112,6 +132,7 @@
   notify: restart rstudio-server
   tags:
     - r
+    - r-core
 
 - name: Install base packages
   yum:
@@ -135,11 +156,13 @@
     - libicu-devel
   tags:
     - r
+    - r-core
 
 - name: Ensure Java is configured
   shell: "R CMD javareconf"
   tags:
     - r
+    - r-core
 
 - name: Ensure that R is executable
   file:
@@ -150,6 +173,7 @@
     - Makeconf
   tags:
     - r
+    - r-core
 
 # Get texlive 2019 install
 - name: Get texlive 2019 binary
@@ -162,6 +186,8 @@
     src: /tmp/install-tl-unx.tar.gz
     dest: /opt
     remote_src: yes
+  tags:
+    - r-core
 
 # texlive installation and dependencies for RedHat 7 are old (2012) and require this deployment to help resolve (texlive-texmf-xetex)
 #- name: Install texlive dependency fixes
@@ -205,6 +231,7 @@
   register: locked_dirs
   tags:
     - r
+    - r-core
 
 - name: Remove locked directories
   file:
@@ -214,6 +241,7 @@
     - "{{ locked_dirs.files }}"
   tags:
     - r
+    - r-core
 
 - name: Update existing R packages
   command: /usr/bin/Rscript --slave --no-save --no-restore-history -e "update.packages(repos=c('http://cran.rstudio.com/'),ask=FALSE,checkBuilt=TRUE);"
@@ -222,6 +250,7 @@
   poll: 60
   tags:
     - r
+    - r-core
   when: install_r_updates
 
 # https://github.com/jeroen/curl/issues/204 ----------------   curl_sslbackend error --------------------
@@ -236,6 +265,7 @@
   environment: "{{ r_env_vars }}"
   tags:
     - r
+    - r-core
   when: install_r_packages and do_r_install_packages
 
 - name: Install R packages with opts
@@ -249,6 +279,7 @@
   environment: "{{ r_env_vars }}"
   tags:
     - r
+    - r-core
   when: install_r_packages and do_r_install_w_opts
 
 - name: Install R packages from Github
@@ -263,6 +294,7 @@
   environment: "{{ r_env_vars }}"
   tags:
     - r
+    - r-core
   when: install_r_packages and do_r_install_github
 
 - name: Re-ensure that R is executable
@@ -274,6 +306,7 @@
     - Makeconf
   tags:
     - r
+    - r-core
   when: install_r_packages
 
 - name: Permissions for R package directory
@@ -287,11 +320,14 @@
   with_items: "{{ r_system_package_dir }}"
   tags:
     - r
+    - r-core
 
 - name: Install pdfgrep
   yum:
     name: pdfgrep
     state: present
+  tags:
+    - r-core
 
 #- name: Get and Build gdal 2.2.1
 #  become: yes
