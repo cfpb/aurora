@@ -57,6 +57,15 @@
   tags:
     - shiny
 
+# Shinny rpm install scripts (rpm -q --scripts shiny-server) don't correctly detect systemd on redhat
+# so we are manually installing systemd scripts
+- name: Install systemd script
+  copy:
+    remote_src: "/opt/shiny-server/config/systemd/shiny-server.service"
+    dest: "/etc/systemd/system/shiny-server.service"
+  tags:
+    - shiny
+
 #- name: Create upstart directory
 # file:
 #   dest: /etc/init
