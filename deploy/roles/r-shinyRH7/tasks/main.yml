@@ -61,7 +61,8 @@
 # so we are manually installing systemd scripts
 - name: Install systemd script
   copy:
-    remote_src: "/opt/shiny-server/config/systemd/shiny-server.service"
+    src: "/opt/shiny-server/config/systemd/shiny-server.service"
+    remote_src: True
     dest: "/etc/systemd/system/shiny-server.service"
   tags:
     - shiny
