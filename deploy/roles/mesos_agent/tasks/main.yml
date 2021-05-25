@@ -8,6 +8,9 @@
   modprobe:
     name: overlay
     state: present
+  tags:
+    - mesos
+    - mesos-agent
 
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
