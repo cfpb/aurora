@@ -4,6 +4,11 @@
 ### SETUP MESOS REPOSITORIES AND INSTALL
 
 
+- name: Enable the "overlay" kernel module
+  modprobe:
+    name: overlay
+    state: present
+
 - name: Add mesosphere repository
   command: "rpm -Uvh http://repos.mesosphere.io/el/7/noarch/RPMS/mesosphere-el-repo-7-1.noarch.rpm"
   args:

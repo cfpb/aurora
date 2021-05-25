@@ -29,7 +29,7 @@ marathon_mesos_extra_groups:
 mesos_containerizers: "mesos"
 mesos_launcher: "linux"
 mesos_image_providers: "appc,docker"
-mesos_agent_image_backend: "copy"
+mesos_agent_image_backend: "overlay"
 
 mesos_executor_registration_timeout: 5mins
 
