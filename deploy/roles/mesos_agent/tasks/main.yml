@@ -8,6 +8,18 @@
   modprobe:
     name: overlay
     state: present
+  when: mesos_agent_enable_kernelmodule_overlay
+  tags:
+    - mesos
+    - mesos-agent
+
+- name: Enable overlay kernel module after reboot
+  copy:
+    dest: /etc/modules-load.d/overlay.conf
+    content: overlay
+    owner: root
+    group: root
+  when: mesos_agent_enable_kernelmodule_overlay
   tags:
     - mesos
     - mesos-agent
@@ -224,6 +236,10 @@
   group:
     name: "{{ marathon_mesos_user }}"
     gid: "{{ marathon_mesos_gid }}"
+  tags:
+    - mesos
+    - mesos-agent
+
 - name: Create mesos user
   user:
     name: "{{ marathon_mesos_user }}"
