@@ -8,38 +8,39 @@
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
     - common
-    - {role: epel, when: "use_epel and not 'production' in group_names"}
+    - {role: epel7, when: "use_epel and not 'production' in group_names"}
     - umask
-    - {role: log-courier, when: "install_logstash"}
     - jdk
     - postgresql-client
     - eod
-    - devtools
-    - {role: python, when: "custom_repo"}
-    - {role: python-build, when: "not custom_repo"}
-    - python36-scl
-    - python-libs
+    - devtools7
+    - python2rh7
+    - python3rh7
+    - python-libs7
     - sqitch
     - {role: pem-client, tags: pem-client}
     - sublime
-    - odbc
+    - odbc7
   tasks:
 
     - name: Install needed packages
       yum:
-        name: "{{ item }}"
+        name: 
+          - htop
+          - screen
+          - rsync
+          - unzip
+          - gpg
+          - pigz
+          - facter
+          - sysstat
+          - systemtap
+          - ant # sar, iostat, vmstat
+          - p7zip
+          - p7zip-plugins
+          - libpng12
+          - tesseract
         state: present
-      with_items:
-        - htop
-        - screen
-        - rsync
-        - unzip
-        - gpg
-        - pigz
-        - facter
-        - sysstat # sar, iostat, vmstat
-        - systemtap # dtrace equivalent
-        - ant
 
     - name: Install custom packages
       yum:

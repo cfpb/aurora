@@ -1,8 +1,10 @@
 [COMMON]
 EoDHomeDir={{ eod_install_directory }}
 EoDSSLAvailable=1
+{% if eod_datastore_directory is defined %}
 EoDDataStoreDir={{ eod_datastore_directory }}
 EoDDataStorePassword={{ eod_datastore_password }}
+{% endif %}
 
 [SERVER]
 EoDSSHCommand=/usr/bin/ssh

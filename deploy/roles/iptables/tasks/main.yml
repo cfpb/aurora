@@ -6,7 +6,7 @@
 
 ---
 - import_tasks: rhel_7.yml
-  when: ansible_distribution_major_version  == 7
+  when: ansible_distribution_major_version  == "7"
 
 - name: Temporarily allow all
   command: "iptables -P INPUT ACCEPT"
@@ -80,4 +80,6 @@
   command: "iptables -P OUTPUT ACCEPT"
 
 - name: Save new rules
-  command: "/sbin/service iptables save"
+  shell:
+    cmd: "/sbin/service iptables save"
+    warn: false

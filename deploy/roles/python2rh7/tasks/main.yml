@@ -2,22 +2,20 @@
 ---
 - name: Install Python27 packages
   yum:
-    name: "{{ item }}"
+    name: 
+      - python27
+      - python27-PyYAML
+      - python27-python-setuptools # python27-python-six
+      - python27-python-devel
+      - python27-python-libs
+      - python27-python-pip
+      - python27-python-psycopg2
+      - python27-numpy
+      - python27-scipy
+      - python27-python-tools
+      - python27-tkinter
+      - python27-python-virtualenv
     state: present
-  with_items:
-    - python27
-    - python27-PyYAML
-    - python27-python-setuptools
-    - python27-python-devel
-    - python27-python-libs
-    - python27-python-pip
-    - python27-python-psycopg2
-#   - python27-numpy         ## pip install will address
-#   - python27-scip          ## pip install will address
-#   - python27-python-six    ## pip install will address
-    - python27-python-tools
-    - python27-tkinter
-    - python27-python-virtualenv
 
 #- name: Pip install virtualenvwrapper
 #  pip:
@@ -25,7 +23,7 @@
 #    state: present
 - name: SCL Enable Pip Install Upgrade Pip 
   shell: |
-    scl enable python27 -- pip install --upgrade pip
+    scl enable python27 -- pip install --upgrade pip==20.3.4
   become: yes
   become_method: sudo
 
@@ -46,3 +44,9 @@
 #  easy_install:
 #    name: pip
 #    executable: easy_install-3.6
+
+- name: Make python 2.7 the default python for this machine
+  template:
+      src: scl_enable_python27.sh.j2
+      dest: /etc/profile.d/scl_enable_python27.sh
+  when: set_python27_default_python

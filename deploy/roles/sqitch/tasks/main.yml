@@ -1,13 +1,11 @@
 ---
 - name: Install dependencies
   yum:
-    name: "{{ item }}"
+    name: 
+      - perl-devel
+      - perl-CPAN
+      - "@Development Tools"
     state: present
-  with_items:
-    - perl-devel
-    - perl-CPAN
-    #- perl-DBD-Pg
-    - "@Development Tools"
   tags:
     - sqitch
 
@@ -46,7 +44,8 @@
   when: install_sqitch
 
 - name: Get sqitch
-  shell: cpanm --notest --sudo App::Sqitch
+#  shell: cpanm --notest --sudo App::Sqitch
+  shell: cpanm --notest --sudo DWHEELER/App-Sqitch-0.9996.tar.gz
   register: sqitch
   changed_when: '"is up to date" not in sqitch.stdout'
   environment:
@@ -62,5 +61,14 @@
   environment:
     PATH: "/usr/pgsql/bin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
   when: postgres_install_dir is defined
+  tags:
+    - sqitch
+
+- name: Add usr/local/bin directory to path
+# when login to db terminal through EoD, /usr/local/bin directory is not in the PATH, sqitch is not found
+  template:
+    src: sqitch.sh.j2
+    dest: /etc/profile.d/sqitch.sh
+    mode: 0644
   tags:
     - sqitch

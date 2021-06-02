@@ -1,28 +1,35 @@
 ---
 - name: Install EOD dependencies
   yum:
-    name: "{{ item }}"
+    name: 
+      - openssl
+      - openssl-devel
+      - sil-abyssinica-fonts
+      - tree
+      - expect
     state: present
-  with_items:
-    - openssl
-    - openssl-devel
-    - abyssinica-fonts
-    - tree
-    - expect
   tags:
     - eod
 
 - import_tasks: install_eod.yaml
   when: eod_install
+  tags:
+    - eod
 
 - import_tasks: upgrade_eod.yaml
   when: eod_upgrade
+  tags:
+    - eod
 
 - name: Configure node.cfg
   template:
     src: node.cfg.j2
     dest: "{{ eod_install_directory }}/conf/admin/node.cfg"
-  when: eod_datastore_directory is defined
+  when: custom_repo
+  notify:
+    - restart eod
+  tags:
+    - eod
 
 - name: Configure cluster.cfg
   template:
@@ -42,12 +49,16 @@
     group: root
     mode: 0750
   with_items: "{{ eod_admins }}"
+  tags:
+    - eod
 
 - name: Ensure admins can login via Connection Server
   template:
     src: admin_settings.cfg.j2
     dest: "{{ eod_install_directory }}/conf/users/{{ item }}/settings.cfg"
   with_items: "{{ eod_admins }}"
+  tags:
+    - eod
 
 - name: Configure xdmcp
   template:
@@ -56,7 +67,31 @@
   notify:
     - restart eod
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Adding config files for XConfig
+  template:
+    src: templates/{{ item }}
+    dest: "{{ eod_install_directory }}/conf/admin/Xconfig/{{ item }}"
+  with_items:
+    - HiResMonitor.cfg
+    - LowResMonitor.cfg
+    - "Passive - Monitor 1.cfg"
+    - "Passive - Monitor 2.cfg"
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Adding config files for XStart
+  template:
+    src: templates/{{ item }}
+    dest: "{{ eod_install_directory }}/conf/admin/Xstart/{{ item }}"
+  with_items:
+    - xfce4.xs
+    - Passive-Single-Sign-On.xs
   when: custom_repo
   tags:
     - eod
@@ -92,17 +127,30 @@
   tags:
     - eod
 
-- name: install Desktop
+- name: install gdm (gnome display manager)
   yum:
-    name: "@Desktop"
+    name: gdm
     state: present
-  when: not custom_repo
   tags:
     - eod
 
-- name: install General Purpose Desktop
+- name: install Server with GUI  # replaced Desktop
   yum:
-    name: "@General Purpose Desktop"
+    name: "@^Server with GUI" # environment
+    state: present
+  tags:
+    - eod
+
+- name: install Xfce Desktop # replaced general desktop
+  yum:
+    name: "@Xfce"
+    state: present
+  tags:
+    - eod
+
+- name: install Fonts
+  yum:
+    name: "@fonts"
     state: present
   tags:
     - eod
@@ -121,7 +169,7 @@
     mode: 0644
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -130,7 +178,7 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -139,7 +187,7 @@
   with_items: "{{ gconf_settings }}"
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -150,13 +198,19 @@
   tags:
     - eod
 
+- name: set runlevel 5 graphical.target on startup
+  command: systemctl set-default graphical.target
+  register: xtarget
+  tags:
+    - eod
+
 - name: configure xorg.conf
   template:
     src: xorg.conf
     dest: /etc/X11/xorg.conf
   notify:
     - restart gdm
-    - restart prefdm
+#    - restart prefdm
   tags:
     - eod
 
@@ -185,7 +239,7 @@
   notify:
     - restart eod
   tags:
-  - eod
+    - eod
 
 - name: Remove gpk-update-icon file from /etc/xdg/autostart directory
   file:
@@ -195,14 +249,36 @@
     - eod
 
 - name: run gdm
-  command: start prefdm
+  service:
+    name: gdm
+    state: started
+    use: service
   register: gdm_status
-  failed_when: gdm_status.rc != 0 and "Job is already running" not in gdm_status.stderr
-  changed_when: gdm_status.rc == 0
   tags:
     - eod
 
 ### Ensure EOD starts on boot
+
+# patch
+- name: Run eodpatch expect inline - required before running /usr/local/eod/bin/otecs ...
+  shell: |
+    set timeout 120
+    spawn /usr/local/eod/bin/patch
+    match_max 100000
+    expect -exact "\r
+    patch - Patch script for Exceed Connection Server 13.8\r
+    \r
+    \r
+    Proceed to patch permissions bits for /usr/local/eod/bin/sys directory and /usr/local/eod/bin/sys/ewebhost file?\r
+    \[y\]es or \[n\]o, \[Enter\] for no: "
+    send -- "y\r"
+    #expect eof
+    #expect eod
+    exit 0
+  args:
+    executable: /bin/expect
+  tags:
+    - eod
 
 - name: Check if EOD is configured to run on boot
   shell: "{{ eod_install_directory }}/bin/otecs bootstatus"
@@ -260,25 +336,41 @@
 ### Ensure the needed ports are open
 
 - name: open up ports in ipconfig
-  command: "iptables -I {{ iptables_chain }} 3 -p tcp -m tcp --dport {{ item }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} -p tcp -m tcp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports }}"
   when: iptables_config and deploy_iptables
   tags:
     - eod
 
 - name: open up udp port in ipconfig
-  command: "iptables -I {{ iptables_chain }} 3 -p udp -m udp --dport {{ item }} -j ACCEPT"
+  command: "iptables -I {{ iptables_chain }} -p udp -m udp --dport {{ item }} -j ACCEPT"
   with_items: "{{ eod_client_ports_udp }}"
   when: iptables_config and deploy_iptables
   tags:
     - eod
 
 - name: save the new ipconfig
-  command: "/sbin/service iptables save"
+  shell:
+    cmd: "/sbin/service iptables save"
+    warn: false
   when: iptables_config and deploy_iptables
   tags:
     - eod
 
+- name: fix XFCE4 PolicyKit Agent Error
+  lineinfile:
+    path: /etc/xdg/autostart/xfce-polkit.desktop
+    regexp: '^Exec=/usr/libexec/xfce-polkit'
+    line: '#Exec=/usr/libexec/xfce-polkit'
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install xfce4 trash can fix
+  yum:
+    name: gvfs
+    state: latest
+    
 #- name: Add /usr/local/eod/conf/admin/Xconfig/*.cfg files to register
 #  shell: find /usr/local/eod/conf/admin/Xconfig/ -type f -name \*.cfg -printf "%f\n"
 #  register: cfg_files

@@ -8,7 +8,8 @@
   when: install_eod and eod_restart
 
 - name: restart gdm
-  shell: killall gdm-binary
+#  shell: killall gdm-binary
+  shell: systemctl restart gdm
   ignore_errors: yes
   when: eod_restart
 

@@ -1,12 +1,21 @@
 ---
-- name: Copy over the EOD bin file
-  copy:
-    src: "{{ eod_installer_directory }}/{{ eod_installer }}"
-    dest: "/tmp/"
-  when: custom_repo
+- name: Install python3 pip
+  yum:
+    name: python3-pip
+    state: present
   tags:
     - eod
 
+- name: Install gdown for remote download
+  shell: pip3 install gdown
+  tags:
+    - eod
+
+- name: Use gdown to download file
+  shell: /usr/local/bin/gdown https://drive.google.com/uc?id=1zBw9zmt65pfyA7dkuJlSPEscTYO8ZOc0 -O /tmp/ecs-13.8.9-linux-x64.bin 
+  tags:
+    - eod
+  
 - name: Chmod EOD binary
   file:
     path: "/tmp/{{ eod_installer }}"
@@ -33,6 +42,8 @@
 - name: run EOD expect script
   shell: /tmp/install_eod_server.exp
   when: custom_repo
+  args:
+    creates: "{{ eod_install_directory }}/bin/otecs"
   tags:
     - eod
 

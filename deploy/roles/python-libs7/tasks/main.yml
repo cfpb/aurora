@@ -1,21 +1,20 @@
 ---
 - name: Install Python RPM dependencies
   yum:
-    name: "{{ item }}"
+    name: "{{ python_dep_packages }}"
     state: present
     disable_gpg_check: yes
-  with_items: "{{ python_dep_packages }}"
   tags:
     - python-libs
 
 - name: tst Install updated setuptools Python packages for 27 (for pysolr)
-  command: scl enable python27 -- pip install setuptools==12
+  command: scl enable python27 "pip install setuptools==12"
   when: install_python
   tags:
     - python-libs
 
 - name: Install Python packages dep for othe package for 27 (needed by SLIP)
-  command: scl enable python27 "pip install matplotlib NeuroTools"
+  command: scl enable python27 "pip install NeuroTools matplotlib==2.2.3 --ignore-installed six"
   when: install_python
   tags:
     - python-libs
@@ -38,3 +37,24 @@
   tags:
     - python-libs
 
+# - name: Install Python packages dep for EPEL package for 36 (needed by SLIP)
+#   become: yes
+#   command: python3 -m pip install matplotlib NeuroTools
+#   when: install_python
+#   tags:
+#     - python-libs
+
+# - name: Install Python packages for EPEL 36
+#   command: pip3 install {{ ' '.join(python3_packages) }}
+#   when: install_python
+#   tags:
+#     - python-libs
+
+- name: Install Python packages for EPEL 36
+  pip:
+    name: "{{ python3_packages }}"
+    executable: pip3
+    umask: '0022'
+  when: install_python
+  tags:
+    - python-libs
