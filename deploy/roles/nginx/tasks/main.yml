@@ -1,5 +1,12 @@
 # main.yml - Nginx installation
 ---
+- name: Install yum versionlock plugin
+  yum:
+    name: yum-plugin-versionlock
+    state: present
+  tags:
+    - nginx
+
 - name: Install Nginx
   yum:
     name: "{{ item }}"
@@ -10,6 +17,11 @@
     - nginx
   notify:
     - restart nginx
+  tags:
+    - nginx
+
+- name: Versionlock nginx
+  command: yum versionlock nginx
   tags:
     - nginx
 

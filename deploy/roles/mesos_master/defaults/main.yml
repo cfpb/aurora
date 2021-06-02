@@ -19,6 +19,7 @@ mesos_server_packages:
   #- zookeeper-server
 
 mesos_cluster_name: "Test Cluster"
+mesos_master_listen_ip: "{{ aurora_hostname }}"
 mesos_master_port: 5050
 mesos_master_logging_level: "INFO"
 

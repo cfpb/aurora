@@ -1,5 +1,11 @@
 # main.yml - Install Python 2.7 and Packages from RedHat Satellite
 ---
+- name: Install Python2 packages (non scl)
+  yum:
+    name:
+        - python2-pip
+        - python2-virtualenv
+
 - name: Install Python27 packages
   yum:
     name: 
@@ -17,33 +23,17 @@
       - python27-python-virtualenv
     state: present
 
-#- name: Pip install virtualenvwrapper
-#  pip:
-#    name: virtualenvwrapper
-#    state: present
 - name: SCL Enable Pip Install Upgrade Pip 
   shell: |
     scl enable python27 -- pip install --upgrade pip==20.3.4
   become: yes
   become_method: sudo
 
-# Already Installed with RHEL 7
-#- name: SCL Enable Pip Install virtualenvwrapper
-#  shell: |
-#    scl enable python27 -- pip install virtualenvwrapper
-#  become: yes
-#  become_method: sudo
-
 - name: SCL Enable Pip Install numpy, scipy
   shell: |
     scl enable python27 -- pip install numpy scipy 
   become: yes
   become_method: sudo
-
-#- name: Install pip
-#  easy_install:
-#    name: pip
-#    executable: easy_install-3.6
 
 - name: Make python 2.7 the default python for this machine
   template:

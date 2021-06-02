@@ -23,7 +23,7 @@
     - mesos_agent
     - {role: epel7, when: "use_epel and not ( 'production' in group_names or 'developement' in group_names)"}
     - openjdk1.8
-    - postgresql-client7
+    - postgresql-client
     - { role: apache, vars: { apache_service_state: "stopped", apache_service_enable: "no" } }
     #- pentaho
     - gocd7

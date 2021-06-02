@@ -3,6 +3,11 @@
     name: git
     state: present
 
+- name: Install yum versionlock plugin
+  yum:
+    name: yum-plugin-versionlock
+    state: present
+
 - name: Install dependencies
   yum:
     name: "{{item}}"
@@ -18,5 +23,8 @@
     - libffi-devel
     - openssl-devel
     - openldap-devel
+
+- name: Versionlock libevent
+  command: yum versionlock libevent*
 
 ##ToDO: Add https://github.com/cfpb/psql-authnz deployment steps and run on citus hosts and postgres hosts
