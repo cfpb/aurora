@@ -31,7 +31,7 @@
     - restart logstash
 
 - name: Install logstash-output-elasticsearch plugin
-  shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-output-elasticsearch"'
+  shell: 'su logstash -c "/opt/logstash/bin/logstash-plugin install logstash-output-elasticsearch"'
   notify:
     - restart logstash
 
