@@ -34,6 +34,7 @@
   shell: 'su logstash -c "/opt/logstash/bin/logstash-plugin install logstash-output-elasticsearch"'
   notify:
     - restart logstash
+  ignore_errors: yes
 
 - name: Remove sgroups because it doesn't work with Active Directory
   lineinfile:
