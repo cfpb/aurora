@@ -1,0 +1,41 @@
+#!/bin/bash
+# Generated at {{ ansible_date_time.iso8601 }} for host {{ inventory_hostname }}
+# Use like this (in /var/lib/pgsql/10/data/postgresql.conf):
+# archive_command = '/var/lib/pgsql/10/data/archive-wal-file %p %f'
+
+set -eux # what else should we set? pipefail?
+
+if [[ -z "$1" ]]; then
+  echo "$0: must supply full path and base filename as command-line parameters"
+  exit 1;
+fi;
+if [[ -z "$2" ]]; then
+  echo "$0: missing base filename (second command-line parameter)"
+  exit 2;
+fi;
+
+DFMT="%Y-%m-%d %T %Z"
+echo $(date +"$DFMT") "archive-wal-file started..."
+
+fullpath="$1"
+filename="$2"
+# Note: this is the same directory we pull the archives FROM on the standby cooridnator
+ARCHIVE_DIR="{{ pp_datadir }}/archives"
+# Set this as a fact before using this template:
+STANDBY_ADDRESS="{{ citus_coordinator_standby_address }}"
+
+# check that we can connect first....
+ssh $STANDBY_ADDRESS hostname
+
+scp -q $fullpath $STANDBY_ADDRESS:$ARCHIVE_DIR/$filename
+
+# TODO: Remove this code once functionality is confirmed
+# cp $fullpath $ARCHIVE_DIR/$filename
+# cd $ARCHIVE_DIR
+# rsync -ac . $STANDBY_ADDRESS:$ARCHIVE_DIR/
+
+echo $(date +"$DFMT") "archive-wal-file succeeded."
+
+# TODO:
+# make the destination host (or host+dir?) a parameter
+# make the archive dir a parameter? optional parameter?

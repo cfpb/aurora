@@ -1,0 +1,12 @@
+    #please note: the spacing needs to line up w/ the other yaml templates
+    HOSTNAME: 
+      image: centos7-sshd:latest
+      restart: always
+      privileged: true
+      volumes:
+        - /sys/fs/cgroup:/sys/fs/cgroup:ro
+        - ../.cache/yum:/var/cache/yum:cached
+      networks:
+        ansible_nw:
+          ipv4_address: IPV4
+  

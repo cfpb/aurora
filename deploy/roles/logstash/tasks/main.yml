@@ -2,6 +2,7 @@
 - name: Add elasticsearch key
   rpm_key:
     key: https://packages.elasticsearch.org/GPG-KEY-elasticsearch
+    validate_certs: no   # TODO remove on rhel7
     state: present
   when: not "production" in group_names
 
@@ -30,9 +31,10 @@
     - restart logstash
 
 - name: Install logstash-output-elasticsearch plugin
-  shell: 'su logstash -c "/opt/logstash/bin/plugin install logstash-output-elasticsearch"'
+  shell: 'su logstash -c "/opt/logstash/bin/logstash-plugin install logstash-output-elasticsearch"'
   notify:
     - restart logstash
+  ignore_errors: yes
 
 - name: Remove sgroups because it doesn't work with Active Directory
   lineinfile:

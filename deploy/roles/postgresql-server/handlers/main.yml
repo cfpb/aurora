@@ -5,3 +5,17 @@
   service:
     name: "{{ pp_servicename }}"
     state: restarted
+  when: pp_allow_restart or pp_install
+
+- name: reload-daemon
+  service:
+    name: "{{ pp_servicename }}"
+    daemon_reload: yes
+
+- name: reload postgres
+  become: yes
+  become_method: sudo
+  service:
+    name: "{{ pp_servicename }}"
+    state: reloaded
+  when: not pp_allow_restart and not pp_install

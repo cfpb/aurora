@@ -1,0 +1,34 @@
+- name: Verify install directory 
+  file: 
+    path: "{{pdfgrep_install_directory}}/" 
+    state: directory 
+    mode: og+rx 
+    recurse: yes 
+
+
+- name: Copy PDFGrep zip from artifacts to install directory 
+   copy: 
+     src: "{{pdfgrep_local_artifact_directory}}/{{pdfgrep_zip_file_name}}" 
+     dest: "{{pdfgrep_install_directory}}/{{pdfgrep_zip_file_name}}" 
+   when: custom_repo 
+ 
+
+ - name: Unzip lisence manager 
+   unarchive: 
+     src: "{{pdfgrep_install_directory}}/{{pdfgrep_zip_file_name}}" 
+     dest: "{{pdfgrep_install_directory}}/" 
+ 
+
+ - name: Set the install bin to be executable 
+   file: 
+     path: "{{pdfgrep_install_directory}}/{{pdfgrep_install_package_name}}" 
+     mode: a+x 
+   when: custom_repo 
+ 
+
+ - name: Run install bin 
+   shell: "./{{pdfgrep_install_package_name}} --mode silent" 
+   args: 
+     chdir: "{{ pdfgrep_install_directory }}" 
+     creates: "{{ _install_directory }}/" 
+   when: custom_repo 

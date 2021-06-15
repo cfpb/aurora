@@ -1,4 +1,5 @@
 ---
+# TODO: Implement change logic
 - name: Add worker node information
   postgresql_exec:
     login_host: localhost
@@ -8,6 +9,7 @@
     db: postgres
     script: "SELECT * from master_add_node('{{ item }}', {{ pp_serverport }})"
   check_mode: no
+  changed_when: false
   with_items: "{{ citus_worker_nodes }}"
 
 - name: Verify installation
@@ -19,9 +21,36 @@
     db: postgres
     script: "SELECT * from master_get_active_worker_nodes()"
   check_mode: no
+  changed_when: false
   register: worker_nodes
 
 - name: Assert worker nodes
   assert:
     that:
       - "{{ worker_nodes['query_result'] | length }} > 0"
+
+# In some testing setups, there's no citus_coordinator_standby Ansible group, so use a default:
+- name: Set default for Citus Coordinator Standby address
+  set_fact:
+      citus_coordinator_standby_address: "ccstandby.local"
+  tags:
+    - postgresql-server
+
+# If we have a citus_coordinator_standby group, and it's not empty, get that host's address:
+- name: Determine the Citus Coordinator Standby address
+  set_fact:
+    citus_coordinator_standby_address: "{{ hostvars[groups['citus_coordinator_standby'][0]]['ansible_ssh_host'] }}"
+  when: groups['citus_coordinator_standby'] is defined and groups['citus_coordinator_standby'][0] is defined
+  tags:
+    - postgresql-server
+
+# citus_coordinator_standby_address is used in this template:
+- name: Create WAL archiving script
+  template:
+    src: "archive-wal-file.j2"
+    dest: "{{ pp_datadir }}/archive-wal-file"
+    owner: postgres
+    group: postgres
+    mode: 0755
+  tags:
+    - postgresql-server

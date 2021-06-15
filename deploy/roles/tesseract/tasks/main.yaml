@@ -1,0 +1,100 @@
+# Installs tesseract
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "@Development Tools"
+    - libpng-devel
+    - libtiff-devel
+    - libjpeg-devel
+    - devtoolset-7-gcc-c++
+
+- name: Get autoconf
+  get_url:
+    url: "{{ autoconf_url }}"
+    dest: /tmp
+
+- name: Extract autoconf
+  unarchive:
+    copy: no
+    src: /tmp/autoconf-2.69.tar.gz
+    dest: /tmp
+
+- name: autoconf - Build and install
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/autoconf-2.69/
+  with_items:
+    - ./configure --prefix=/usr/
+    - make
+    - make install
+
+- name: Get autoconf-archive
+  get_url:
+    url: "{{ autoconf_archive_url }}"
+    dest: /tmp
+
+- name: Extract autoconf-archive
+  unarchive:
+    copy: no
+    src: /tmp/autoconf-archive-2019.01.06.tar.xz
+    dest: /tmp
+
+- name: autoconf-archive - Build and install
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/autoconf-archive-2019.01.06/
+  with_items:
+    - ./configure --prefix=/usr/
+    - make
+    - make install
+
+- name: Download Leptonica
+  get_url:
+    url: "{{ leptonica_url }}"
+    dest: /tmp
+
+- name: Extract Leptonica
+  unarchive:
+    copy: no
+    src: /tmp/leptonica-1.77.0.tar.gz
+    dest: /tmp
+
+- name: Leptonica - Build and install # need to enable devtools7
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/leptonica-1.77.0/
+  with_items:
+    - ./configure --prefix=/usr/local/ CC={{ CC }}
+    - make CC={{ CC }}
+    - make install
+
+- name: Download Tesseract
+  get_url:
+    url: "{{ tesseract_url }}"
+    dest: /tmp
+    
+- name: Extract Tesseract
+  unarchive:
+    copy: no
+    src: /tmp/tesseract-4.0.0.tar.gz
+    dest: /tmp
+
+- name: Tesseract - Build and install # need to enable devtools7
+  shell: "{{ item }}"
+  environment:
+    - PKG_CONFIG_PATH: /usr/local/lib/pkgconfig
+  args:
+    chdir: /tmp/tesseract-4.0.0/
+  with_items:
+    - ./autogen.sh CC={{ CC }} CXX={{ CXX }}
+    - ./configure CC={{ CC }} CXX={{ CXX }} --prefix=/usr/local --with-extra-libraries=/usr/local/lib 
+    - make
+    - make install
+
+- name: "Download all language packs"
+  get_url:
+    url: "{{ tesseract_eng_lang }}"
+    dest: "{{ tessdata_dir }}"

@@ -10,7 +10,7 @@
 - name: Unarchive sublime (from remote)
   unarchive:
     copy: no
-    src: "http://c758482.r82.cf2.rackcdn.com/Sublime%20Text%202.0.2.tar.bz2"
+    src: "https://download.sublimetext.com/Sublime%20Text%202.0.2%20x64.tar.bz2"
     dest: "{{ sublime_install_directory }}"
     owner: root
     group: root

@@ -7,7 +7,7 @@
   roles:
     - {role: puppet_disable, when: "disable_puppet"}
     - {role: iptables, when: "iptables_config"}
-    - {role: common, when: "install_glusterfs"}
+    - common
     - ntp
     - kerberos
     - apache
@@ -16,6 +16,7 @@
     - {role: log-courier, when: "install_logstash"}
     - {role: python, when: "custom_repo and install_python"}
     - {role: python-build, when: "not custom_repo"}
+    - python36-scl
     - odbc
 
   tasks:

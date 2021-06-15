@@ -1,7 +1,14 @@
 ---
+# copied this from aurora/deploy/roles/shared/handlers/rhel7.yml
 - name: restart postgres
-  become: yes
-  become_method: sudo
-  service:
+  become: True
+  systemd:
     name: "{{ pp_servicename }}"
     state: restarted
+    daemon_reload: yes
+#- name: restart postgres
+#  become: yes
+#  become_method: sudo
+#  service:
+#    name: "{{ pp_servicename }}"
+#    state: restarted

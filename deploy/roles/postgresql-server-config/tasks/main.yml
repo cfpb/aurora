@@ -1,4 +1,7 @@
 ---
+- debug:
+    var: standby
+
 - name: Allow postgres empty password login temporarily
   become: yes
   become_method: sudo
@@ -8,11 +11,14 @@
     backrefs: yes
     line: 'host\1postgres\2trust'
   notify: restart postgres
+  when: pp_install
 
 - meta: flush_handlers
+  when: pp_install
 
 - pause:
     seconds: "{{ pp_server_start_pause }}"
+  when: pp_install
 
 - name: Ensure password is correct
   postgresql_exec:
@@ -23,6 +29,7 @@
     script: "ALTER user postgres PASSWORD '{{ pp_superpassword }}';"
   check_mode: no
   #no_log: true
+  when: pp_install
 
 - name: Disallow postgres empty password login
   become: yes
@@ -33,8 +40,10 @@
     backrefs: yes
     line: 'host\1postgres\2md5'
   notify: restart postgres
+  when: pp_install
 
 - meta: flush_handlers
+  when: pp_install
 
 # These scripts allow for the necessary changes that may
 # need to be made to allow the configuration scripts
@@ -49,6 +58,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_pre_scripts }}"
   check_mode: no
+  when: not standby
 
 - name: Execute configuration scripts
   postgresql_exec:
@@ -60,6 +70,7 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_setup_scripts }}"
   check_mode: "{{ item.check_mode }}"
+  when: not standby
 
 ### Step 2: Create Operational DBA role, which will have all non-superuser privileges
 ###         on databases created from the custom database templates, and additional
@@ -75,6 +86,7 @@
     role_attr_flags: INHERIT,NOLOGIN,NOSUPERUSER,NOCREATEDB,NOCREATEROLE
     state: present
   check_mode: no
+  when: not standby
 
 - name: Create Operational DBA schema
   postgresql_exec:
@@ -85,9 +97,13 @@
     db: "{{ item }}"
     script: CREATE SCHEMA IF NOT EXISTS op_dba
   check_mode: no
+  register: result
   with_items:
     - postgres
     - template1
+  changed_when:
+    - '"already exists" not in result.notices'
+  when: not standby
 
 - name: Allow operational_dba role to use the op_dba schema.
   postgresql_privs:
@@ -104,6 +120,7 @@
   with_items:
     - postgres
     - template1
+  when: not standby
 
 - name: Load custom functions for defining privileged Operational DBA actions in template1
   postgresql_exec:
@@ -115,6 +132,8 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_dba_scripts }}"
   check_mode: no
+  changed_when: false
+  when: not standby
 
 - name: Load custom functions for defining privileged Operational DBA actions in postgres
   postgresql_exec:
@@ -123,9 +142,13 @@
     login_password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     db: postgres
-    script: "{{ item.script }}"
+    script: "{{ dba_script.script }}"
   with_items: "{{ pp_dba_scripts }}"
+  loop_control:
+    loop_var: dba_script
   check_mode: no
+  changed_when: false
+  when: not standby
 
 - name: Retrieve list of databases
   postgresql_exec:
@@ -136,13 +159,17 @@
     db: postgres
     script: "SELECT datname FROM pg_database WHERE datistemplate=false AND datname != 'edb';"
   register: database_list
+  changed_when: false
 
 - debug:
     var: database_list
 
 - include: create_functions.yml
   with_items: "{{ database_list.query_result }}"
+  when: database_list is defined and not standby
 
+# TODO: This should have a where clause to limit it to Citus hosts, or perhaps
+# be moved to the Citus role.
 - name: Update Citus extension
   postgresql_exec:
     login_host: localhost
@@ -153,9 +180,8 @@
     script: ALTER EXTENSION citus UPDATE
   check_mode: no
   register: result
-  failed_when:
-    - 'result.module_stdout is defined and "extension \"citus\" does not exist" not in result.module_stdout'
-    - 'result.module_stderr is defined and "extension \"citus\" does not exist" not in result.module_stderr'
+  failed_when: result.notices is defined and result.notices is search('extension "citus" does not exist')
+  changed_when: result.notices is not defined or "is already installed" not in result.notices
   with_items: "{{ database_list.query_result }}"
 
 - name: Grant operational_dba role execute permissions on op_dba schema in template1
@@ -172,6 +198,7 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
+  when: not standby
 
 - name: Grant operational_dba role execute permissions on op_dba schema in postgres
   postgresql_privs:
@@ -187,12 +214,13 @@
     obj: "{{ item.signature }}"
     state: present
   with_items: "{{ pp_dba_scripts }}"
+  when: not standby
 
 # Setup default user permissions, etc., for template DB's
 - name: Configure default privileges
   postgresql_privs:
     login_host: localhost
-    login: "{{ pp_superaccount }}"
+    login_user: "{{ pp_superaccount }}"
     password: "{{ pp_superpassword }}"
     port: "{{ pp_serverport }}"
     database: "{{ item.db }}"
@@ -203,6 +231,7 @@
     type: "{{ item.type }}"
     state: "{{ item.state }}"
   with_items: "{{ pp_privs }}"
+  when: not standby
 
 # Any post-configuration scripts that need to be executed go here
 - name: Execute post-configuration scripts
@@ -215,6 +244,8 @@
     script: "{{ item.script }}"
   with_items: "{{ pp_post_scripts }}"
   check_mode: no
+  changed_when: false
+  when: not standby
 
 ### Step 3: Create default service account using operational_dba role
 
@@ -230,6 +261,8 @@
     password: "{{ pp_dba_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
+  when: not standby
 
 - name: Add default service account to operational_dba group
   postgresql_privs:
@@ -243,7 +276,10 @@
     type: group
     state: present
     admin_option: no
+  when: not standby
 
+# TODO: ignore_errors is required due to FIPS blocking of the md5 package.
+#       Investigate if there's a better approach to resolving this.
 - name: Create replication role
   postgresql_user:
     login_host: localhost
@@ -256,6 +292,7 @@
     password: "{{ replication_password }}"
     state: present
   check_mode: no
+  ignore_errors: yes
 
 - name: Set permissions on log file directory recursively
   become: yes

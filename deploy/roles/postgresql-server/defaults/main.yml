@@ -2,15 +2,15 @@
 ## Postgres default variables
 pg_version: 10
 install_edb: False
-install_ppas: False
 
 # When to install, upgrade, and restart
 pp_install: False
 pp_restart: False
 pp_upgrade: False
+pp_allow_restart: False
 
 # HTTPS runs into issues
-pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat10-10-2.noarch.rpm"
+pgdg_repository: "https://download.postgresql.org/pub/repos/yum/10/redhat/rhel-6-x86_64/pgdg-redhat-repo-latest.noarch.rpm"
 postgres_repository_key_url: "https://download.postgresql.org/pub/repos/yum/RPM-GPG-KEY-PGDG"
 pp_packages:
   - postgresql10-server
@@ -40,21 +40,23 @@ replication_user: replication
 replication_password: replication
 
 # Core server config
-pp_clusterdir: /usr/local/pgsql/data
+pp_servicename: postgresql-10
 pp_datadir: /var/lib/pgsql/10/data
-pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_serverport: 5432
+pp_support_services: []
+
+pp_serviceaccount: postgres
+pp_xlogdir: /var/lib/pgsql/10/data
 pp_prefix: ''
 pp_debuglevel: 2
 pp_server_utilization: 66
-pp_servicename: postgresql-10
-pp_old_servicename: postgresql-9.6
-
-pp_serviceaccount: postgres
-pp_serverport: 5432
-pp_old_serverport: 5433
 pp_workload_profile: oltp
-pp_xlogdir: /var/log/postgresql/
-## PostgreSQL Configuration Settings
+
+# Upgrade settings, default of 9.6->10
+pp_old_servicename: postgresql-9.6
+pp_old_datadir: /var/lib/pgsql/9.6/data
+pp_old_serverport: 5433
+pp_old_support_services: []
 
 # pg_hba.conf settings
 pg_hba_settings:
@@ -74,7 +76,7 @@ pg_hba_settings:
     user: postgres
     address: '10.0.1.0/24'
     ip_mask: ''
-    auth_method: md5
+    auth_method: trust
     auth_options: ''
   -
     comment: 'replication user connection:'
@@ -114,7 +116,7 @@ pg_hba_settings:
     auth_options: ''
 
 # Additional postgresql.conf settings
-pp_listen_addresses: '*'
+pp_listen_addresses: 'localhost,{{ ansible_ssh_host }}'
 pp_max_connections: 100
 pp_superuser_reserved_conns: 3
 
@@ -125,6 +127,7 @@ pp_unix_socket_perms: 0777
 
 # Auth
 pp_auth_timeout: '1min'
+# pp_ssl_enable is NOT a boolean: it must be one of the two lowercase strings 'on' or 'off'
 pp_ssl_enable: 'off'
 pp_ssl_ciphers: 'HIGH:MEDIUM:+3DES:!aNULL'
 pp_prefer_server_cyphers: on
@@ -138,6 +141,9 @@ pp_password_encrypt: on
 pp_db_user_namespace: off
 
 pp_ssl_string: '/C=US/ST=DC/L=NE/O=TESTORG/OU=Admin/CN=localhost'
+
+pp_krb_keyfile: '/etc/sysconfig/pgsql/krb5.keytab'
+pp_krb_caseins_users: 'off'
 
 # TCP Keepalives
 pp_tcp_idle: 0
@@ -174,26 +180,29 @@ pp_bgwriter_lru_multiplier: 2.0
 pp_effective_io_concurrency: 1
 pp_max_worker_processes: 8
 pp_max_parallel_workers_per_gather: 0
+pp_max_parallel_workers: 8
 
 # WAL
 pp_wal_level: minimal
-pp_fsync: on
-pp_sync_commit: on
+pp_fsync: "on"
+pp_sync_commit: "on"
 pp_wal_sync_method: fsync
-pp_full_page_writes: on
-pp_wal_log_hints: off
+pp_full_page_writes: "on"
+pp_wal_log_hints: "off"
 pp_wal_buffers: -1
 pp_wal_writer_delay: 200ms
 pp_commit_delay: 0
 pp_commit_siblings: 5
+pp_min_wal_size: '80MB'
+pp_max_wal_size: '1GB'
 
 pp_checkpoint_segments: 3
 pp_checkpoint_timeout: 5min
 pp_checkpoint_completion_target: 0.5
 pp_checkpoint_warning: 30s
 
-pp_archive_mode: off
-pp_archive_command: off
+pp_archive_mode: "off"
+pp_archive_command: "off"
 pp_archive_timeout: 0
 
 # Replication
@@ -203,7 +212,7 @@ pp_wal_sender_timeout: 60s
 pp_max_replication_slots: 0
 
 # master
-pp_syncronous_standby_names: ''
+pp_synchronous_standby_names: ''
 pp_vacuum_defer_cleanup_age: 0
 
 # standby

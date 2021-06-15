@@ -124,6 +124,8 @@ transport.tcp.port: {{ es_transport_port }}
 http.enabled: false
 {% endif %}
 
+http.max_initial_line_length: {{ es_http_max_initial_line_length }}
+
 ### Security Settings
 disable_dynamic_scripts: {{ es_disable_dynamic_scripts }}
 allow_explicit_index: {{ es_allow_explicit_index }}

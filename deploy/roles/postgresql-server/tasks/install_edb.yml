@@ -1,10 +1,13 @@
 ---
+- debug:
+    var: pp_install_or_upgrade
+
 - name: Create configuration file
   template:
     src: config_param.j2
     dest: "{{ pp_temp_dir }}/config_param"
     mode: 0600
-  when: pp_install or pp_upgrade
+  when: pp_install_or_upgrade
   tags:
     - postgresql-server
 
@@ -16,7 +19,7 @@
     group: "{{ ansible_user_id }}"
     validate_certs: no
     remote_src: yes
-  when: pp_install or pp_upgrade
+  when: pp_install_or_upgrade
   tags:
     - postgresql-server
 
@@ -27,7 +30,7 @@
     creates: "{{ pp_prefix }}/{{ pp_install_path }}/installer"
   notify:
     - restart postgres
-  when: pp_install or pp_upgrade
+  when: pp_install_or_upgrade
   tags:
     - postgresql-server
 
@@ -38,7 +41,7 @@
     owner: "{{ pp_serviceaccount }}"
     group: "{{ pp_serviceaccount }}"
     mode: 0700
-  when: pp_install or pp_upgrade
+  when: pp_install_or_upgrade
   tags:
     - postgresql-server
 

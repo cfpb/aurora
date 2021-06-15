@@ -40,8 +40,8 @@ nginx_block_robots: "$http_user_agent ~* LWP::Simple|BBBike|wget"
 nginx_webcrawler_protect: "(.*).test.dev"
 
 # Nginx initial state
-nginx_state: "started"
-nginx_enable: "yes"
+nginx_state: "stopped"
+nginx_enable: "no"
 
 # Access restrictions
 nginx_access_list:

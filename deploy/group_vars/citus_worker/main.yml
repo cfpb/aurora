@@ -1,0 +1,56 @@
+#---
+#pg_hba_settings:
+#  -
+#    comment: '"local" is for Unix domain socket connections only'
+#    context: local
+#    db: all
+#    user: all
+#    address: ''
+#    ip_mask: ''
+#    auth_method: md5
+#    auth_options: ''
+#  -
+#    comment: 'Postgres user connection'
+#    context: host
+#    db: all
+#    user: postgres
+#    address: '10.0.1.0/24'
+#    ip_mask: ''
+#    auth_method: md5
+#    auth_options: ''
+#  -
+#    comment: 'replication user connection:'
+#    context: host
+#    db: replication
+#    user: replication
+#    address: '10.0.1.0/24'
+#    ip_mask: ''
+#    auth_method: md5
+#    auth_options: ''
+#  -
+#    comment: 'Ansible connection (must be last of the host/postgres entries)'
+#    context: host
+#    db: all
+#    user: postgres
+#    address: 'localhost'
+#    ip_mask: ''
+#    auth_method: md5
+#    auth_options: ''
+#  -
+#    comment: 'IPv4 local connections:'
+#    context: host
+#    db: all
+#    user: all
+#    address:  '10.0.1.0/24'
+#    ip_mask: ''
+#    auth_method: trust
+#    auth_options: ''
+#  -
+#    comment: 'IPv6 local connections:'
+#    context: host
+#    db: all
+#    user: all
+#    address: '::1/128'
+#    ip_mask: ''
+#    auth_method: trust
+#    auth_options: ''

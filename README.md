@@ -21,6 +21,9 @@ to a remote environment, a custom inventory file is required along with a custom
 group_vars file to go with it.  Once that has been added, simply run
 "ansible-playbook site.yml -i inventories/{{ your_environment }}"
 
+  * Note: if there isn't a postgres instance running on your machine, you'll need to pass an environment variable to install it
+  	- Ex: ```EXTRA_VARS='{pp_install:true}' vagrant up [server_name]```
+
 ## Configuration
 
 As mentioned above, you can configure the deployment using Ansible's inventory
@@ -76,9 +79,18 @@ be installed in the Travis CI image, like so:
 
 TBD
 
+## Role-specific documentation
+
+Some Ansible roles in this project have role-specific documentation:
+
+* (postgresql-server)[deploy/roles/postgresql-server/README.md]
+* (python27-scl)[deploy/roles/python27-scl/README.md]
+* (python36-scl)[deploy/roles/python36-scl/README.md]
+
 ## Known issues
 
 - Travis-CI hangs when jobs complete - [resolution](https://www.jeffgeerling.com/blog/2017/fix-ansible-hanging-when-used-docker-and-tty)
+- R package installation takes too long (currently skipped)
 
 ## Getting help
 
@@ -99,3 +111,4 @@ Refer to [CONTRIBUTING](CONTRIBUTING.md) if you'd like to help!
 ----
 
 ## Credits and references
+
