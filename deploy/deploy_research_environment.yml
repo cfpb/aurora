@@ -4,9 +4,9 @@
   become_method: sudo
   roles:
     - {role: iptables, when: "iptables_config"}
-    - common
-    - {role: epel, when: "use_epel and not 'production' in group_names"}
-    - emacs
+    - {role: common, when: "install_glusterfs and not rh7_upgrade"}
+    - {role: epel, when: "use_epel and not 'production' in group_names and not rh7_upgrade"}
+    - {role: emacs, when: "not rh7_upgrade"}
     - jdk
     - odbc
     - postgresql-client
@@ -86,7 +86,23 @@
   become_method: sudo
   serial: 1
   roles:
-    - eod
+    - {role: eod, when: not rh7_upgrade}     
+
+- hosts: research-eodrh7
+  become: yes
+  become_method: sudo
+  vars:
+    rh7_upgrade: true
+  roles:
+    - epel7
+    - common7
+    - eod7
+    - emacs
+  post_tasks:
+    - name: Install git
+      yum:
+        name: git
+        state: present
 
 - hosts: research_gauss
   become: yes
@@ -185,3 +201,4 @@
     with_items:
       - libicu
       - libselinux-python
+      

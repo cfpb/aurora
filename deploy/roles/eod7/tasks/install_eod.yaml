@@ -1,0 +1,45 @@
+---
+- name: Copy over the EOD bin file
+  copy:
+    src: "{{ eod_installer_directory }}/{{ eod_installer }}"
+    dest: "/tmp/"
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Chmod EOD binary
+  file:
+    path: "/tmp/{{ eod_installer }}"
+    mode: a+x
+  when: custom_repo
+  tags:
+    - eod
+
+- name: Ensure that eod directory exists
+  file:
+    path: "{{ eod_install_directory }}"
+    state: directory
+  tags:
+    - eod
+
+- name: Copy the eod expect script
+  template:
+    src: files/install_eod_server.exp
+    dest: /tmp/install_eod_server.exp
+    mode: a+x
+  tags:
+    - eod
+
+- name: run EOD expect script
+  shell: /tmp/install_eod_server.exp
+  when: custom_repo
+  tags:
+    - eod
+
+- name: run eod silent install
+  shell: "{{ eod_install_directory }}/bin/install -s"
+  when: custom_repo
+  args:
+    creates: "{{ eod_install_directory }}/bin/otecs"
+  tags:
+    - eod
