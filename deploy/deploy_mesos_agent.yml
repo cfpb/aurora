@@ -36,6 +36,7 @@
     - jdbc7
     - {role: ruby, when: "install_ruby"}
     - sqitch
+    - tesseract
     - r_rh7
     # TO TEST - r-libs7
     - r-shinyRH7
@@ -64,18 +65,6 @@
         state: stopped
         enabled: no
 
-    - name: Install custom RPMs
-      yum:
-        name: "{{ item }}"
-        state: present
-        disable_gpg_check: yes
-      with_items:
-        - xsv
-        - gnucobol
-        - htop
-        - p7zip
-      when: custom_repo
-
     - name: Install Additional Database Automation packages
       yum:
         name: "{{ item }}"
@@ -89,7 +78,8 @@
         # - facter
         - sysstat # sar, iostat, vmstat
         - systemtap # dtrace equivalent
-        - ant
+        - p7zip
+        - gnucobol
 
     - name: Install Database Automation custom packages
       yum:

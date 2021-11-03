@@ -15,7 +15,7 @@ RUN cd ~vagrant && \
     mkdir -p /etc/sudoers.d && \
     echo "vagrant ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/vagrant_user
 
-RUN yum -y install sudo openssh-server openssh-clients initscripts && \
+RUN yum -y update && yum -y install sudo openssh-server openssh-clients initscripts && \
     systemctl enable sshd.service
 
 RUN rm /usr/lib/tmpfiles.d/systemd-nologin.conf

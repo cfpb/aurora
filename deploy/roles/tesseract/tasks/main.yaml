@@ -1,0 +1,128 @@
+# Installs tesseract
+---
+- name: Install dependencies
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "@Development Tools"
+    - libpng-devel
+    - libtiff-devel
+    - libjpeg-devel
+    - devtoolset-7-gcc-c++
+  tags:
+    - tesseract
+
+- name: Get autoconf
+  get_url:
+    url: "{{ autoconf_url }}"
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: Extract autoconf
+  unarchive:
+    copy: no
+    src: /tmp/autoconf-2.69.tar.gz
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: autoconf - Build and install
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/autoconf-2.69/
+  with_items:
+    - ./configure --prefix=/usr/
+    - make
+    - make install
+  tags:
+    - tesseract
+
+- name: Get autoconf-archive
+  get_url:
+    url: "{{ autoconf_archive_url }}"
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: Extract autoconf-archive
+  unarchive:
+    copy: no
+    src: /tmp/autoconf-archive-2019.01.06.tar.xz
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: autoconf-archive - Build and install
+  shell: "{{ item }}"
+  args:
+    chdir: /tmp/autoconf-archive-2019.01.06/
+  with_items:
+    - ./configure --prefix=/usr/
+    - make
+    - make install
+  tags:
+    - tesseract
+
+- name: Download Leptonica
+  get_url:
+    url: "http://leptonica.org/source/leptonica-{{ leptonica_version }}.tar.gz"
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: Extract Leptonica
+  unarchive:
+    copy: no
+    src: "/tmp/leptonica-{{ leptonica_version }}.tar.gz"
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: Leptonica - Build and install # need to enable devtools7
+  shell: "{{ item }}"
+  args:
+    chdir: "/tmp/leptonica-{{ leptonica_version }}/"
+  with_items:
+    - ./configure --prefix=/usr/local/ CC={{ CC }}
+    - make CC={{ CC }}
+    - make install
+  tags:
+    - tesseract
+
+- name: Download Tesseract
+  get_url:
+    url: "{{ tesseract_url }}"
+    dest: /tmp
+  tags:
+    - tesseract
+    
+- name: Extract Tesseract
+  unarchive:
+    copy: no
+    src: /tmp/tesseract-4.0.0.tar.gz
+    dest: /tmp
+  tags:
+    - tesseract
+
+- name: Tesseract - Build and install # need to enable devtools7
+  shell: "{{ item }}"
+  environment:
+    - PKG_CONFIG_PATH: /usr/local/lib/pkgconfig
+  args:
+    chdir: /tmp/tesseract-4.0.0/
+  with_items:
+    - ./autogen.sh CC={{ CC }} CXX={{ CXX }}
+    - ./configure CC={{ CC }} CXX={{ CXX }} --prefix=/usr/local --with-extra-libraries=/usr/local/lib 
+    - make
+    - make install
+  tags:
+    - tesseract
+
+- name: "Download all language packs"
+  get_url:
+    url: "{{ tesseract_eng_lang }}"
+    dest: "{{ tessdata_dir }}"
+  tags:
+    - tesseract

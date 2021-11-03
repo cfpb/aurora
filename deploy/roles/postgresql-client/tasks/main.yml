@@ -3,6 +3,7 @@
   rpm_key:
     key: "{{ postgres_repository_key_url }}"
     state: present
+    validate_certs: false
   when: postgres_install_repository
   tags:
     - postgres_client
@@ -11,6 +12,7 @@
   yum:
     name: "{{ postgres_repository_url }}"
     state: present
+    validate_certs: false
   when: postgres_install_repository
   tags:
     - postgres_client
