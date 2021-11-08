@@ -32,6 +32,8 @@
   with_items:
     - iptables
     - ip6tables
+  tags:
+    - iptables
 
 #- name: start iptables services
 #  command: systemctl start "{{ item }}"

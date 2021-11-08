@@ -5,6 +5,8 @@
     name:
         - python2-pip
         - python2-virtualenv
+  tags:
+      - python2
 
 - name: Install Python27 packages
   yum:
@@ -22,21 +24,44 @@
       - python27-tkinter
       - python27-python-virtualenv
     state: present
+  tags:
+      - python2
 
 - name: SCL Enable Pip Install Upgrade Pip 
   shell: |
     scl enable python27 -- pip install --upgrade pip==20.3.4
   become: yes
   become_method: sudo
+  tags:
+      - python2
 
 - name: SCL Enable Pip Install numpy, scipy
   shell: |
     scl enable python27 -- pip install numpy scipy 
   become: yes
   become_method: sudo
+  tags:
+      - python2
 
 - name: Make python 2.7 the default python for this machine
   template:
       src: scl_enable_python27.sh.j2
       dest: /etc/profile.d/scl_enable_python27.sh
   when: set_python27_default_python
+  tags:
+      - python2
+
+- name: Create /usr/local/x -> /usr/x python2.7 symlinks to support legacy pipelines
+  file:
+    state: link
+    src: '{{ item.src }}'
+    dest: '{{ item.dest }}'
+    owner: root
+    group: root
+  loop:
+    - { dest: '/usr/local/include/python2.7',  src: '/usr/include/python2.7' }
+    - { dest: '/usr/local/bin/virtualenv-2.7', src: '/usr/bin/virtualenv' }
+    - { dest: '/usr/local/lib/python2.7',      src: '/usr/lib64/python2.7' }
+  tags:
+     - python2
+
